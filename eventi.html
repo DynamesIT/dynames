@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Eventi & Roadshow</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            background-color: var(--night-blue);
+            color: var(--optical-white);
+            padding: 6rem 0;
+            text-align: center;
+            border-bottom: 8px solid var(--gold-accent);
+            background-image: linear-gradient(rgba(11, 17, 32, 0.8), rgba(11, 17, 32, 0.9)), url('https://images.unsplash.com/photo-1540317580384-e5d43867caa6?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* EVENTS SECTION */
+        .events-content {
+            padding: 5rem 0;
+        }
+
+        .upcoming-event {
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            display: flex;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 5rem;
+            overflow: hidden;
+            border-left: 6px solid var(--gold-accent);
+        }
+
+        .event-date-box {
+            background: var(--night-blue);
+            color: var(--optical-white);
+            padding: 3rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 200px;
+        }
+
+        .event-date-box .day {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--gold-accent);
+        }
+
+        .event-date-box .month {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-date-box .year {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .event-details {
+            padding: 4rem;
+            flex-grow: 1;
+        }
+
+        .event-badge {
+            display: inline-block;
+            background: var(--gold-accent);
+            color: var(--optical-white);
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            margin-bottom: 1.5rem;
+        }
+
+        .upcoming-event h2 {
+            font-size: 2.5rem;
+            color: var(--night-blue);
+            margin-bottom: 1rem;
+        }
+
+        .event-location {
+            font-size: 1.1rem;
+            color: var(--slate-grey);
+            font-style: italic;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .event-location::before {
+            content: "📍";
+            font-style: normal;
+        }
+
+        .upcoming-event p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--night-blue);
+            color: var(--optical-white);
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            border: 1px solid var(--night-blue);
+        }
+
+        .btn:hover {
+            background-color: var(--optical-white);
+            color: var(--night-blue);
+        }
+
+        /* PAST EVENTS */
+        .past-events-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .past-event-card {
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 2rem;
+        }
+
+        .past-event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1rem;
+        }
+
+        .past-event-card h3 {
+            font-size: 1.4rem;
+            color: var(--night-blue);
+        }
+
+        .past-event-date {
+            color: var(--gold-accent);
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .past-event-card p {
+            color: var(--text-secondary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 900px) {
+            .upcoming-event {
+                flex-direction: column;
+            }
+
+            .event-date-box {
+                padding: 2rem;
+                flex-direction: row;
+                align-items: baseline;
+                gap: 1rem;
+            }
+
+            .event-date-box .day {
+                font-size: 2.5rem;
+            }
+
+            .event-details {
+                padding: 2rem;
+            }
+
+            .past-events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="index.html" style="text-decoration: none;">
+                    <h1>
+                        <img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo"
+                            class="brand-logo" onerror="this.style.display='none'">
+                        DYNAMES
+                    </h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="index.html#progetto">Il Progetto</a>
+                <a href="hub.html">Analisi & Articoli</a>
+                <a href="eventi.html" class="active">Eventi</a>
+                <a href="index.html#partnership">Network</a>
+                <a href="index.html#governance">Chi Siamo</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h1>Roadshow & Eventi</h1>
+            <p>"Il confronto pubblico e istituzionale sulle traiettorie sistemiche."</p>
+        </div>
+    </div>
+
+    <section class="events-content container">
+
+        <h3
+            style="font-size: 1.2rem; color: var(--slate-grey); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2rem; border-left: 4px solid var(--gold-accent); padding-left: 1rem;">
+            Prossimo Evento</h3>
+
+        <!-- UPCOMING EVENT -->
+        <article class="upcoming-event">
+            <div class="event-date-box">
+                <span class="month">Mag</span>
+                <span class="day">21</span>
+                <span class="year">2026</span>
+            </div>
+            <div class="event-details">
+                <span class="event-badge">Evento su Invito</span>
+                <h2 class="serif-heading">Presentazione Report "Cultura della Difesa"</h2>
+                <span class="event-location">Camera dei Deputati, Sala del Cenacolo - Roma</span>
+                <p>In collaborazione con LUISS Press, DYNAMES presenta l'analisi annuale sulle dinamiche di deterrenza e
+                    resilienza sistemica nazionale. Interverranno esponenti delle Istituzioni e del comparto industriale
+                    Difesa e Sicurezza.</p>
+                <a href="#" class="btn">Richiedi Accredito</a>
+            </div>
+        </article>
+
+        <h3
+            style="font-size: 1.8rem; color: var(--night-blue); margin-bottom: 3rem; margin-top: 6rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 1rem;">
+            Archivio Iniziative</h3>
+
+        <!-- PAST EVENTS GRID -->
+        <div class="past-events-grid">
+            <article class="past-event-card">
+                <div class="past-event-header">
+                    <h3 class="serif-heading">Premio Cultura della Difesa</h3>
+                    <span class="past-event-date">Ottobre 2026</span>
+                </div>
+                <span
+                    style="display: block; font-size: 0.85rem; color: var(--slate-grey); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">Senato
+                    della Repubblica - Roma</span>
+                <p>Conferimento dei riconoscimenti alle eccellenze nell'Innovazione Tech, Comunicazione Strategica e
+                    Promozione Istituzionale. Un momento di sintesi tra visione accademica ed esigenze operative.</p>
+            </article>
+
+            <article class="past-event-card">
+                <div class="past-event-header">
+                    <h3 class="serif-heading">Tavolo di Lavoro Chiuso: Deep Tech & Sovranità</h3>
+                    <span class="past-event-date">Marzo 2026</span>
+                </div>
+                <span
+                    style="display: block; font-size: 0.85rem; color: var(--slate-grey); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">LUISS
+                    Campus - Roma</span>
+                <p>Ciclo di confronto a porte chiuse tra attori della filiera produttiva quantistica e decisori pubblici
+                    per l'elaborazione del policy paper "Autonomia Tecnologica 2030".</p>
+            </article>
+
+            <article class="past-event-card">
+                <div class="past-event-header">
+                    <h3 class="serif-heading">Seminario: Intelligence & Cognitive Warfare</h3>
+                    <span class="past-event-date">Gennaio 2026</span>
+                </div>
+                <span
+                    style="display: block; font-size: 0.85rem; color: var(--slate-grey); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">Centro
+                    Studi Geopolitica</span>
+                <p>Analisi delle metodologie di ingerenza esterna dirette ai processi cognitivi decisionali.
+                    Presentazione dello studio sui framework difensivi per le corporate nazionali.</p>
+            </article>
+
+            <article class="past-event-card">
+                <div class="past-event-header">
+                    <h3 class="serif-heading">Lancio della Piattaforma DYNAMES</h3>
+                    <span class="past-event-date">Dicembre 2025</span>
+                </div>
+                <span
+                    style="display: block; font-size: 0.85rem; color: var(--slate-grey); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">Milano</span>
+                <p>Presentazione ufficiale del progetto editoriale e della rivista quadrimestrale ad una selezione di
+                    stakeholder industriali e corpi intermedi.</p>
+            </article>
+
+        </div>
+
+    </section>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+            <p>Testata Giornalistica - Reg. Tribunale di Busto Arsizio N. 01/2026</p>
+            <p style="margin-top: 1rem; color: var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

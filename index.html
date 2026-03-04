@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Governance di Forze e Sistemi</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light-grey);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Hamburger Menu Icon */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--night-blue);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover {
+            color: var(--accent);
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            /* Adjust size as needed */
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.8rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .partners {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--slate-grey);
+            font-weight: 600;
+            display: none;
+            /* Hide partners on top for simple nav, we can put them in footer or keep desktop visual clean */
+        }
+
+        section {
+            padding: 7rem 0;
+            /* Increased spacing between sections from 5rem to 7rem */
+        }
+
+        .hero {
+            background-color: var(--night-blue);
+            color: var(--optical-white);
+            text-align: center;
+            padding: 8rem 2rem;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--optical-white);
+            color: var(--night-blue);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Montserrat';
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--slate-grey);
+            color: var(--optical-white);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--night-blue);
+            margin-bottom: 3rem;
+            font-weight: 700;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--optical-white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-top: 4px solid var(--night-blue);
+        }
+
+        .card h3 {
+            color: var(--night-blue);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        /* Hub articles matching the old layout but new aesthetics */
+        .article-feed {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .article-card {
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-header {
+            padding: 1.5rem;
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Montserrat';
+            font-weight: 600;
+        }
+
+        .article-category {
+            color: var(--accent);
+        }
+
+        .article-date {
+            color: var(--text-secondary);
+        }
+
+        .article-title {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            line-height: 1.4;
+        }
+
+        .article-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .article-summary {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .timeline {
+            border-left: 2px solid var(--accent);
+            padding-left: 2rem;
+            margin-left: 1rem;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.45rem;
+            top: 0.2rem;
+            width: 1rem;
+            height: 1rem;
+            background: var(--optical-white);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-date {
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Montserrat';
+        }
+
+        .edicola-img {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            display: block;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .governance-card {
+            text-align: center;
+        }
+
+        .governance-photo {
+            width: 150px;
+            height: 150px;
+            background-color: #e2e8f0;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--slate-grey);
+            font-family: 'Montserrat';
+            font-size: 0.9rem;
+            border: 3px solid var(--optical-white);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .governance-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .governance-card h4 {
+            font-size: 1.1rem;
+            color: var(--night-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .governance-card p {
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .desktop-nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--optical-white);
+                padding: 1rem 0;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+
+            .desktop-nav.active {
+                display: flex;
+            }
+
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .header-inner {
+                flex-direction: row;
+                /* Keep logo and hamburger inline */
+                gap: 1rem;
+                text-align: left;
+                align-items: center;
+            }
+
+            .brand h1 {
+                font-size: 1.4rem;
+            }
+
+            .brand p {
+                font-size: 0.65rem;
+            }
+
+            section {
+                padding: 4rem 0;
+            }
+
+            /* Adjust on mobile for readability */
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <h1>
+                    <img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" class="brand-logo"
+                        onerror="this.style.display='none'">
+                    DYNAMES
+                </h1>
+                <p>Governance di Forze e Sistemi</p>
+            </div>
+
+            <!-- Hamburger Menu Icon -->
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <!-- Main Navigation -->
+            <nav class="desktop-nav" id="desktopNav">
+                <a href="#progetto">Il Progetto</a>
+                <a href="hub.html">Analisi & Articoli</a>
+                <a href="eventi.html">Eventi</a>
+                <a href="#partnership">Network</a>
+                <a href="#governance">Chi Siamo</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>Operare nella complessità per governare le dinamiche del futuro.</h2>
+            <p>DYNAMES analizza le dynámeis che strutturano la stabilità delle comunità politiche, offrendo un'analisi
+                strategica senza compromessi per comprendere le traiettorie dell'attualità globale.</p>
+
+        </div>
+    </section>
+
+    <section id="progetto" class="container" style="padding-top: 10rem;">
+        <div class="grid-2" style="grid-template-columns: 1fr;">
+            <!-- Made this span full width since the award is moving -->
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <h3
+                    style="font-family: 'Montserrat'; font-size: 2.2rem; color: var(--night-blue); margin-bottom: 1.5rem;">
+                    La Nostra Missione</h3>
+                <p style="margin-bottom: 3rem; font-size: 1.2rem; color: var(--text-secondary);">Non semplificare la
+                    complessità, ma comprenderne le traiettorie. In un'epoca di incertezza sistemica, DYNAMES aggrega
+                    analisi multilivello unendo il rigore accademico con le esigenze decisionali.</p>
+
+            </div>
+        </div>
+    </section>
+
+
+
+    <section id="hub" style="background: var(--optical-white);">
+        <div class="container">
+            <h2 class="section-title">Digital Hub: Analisi & Articoli</h2>
+            <div class="article-feed">
+                <!-- START_ARTICLES -->
+                <!-- Article Placeholder -->
+                <div class="article-card" onclick="window.location.href='hub.html'">
+                    <div class="article-header">
+                        <div class="article-meta">
+                            <span class="article-category">GEOPOLITICA</span>
+                            <span class="article-date">Oggi</span>
+                        </div>
+                        <h3 class="article-title">Ridefinizione delle Alleanze Strategiche nel Mediterraneo Allargato
+                        </h3>
+                    </div>
+                    <div class="article-body">
+                        <p class="article-summary">Un'analisi approfondita sulle dinamiche di deterrenza e cooperazione
+                            tra gli attori statali e non statali nel quadrante sud-europeo.</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-header">
+                        <div class="article-meta">
+                            <span class="article-category">CYBER & COGNITIVE WARFARE</span>
+                            <span class="article-date">Ieri</span>
+                        </div>
+                        <h3 class="article-title">Vulnerabilità delle Infrastrutture Critiche e Offensiva Cognitiva</h3>
+                    </div>
+                    <div class="article-body">
+                        <p class="article-summary">Valutazione delle nuove dottrine di guerra ibrida che combinano
+                            attacchi cyber ai sistemi SCADA con operazioni di disinformazione mirata.</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-header">
+                        <div class="article-meta">
+                            <span class="article-category">GOVERNANCE NAZIONALE</span>
+                            <span class="article-date">3 giorni fa</span>
+                        </div>
+                        <h3 class="article-title">Resilienza Sistemica ed Ecosistemi Istituzionali</h3>
+                    </div>
+                    <div class="article-body">
+                        <p class="article-summary">Come i corpi intermedi e le istituzioni centrali stanno
+                            riprogrammando i processi decisionali per affrontare shock asimmetrici imprevisti.</p>
+                    </div>
+                </div>
+                <!-- END_ARTICLES -->
+            </div>
+        </div>
+    </section>
+
+    <section id="eventi" class="container" style="padding-top: 10rem;">
+        <h2 class="section-title">Eventi & Roadshow</h2>
+        <div class="grid-2">
+            <div>
+                <div
+                    style="margin-bottom: 2rem; border-radius: 8px; overflow: hidden; height: 400px; width: 100%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                    <img src="assets/camera%20dei%20deputati.jpg" alt="Locandina Prossimo Evento"
+                        style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Maggio 2026</div>
+                        <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Camera dei Deputati</h3>
+                        <p>Presentazione Report "Cultura della Difesa" con LUISS Press.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Ottobre 2026</div>
+                        <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Senato della Repubblica</h3>
+                        <p>Premio Cultura della Difesa ed esposizione strategica.</p>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <a href="eventi.html" class="btn"
+                        style="background: var(--night-blue); color: var(--optical-white); width: 100%; text-align: center;">Consulta
+                        tutti i nostri eventi passati</a>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Ciclo Biennale di Confronto</h3>
+                <p>Partecipazione attiva ai 22 temi strategici del piano editoriale DYNAMES, strutturando tavoli di
+                    lavoro chiusi per l'analisi e lo sviluppo di policy paper condivise tra settore pubblico e privato.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="partnership" style="background: var(--night-blue); color: var(--optical-white);">
+        <div class="container">
+            <h2 class="section-title" style="color: var(--optical-white);">Partnership & Network</h2>
+
+            <div class="grid-4" style="text-align: center; margin-bottom: 4rem;">
+                <div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--light-grey);">Accademia</h3>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Ricerca scientifica, validazione
+                        metodologica e high-education.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--light-grey);">Istituzioni</h3>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Dialogo costante per la promozione di policy
+                        e governance efficace.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--light-grey);">Industria</h3>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Integrazione tecnologica e sicurezza del
+                        comparto produttivo.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--light-grey);">Corpi Intermedi</h3>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Coesione sociale e trasmissione della
+                        cultura della sicurezza.</p>
+                </div>
+            </div>
+
+            <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin-bottom: 4rem;"></div>
+
+            <div style="display: flex; justify-content: center; align-items: center; gap: 4rem; flex-wrap: wrap;">
+                <!-- Marte Studios -->
+                <div style="text-align: center;">
+                    <div
+                        style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                        <img src="assets/marter%20logo.png" alt="Marte Studios Logo"
+                            style="max-height: 100%; max-width: 150px;" />
+                    </div>
+                    <span
+                        style="color: var(--light-grey); font-family: 'Montserrat'; font-weight: 600; font-size: 1.1rem;">Marte
+                        Studios</span>
+                </div>
+
+                <!-- LUISS Press -->
+                <div style="text-align: center;">
+                    <div
+                        style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                        <img src="assets/LUISS%20PRESS.png" alt="LUISS Press Logo"
+                            style="max-height: 100%; max-width: 150px; filter: brightness(0) invert(1);" />
+                    </div>
+                    <span
+                        style="color: var(--light-grey); font-family: 'Montserrat'; font-weight: 600; font-size: 1.1rem;">LUISS
+                        Press</span>
+                </div>
+
+                <!-- LUISS Scuola di Giornalismo -->
+                <div style="text-align: center;">
+                    <div
+                        style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                        <img src="assets/LUISS%20Scuola%20di%20Giornalismo.png" alt="LUISS Scuola di Giornalismo Logo"
+                            style="max-height: 100%; max-width: 250px; filter: brightness(0) invert(1);" />
+                    </div>
+                    <span
+                        style="color: var(--light-grey); font-family: 'Montserrat'; font-weight: 600; font-size: 1.1rem;">LUISS
+                        Scuola di Giornalismo</span>
+                </div>
+
+                <!-- Fondazione Boscacci -->
+                <div style="text-align: center;">
+                    <div
+                        style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                        <img src="assets/Fondazione%20Boscacci.png" alt="Fondazione Boscacci Logo"
+                            style="max-height: 100%; max-width: 150px; filter: brightness(0) invert(1);" />
+                    </div>
+                    <span
+                        style="color: var(--light-grey); font-family: 'Montserrat'; font-weight: 600; font-size: 1.1rem;">Fondazione
+                        Boscacci</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="governance" class="container" style="padding-top: 10rem; padding-bottom: 8rem;">
+        <h2 class="section-title">Chi Siamo: Governance</h2>
+        <div class="grid-4" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="governance-card">
+                <div class="governance-photo">
+                    <img src="assets/Fabio%20Boscacci.jfif" alt="Fabio Boscacci"
+                        onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Boscacci]'" />
+                </div>
+                <h4>Fabio Boscacci</h4>
+                <p>Co-fondatore & Direttore Responsabile</p>
+            </div>
+            <div class="governance-card">
+                <div class="governance-photo">
+                    <img src="assets/Vinenzo%20D'ANNA.png" alt="Vincenzo D'Anna"
+                        onerror="this.style.display='none'; this.nextSibling.textContent='[Foto D Anna]'" />
+                </div>
+                <h4>Vincenzo D’Anna</h4>
+                <p>Cofondatore, Consigliere editoriale e scientifico.</p>
+            </div>
+            <div class="governance-card">
+                <div class="governance-photo">
+                    <img src="assets/Maria%20Crisitina%20Treccagnoli.png" alt="Maria Cristina Treccagnoli"
+                        onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Treccagnoli]'" />
+                </div>
+                <h4>Maria Cristina Treccagnoli</h4>
+                <p>HR & Compliance Manager</p>
+            </div>
+        </div>
+        <div class="grid-4" style="grid-template-columns: repeat(3, 1fr); margin-top: 4rem;">
+            <div class="governance-card">
+                <div class="governance-photo">
+                    <img src="assets/panico.jpg" alt="Elisa Panico" />
+                    [Foto Panico]
+                </div>
+                <h4>Elisa Panico</h4>
+                <p>Consulente progetto editoriale</p>
+            </div>
+            <div class="governance-card">
+                <div class="governance-photo">
+                    <img src="assets/brancato.jpg" alt="Guglielmo Brancato"
+                        onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Brancato]'" />
+                </div>
+                <h4>Guglielmo Brancato</h4>
+                <p>Junior Advisor in CyberSecurity</p>
+            </div>
+            <div class="governance-card">
+                <div class="governance-photo">
+                    <img src="assets/pallotta.jpg" alt="Simone Pallotta" />
+                    [Foto Pallotta]
+                </div>
+                <h4>Simone Pallotta</h4>
+                <p>Coordinatore eventi</p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+            <p>Testata Giornalistica - Reg. Tribunale di Busto Arsizio N. 01/2026</p>
+            <p style="margin-top: 1rem; color: var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript For Hamburger menu -->
+    <script>
+        function toggleMenu() {
+            var nav = document.getElementById("desktopNav");
+            nav.classList.toggle("active");
+        }
+
+        // Hide menu on link click on mobile
+        document.querySelectorAll('.desktop-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('desktopNav').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

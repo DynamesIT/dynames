@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Lettura Articolo</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        /* BACK BUTTON */
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        /* ARTICLE HEADER */
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        /* ARTICLE HERO IMAGE */
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ARTICLE BODY */
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        /* AUTHOR BOX */
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="index.html" style="text-decoration: none;">
+                    <h1>
+                        <img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo"
+                            class="brand-logo" onerror="this.style.display='none'">
+                        DYNAMES
+                    </h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="index.html#progetto">Il Progetto</a>
+                <a href="hub.html" class="active">Analisi & Articoli</a>
+                <a href="eventi.html">Eventi</a>
+                <a href="index.html#partnership">Network</a>
+                <a href="index.html#governance">Chi Siamo</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container back-nav">
+        <a href="hub.html">← Torna all'Hub</a>
+    </div>
+
+    <!-- ARTICOLO -->
+    <article>
+        <div class="article-container article-header">
+            <span class="article-category">Geopolitica & Strategia</span>
+            <h1 class="serif-heading article-title">Ridefinizione delle Alleanze Strategiche nel Mediterraneo Allargato
+            </h1>
+            <p class="article-abstract">Un'analisi approfondita sulle dinamiche di deterrenza e cooperazione tra gli
+                attori statali e non statali nel quadrante sud-europeo. Come i nuovi assetti infrastrutturali stanno
+                ridisegnando la scacchiera del futuro marittimo nazionale.</p>
+
+            <div class="article-meta">
+                <span class="meta-author">Vincenzo D'Anna</span>
+                <span>12 Maggio 2026</span>
+                <span>Tempo di lettura: 8 min</span>
+            </div>
+        </div>
+
+        <!-- IMMAGINE CORTA -->
+        <img src="https://images.unsplash.com/photo-1529245009836-de7a6ea2fafa?q=80&w=2070&auto=format&fit=crop"
+            alt="Mediterraneo Strategico" class="article-hero">
+
+        <div class="article-container article-body">
+
+            <p><span
+                    style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">I</span>l
+                bacino del Mediterraneo Allargato non è più solamente un'area geografica di transito commerciale, ma si
+                è consolidato come il fulcro primario dove si intersecano le nuove faglie geopolitiche globali. La
+                crescente asimmetria nelle capacità di deterrenza e l'inserimento di attori revisionisti ha reso
+                imperativo, per i policy maker europei e nazionali, un aggiornamento dottrinale radicale.</p>
+
+            <p>Le recenti direttive strategiche hanno evidenziato come la protezione delle rotte, dei cavi sottomarini e
+                delle infrastrutture energetiche non possa essere demandata esclusivamente ad approcci reattivi. Si
+                richiede piuttosto una postura proattiva, basata su un framework integrato tra difesa militare classica
+                e resilienza civile.</p>
+
+            <h2>La Dottrina della Resilienza Multi-Dominio</h2>
+
+            <p>Non possiamo limitarci all'analisi della superficie. Le minacce ibride si sviluppano oggi
+                contemporaneamente su tre vettori interconnessi: il dominio marittimo, il dominio cibernetico e il
+                dominio cognitivo. Un attacco ad un nodo logistico portuale è spesso anticipato o accompagnato da
+                sofisticate campagne di disinformazione volte a minare la coesione sociale e allentare la risposta
+                istituzionale.</p>
+
+            <div class="pull-quote">
+                "La deterrenza moderna non si misura dal tonnellaggio delle flotte, ma dalla capacità sistemica di
+                assorbire uno shock e mantenere la continuità operativa statale."
+            </div>
+
+            <p>In questo contesto, il concetto di <strong>Sovranità Tecnologica</strong> si fonde indissolubilmente con
+                la difesa spaziale e subacquea.</p>
+
+            <h3>I tre pilastri dell'Azione Strategica</h3>
+            <ul>
+                <li><strong>Consapevolezza Situazionale (SDA):</strong> Implementazione di reti sensoristiche avanzate
+                    per il monitoraggio preventivo delle minacce sommerse lungo la ZEE (Zona Economica Esclusiva).</li>
+                <li><strong>Interoperabilità Interforze:</strong> Creazione di protocolli di intervento raccordati tra
+                    Marina Militare, intelligence e comparto industriale privato "dual-use".</li>
+                <li><strong>Deterrenza Cognitiva:</strong> Formazione della classe dirigente sulle metodologie di
+                    contrasto alle operazioni psicologiche ostili.</li>
+            </ul>
+
+            <h2>Prospettive e Conclusioni</h2>
+
+            <p>L'Italia si trova al centro esatto di questa riconfigurazione strategica. Il ruolo di pivot naturale nel
+                Mediterraneo impone l'assunzione di responsabilità dirette nella costruzione di un'architettura di
+                sicurezza regionale che sia allo stesso tempo flessibile e inequivocabile nelle sue linee rosse.</p>
+
+            <p>La sfida per i prossimi dieci anni non consisterà unicamente nell'acquisizione di nuove tecnologie, ma
+                nella capacità di formare una classe dirigente e un'opinione pubblica consapevoli che la sicurezza è,
+                prima di tutto, un fatto culturale.</p>
+
+            <!-- AUTHOR BIO -->
+            <div class="author-box">
+                <img src="assets/Vinenzo%20D'ANNA.png" alt="Vincenzo D'Anna" onerror="this.style.display='none';">
+                <div class="author-info">
+                    <h4>Vincenzo D'Anna</h4>
+                    <p>Cofondatore, Consigliere editoriale e scientifico di DYNAMES. Analista geopolitico e consulente
+                        strategico sui temi di sicurezza nazionale e deterrenza integrata.</p>
+                </div>
+            </div>
+
+        </div>
+    </article>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+            <p>Testata Giornalistica - Reg. Tribunale di Busto Arsizio N. 01/2026</p>
+            <p style="margin-top: 1rem; color: var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
