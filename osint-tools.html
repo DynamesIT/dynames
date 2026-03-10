@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | OSINT Hub</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        /* CONSTRUCTION CONTAINER */
+        .construction-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 60vh;
+            padding: 5rem 2rem;
+            margin: 4rem auto;
+            max-width: 800px;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-top: 6px solid var(--gold-accent);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .construction-icon {
+            font-size: 5rem;
+            color: var(--night-blue);
+            margin-bottom: 1.5rem;
+        }
+
+        .construction-container h2 {
+            font-size: 2.5rem;
+            color: var(--night-blue);
+            margin-bottom: 1rem;
+        }
+
+        .construction-container p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--night-blue);
+            color: var(--optical-white);
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            background-color: var(--slate-grey);
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 900px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .construction-container h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="index.html" style="text-decoration: none;">
+                    <h1>
+                        <img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo"
+                            class="brand-logo" onerror="this.style.display='none'">
+                        DYNAMES
+                    </h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="hub.html">Analisi & Articoli</a>
+                <a href="eventi.html">Eventi</a>
+                <a href="index.html#governance">Chi Siamo</a>
+                <a href="collaboratori.html">Collaboratori</a>
+                <a href="osint-tools.html" class="active">OSINT Hub</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="construction-container">
+            <div class="construction-icon">🔍🤖</div>
+            <h2 class="serif-heading">OSINT AI Tools Hub</h2>
+            <p>
+                Stiamo sviluppando una suite di strumenti di <strong>Open Source Intelligence (OSINT)</strong>
+                potenziati dall'Intelligenza Artificiale. <br><br>
+                A breve, in questa sezione, DYNAMES metterà gratuitamente a disposizione degli analisti e dei
+                ricercatori strumenti avanzati per la raccolta, l'analisi e l'estrazione di informazioni strategiche da
+                fonti aperte.
+            </p>
+            <div style="display: flex; gap: 1rem; align-items: center; justify-content: center; margin-top: 1.5rem;">
+                <span
+                    style="font-size: 0.9rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--gold-accent); letter-spacing: 2px;">Lavori
+                    in Corso</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+            <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI
+                ETS</p>
+            <p style="margin-top: 1rem; color: var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

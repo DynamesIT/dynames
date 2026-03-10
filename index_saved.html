@@ -144,10 +144,6 @@
 
         .hero {
             background-color: var(--night-blue);
-            background-image: linear-gradient(rgba(11, 17, 32, 0.85), rgba(11, 17, 32, 0.85)), url('assets/chess.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             color: var(--optical-white);
             text-align: center;
             padding: 8rem 2rem;
@@ -454,47 +450,36 @@
                 <span></span>
             </div>
 
+            <!-- Main Navigation -->
             <nav class="desktop-nav" id="desktopNav">
+                <a href="#progetto">Il Progetto</a>
                 <a href="hub.html">Analisi & Articoli</a>
                 <a href="eventi.html">Eventi</a>
+                <a href="#partnership">Network</a>
                 <a href="#governance">Chi Siamo</a>
-                <a href="collaboratori.html">Collaboratori</a>
-                <a href="osint-tools.html">OSINT Hub</a>
             </nav>
         </div>
     </header>
 
     <section class="hero">
         <div class="container">
-            <h2>Osservare e comprendere forze e relazioni che governano i sistemi complessi</h2>
-            <p>DYNAMES studia le dynámeis — le forze e le capacità di potenza che modellano la stabilità delle comunità
-                politiche e l’evoluzione degli equilibri internazionali — offrendo strumenti analitici per interpretare
-                la complessità del presente e anticipare le dinamiche del futuro.</p>
+            <h2>Operare nella complessità per governare le dinamiche del futuro.</h2>
+            <p>DYNAMES analizza le dynámeis che strutturano la stabilità delle comunità politiche, offrendo un'analisi
+                strategica senza compromessi per comprendere le traiettorie dell'attualità globale.</p>
 
         </div>
     </section>
 
-    <section id="progetto" class="container" style="padding-top: 10rem; margin-bottom: 6rem;">
-        <h2 class="section-title">La Nostra Missione</h2>
-        <div class="grid-3" style="text-align: center;">
-            <div class="card">
-                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">ANALISI SCIENTIFICA</h3>
-                <p style="font-size: 0.95rem; color: var(--text-secondary);">DYNAMES sviluppa analisi e studi dedicati
-                    alle trasformazioni geopolitiche, alle dinamiche di potere e ai fattori che incidono sulla stabilità
-                    dei sistemi politici e degli equilibri internazionali.</p>
-            </div>
-            <div class="card">
-                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">PRODUZIONE EDITORIALE
-                </h3>
-                <p style="font-size: 0.95rem; color: var(--text-secondary);">Attraverso articoli, dossier, interviste e
-                    pubblicazioni, DYNAMES promuove una piattaforma editoriale di confronto interdisciplinare tra
-                    studiosi, professionisti e decisori pubblici.</p>
-            </div>
-            <div class="card">
-                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">EVENTI E RELAZIONI</h3>
-                <p style="font-size: 0.95rem; color: var(--text-secondary);">DYNAMES promuove incontri, conferenze e
-                    momenti di dialogo tra istituzioni, accademia e società civile, favorendo una maggiore
-                    consapevolezza delle sfide strategiche contemporanee.</p>
+    <section id="progetto" class="container" style="padding-top: 10rem;">
+        <div class="grid-2" style="grid-template-columns: 1fr;">
+            <!-- Made this span full width since the award is moving -->
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <h3
+                    style="font-family: 'Montserrat'; font-size: 2.2rem; color: var(--night-blue); margin-bottom: 1.5rem;">
+                    La Nostra Missione</h3>
+                <p style="margin-bottom: 3rem; font-size: 1.2rem; color: var(--text-secondary);">Non semplificare la
+                    complessità, ma comprenderne le traiettorie. In un'epoca di incertezza sistemica, DYNAMES aggrega
+                    analisi multilivello unendo il rigore accademico con le esigenze decisionali.</p>
             </div>
         </div>
     </section>
@@ -637,7 +622,7 @@
 
     <section id="governance" class="container" style="padding-top: 10rem; padding-bottom: 8rem;">
         <h2 class="section-title">Chi Siamo: Governance</h2>
-        <div class="grid-4">
+        <div class="grid-3">
             <div class="governance-card">
                 <div class="governance-photo">
                     <img src="assets/Fabio%20Boscacci.jfif" alt="Fabio Boscacci"
@@ -656,30 +641,14 @@
             </div>
             <div class="governance-card">
                 <div class="governance-photo">
-                    <img src="assets/Alessiopostiglione.jpeg" alt="Alessio Postiglione"
-                        onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Postiglione]'" />
-                </div>
-                <h4>Alessio Postiglione</h4>
-                <p>Direttore Scientifico</p>
-            </div>
-            <div class="governance-card">
-                <div class="governance-photo">
-                    <img src="assets/massimo%20panizzi.jpeg" alt="Massimo Panizzi"
-                        onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Panizzi]'" />
-                </div>
-                <h4>Massimo Panizzi</h4>
-                <p>Direttore Editoriale</p>
-            </div>
-        </div>
-        <div class="grid-4" style="margin-top: 4rem;">
-            <div class="governance-card">
-                <div class="governance-photo">
                     <img src="assets/Maria%20Crisitina%20Treccagnoli.png" alt="Maria Cristina Treccagnoli"
                         onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Treccagnoli]'" />
                 </div>
                 <h4>Maria Cristina Treccagnoli</h4>
                 <p>HR & Compliance Manager</p>
             </div>
+        </div>
+        <div class="grid-3" style="margin-top: 4rem;">
             <div class="governance-card">
                 <div class="governance-photo">
                     <img src="assets/panico.jpg" alt="Elisabetta Panico" />
@@ -698,8 +667,8 @@
             </div>
             <div class="governance-card">
                 <div class="governance-photo">
-                    <img src="assets/Pallotta%20simone.jpeg" alt="Simone Pallotta"
-                        onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Pallotta]'" />
+                    <img src="assets/pallotta.jpg" alt="Simone Pallotta" />
+                    [Foto Pallotta]
                 </div>
                 <h4>Simone Pallotta</h4>
                 <p>Coordinatore eventi</p>
@@ -734,10 +703,10 @@
                 <h4
                     style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--optical-white); font-family: 'Montserrat';">
                     Contatti</h4>
-                <p><a href="mailto:redazione@dynames.it"
+                <p><a href="mailto:redazione@boscacci.it"
                         style="color: var(--text-light); text-decoration: none; transition: color 0.3s;"
                         onmouseover="this.style.color='var(--optical-white)'"
-                        onmouseout="this.style.color='var(--text-light)'">redazione@dynames.it</a></p>
+                        onmouseout="this.style.color='var(--text-light)'">redazione@boscacci.it</a></p>
             </div>
 
             <!-- Colonna 3: Direzione -->
@@ -752,13 +721,8 @@
 
                 <p
                     style="margin-bottom: 0.2rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--slate-grey);">
-                    Direttore scientifico</p>
-                <p style="margin-bottom: 1.5rem; font-weight: 500; color: var(--optical-white);">Alessio Postiglione</p>
-
-                <p
-                    style="margin-bottom: 0.2rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--slate-grey);">
                     Direttore editoriale</p>
-                <p style="font-weight: 500; color: var(--optical-white);">Massimo Panizzi</p>
+                <p style="font-weight: 500; color: var(--optical-white);">Xxxxxxxxx</p>
             </div>
         </div>
 
