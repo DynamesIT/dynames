@@ -431,10 +431,61 @@
 
             /* Adjust on mobile for readability */
         }
+
+        /* Initial Loader Animation */
+        @keyframes loaderFade {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            30% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.05);
+            }
+        }
+
+        #initial-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--night-blue);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+        }
+
+        #initial-loader img {
+            width: 350px;
+            /* Ingrandito */
+            max-width: 80%;
+            /* Sicurezza mobile */
+            opacity: 0;
+            animation: loaderFade 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- Initial Loader -->
+    <div id="initial-loader">
+        <img src="assets/logo%20dynames%20negativo.png" alt="DYNAMES Logo" onerror="this.style.display='none'">
+    </div>
 
     <header>
         <div class="container header-inner">
@@ -789,6 +840,18 @@
             link.addEventListener('click', () => {
                 document.getElementById('desktopNav').classList.remove('active');
             });
+        });
+
+        // Hide loader after animation
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('initial-loader');
+            if (loader) {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    loader.style.visibility = 'hidden';
+                    setTimeout(() => loader.remove(), 800);
+                }, 2500);
+            }
         });
     </script>
 </body>
