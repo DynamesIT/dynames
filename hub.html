@@ -395,7 +395,7 @@
             <nav class="desktop-nav">
                 <a href="hub.html" class="active">Analisi & Articoli</a>
                 <a href="eventi.html">Eventi</a>
-                <a href="index.html#governance">Chi Siamo</a>
+                <a href="chi-siamo.html">Chi Siamo</a>
                 <a href="collaboratori.html">Collaboratori</a>
                 <a href="osint-tools.html">OSINT Hub</a>
             </nav>
@@ -534,6 +534,13 @@
 
             let currentCategory = "all";
 
+            // Check if there is an author parameter in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const authorParam = urlParams.get('author');
+            if (authorParam) {
+                searchInput.value = authorParam;
+            }
+
             function filterArticles() {
                 const query = searchInput.value.toLowerCase();
 
@@ -569,6 +576,11 @@
                     filterArticles();
                 });
             });
+
+            // Initial filter run if URL params populated the input
+            if (searchInput.value !== "") {
+                filterArticles();
+            }
         });
     </script>
 </body>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Chi Siamo</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            background-color: var(--night-blue);
+            color: var(--optical-white);
+            padding: 6rem 0;
+            text-align: center;
+            border-bottom: 8px solid var(--gold-accent);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* CONTENT */
+        .page-content {
+            padding: 5rem 0;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* AUTHOR BOX (ADATTATO) */
+        .author-box {
+            margin-bottom: 3rem;
+            padding: 2.5rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2.5rem;
+            align-items: flex-start;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .author-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .author-box img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 3px solid var(--light-grey);
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-info h4 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .btn-author {
+            display: inline-block;
+            background-color: var(--night-blue);
+            color: var(--optical-white);
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Montserrat';
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-author:hover {
+            background-color: var(--gold-accent);
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 900px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="index.html" style="text-decoration: none;">
+                    <h1>
+                        <img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo"
+                            class="brand-logo" onerror="this.style.display='none'">
+                        DYNAMES
+                    </h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="hub.html">Analisi & Articoli</a>
+                <a href="eventi.html">Eventi</a>
+                <a href="chi-siamo.html" class="active">Chi Siamo</a>
+                <a href="collaboratori.html">Collaboratori</a>
+                <a href="osint-tools.html">OSINT Hub</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h1>Chi Siamo: Governance</h1>
+            <p>"Studiosi, analisti e professionisti al servizio dell'indirizzo strategico."</p>
+        </div>
+    </div>
+
+    <section class="page-content container">
+
+        <!-- Fabio Boscacci -->
+        <div class="author-box" id="boscacci">
+            <img src="assets/Fabio%20Boscacci.jfif" alt="Fabio Boscacci" onerror="this.style.display='none';">
+            <div class="author-info">
+                <h4>Fabio Boscacci</h4>
+                <p>Cofondatore & Direttore Responsabile di DYNAMES. Promuove l'indirizzo strategico e la supervisione
+                    editoriale dei contenuti per la piattaforma della Fondazione Boscacci ETS.</p>
+                <!-- Momentaneamente senza articoli associati -->
+            </div>
+        </div>
+
+        <!-- Vincenzo D'Anna -->
+        <div class="author-box" id="d-anna">
+            <img src="assets/Vinenzo%20D'ANNA.png" alt="Vincenzo D'Anna" onerror="this.style.display='none';">
+            <div class="author-info">
+                <h4>Vincenzo D’Anna</h4>
+                <p>Cofondatore, Consigliere editoriale e scientifico di DYNAMES. Analista geopolitico e consulente
+                    strategico sui temi di sicurezza nazionale e deterrenza integrata.</p>
+                <a href="hub.html?author=vincenzo%20d'anna" class="btn-author">Leggi gli articoli</a>
+            </div>
+        </div>
+
+        <!-- Alessio Postiglione -->
+        <div class="author-box" id="postiglione">
+            <img src="assets/Alessiopostiglione.jpeg" alt="Alessio Postiglione" onerror="this.style.display='none';">
+            <div class="author-info">
+                <h4>Alessio Postiglione</h4>
+                <p>Direttore Scientifico di DYNAMES. Cura il coordinamento e il rigore analitico e accademico delle
+                    pubblicazioni e delle iniziative di ricerca della fondazione.</p>
+                <!-- Momentaneamente senza articoli associati -->
+            </div>
+        </div>
+
+        <!-- Massimo Panizzi -->
+        <div class="author-box" id="panizzi">
+            <img src="assets/massimo%20panizzi.jpeg" alt="Massimo Panizzi" onerror="this.style.display='none';">
+            <div class="author-info">
+                <h4>Massimo Panizzi</h4>
+                <p>Direttore Editoriale di DYNAMES. Generale di Corpo d'Armata (ris.) dell'Esercito Italiano. Laureato
+                    in Scienze dell'Educazione e specializzato nei processi formativi di leadership e di relazioni
+                    interculturali.</p>
+                <a href="hub.html?author=massimo%20panizzi" class="btn-author">Leggi gli articoli</a>
+            </div>
+        </div>
+
+        <!-- Maria Cristina Treccagnoli -->
+        <div class="author-box" id="treccagnoli">
+            <img src="assets/Maria%20Crisitina%20Treccagnoli.png" alt="Maria Cristina Treccagnoli"
+                onerror="this.style.display='none';">
+            <div class="author-info">
+                <h4>Maria Cristina Treccagnoli</h4>
+                <p>HR & Compliance Manager di DYNAMES. Responsabile delle relazioni interne, della gestione delle
+                    risorse e degli adempimenti normativi della fondazione.</p>
+            </div>
+        </div>
+
+        <!-- Elisabetta Panico -->
+        <div class="author-box" id="panico">
+            <img src="assets/panico.jpg" alt="Elisabetta Panico" onerror="this.style.display='none';">
+            <div class="author-info">
+                <h4>Elisabetta Panico</h4>
+                <p>Consulente & Ufficio Stampa di DYNAMES. Gestisce le relazioni con i media e la diffusione pubblica
+                    delle analisi della piattaforma.</p>
+            </div>
+        </div>
+
+        <!-- Guglielmo Brancato -->
+        <div class="author-box" id="brancato">
+            <img src="assets/io%20giacca%20blu.png" alt="Guglielmo Brancato" onerror="this.style.display='none';">
+            <div class="author-info">
+                <h4>Guglielmo Brancato</h4>
+                <p>Technology Advisor di DYNAMES. Produttore cinematografico. Analizza l'intersezione tra propaganda
+                    culturale, narrazioni cinematografiche e nuove minacce ibride.</p>
+                <a href="hub.html?author=guglielmo%20brancato" class="btn-author">Leggi gli articoli</a>
+            </div>
+        </div>
+
+        <!-- Simone Pallotta -->
+        <div class="author-box" id="pallotta">
+            <img src="assets/Pallotta%20simone.jpeg" alt="Simone Pallotta" onerror="this.style.display='none';">
+            <div class="author-info">
+                <h4>Simone Pallotta</h4>
+                <p>Coordinatore eventi di DYNAMES. Organizza e supervisiona tavole rotonde, seminari e manifestazioni
+                    promosse dalla piattaforma editoriale.</p>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+            <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI
+                ETS</p>
+            <p style="margin-top: 1rem; color: var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
