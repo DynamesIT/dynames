@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DFL8MJSKVJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-DFL8MJSKVJ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Privacy Policy</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+            --border-soft: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand, .page-eyebrow, .toc-title {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading,
+        .policy-intro p,
+        .policy-card p,
+        .policy-card li {
+            font-family: 'Playfair Display', serif;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 3rem));
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .brand a {
+            text-decoration: none;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 24px;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--night-blue);
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.25s ease;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .page-hero {
+            background:
+                linear-gradient(rgba(11, 17, 32, 0.88), rgba(11, 17, 32, 0.88)),
+                radial-gradient(circle at top right, rgba(184, 147, 90, 0.18), transparent 35%);
+            color: var(--optical-white);
+            padding: 5.5rem 0 4.5rem;
+            border-bottom: 8px solid var(--gold-accent);
+        }
+
+        .page-eyebrow {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 2.2px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            line-height: 1.08;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .page-hero p {
+            max-width: 820px;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        main {
+            padding: 4rem 0 5rem;
+        }
+
+        .policy-layout {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1fr);
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .toc {
+            position: sticky;
+            top: 110px;
+            background: var(--optical-white);
+            border: 1px solid var(--border-soft);
+            border-top: 4px solid var(--gold-accent);
+            border-radius: 14px;
+            padding: 1.4rem 1.25rem;
+            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+        }
+
+        .toc-title {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            color: var(--night-blue);
+            margin-bottom: 1rem;
+        }
+
+        .toc ul {
+            list-style: none;
+            display: grid;
+            gap: 0.65rem;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.35;
+        }
+
+        .toc a:hover {
+            color: var(--night-blue);
+        }
+
+        .policy-content {
+            min-width: 0;
+        }
+
+        .policy-intro {
+            background: var(--optical-white);
+            border: 1px solid var(--border-soft);
+            border-left: 5px solid var(--gold-accent);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.05);
+        }
+
+        .policy-intro p + p {
+            margin-top: 1rem;
+        }
+
+        .policy-meta {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1rem;
+            margin-top: 1.25rem;
+            color: var(--slate-grey);
+            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .policy-card {
+            background: var(--optical-white);
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.045);
+        }
+
+        .policy-card h2 {
+            color: var(--night-blue);
+            font-size: 1.45rem;
+            margin-bottom: 1rem;
+        }
+
+        .policy-card h3 {
+            color: var(--night-blue);
+            font-size: 1.05rem;
+            margin: 1.25rem 0 0.55rem;
+        }
+
+        .policy-card p + p,
+        .policy-card ul + p,
+        .policy-card p + ul {
+            margin-top: 0.9rem;
+        }
+
+        .policy-card ul {
+            padding-left: 1.2rem;
+        }
+
+        .policy-card li + li {
+            margin-top: 0.45rem;
+        }
+
+        .data-box {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 0.5rem 1rem;
+            margin-top: 1rem;
+            padding: 1.2rem;
+            background: #f8fafc;
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+        }
+
+        .data-box strong {
+            color: var(--night-blue);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.92rem;
+        }
+
+        .note-box {
+            margin-top: 1rem;
+            padding: 1rem 1.1rem;
+            border-radius: 12px;
+            background: #f8fafc;
+            border-left: 4px solid var(--accent);
+            color: var(--text-secondary);
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            padding: 4rem 0 2rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-grid h3,
+        .footer-grid h4 {
+            color: var(--optical-white);
+            margin-bottom: 1rem;
+        }
+
+        .footer-grid p {
+            margin-bottom: 0.55rem;
+        }
+
+        .footer-grid .muted {
+            color: var(--slate-grey);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.4rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            transition: color 0.25s ease;
+        }
+
+        .footer-links a:hover,
+        .footer-links a.active {
+            color: var(--text-light);
+        }
+
+        @media (max-width: 1040px) {
+            .policy-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container {
+                width: min(100%, calc(100% - 2rem));
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .desktop-nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--optical-white);
+                padding: 1rem 1.25rem 1.25rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                box-shadow: 0 12px 20px rgba(15, 23, 42, 0.12);
+            }
+
+            .desktop-nav.active {
+                display: flex;
+            }
+
+            .header-inner {
+                position: relative;
+            }
+
+            .brand h1 {
+                font-size: 1.45rem;
+            }
+
+            .page-hero {
+                padding: 4.5rem 0 3.5rem;
+            }
+
+            .policy-intro,
+            .policy-card {
+                padding: 1.5rem;
+            }
+
+            .data-box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <link rel="icon" href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" type="image/png">
+    <meta property="og:title" content="DYNAMES | Privacy Policy">
+    <meta property="og:image" content="https://dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png">
+    <meta property="og:type" content="website">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "DYNAMES",
+      "url": "https://dynames.it/",
+      "logo": "https://dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"
+    }
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="index.html">
+                    <h1>
+                        <img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'">
+                        DYNAMES
+                    </h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+
+            <div class="menu-toggle" onclick="toggleMenu()" aria-label="Apri menu di navigazione" aria-expanded="false" aria-controls="desktopNav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <nav class="desktop-nav" id="desktopNav">
+                <a href="hub.html">Analisi & Articoli</a>
+                <a href="eventi.html">Eventi</a>
+                <a href="chi-siamo.html">Chi Siamo</a>
+                <a href="temi-e-collaborazioni.html">Temi e Collaborazioni</a>
+                <a href="osint-tools.html">OSINT Hub</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <span class="page-eyebrow">Informativa ai sensi del Regolamento (UE) 2016/679</span>
+            <h1>Privacy Policy</h1>
+            <p>
+                La presente informativa descrive le modalità di trattamento dei dati personali degli utenti che consultano il sito di DYNAMES
+                e interagiscono con i relativi servizi web. L’informativa si riferisce esclusivamente al sito DYNAMES e non ad altri siti
+                eventualmente raggiungibili tramite link esterni.
+            </p>
+        </div>
+    </section>
+
+    <main>
+        <div class="container policy-layout">
+            <aside class="toc">
+                <div class="toc-title">Indice</div>
+                <ul>
+                    <li><a href="#titolare">1. Titolare del trattamento</a></li>
+                    <li><a href="#tipologie">2. Tipologie di dati trattati</a></li>
+                    <li><a href="#finalita">3. Finalità del trattamento</a></li>
+                    <li><a href="#base-giuridica">4. Base giuridica</a></li>
+                    <li><a href="#conferimento">5. Natura del conferimento</a></li>
+                    <li><a href="#modalita">6. Modalità del trattamento</a></li>
+                    <li><a href="#conservazione">7. Conservazione dei dati</a></li>
+                    <li><a href="#destinatari">8. Destinatari dei dati</a></li>
+                    <li><a href="#trasferimenti">9. Trasferimenti extra SEE</a></li>
+                    <li><a href="#diritti">10. Diritti degli interessati</a></li>
+                    <li><a href="#terzi">11. Siti terzi</a></li>
+                    <li><a href="#modifiche">12. Modifiche alla policy</a></li>
+                </ul>
+            </aside>
+
+            <div class="policy-content">
+                <section class="policy-intro">
+                    <p>
+                        DYNAMES adotta un approccio ispirato ai principi di liceità, correttezza, trasparenza, minimizzazione e sicurezza del trattamento dei dati personali.
+                        Questa pagina ha lo scopo di fornire agli utenti un quadro chiaro sulle categorie di dati trattati, sulle finalità perseguite e sui diritti riconosciuti dalla normativa vigente.
+                    </p>
+                    <p>
+                        L’informativa è redatta ai sensi dell’art. 13 del GDPR ed è destinata agli utenti che navigano nel sito, inviano comunicazioni agli indirizzi di contatto
+                        indicati, propongono candidature o interagiscono con eventuali servizi disponibili online.
+                    </p>
+                    <div class="policy-meta">
+                        <span>Ultimo aggiornamento: 03/04/2026</span>
+                        <span>Sito di riferimento: dynames.it</span>
+                    </div>
+                </section>
+
+                <section class="policy-card" id="titolare">
+                    <h2>1. Titolare del trattamento</h2>
+                    <p>
+                        Il Titolare del trattamento dei dati personali raccolti attraverso il sito è <strong>fondazione boscacci ets</strong>.
+                    </p>
+                    <div class="data-box">
+                        <strong>Denominazione</strong>
+                        <div>fondazione boscacci ets</div>
+
+                        <strong>Sede</strong>
+                        <div>via carlo noè 45, 21013 Gallarate</div>
+
+                        <strong>Codice fiscale</strong>
+                        <div>03800470126</div>
+
+                        <strong>Partita IVA</strong>
+                        <div>04096960127</div>
+
+                        <strong>PEC</strong>
+                        <div><a href="mailto:boscacci@legalmail.it">boscacci@legalmail.it</a></div>
+
+                        <strong>Email di contatto</strong>
+                        <div><a href="mailto:redazione@dynames.it">redazione@dynames.it</a></div>
+                    </div>
+                </section>
+
+                <section class="policy-card" id="tipologie">
+                    <h2>2. Tipologie di dati trattati</h2>
+
+                    <h3>a) Dati di navigazione</h3>
+                    <p>
+                        I sistemi informatici e le procedure software preposte al funzionamento del sito acquisiscono, nel corso del loro normale esercizio,
+                        alcuni dati personali la cui trasmissione è implicita nell’uso dei protocolli di comunicazione Internet.
+                        In questa categoria rientrano, a titolo esemplificativo, indirizzi IP, nomi a dominio dei dispositivi utilizzati dagli utenti,
+                        URI delle risorse richieste, orario della richiesta, metodo utilizzato per sottoporre la richiesta al server,
+                        dimensione del file ottenuto in risposta e altri parametri relativi al sistema operativo e all’ambiente informatico dell’utente.
+                    </p>
+
+                    <h3>b) Dati forniti volontariamente dall’utente</h3>
+                    <p>
+                        L’invio facoltativo, esplicito e volontario di messaggi agli indirizzi di contatto indicati sul sito comporta
+                        l’acquisizione dei dati di contatto del mittente e dei dati personali contenuti nella comunicazione.
+                        Rientrano in questa categoria, a seconda dei casi, nome, cognome, indirizzo email, ente di appartenenza,
+                        contenuto del messaggio, eventuali allegati, curriculum vitae o altri documenti trasmessi spontaneamente.
+                    </p>
+
+                    <h3>c) Cookie e strumenti tecnici</h3>
+                    <p>
+                        Il sito può utilizzare cookie tecnici e strumenti analoghi strettamente necessari al suo funzionamento,
+                        oltre a eventuali strumenti di analisi o misurazione del traffico secondo quanto indicato nelle impostazioni tecniche e negli eventuali banner di consenso presenti sul sito.
+                    </p>
+                </section>
+
+                <section class="policy-card" id="finalita">
+                    <h2>3. Finalità del trattamento</h2>
+                    <p>I dati personali possono essere trattati per le seguenti finalità:</p>
+                    <ul>
+                        <li>consentire la navigazione e il corretto funzionamento del sito;</li>
+                        <li>garantire la sicurezza delle reti, dei sistemi e dei contenuti digitali;</li>
+                        <li>rispondere a richieste di contatto, informazioni, proposte di collaborazione o candidature;</li>
+                        <li>gestire eventuali rapporti precontrattuali o organizzativi con gli utenti;</li>
+                        <li>adempiere a obblighi previsti dalla legge o da richieste dell’autorità competente;</li>
+                        <li>tutelare i diritti del Titolare in sede amministrativa, stragiudiziale o giudiziaria.</li>
+                    </ul>
+                </section>
+
+                <section class="policy-card" id="base-giuridica">
+                    <h2>4. Base giuridica del trattamento</h2>
+                    <p>Il trattamento dei dati personali si fonda, a seconda dei casi, su una o più delle seguenti basi giuridiche:</p>
+                    <ul>
+                        <li>esecuzione di misure precontrattuali richieste dall’interessato;</li>
+                        <li>adempimento di obblighi legali cui è soggetto il Titolare;</li>
+                        <li>legittimo interesse del Titolare alla sicurezza del sito, alla prevenzione di abusi e alla gestione tecnica e organizzativa delle richieste ricevute;</li>
+                        <li>consenso dell’interessato, ove necessario e richiesto dalla normativa applicabile.</li>
+                    </ul>
+                </section>
+
+                <section class="policy-card" id="conferimento">
+                    <h2>5. Natura del conferimento dei dati</h2>
+                    <p>
+                        Il conferimento dei dati di navigazione è necessario per consentire il funzionamento tecnico del sito.
+                        Il conferimento dei dati richiesti nelle comunicazioni inviate volontariamente dall’utente è facoltativo;
+                        tuttavia, il mancato conferimento può rendere impossibile dare seguito alle richieste ricevute o rispondere in modo adeguato alle comunicazioni.
+                    </p>
+                </section>
+
+                <section class="policy-card" id="modalita">
+                    <h2>6. Modalità del trattamento</h2>
+                    <p>
+                        I dati personali sono trattati con strumenti informatici, telematici e, ove necessario, con modalità organizzative compatibili con le finalità indicate.
+                        Il trattamento è effettuato nel rispetto dei principi di pertinenza, minimizzazione, liceità e trasparenza, adottando misure tecniche e organizzative adeguate
+                        a prevenire accessi non autorizzati, perdita, divulgazione, alterazione o distruzione dei dati.
+                    </p>
+                    <div class="note-box">
+                        Il Titolare adotta misure proporzionate alla natura del sito e delle informazioni trattate, con particolare attenzione alla sicurezza tecnica e alla gestione responsabile delle comunicazioni ricevute.
+                    </div>
+                </section>
+
+                <section class="policy-card" id="conservazione">
+                    <h2>7. Conservazione dei dati</h2>
+                    <p>
+                        I dati personali sono conservati per il tempo strettamente necessario al perseguimento delle finalità per cui sono stati raccolti
+                        e comunque nel rispetto dei termini previsti dalla legge o necessari alla tutela dei diritti del Titolare.
+                    </p>
+                    <ul>
+                        <li>i dati di navigazione sono conservati per il tempo necessario alla gestione tecnica, alla sicurezza e alla manutenzione del sito;</li>
+                        <li>i dati trasmessi tramite email o contatti volontari sono conservati per il tempo necessario a gestire la richiesta e per un periodo successivo congruo, se richiesto da esigenze organizzative o legali;</li>
+                        <li>eventuali documenti allegati, candidature o materiali inviati spontaneamente sono conservati per il tempo strettamente coerente con la valutazione della richiesta o della proposta ricevuta.</li>
+                    </ul>
+                </section>
+
+                <section class="policy-card" id="destinatari">
+                    <h2>8. Destinatari dei dati</h2>
+                    <p>
+                        I dati personali possono essere trattati da personale autorizzato del Titolare e, ove necessario, da soggetti terzi che forniscono servizi funzionali
+                        alla gestione del sito o delle attività correlate, quali ad esempio:
+                    </p>
+                    <ul>
+                        <li>fornitori di hosting e infrastruttura informatica;</li>
+                        <li>fornitori di manutenzione tecnica e assistenza web;</li>
+                        <li>consulenti o soggetti che supportano attività amministrative, organizzative o legali;</li>
+                        <li>autorità pubbliche o soggetti legittimati a ricevere i dati per obbligo di legge.</li>
+                    </ul>
+                    <p>
+                        Tali soggetti, quando necessario, operano quali Responsabili del trattamento ai sensi dell’art. 28 del GDPR oppure come autonomi titolari, in base al ruolo effettivamente ricoperto.
+                    </p>
+                </section>
+
+                <section class="policy-card" id="trasferimenti">
+                    <h2>9. Trasferimento dei dati verso Paesi terzi</h2>
+                    <p>
+                        Qualora l’utilizzo di servizi tecnici o infrastrutturali comporti il trasferimento di dati verso Paesi non appartenenti allo Spazio Economico Europeo,
+                        tale trasferimento avverrà nel rispetto delle garanzie previste dalla normativa applicabile, incluse, ove necessarie,
+                        decisioni di adeguatezza, clausole contrattuali standard o altri strumenti previsti dal GDPR.
+                    </p>
+                </section>
+
+                <section class="policy-card" id="diritti">
+                    <h2>10. Diritti degli interessati</h2>
+                    <p>
+                        Gli interessati possono esercitare, nei casi previsti dagli artt. 15-22 del GDPR, i seguenti diritti:
+                    </p>
+                    <ul>
+                        <li>diritto di accesso ai dati personali;</li>
+                        <li>diritto di rettifica dei dati inesatti o incompleti;</li>
+                        <li>diritto alla cancellazione, nei casi consentiti dalla legge;</li>
+                        <li>diritto alla limitazione del trattamento;</li>
+                        <li>diritto di opposizione al trattamento, ove applicabile;</li>
+                        <li>diritto alla portabilità dei dati, nei casi previsti;</li>
+                        <li>diritto di proporre reclamo all’Autorità Garante per la protezione dei dati personali.</li>
+                    </ul>
+                    <p>
+                        Le richieste possono essere inviate al Titolare tramite i recapiti indicati nella presente informativa, in particolare all’indirizzo
+                        <a href="mailto:redazione@dynames.it">redazione@dynames.it</a> o alla PEC <a href="mailto:boscacci@legalmail.it">boscacci@legalmail.it</a>.
+                    </p>
+                </section>
+
+                <section class="policy-card" id="terzi">
+                    <h2>11. Collegamenti a siti terzi</h2>
+                    <p>
+                        Il sito può contenere collegamenti a siti, piattaforme o servizi esterni. La presente informativa non si applica a tali siti terzi,
+                        che restano disciplinati dalle rispettive privacy policy. Gli utenti sono pertanto invitati a consultare le informative rese dai soggetti terzi eventualmente raggiunti tramite link.
+                    </p>
+                </section>
+
+                <section class="policy-card" id="modifiche">
+                    <h2>12. Modifiche alla presente informativa</h2>
+                    <p>
+                        Il Titolare si riserva il diritto di modificare, aggiornare o integrare la presente Privacy Policy,
+                        anche in considerazione di evoluzioni normative, modifiche organizzative o aggiornamenti tecnici del sito.
+                        Le modifiche saranno pubblicate in questa pagina e diventeranno efficaci dalla data di pubblicazione.
+                    </p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-grid">
+            <div>
+                <h3>DYNAMES</h3>
+                <p><strong>fondazione boscacci ets</strong></p>
+                <p>via carlo noè 45<br>21013 Gallarate</p>
+                <p>C.F. 03800470126</p>
+                <p>P.IVA 04096960127</p>
+            </div>
+
+            <div>
+                <h4>Dati registrazione</h4>
+                <p>Reg. Trib. di Busto Arsizio<br>N. 01/2026 del 25 febbraio 2026</p>
+                <p>Iscrizione al ROC n° 44335</p>
+
+                <h4 style="margin-top: 1.25rem;">Contatti</h4>
+                <p class="muted">Attività editoriale</p>
+                <p><a href="mailto:redazione@dynames.it">redazione@dynames.it</a></p>
+                <p class="muted">PEC</p>
+                <p><a href="mailto:boscacci@legalmail.it">boscacci@legalmail.it</a></p>
+            </div>
+
+            <div>
+                <h4>Direzione</h4>
+                <p class="muted">Direttore responsabile</p>
+                <p>Fabio Boscacci</p>
+                <p class="muted" style="margin-top: 1rem;">Direttore scientifico</p>
+                <p>Alessio Postiglione</p>
+                <p class="muted" style="margin-top: 1rem;">Direttore editoriale</p>
+                <p>Massimo Panizzi</p>
+            </div>
+        </div>
+
+        <div class="container footer-bottom">
+            <p>Copyright 2026-2029 &copy; fondazione boscacci ets. Tutti i diritti sono riservati.</p>
+            <div class="footer-links">
+                <a href="osint-tools.html">OSINT Hub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById("desktopNav");
+            const toggle = document.querySelector(".menu-toggle");
+            nav.classList.toggle("active");
+            const expanded = nav.classList.contains("active");
+            toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+        }
+
+        document.querySelectorAll('.desktop-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                const nav = document.getElementById('desktopNav');
+                nav.classList.remove('active');
+                document.querySelector(".menu-toggle")?.setAttribute("aria-expanded", "false");
+            });
+        });
+    </script>
+</body>
+</html>
