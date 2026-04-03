@@ -693,6 +693,39 @@
             opacity: 0;
             animation: loaderFade 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
+
+
+        .footer-brochure-link,
+        .footer-social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .footer-brochure-link:hover,
+        .footer-social-link:hover {
+            transform: translateY(-3px);
+            opacity: 0.92;
+        }
+
+        .footer-brochure-thumb {
+            width: 230px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        .footer-linkedin-icon {
+            width: 115px;
+            height: 115px;
+            object-fit: contain;
+            display: block;
+        }
+
     </style>
 
     <!-- Favicon and SEO -->
@@ -754,31 +787,7 @@
         </div>
     </section>
 
-    <section id="progetto" class="container" style="padding-top: 10rem; margin-bottom: 6rem;">
-        <h2 class="section-title">La Nostra Missione</h2>
-        <div class="grid-3" style="text-align: center;">
-            <div class="card">
-                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">ANALISI SCIENTIFICA</h3>
-                <p style="font-size: 0.95rem; color: var(--text-secondary);">DYNAMES sviluppa analisi e studi dedicati
-                    alle trasformazioni geopolitiche, alle dinamiche di potere e ai fattori che incidono sulla stabilità
-                    dei sistemi politici e degli equilibri internazionali.</p>
-            </div>
-            <div class="card">
-                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">PRODUZIONE EDITORIALE
-                </h3>
-                <p style="font-size: 0.95rem; color: var(--text-secondary);">Attraverso articoli, dossier, interviste e
-                    pubblicazioni, DYNAMES promuove una piattaforma editoriale di confronto interdisciplinare tra
-                    studiosi, professionisti e decisori pubblici.</p>
-            </div>
-            <div class="card">
-                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">EVENTI E RELAZIONI</h3>
-                <p style="font-size: 0.95rem; color: var(--text-secondary);">DYNAMES promuove incontri, conferenze e
-                    momenti di dialogo tra istituzioni, accademia e società civile, favorendo una maggiore
-                    consapevolezza delle sfide strategiche contemporanee.</p>
-            </div>
-        </div>
-    </section>
-
+    
 
 
     <style>
@@ -950,6 +959,33 @@
                 style="background: var(--night-blue); color: var(--optical-white); display: inline-block;">Eventi</a>
         </div>
     </section>
+
+    <section id="progetto" class="container" style="padding-top: 10rem; margin-bottom: 6rem;">
+        <h2 class="section-title">La Nostra Missione</h2>
+        <div class="grid-3" style="text-align: center;">
+            <div class="card">
+                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">ANALISI SCIENTIFICA</h3>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">DYNAMES sviluppa analisi e studi dedicati
+                    alle trasformazioni geopolitiche, alle dinamiche di potere e ai fattori che incidono sulla stabilità
+                    dei sistemi politici e degli equilibri internazionali.</p>
+            </div>
+            <div class="card">
+                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">PRODUZIONE EDITORIALE
+                </h3>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">Attraverso articoli, dossier, interviste e
+                    pubblicazioni, DYNAMES promuove una piattaforma editoriale di confronto interdisciplinare tra
+                    studiosi, professionisti e decisori pubblici.</p>
+            </div>
+            <div class="card">
+                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--night-blue);">EVENTI E RELAZIONI</h3>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">DYNAMES promuove incontri, conferenze e
+                    momenti di dialogo tra istituzioni, accademia e società civile, favorendo una maggiore
+                    consapevolezza delle sfide strategiche contemporanee.</p>
+            </div>
+        </div>
+    </section>
+
+
 
     <section id="partnership" style="background: var(--night-blue); color: var(--optical-white);">
         <div class="container">
@@ -1159,6 +1195,11 @@
                 <p style="margin-bottom: 0.5rem; line-height: 1.4;">Sede legale Via Carlo Noè 45<br>Gallarate (VA)</p>
                 <p style="margin-bottom: 0.5rem;">C.F. 03800470126</p>
                 <p>P.IVA 04096960127</p>
+                <div style="margin-top: 2rem;">
+                    <a href="assets/DYNAMES%20-%20Opuscolo%20info.pdf" target="_blank" rel="noopener noreferrer" class="footer-brochure-link" aria-label="Apri l'opuscolo informativo DYNAMES in PDF">
+                        <img src="assets/Opuscolo.jpg" alt="Opuscolo informativo DYNAMES" class="footer-brochure-thumb">
+                    </a>
+                </div>
             </div>
 
             <!-- Colonna 2: Registrazioni e Contatti -->
@@ -1214,6 +1255,12 @@
                     style="margin-bottom: 0.2rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--slate-grey);">
                     Direttore editoriale</p>
                 <p style="font-weight: 500; color: var(--optical-white);">Massimo Panizzi</p>
+
+                <div style="margin-top: 2rem;">
+                    <a href="https://www.linkedin.com/company/dynames-it-governance-di-forze-e-sistemi" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Vai alla pagina LinkedIn di DYNAMES">
+                        <img src="assets/linkedin.png" alt="LinkedIn DYNAMES" class="footer-linkedin-icon">
+                    </a>
+                </div>
             </div>
         </div>
 
