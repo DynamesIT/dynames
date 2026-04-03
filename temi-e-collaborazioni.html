@@ -260,6 +260,75 @@
             margin-top: 18px;
         }
 
+        .intro-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.9fr);
+            gap: 34px;
+            align-items: stretch;
+        }
+
+        .intro-shell {
+            max-width: none;
+        }
+
+        .intro-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .intro-visual-card {
+            width: 100%;
+            max-width: 360px;
+            margin-left: auto;
+        }
+
+        .intro-visual-trigger {
+            border: none;
+            background: none;
+            padding: 0;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .intro-visual-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .intro-visual-trigger:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        .intro-visual-image {
+            width: 100%;
+            height: auto;
+            max-height: 520px;
+            object-fit: contain;
+            object-position: center;
+            border: 1px solid rgba(51,65,85,0.12);
+            border-radius: var(--radius-md);
+            background: #f8fafc;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .intro-visual-caption {
+            display: block;
+            margin-top: 0.75rem;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--slate-grey);
+        }
+
         .collaboration-highlight {
             margin-top: 36px;
             padding: 20px 26px;
@@ -288,12 +357,40 @@
         }
 
         .profile-card {
+            display: flex;
+            flex-direction: column;
             background: var(--white);
             border: 1px solid rgba(51,65,85,0.12);
             border-top: 4px solid var(--gold);
             border-radius: var(--radius-md);
-            padding: 28px 26px;
+            overflow: hidden;
             box-shadow: var(--shadow-sm);
+        }
+
+        .profile-media {
+            position: relative;
+            overflow: hidden;
+            background: #e5e7eb;
+            aspect-ratio: 4 / 2.25;
+            max-height: 190px;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.45s ease;
+        }
+
+        .profile-card:hover .profile-image {
+            transform: scale(1.02);
+        }
+
+        .profile-content {
+            padding: 28px 26px;
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
         }
 
         .profile-title {
@@ -469,6 +566,67 @@
             border-color: var(--night-blue);
         }
 
+        .lightbox-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 17, 32, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            z-index: 3000;
+        }
+
+        .lightbox-modal.open {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: min(92vw, 900px);
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-image {
+            display: block;
+            max-width: 100%;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            background: var(--white);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            border-radius: var(--radius-sm);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: var(--white);
+            color: var(--night-blue);
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+        }
+
+        .lightbox-close:hover {
+            background: #f8fafc;
+        }
+
+        .lightbox-close:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 3px;
+        }
+
         footer {
             background: var(--night-blue);
             color: rgba(255,255,255,0.80);
@@ -512,6 +670,15 @@
                 display: none;
             }
 
+            .intro-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .intro-visual-card img {
+                min-height: 320px;
+                max-height: 420px;
+            }
+
             .header-inner {
                 min-height: 88px;
             }
@@ -541,6 +708,14 @@
         @media (max-width: 640px) {
             .container {
                 width: min(var(--content-width), calc(100% - 28px));
+            }
+
+            .intro-layout {
+                gap: 24px;
+            }
+
+            .intro-visual-card img {
+                min-height: 260px;
             }
 
             .brand-title {
@@ -578,7 +753,7 @@
                 gap: 16px;
             }
 
-            .profile-card,
+            .profile-content,
             .topic-body,
             .participation-note,
             .themes-cta,
@@ -629,46 +804,79 @@
 
     <main>
         <section class="content-section container">
-            <div class="intro-shell">
-                <h2 class="section-title">Collaborare con DYNAMES</h2>
-                <p class="intro-copy">
-                    DYNAMES è una piattaforma editoriale e scientifica dedicata allo studio delle dinamiche strategiche che influenzano la stabilità e lo sviluppo delle comunità politiche, delle istituzioni e dei sistemi economici contemporanei. La piattaforma promuove un approccio interdisciplinare e favorisce il confronto tra studiosi, professionisti, ricercatori e operatori istituzionali provenienti da ambiti diversi.
-                </p>
-                <p class="intro-copy">
-                    La comunità editoriale e scientifica di DYNAMES si fonda sulla partecipazione volontaria e non retribuita dei suoi membri, che contribuiscono con analisi, articoli e studi all’approfondimento dei temi trattati.
-                </p>
-                <div class="collaboration-highlight">
-                    <strong>La collaborazione con DYNAMES si articola in tre modalità principali</strong>
-                    <p class="intro-copy">Una struttura pensata per valorizzare l’esperienza maturata, sostenere nuovi percorsi di ricerca e accogliere contributi di qualità su temi di interesse strategico.</p>
+            <div class="intro-layout">
+                <div class="intro-shell">
+                    <h2 class="section-title">Collaborare con DYNAMES</h2>
+                    <p class="intro-copy">
+                        DYNAMES è una piattaforma editoriale e scientifica dedicata allo studio delle dinamiche strategiche che influenzano la stabilità e lo sviluppo delle comunità politiche, delle istituzioni e dei sistemi economici contemporanei. La piattaforma promuove un approccio interdisciplinare e favorisce il confronto tra studiosi, professionisti, ricercatori e operatori istituzionali provenienti da ambiti diversi.
+                    </p>
+                    <p class="intro-copy">
+                        La comunità editoriale e scientifica di DYNAMES si fonda sulla partecipazione volontaria e non retribuita dei suoi membri, che contribuiscono con analisi, articoli e studi all’approfondimento dei temi trattati.
+                    </p>
+                    <div class="collaboration-highlight">
+                        <strong>La collaborazione con DYNAMES si articola in tre modalità principali</strong>
+                        <p class="intro-copy">Una struttura pensata per valorizzare l’esperienza maturata, sostenere nuovi percorsi di ricerca e accogliere contributi di qualità su temi di interesse strategico.</p>
+                    </div>
+                </div>
+
+                <div class="intro-visual">
+                    <div class="intro-visual-card">
+                        <button type="button"
+                                class="intro-visual-trigger open-lightbox"
+                                data-img="assets/themes/call-junior.png"
+                                data-alt="Call for Junior Fellows di DYNAMES"
+                                aria-label="Apri la locandina Call for Junior Fellows in formato grande">
+                            <img src="assets/themes/call-junior.png"
+                                 alt="Call for Junior Fellows di DYNAMES"
+                                 class="intro-visual-image"
+                                 loading="lazy">
+                        </button>
+                        <span class="intro-visual-caption">Clicca per ingrandire</span>
+                    </div>
                 </div>
             </div>
 
             <div class="cards-grid">
                 <article class="profile-card">
-                    <h3 class="profile-title">Senior Fellow</h3>
-                    <p class="profile-text">
-                        I Senior Fellow sono professionisti, studiosi ed esperti con consolidata esperienza nei rispettivi ambiti disciplinari o professionali. Possono provenire dal mondo accademico, istituzionale, militare, industriale o delle professioni.<br><br>
-                        Contribuiscono allo sviluppo delle attività editoriali e scientifiche attraverso analisi, articoli, contributi di ricerca e partecipazione a eventi e iniziative pubbliche.<br><br>
-                        La qualifica rappresenta un riconoscimento del contributo intellettuale e professionale apportato alla crescita della comunità scientifica di DYNAMES. <strong>La nomina avviene su invito della Direzione.</strong>
-                    </p>
+                    <div class="profile-media">
+                        <img src="assets/themes/senior.png" alt="Illustrazione del profilo Senior Fellow" class="profile-image">
+                    </div>
+                    <div class="profile-content">
+                        <h3 class="profile-title">Senior Fellow</h3>
+                        <p class="profile-text">
+                            I Senior Fellow sono professionisti, studiosi ed esperti con consolidata esperienza nei rispettivi ambiti disciplinari o professionali. Possono provenire dal mondo accademico, istituzionale, militare, industriale o delle professioni.<br><br>
+                            Contribuiscono allo sviluppo delle attività editoriali e scientifiche attraverso analisi, articoli, contributi di ricerca e partecipazione a eventi e iniziative pubbliche.<br><br>
+                            La qualifica rappresenta un riconoscimento del contributo intellettuale e professionale apportato alla crescita della comunità scientifica di DYNAMES. <strong>La nomina avviene su invito della Direzione.</strong>
+                        </p>
+                    </div>
                 </article>
 
                 <article class="profile-card">
-                    <h3 class="profile-title">Junior Fellow</h3>
-                    <p class="profile-text">
-                        I Junior Fellow sono giovani ricercatori, dottorandi, studenti magistrali o giovani professionisti interessati a contribuire alla produzione di analisi e contenuti.<br><br>
-                        La partecipazione rappresenta un’opportunità di confronto e crescita in una comunità interdisciplinare impegnata nello studio delle dinamiche strategiche contemporanee attraverso articoli e analisi.<br><br>
-                        L’accesso avviene su candidatura spontanea. La candidatura può includere curriculum vitae, descrizione degli ambiti di ricerca ed eventuali pubblicazioni già realizzate.
-                    </p>
+                    <div class="profile-media">
+                        <img src="assets/themes/junior.png" alt="Illustrazione del profilo Junior Fellow" class="profile-image">
+                    </div>
+                    <div class="profile-content">
+                        <h3 class="profile-title">Junior Fellow</h3>
+                        <p class="profile-text">
+                            I Junior Fellow sono giovani ricercatori, dottorandi, studenti magistrali o giovani professionisti interessati a contribuire alla produzione di analisi e contenuti.<br><br>
+                            La partecipazione rappresenta un’opportunità di confronto e crescita in una comunità interdisciplinare impegnata nello studio delle dinamiche strategiche contemporanee attraverso articoli e analisi.<br><br>
+                            L’accesso avviene su candidatura spontanea. La candidatura può includere curriculum vitae, descrizione degli ambiti di ricerca ed eventuali pubblicazioni già realizzate.
+                        </p>
+                    </div>
                 </article>
 
                 <article class="profile-card">
-                    <h3 class="profile-title">Contributors</h3>
-                    <p class="profile-text">
-                        I Contributors sono autori ed esperti che collaborano con DYNAMES attraverso contributi editoriali occasionali.<br><br>
-                        Possono essere studiosi, professionisti, giornalisti, funzionari pubblici o ricercatori interessati a partecipare al dibattito promosso dalla piattaforma.<br><br>
-                        I Contributors partecipano con articoli, analisi o interventi su specifici temi di interesse.
-                    </p>
+                    <div class="profile-media">
+                        <img src="assets/themes/contributors.png" alt="Illustrazione del profilo Contributors" class="profile-image">
+                    </div>
+                    <div class="profile-content">
+                        <h3 class="profile-title">Contributors</h3>
+                        <p class="profile-text">
+                            I Contributors sono autori ed esperti che collaborano con DYNAMES attraverso contributi editoriali occasionali.<br><br>
+                            Possono essere studiosi, professionisti, giornalisti, funzionari pubblici o ricercatori interessati a partecipare al dibattito promosso dalla piattaforma.<br><br>
+                            I Contributors partecipano con articoli, analisi o interventi su specifici temi di interesse.
+                        </p>
+                    </div>
                 </article>
             </div>
 
@@ -812,6 +1020,70 @@
             </div>
         </section>
     </main>
+
+
+    <div class="lightbox-modal" id="posterModal" aria-hidden="true">
+        <div class="lightbox-content" role="dialog" aria-modal="true" aria-label="Immagine ingrandita">
+            <button type="button" class="lightbox-close" id="closePosterModal" aria-label="Chiudi immagine ingrandita">×</button>
+            <img src="assets/themes/call-junior.png"
+                 alt="Immagine ingrandita"
+                 class="lightbox-image"
+                 id="lightboxImage">
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const modal = document.getElementById('posterModal');
+            const closeBtn = document.getElementById('closePosterModal');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const triggers = document.querySelectorAll('.open-lightbox');
+            let lastTrigger = null;
+
+            if (!modal || !closeBtn || !lightboxImage || !triggers.length) return;
+
+            function openModal(src, alt, trigger) {
+                lightboxImage.src = src;
+                lightboxImage.alt = alt || 'Immagine ingrandita';
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+                lastTrigger = trigger || null;
+                closeBtn.focus();
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+                if (lastTrigger) {
+                    lastTrigger.focus();
+                }
+            }
+
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function () {
+                    const src = this.getAttribute('data-img');
+                    const alt = this.getAttribute('data-alt');
+                    openModal(src, alt, this);
+                });
+            });
+
+            closeBtn.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && modal.classList.contains('open')) {
+                    closeModal();
+                }
+            });
+        })();
+    </script>
 
     <footer>
         <div class="container">
