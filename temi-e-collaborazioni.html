@@ -1,253 +1,29 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
-
 <head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DFL8MJSKVJ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag(){dataLayer.push(arguments);} 
       gtag('js', new Date());
-
       gtag('config', 'G-DFL8MJSKVJ');
     </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DYNAMES | Temi e Collaborazioni</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
-            --night-blue: #0b1120;
-            --slate-grey: #334155;
-            --light-grey: #f8fafc;
-            --optical-white: #ffffff;
-            --accent: #1e3a8a;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-light: #cbd5e1;
-            --paper-bg: #fdfbf7;
-            --gold-accent: #b8935a;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--paper-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        .brand,
-        .magazine-title {
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .serif-heading {
-            font-family: 'Playfair Display', serif;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        /* HEADER */
-        header {
-            background-color: var(--optical-white);
-            border-bottom: 2px solid var(--night-blue);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand h1 {
-            font-size: 1.8rem;
-            color: var(--night-blue);
-            font-weight: 800;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .brand-logo {
-            height: 40px;
-            width: auto;
-        }
-
-        .brand p {
-            font-size: 0.65rem;
-            color: var(--slate-grey);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        .desktop-nav {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .desktop-nav a {
-            text-decoration: none;
-            color: var(--night-blue);
-            font-weight: 600;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s;
-        }
-
-        .desktop-nav a:hover,
-        .desktop-nav a.active {
-            color: var(--gold-accent);
-        }
-
-        /* PAGE HEADER */
-        .page-header {
-            background-color: var(--night-blue);
-            color: var(--optical-white);
-            padding: 6rem 0;
-            text-align: center;
-            border-bottom: 8px solid var(--gold-accent);
-        }
-
-        .page-header h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 1rem;
-        }
-
-        .page-header p {
-            font-size: 1.2rem;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: var(--text-light);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* CONTENT */
-        .page-content {
-            padding: 5rem 0;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .team-card {
-            background: var(--optical-white);
-            padding: 2.5rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border-top: 4px solid var(--gold-accent);
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .team-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .team-card h3 {
-            color: var(--night-blue);
-            margin-bottom: 0.5rem;
-            font-size: 1.3rem;
-        }
-
-        .team-card p {
-            color: var(--slate-grey);
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-
-        .team-card .bio {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-family: 'Playfair Display', serif;
-            line-height: 1.5;
-        }
-
-        footer {
-            background: var(--night-blue);
-            color: var(--text-light);
-            text-align: center;
-            padding: 3rem 0;
-            font-size: 0.9rem;
-            margin-top: 4rem;
-        }
-
-        @media (max-width: 900px) {
-            body {
-                overflow-x: hidden;
-            }
-
-            .container,
-            section {
-                padding-left: 1.5rem !important;
-                padding-right: 1.5rem !important;
-                box-sizing: border-box;
-            }
-
-            p,
-            ul,
-            ol {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-                word-wrap: break-word;
-            }
-
-            .grid-3 {
-                grid-template-columns: 1fr;
-            }
-
-            .desktop-nav {
-                display: none;
-            }
-
-            .page-header h1 {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
-
-    <!-- Favicon and SEO -->
+    <meta name="description" content="Temi di ricerca e modalità di collaborazione della piattaforma editoriale e scientifica DYNAMES.">
     <link rel="icon" href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <meta property="og:title" content="DYNAMES | Governance di Forze e Sistemi">
+    <meta property="og:description" content="Temi di ricerca e collaborazioni della piattaforma editoriale e scientifica DYNAMES.">
     <meta property="og:image" content="https://dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png">
     <meta property="og:type" content="website">
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -257,237 +33,793 @@
       "logo": "https://dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"
     }
     </script>
-</head>
 
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --deep-blue: #13203b;
+            --slate-grey: #334155;
+            --light-slate: #64748b;
+            --mist: #e2e8f0;
+            --paper: #fdfbf7;
+            --white: #ffffff;
+            --gold: #b8935a;
+            --gold-soft: rgba(184, 147, 90, 0.12);
+            --shadow-sm: 0 10px 24px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 20px 44px rgba(15, 23, 42, 0.12);
+            --radius-sm: 10px;
+            --radius-md: 18px;
+            --radius-lg: 26px;
+            --content-width: 1440px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--paper);
+            color: var(--night-blue);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        img { display: block; max-width: 100%; }
+        a { color: inherit; }
+
+        .container {
+            width: min(var(--content-width), calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .brand-font,
+        .nav-link,
+        .eyebrow,
+        .theme-title,
+        .cta-link,
+        .footer-title {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif,
+        .hero-subtitle,
+        .section-intro,
+        .intro-copy,
+        .theme-description,
+        .note-copy,
+        .cta-copy {
+            font-family: 'Playfair Display', serif;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(11, 17, 32, 0.12);
+        }
+
+        .header-inner {
+            min-height: 94px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .brand-link {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.95rem;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            color: var(--night-blue);
+        }
+
+        .brand-subtitle {
+            margin-top: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            font-weight: 600;
+            color: var(--slate-grey);
+        }
+
+        .desktop-nav {
+            display: flex;
+            align-items: center;
+            gap: 34px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--night-blue);
+            transition: color 0.25s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--gold);
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(180deg, rgba(11, 17, 32, 0.94), rgba(11, 17, 32, 0.98)),
+                radial-gradient(circle at top left, rgba(184,147,90,0.14), transparent 34%);
+            color: var(--white);
+            border-bottom: 8px solid var(--gold);
+        }
+
+        .hero::before,
+        .hero::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            pointer-events: none;
+        }
+
+        .hero::before {
+            width: 480px;
+            height: 480px;
+            top: -210px;
+            right: -130px;
+            background: radial-gradient(circle, rgba(184,147,90,0.16), transparent 70%);
+        }
+
+        .hero::after {
+            width: 320px;
+            height: 320px;
+            bottom: -140px;
+            left: -80px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 72%);
+        }
+
+        .hero-inner {
+            position: relative;
+            padding: 94px 0 90px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4.3rem);
+            line-height: 1.06;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .hero-subtitle {
+            max-width: 760px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            font-style: italic;
+            color: rgba(255,255,255,0.84);
+        }
+
+        main {
+            padding: 72px 0 96px;
+        }
+
+        .content-section + .content-section {
+            margin-top: 76px;
+        }
+
+        .intro-shell,
+        .section-heading {
+            max-width: 940px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 3.2vw, 2.8rem);
+            line-height: 1.14;
+            color: var(--night-blue);
+            margin-bottom: 20px;
+        }
+
+        .intro-copy,
+        .section-intro {
+            color: var(--slate-grey);
+            font-size: 1.14rem;
+            line-height: 1.9;
+        }
+
+        .intro-copy + .intro-copy {
+            margin-top: 18px;
+        }
+
+        .collaboration-highlight {
+            margin-top: 36px;
+            padding: 20px 26px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92));
+            border: 1px solid rgba(184,147,90,0.24);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .collaboration-highlight strong {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--night-blue);
+            margin-bottom: 8px;
+        }
+
+        .cards-grid {
+            margin-top: 42px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 28px;
+        }
+
+        .profile-card {
+            background: var(--white);
+            border: 1px solid rgba(51,65,85,0.12);
+            border-top: 4px solid var(--gold);
+            border-radius: var(--radius-md);
+            padding: 28px 26px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-title {
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.25rem;
+            line-height: 1.3;
+            font-weight: 700;
+            color: var(--night-blue);
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(184,147,90,0.55);
+            margin-bottom: 18px;
+        }
+
+        .profile-text {
+            color: var(--slate-grey);
+            font-size: 1rem;
+            line-height: 1.82;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .participation-note {
+            max-width: 940px;
+            margin: 42px auto 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92));
+            border-left: 4px solid var(--gold);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            padding: 24px 28px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .note-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--night-blue);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .note-copy {
+            color: var(--slate-grey);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .section-divider {
+            margin: 74px auto 0;
+            height: 1px;
+            border: 0;
+            background: linear-gradient(90deg, transparent, rgba(51,65,85,0.22), transparent);
+        }
+
+        .topics-grid {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 14px;
+            align-items: stretch;
+        }
+
+        .topic-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: var(--white);
+            border: 1px solid rgba(51,65,85,0.12);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            text-decoration: none;
+            transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+            cursor: pointer;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(184,147,90,0.34);
+        }
+
+        .topic-card:hover .topic-image {
+            transform: scale(1.02);
+        }
+
+        .topic-media {
+            position: relative;
+            overflow: hidden;
+            background: #e5e7eb;
+            aspect-ratio: 4 / 2.25;
+            max-height: 138px;
+        }
+
+        .topic-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.45s ease;
+        }
+
+        .topic-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1 1 auto;
+            padding: 14px 14px 16px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 18px;
+            height: 1px;
+            background: currentColor;
+            opacity: 0.65;
+        }
+
+        .theme-title {
+            min-height: 2.7em;
+            font-size: 0.95rem;
+            line-height: 1.3;
+            font-weight: 700;
+            color: var(--night-blue);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .theme-description {
+            color: var(--slate-grey);
+            font-size: 0.82rem;
+            line-height: 1.52;
+            flex: 1 1 auto;
+        }
+
+        .themes-cta {
+            max-width: 920px;
+            margin: 56px auto 0;
+            padding: 30px 26px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.94));
+            border: 1px solid rgba(51,65,85,0.10);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cta-copy {
+            color: var(--slate-grey);
+            font-size: 1.14rem;
+            line-height: 1.85;
+        }
+
+        .cta-link {
+            color: var(--night-blue);
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 2px solid var(--gold);
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .cta-link:hover {
+            color: var(--gold);
+            border-color: var(--night-blue);
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: rgba(255,255,255,0.80);
+            text-align: center;
+            padding: 44px 0 48px;
+            margin-top: 80px;
+        }
+
+        .footer-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        .footer-copy {
+            font-size: 0.98rem;
+            line-height: 1.8;
+        }
+
+        .footer-meta {
+            margin-top: 10px;
+            color: rgba(203,213,225,0.75);
+        }
+
+        @media (max-width: 1200px) {
+            .topics-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 980px) {
+            .topics-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 960px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .header-inner {
+                min-height: 88px;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .topics-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .topic-media {
+                aspect-ratio: 4 / 2.35;
+                max-height: 132px;
+            }
+
+            .theme-title {
+                min-height: 0;
+            }
+
+            .hero-inner {
+                padding: 78px 0 74px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                width: min(var(--content-width), calc(100% - 28px));
+            }
+
+            .brand-title {
+                font-size: 1.7rem;
+            }
+
+            .brand-subtitle {
+                font-size: 0.64rem;
+                letter-spacing: 0.22em;
+            }
+
+            .hero-inner {
+                padding: 66px 0 62px;
+            }
+
+            .hero-subtitle,
+            .intro-copy,
+            .section-intro,
+            .cta-copy {
+                font-size: 1.04rem;
+                line-height: 1.78;
+            }
+
+            main {
+                padding: 56px 0 76px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 22px;
+            }
+
+            .topics-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 16px;
+            }
+
+            .profile-card,
+            .topic-body,
+            .participation-note,
+            .themes-cta,
+            .collaboration-highlight {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+
+        @media (max-width: 460px) {
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
 <body>
 
     <header>
         <div class="container header-inner">
-            <div class="brand">
-                <a href="index.html" style="text-decoration: none;">
-                    <h1>
-                        <img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo"
-                            class="brand-logo" onerror="this.style.display='none'">
-                        DYNAMES
-                    </h1>
-                    <p>Governance di Forze e Sistemi</p>
-                </a>
-            </div>
-            <nav class="desktop-nav">
-                <a href="hub.html">Analisi & Articoli</a>
-                <a href="eventi.html">Eventi</a>
-                <a href="index.html#governance">Chi Siamo</a>
-                <a href="temi-e-collaborazioni.html" class="active">Temi e Collaborazioni</a>
-                <a href="osint-tools.html">OSINT Hub</a>
+            <a href="index.html" class="brand-link" aria-label="DYNAMES - Torna alla home">
+                <div class="brand-box">
+                    <img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'">
+                    <div>
+                        <div class="brand-title">DYNAMES</div>
+                        <div class="brand-subtitle">Governance di Forze e Sistemi</div>
+                    </div>
+                </div>
+            </a>
+
+            <nav class="desktop-nav" aria-label="Navigazione principale">
+                <a href="hub.html" class="nav-link">Analisi &amp; Articoli</a>
+                <a href="eventi.html" class="nav-link">Eventi</a>
+                <a href="index.html#governance" class="nav-link">Chi Siamo</a>
+                <a href="temi-e-collaborazioni.html" class="nav-link active">Temi e Collaborazioni</a>
+                <a href="osint-tools.html" class="nav-link">OSINT Hub</a>
             </nav>
         </div>
     </header>
 
-    <div class="page-header">
-        <div class="container">
-            <h1>I Nostri Temi e Collaborazioni</h1>
-            <p>"Un network di eccellenza per l'analisi strategica multidisciplinare."</p>
-        </div>
-    </div>
-
-    <section class="page-content container">
-        <div style="max-width: 900px; margin: 0 auto; margin-bottom: 4rem;">
-            <h2 class="serif-heading"
-                style="font-size: 2.5rem; color: var(--night-blue); margin-bottom: 1.5rem; text-align: center;">
-                Collaborare con DYNAMES</h2>
-            <p
-                style="color: var(--text-secondary); font-size: 1.15rem; font-family: 'Playfair Display', serif; margin-bottom: 1.5rem; line-height: 1.8;">
-                DYNAMES è una piattaforma editoriale e scientifica dedicata allo studio delle dinamiche strategiche che
-                influenzano la stabilità e lo sviluppo delle comunità politiche, delle istituzioni e dei sistemi
-                economici contemporanei.
-                La piattaforma promuove un approccio interdisciplinare e favorisce il confronto tra studiosi,
-                professionisti, ricercatori e operatori istituzionali provenienti da ambiti diversi.
-            </p>
-            <p
-                style="color: var(--text-secondary); font-size: 1.15rem; font-family: 'Playfair Display', serif; margin-bottom: 1.5rem; line-height: 1.8;">
-                La comunità editoriale e scientifica di DYNAMES si fonda sulla partecipazione volontaria e non
-                retribuita dei suoi membri, che contribuiscono con analisi, articoli e studi all’approfondimento dei
-                temi trattati.
-            </p>
-            <p
-                style="color: var(--night-blue); font-size: 1.2rem; font-family: 'Montserrat', sans-serif; font-weight: 700; text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
-                La collaborazione con DYNAMES si articola in tre modalità principali:
-            </p>
-        </div>
-
-        <div class="grid-3" style="margin-bottom: 4rem;">
-            <div class="team-card" style="text-align: left;">
-                <h3 style="border-bottom: 2px solid var(--gold-accent); padding-bottom: 0.5rem; display: inline-block;">
-                    Senior Fellow</h3>
-                <div class="bio" style="margin-top: 1rem;">
-                    I Senior Fellow sono professionisti, studiosi ed esperti con consolidata esperienza nei rispettivi
-                    ambiti disciplinari o professionali. Possono provenire dal mondo accademico, istituzionale,
-                    militare, industriale o delle professioni. <br><br>
-                    Contribuiscono allo sviluppo delle attività editoriali e scientifiche attraverso analisi, articoli,
-                    contributi di ricerca e partecipazione a eventi e iniziative pubbliche.<br><br>
-                    La qualifica rappresenta un riconoscimento del contributo intellettuale e professionale apportato
-                    alla crescita della comunità scientifica di DYNAMES. <strong>La nomina avviene su invito della
-                        Direzione.</strong>
-                </div>
-            </div>
-
-            <div class="team-card" style="text-align: left;">
-                <h3 style="border-bottom: 2px solid var(--gold-accent); padding-bottom: 0.5rem; display: inline-block;">
-                    Junior Fellow</h3>
-                <div class="bio" style="margin-top: 1rem;">
-                    I Junior Fellow sono giovani ricercatori, dottorandi, studenti magistrali o giovani professionisti
-                    interessati a contribuire alla produzione di analisi e contenuti.<br><br>
-                    La partecipazione rappresenta un’opportunità di confronto e crescita in una comunità
-                    interdisciplinare impegnata nello studio delle dinamiche strategiche contemporanee attraverso
-                    articoli e analisi.<br><br>
-                    L’accesso avviene su candidatura spontanea. La candidatura può includere: <br>
-                    • curriculum vitae <br>
-                    • descrizione degli ambiti di ricerca <br>
-                    • eventuali pubblicazioni già realizzate.
-                </div>
-            </div>
-
-            <div class="team-card" style="text-align: left;">
-                <h3 style="border-bottom: 2px solid var(--gold-accent); padding-bottom: 0.5rem; display: inline-block;">
-                    Contributors</h3>
-                <div class="bio" style="margin-top: 1rem;">
-                    I Contributors sono autori ed esperti che collaborano con DYNAMES attraverso contributi editoriali
-                    occasionali.<br><br>
-                    Possono essere studiosi, professionisti, giornalisti, funzionari pubblici o ricercatori interessati
-                    a partecipare al dibattito promosso dalla piattaforma.<br><br>
-                    I Contributors partecipano con articoli, analisi o interventi su specifici temi di interesse.
-                </div>
-            </div>
-        </div>
-
-        <div
-            style="max-width: 900px; margin: 0 auto; margin-bottom: 6rem; padding: 2rem; background: var(--optical-white); border-left: 4px solid var(--gold-accent); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-            <h4 style="color: var(--night-blue); font-size: 1.2rem; margin-bottom: 0.5rem;">Nota sulla partecipazione
-            </h4>
-            <p style="color: var(--text-secondary); font-family: 'Playfair Display', serif; font-size: 1rem;">
-                Tutti i membri della comunità editoriale e scientifica di DYNAMES partecipano alle attività della
-                piattaforma a titolo volontario e non retribuito, contribuendo alla produzione e alla diffusione di
-                analisi indipendenti sui temi di interesse pubblico e strategico.
-            </p>
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 5rem;">
-
-        <!-- AREE DI INTERESSE -->
-        <div style="max-width: 900px; margin: 0 auto; margin-bottom: 4rem; text-align: center;">
-            <h2 class="serif-heading" style="font-size: 2.5rem; color: var(--night-blue); margin-bottom: 1.5rem;">Aree
-                di Interesse</h2>
-            <p style="color: var(--text-secondary); font-size: 1.15rem; font-family: 'Playfair Display', serif;">
-                Le attività editoriali e scientifiche di DYNAMES si sviluppano attorno a una serie di ambiti di analisi
-                che riflettono le principali dinamiche strategiche che influenzano il funzionamento dei sistemi
-                politici, economici e sociali contemporanei.<br>
-                Queste aree rappresentano i principali domini nei quali si manifestano le dynámeis che strutturano la
-                stabilità delle comunità politiche.
-            </p>
-        </div>
-
-        <div class="grid-3" style="margin-bottom: 4rem;">
-            <!-- Area 1 -->
-            <div
-                style="background: var(--optical-white); padding: 2rem; border-radius: 4px; border: 1px solid #e2e8f0;">
-                <h3 style="color: var(--night-blue); font-size: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">
-                    Istituzioni, sicurezza<br>e ordine internazionale</h3>
-                <p
-                    style="color: var(--text-secondary); font-size: 0.95rem; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">
-                    Analisi delle dinamiche istituzionali, delle politiche di sicurezza e delle relazioni internazionali
-                    che definiscono il posizionamento strategico degli Stati.
-                </p>
-                <div style="color: var(--night-blue); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                    • Difesa e sicurezza<br>
-                    • Diritto e legittimità
-                </div>
-            </div>
-
-            <!-- Area 2 -->
-            <div
-                style="background: var(--optical-white); padding: 2rem; border-radius: 4px; border: 1px solid #e2e8f0;">
-                <h3 style="color: var(--night-blue); font-size: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">
-                    Economia, industria<br>e risorse strategiche</h3>
-                <p
-                    style="color: var(--text-secondary); font-size: 0.95rem; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">
-                    Studio delle politiche economiche e industriali che incidono sulla competitività dei sistemi
-                    nazionali e sulla gestione delle risorse strategiche.
-                </p>
-                <div style="color: var(--night-blue); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                    • Economia e industria<br>
-                    • Risorse ed energie
-                </div>
-            </div>
-
-            <!-- Area 3 -->
-            <div
-                style="background: var(--optical-white); padding: 2rem; border-radius: 4px; border: 1px solid #e2e8f0;">
-                <h3 style="color: var(--night-blue); font-size: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">
-                    Governance e infrastrutture dei sistemi complessi</h3>
-                <p
-                    style="color: var(--text-secondary); font-size: 0.95rem; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">
-                    Analisi delle strutture istituzionali e delle reti materiali e immateriali che sostengono il
-                    funzionamento dei sistemi pubblici e delle economie contemporanee.
-                </p>
-                <div style="color: var(--night-blue); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                    • Governance pubblica<br>
-                    • Infrastrutture strategiche
-                </div>
-            </div>
-
-            <!-- Area 4 -->
-            <div
-                style="background: var(--optical-white); padding: 2rem; border-radius: 4px; border: 1px solid #e2e8f0;">
-                <h3 style="color: var(--night-blue); font-size: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">
-                    Innovazione tecnologica e trasformazioni dei sistemi</h3>
-                <p
-                    style="color: var(--text-secondary); font-size: 0.95rem; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">
-                    Studio dell’impatto delle tecnologie emergenti sulle dinamiche economiche, sociali e strategiche.
-                </p>
-                <div style="color: var(--night-blue); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                    • Tecnologia e sistemi complessi<br>
-                    • Informazione e dominio cognitivo
-                </div>
-            </div>
-
-            <!-- Area 5 -->
-            <div
-                style="background: var(--optical-white); padding: 2rem; border-radius: 4px; border: 1px solid #e2e8f0;">
-                <h3 style="color: var(--night-blue); font-size: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">Società,
-                    educazione<br>e welfare</h3>
-                <p
-                    style="color: var(--text-secondary); font-size: 0.95rem; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">
-                    Approfondimento delle dinamiche sociali e delle politiche pubbliche che incidono sulla coesione
-                    delle comunità e sullo sviluppo umano.
-                </p>
-                <div style="color: var(--night-blue); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                    • Società ed educazione<br>
-                    • Salute e welfare
-                </div>
-            </div>
-
-        </div>
-
-        <div style="text-align: center; margin-top: 5rem;">
-            <p
-                style="color: var(--slate-grey); font-size: 1.1rem; font-style: italic; font-family: 'Playfair Display', serif;">
-                Vuoi candidarti o collaborare con noi?<br>
-                Contatta la <a href="mailto:redazione@dynames.it"
-                    style="color: var(--night-blue); font-weight: bold; border-bottom: 2px solid var(--gold-accent); text-decoration: none;">Redazione</a>
-                per proporre il tuo profilo o un tuo contributo.
-            </p>
+    <section class="hero">
+        <div class="container hero-inner">
+            <h1 class="hero-title">I Nostri Temi e Collaborazioni</h1>
+            <p class="hero-subtitle">“Un network di eccellenza per l'analisi strategica multidisciplinare.”</p>
         </div>
     </section>
 
+    <main>
+        <section class="content-section container">
+            <div class="intro-shell">
+                <h2 class="section-title">Collaborare con DYNAMES</h2>
+                <p class="intro-copy">
+                    DYNAMES è una piattaforma editoriale e scientifica dedicata allo studio delle dinamiche strategiche che influenzano la stabilità e lo sviluppo delle comunità politiche, delle istituzioni e dei sistemi economici contemporanei. La piattaforma promuove un approccio interdisciplinare e favorisce il confronto tra studiosi, professionisti, ricercatori e operatori istituzionali provenienti da ambiti diversi.
+                </p>
+                <p class="intro-copy">
+                    La comunità editoriale e scientifica di DYNAMES si fonda sulla partecipazione volontaria e non retribuita dei suoi membri, che contribuiscono con analisi, articoli e studi all’approfondimento dei temi trattati.
+                </p>
+                <div class="collaboration-highlight">
+                    <strong>La collaborazione con DYNAMES si articola in tre modalità principali</strong>
+                    <p class="intro-copy">Una struttura pensata per valorizzare l’esperienza maturata, sostenere nuovi percorsi di ricerca e accogliere contributi di qualità su temi di interesse strategico.</p>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <article class="profile-card">
+                    <h3 class="profile-title">Senior Fellow</h3>
+                    <p class="profile-text">
+                        I Senior Fellow sono professionisti, studiosi ed esperti con consolidata esperienza nei rispettivi ambiti disciplinari o professionali. Possono provenire dal mondo accademico, istituzionale, militare, industriale o delle professioni.<br><br>
+                        Contribuiscono allo sviluppo delle attività editoriali e scientifiche attraverso analisi, articoli, contributi di ricerca e partecipazione a eventi e iniziative pubbliche.<br><br>
+                        La qualifica rappresenta un riconoscimento del contributo intellettuale e professionale apportato alla crescita della comunità scientifica di DYNAMES. <strong>La nomina avviene su invito della Direzione.</strong>
+                    </p>
+                </article>
+
+                <article class="profile-card">
+                    <h3 class="profile-title">Junior Fellow</h3>
+                    <p class="profile-text">
+                        I Junior Fellow sono giovani ricercatori, dottorandi, studenti magistrali o giovani professionisti interessati a contribuire alla produzione di analisi e contenuti.<br><br>
+                        La partecipazione rappresenta un’opportunità di confronto e crescita in una comunità interdisciplinare impegnata nello studio delle dinamiche strategiche contemporanee attraverso articoli e analisi.<br><br>
+                        L’accesso avviene su candidatura spontanea. La candidatura può includere curriculum vitae, descrizione degli ambiti di ricerca ed eventuali pubblicazioni già realizzate.
+                    </p>
+                </article>
+
+                <article class="profile-card">
+                    <h3 class="profile-title">Contributors</h3>
+                    <p class="profile-text">
+                        I Contributors sono autori ed esperti che collaborano con DYNAMES attraverso contributi editoriali occasionali.<br><br>
+                        Possono essere studiosi, professionisti, giornalisti, funzionari pubblici o ricercatori interessati a partecipare al dibattito promosso dalla piattaforma.<br><br>
+                        I Contributors partecipano con articoli, analisi o interventi su specifici temi di interesse.
+                    </p>
+                </article>
+            </div>
+
+            <div class="participation-note">
+                <h4 class="note-title">Nota sulla partecipazione</h4>
+                <p class="note-copy">
+                    Tutti i membri della comunità editoriale e scientifica di DYNAMES partecipano alle attività della piattaforma a titolo volontario e non retribuito, contribuendo alla produzione e alla diffusione di analisi indipendenti sui temi di interesse pubblico e strategico.
+                </p>
+            </div>
+
+            <hr class="section-divider">
+        </section>
+
+        <section class="content-section container">
+            <div class="section-heading">
+                <h2 class="section-title">Aree di Interesse</h2>
+                <p class="section-intro">
+                    Le attività editoriali e scientifiche di DYNAMES si sviluppano attorno a una serie di ambiti di analisi che riflettono le principali dinamiche strategiche che influenzano il funzionamento dei sistemi politici, economici e sociali contemporanei.<br>
+                    Queste aree rappresentano i principali domini nei quali si manifestano le dynámeis che strutturano la stabilità delle comunità politiche.
+                </p>
+            </div>
+
+            <div class="topics-grid">
+                <a href="#" class="topic-card" aria-label="Difesa e Sicurezza">
+                    <div class="topic-media">
+                        <img src="assets/themes/difesa-sicurezza.png" alt="Illustrazione del tema Difesa e Sicurezza" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Difesa e Sicurezza</h3>
+                        <p class="theme-description">Analisi delle politiche e capacità di difesa, sicurezza nazionale e resilienza, con focus su minacce ibride, deterrenza e protezione degli interessi strategici.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Diritto e Legittimità">
+                    <div class="topic-media">
+                        <img src="assets/themes/diritto-legittimita.png" alt="Illustrazione del tema Diritto e Legittimità" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Diritto e Legittimità</h3>
+                        <p class="theme-description">Studio dei quadri normativi nazionali e internazionali che regolano sicurezza e difesa, garantendo legittimità, trasparenza e rispetto dello stato di diritto.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Governance Pubblica">
+                    <div class="topic-media">
+                        <img src="assets/themes/governance-pubblica.png" alt="Illustrazione del tema Governance Pubblica" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Governance Pubblica</h3>
+                        <p class="theme-description">Esame dei processi decisionali pubblici e del coordinamento istituzionale per la gestione delle crisi e delle politiche strategiche a livello nazionale e internazionale.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Economia e Industria">
+                    <div class="topic-media">
+                        <img src="assets/themes/economia-industria.png" alt="Illustrazione del tema Economia e Industria" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Economia e Industria</h3>
+                        <p class="theme-description">Analisi delle dinamiche economiche e industriali legate alla sicurezza, con attenzione alle filiere strategiche, innovazione e competitività del sistema Paese.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Risorse ed Energie">
+                    <div class="topic-media">
+                        <img src="assets/themes/risorse-energie.png" alt="Illustrazione del tema Risorse ed Energie" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Risorse ed Energie</h3>
+                        <p class="theme-description">Studio delle risorse critiche ed energetiche come fattori geopolitici, con focus su sicurezza degli approvvigionamenti e sostenibilità nel lungo periodo.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Tecnologia e Sistemi Complessi">
+                    <div class="topic-media">
+                        <img src="assets/themes/tecnologia-sistemi-complessi.png" alt="Illustrazione del tema Tecnologia e Sistemi Complessi" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Tecnologia e Sistemi Complessi</h3>
+                        <p class="theme-description">Approfondimento delle tecnologie emergenti e dei sistemi complessi, valutando impatti su sicurezza, interoperabilità e capacità di adattamento dei sistemi.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Informazione e Dominio Cognitivo">
+                    <div class="topic-media">
+                        <img src="assets/themes/informazione-dominio-cognitivo.png" alt="Illustrazione del tema Informazione e Dominio Cognitivo" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Informazione e Dominio Cognitivo</h3>
+                        <p class="theme-description">Analisi dell’informazione come strumento di influenza, delle operazioni cognitive e della competizione narrativa nello spazio informativo contemporaneo.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Società ed Educazione">
+                    <div class="topic-media">
+                        <img src="assets/themes/societa-educazione.png" alt="Illustrazione del tema Società ed Educazione" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Società ed Educazione</h3>
+                        <p class="theme-description">Studio del ruolo della formazione e della cultura nella costruzione della consapevolezza civica e della resilienza sociale rispetto alle sfide globali.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Infrastrutture Strategiche">
+                    <div class="topic-media">
+                        <img src="assets/themes/infrastrutture-strategiche.png" alt="Illustrazione del tema Infrastrutture Strategiche" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Infrastrutture Strategiche</h3>
+                        <p class="theme-description">Valutazione delle infrastrutture critiche e della loro protezione, resilienza e sviluppo, essenziali per la continuità operativa del sistema nazionale.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="topic-card" aria-label="Salute e Welfare">
+                    <div class="topic-media">
+                        <img src="assets/themes/salute-welfare.png" alt="Illustrazione del tema Salute e Welfare" class="topic-image">
+                    </div>
+                    <div class="topic-body">
+                        <span class="eyebrow">Tema</span>
+                        <h3 class="theme-title">Salute e Welfare</h3>
+                        <p class="theme-description">Analisi dei sistemi sanitari e di welfare come elementi di sicurezza nazionale, con focus su resilienza, gestione delle crisi e coesione sociale.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="themes-cta">
+                <p class="cta-copy">
+                    Vuoi candidarti o collaborare con noi?<br>
+                    Contatta la <a href="mailto:redazione@dynames.it" class="cta-link">Redazione</a>
+                    per proporre il tuo profilo o un tuo contributo.
+                </p>
+            </div>
+        </section>
+    </main>
+
     <footer>
         <div class="container">
-            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
-            <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI
-                ETS</p>
-            <p style="margin-top: 1rem; color: var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+            <h3 class="footer-title">DYNAMES</h3>
+            <p class="footer-copy">Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+            <p class="footer-copy footer-meta">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
         </div>
     </footer>
 
 </body>
-
 </html>
