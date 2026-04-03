@@ -329,21 +329,128 @@
 
         .roadmap-image-panel {
             padding: 0;
-            overflow: hidden;
+            overflow: visible;
             display: flex;
-            align-items: center;
+            align-items: start;
             justify-content: center;
             aspect-ratio: 1 / 1;
             min-height: 0;
+            background: transparent;
+            border-top: none;
+            box-shadow: none;
+        }
+
+        .roadmap-image-frame {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: start;
+            justify-content: center;
+        }
+
+        .roadmap-poster-trigger {
+            border: none;
+            background: none;
+            padding: 0;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .roadmap-poster-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
+        }
+
+        .roadmap-poster-trigger:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 3px;
         }
 
         .roadmap-poster {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            object-position: center;
+            object-fit: cover;
+            object-position: center top;
             display: block;
-            background: #e5e7eb;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: transparent;
+        }
+
+        .roadmap-poster-caption {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--slate-grey);
+            text-align: center;
+            margin-top: 0.75rem;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .lightbox-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 17, 32, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            z-index: 3000;
+        }
+
+        .lightbox-modal.open {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: min(92vw, 900px);
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-image {
+            display: block;
+            max-width: 100%;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            background: var(--optical-white);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: var(--optical-white);
+            color: var(--night-blue);
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+        }
+
+        .lightbox-close:hover {
+            background: #f8fafc;
+        }
+
+        .lightbox-close:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 3px;
         }
 
         .timeline-item::before {
@@ -434,6 +541,20 @@
             .roadmap-image-panel {
                 aspect-ratio: 4 / 5;
                 min-height: 360px;
+            }
+
+            .roadmap-image-frame {
+                max-width: 320px;
+                margin: 0 auto;
+            }
+
+            .lightbox-modal {
+                padding: 1rem;
+            }
+
+            .lightbox-close {
+                top: -10px;
+                right: -10px;
             }
 
             body {
@@ -806,8 +927,21 @@
                     </div>
                 </div>
             </div>
-            <div class="roadmap-image-panel card">
-                <img src="assets/locandina-evento.jpg" alt="Locandina del prossimo evento" class="roadmap-poster">
+            <div class="roadmap-image-panel">
+                <div class="roadmap-image-frame">
+                    <div>
+                        <button type="button"
+                                class="roadmap-poster-trigger open-lightbox"
+                                data-img="assets/locandina-evento.jpg"
+                                data-alt="Locandina del prossimo evento DYNAMES"
+                                aria-label="Apri la locandina del prossimo evento in formato grande">
+                            <img src="assets/locandina-evento.jpg"
+                                 alt="Locandina del prossimo evento DYNAMES"
+                                 class="roadmap-poster">
+                        </button>
+                        <span class="roadmap-poster-caption">Clicca per ingrandire</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1002,6 +1136,17 @@
 
 
 
+
+    <div class="lightbox-modal" id="posterModal" aria-hidden="true">
+        <div class="lightbox-content" role="dialog" aria-modal="true" aria-label="Immagine evento ingrandita">
+            <button type="button" class="lightbox-close" id="closePosterModal" aria-label="Chiudi immagine ingrandita">×</button>
+            <img src="assets/locandina-evento.jpg"
+                 alt="Immagine evento ingrandita"
+                 class="lightbox-image"
+                 id="lightboxImage">
+        </div>
+    </div>
+
     <footer
         style="background: var(--night-blue); color: var(--text-light); padding: 4rem 0 2rem 0; font-size: 0.9rem; text-align: left;">
         <div class="container"
@@ -1113,6 +1258,57 @@
             }
         });
     </script>
+        (function () {
+            const modal = document.getElementById('posterModal');
+            const closeBtn = document.getElementById('closePosterModal');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const triggers = document.querySelectorAll('.open-lightbox');
+            let lastTrigger = null;
+
+            if (!modal || !closeBtn || !lightboxImage || !triggers.length) return;
+
+            function openModal(src, alt, trigger) {
+                lightboxImage.src = src;
+                lightboxImage.alt = alt || 'Immagine evento ingrandita';
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+                lastTrigger = trigger || null;
+                closeBtn.focus();
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+                if (lastTrigger) {
+                    lastTrigger.focus();
+                }
+            }
+
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function () {
+                    const src = this.getAttribute('data-img');
+                    const alt = this.getAttribute('data-alt');
+                    openModal(src, alt, this);
+                });
+            });
+
+            closeBtn.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && modal.classList.contains('open')) {
+                    closeModal();
+                }
+            });
+        })();
+
 </body>
 
 </html>
