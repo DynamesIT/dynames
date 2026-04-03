@@ -416,7 +416,8 @@
 
         .past-event-image > div {
             width: 100%;
-            max-width: 420px;
+            max-width: 260px;
+            margin-left: auto;
         }
 
         .past-event-image .event-poster-trigger {
@@ -424,10 +425,11 @@
         }
 
         .past-event-image .event-poster-thumb {
+            display: block;
             width: 100%;
-            height: 260px;
-            object-fit: contain;
-            object-position: center;
+            height: 320px;
+            object-fit: cover;
+            object-position: center top;
             border-radius: 6px;
             border: 1px solid #e2e8f0;
             background: #f1f5f9;
@@ -503,13 +505,14 @@
             }
 
             .past-event-image > div {
-                max-width: 320px;
+                max-width: 260px;
                 margin: 0 auto;
             }
 
             .past-event-image .event-poster-thumb {
-                height: 260px;
-                object-fit: contain;
+                height: 320px;
+                object-fit: cover;
+                object-position: center top;
             }
 
             .desktop-nav {
