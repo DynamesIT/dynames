@@ -1258,56 +1258,7 @@
             }
         });
     </script>
-        (function () {
-            const modal = document.getElementById('posterModal');
-            const closeBtn = document.getElementById('closePosterModal');
-            const lightboxImage = document.getElementById('lightboxImage');
-            const triggers = document.querySelectorAll('.open-lightbox');
-            let lastTrigger = null;
 
-            if (!modal || !closeBtn || !lightboxImage || !triggers.length) return;
-
-            function openModal(src, alt, trigger) {
-                lightboxImage.src = src;
-                lightboxImage.alt = alt || 'Immagine evento ingrandita';
-                modal.classList.add('open');
-                modal.setAttribute('aria-hidden', 'false');
-                document.body.style.overflow = 'hidden';
-                lastTrigger = trigger || null;
-                closeBtn.focus();
-            }
-
-            function closeModal() {
-                modal.classList.remove('open');
-                modal.setAttribute('aria-hidden', 'true');
-                document.body.style.overflow = '';
-                if (lastTrigger) {
-                    lastTrigger.focus();
-                }
-            }
-
-            triggers.forEach(trigger => {
-                trigger.addEventListener('click', function () {
-                    const src = this.getAttribute('data-img');
-                    const alt = this.getAttribute('data-alt');
-                    openModal(src, alt, this);
-                });
-            });
-
-            closeBtn.addEventListener('click', closeModal);
-
-            modal.addEventListener('click', function (event) {
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-
-            document.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape' && modal.classList.contains('open')) {
-                    closeModal();
-                }
-            });
-        })();
 
 </body>
 
