@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Guerra cognitiva tra sotto-soglia e operazioni coperte</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="../index.html" style="text-decoration: none;">
+                    <h1>
+                        <img src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo"
+                            class="brand-logo" onerror="this.style.display='none'">
+                        DYNAMES
+                    </h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="../hub.html" class="active">Analisi & Articoli</a>
+                <a href="../eventi.html">Eventi</a>
+                <a href="../chi-siamo.html">Chi Siamo</a>
+                <a href="../Temi e Collaborazioni.html">Temi e Collaborazioni</a>
+                <a href="../osint-tools.html">OSINT Hub</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container back-nav">
+        <a href="../hub.html">&larr; Torna all'Hub</a>
+    </div>
+
+    <article>
+        <div class="article-container article-header">
+            <span class="article-category">Informazione e dominio cognitivo</span>
+            <h1 class="serif-heading article-title">Guerra cognitiva tra sotto-soglia e operazioni coperte: statuto, limiti e implicazioni normative</h1>
+            <p class="article-abstract">La guerra cognitiva si colloca nello spazio grigio tra manipolazione informativa, operazioni coperte e conflitto sotto-soglia, ponendo nuove sfide al diritto, alla strategia e alla tenuta delle democrazie liberali.</p>
+
+            <div class="article-meta">
+                <span class="meta-author">Aldo Torchiaro</span>
+                <span>9 Aprile 2026</span>
+                <span>Tempo di lettura: 7 min</span>
+            </div>
+        </div>
+
+        <img src="assets/hero-guerra-cognitiva.png" alt="Guerra cognitiva tra sotto-soglia e operazioni coperte" class="article-hero">
+
+        <div class="article-container article-body">
+
+            <div class="pull-quote" style="margin-top: 2rem;">
+                “Risulta pertanto più accurato inquadrarla come conflitto sotto-soglia o come strumento ancillare rispetto alla guerra convenzionale.”
+            </div>
+
+            <p><span
+                    style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">D</span>i
+                guerra cognitiva si parla molto. Spesso senza capirne bene i contorni: perfino la qualificazione della guerra cognitiva come “guerra” in senso proprio resta controversa.</p>
+
+            <h2>Una guerra senza statuto pienamente bellico</h2>
+
+            <p>Una parte della letteratura tende ad assimilare cyberwar e cognitive war a nuove categorie autonome di conflitto. Tuttavia, tale estensione concettuale incontra resistenze teoriche rilevanti. La guerra convenzionale, nella sua definizione minima, implica l’uso organizzato della forza per «uccidere persone e distruggere cose» al fine di conquistare o mantenere territorio. Né il dominio cyber né quello cognitivo soddisfano necessariamente questi criteri.</p>
+
+            <p>Una possibile definizione operativa di cyberwar richiede una sequenza coordinata di attacchi capaci di produrre distruzione sistemica di infrastrutture critiche e perdite di vite su larga scala. Per analogia, si potrebbe parlare di guerra cognitiva solo in presenza di un programma continuativo e massivo di disinformazione, propaganda, manipolazione dell’agenda pubblica e micro-targeting di gruppi vulnerabili tale da destabilizzare le istituzioni politiche fino a generare insurrezioni diffuse o il collasso dell’ordine politico.</p>
+
+            <p>Le guerre contemporanee incorporano indubbiamente dimensioni cyber e cognitive. L’invasione russa dell’Ucraina del 2022 ne costituisce un esempio paradigmatico, con attacchi coordinati contro banche e ministeri ucraini. Tuttavia, perché sia giustificato parlare di “guerra” in senso qualificato, una di queste dimensioni dovrebbe diventare dominante rispetto alla componente cinetica. Allo stato attuale, la guerra cognitiva non ha raggiunto tale soglia: non ha prodotto, su scala sistemica, né distruzioni materiali né acquisizioni territoriali, né ha determinato il rovesciamento di ordini politici statuali.</p>
+
+            <h2>Sotto-soglia, attribuzione e operazioni coperte</h2>
+
+            <p>Questa collocazione è rafforzata da due caratteristiche strutturali. In primo luogo, il problema dell’attribuzione: come per i cyberattacchi, l’identificazione affidabile dell’attore responsabile resta incerta, nonostante i progressi della cyber forensics. L’elevata interconnessione del cyberspazio, la natura spesso “civile” dei contenuti e la tutela liberale della libertà di espressione producono condizioni di ambiguità che favoriscono la plausibile negazione.</p>
+
+            <p>In secondo luogo, la guerra cognitiva condivide tratti essenziali con le operazioni politiche coperte: disinformazione, propaganda, sostegno occulto a movimenti destabilizzanti, uso di agent provocateur. Tali pratiche mirano a logorare l’avversario evitando l’escalation verso il conflitto armato aperto.</p>
+
+            <p>Sul piano normativo, queste operazioni ricadono frequentemente nella categoria delle “mani sporche”. Si tratta di azioni <em>pro tanto</em> moralmente ingiustificate — perché comportano danni a innocenti, sproporzione o violazioni di norme giuridiche — ma talvolta ritenute giustificabili all’esito di una valutazione complessiva orientata alla sicurezza nazionale. Anche in questi casi, tuttavia, permane un residuo di illecito morale o legale: la vittima subisce un torto non consensuale. Ne deriva una tensione strutturale con i principi di accountability propri delle democrazie liberali, che non può essere elusa ma solo regolata.</p>
+
+            <h2>Diritti comunicativi, piattaforme e contromisure</h2>
+
+            <p>Un ulteriore snodo teorico riguarda i diritti comunicativi. È necessario distinguere tra comunicazione interpersonale (micro) e comunicazione di massa (macro). Quest’ultima può assumere forma pubblica — con fonte identificabile e destinatari ampi — oppure orchestrata, attraverso tecniche di profilazione e micro-targeting che simulano interazioni private su larga scala.</p>
+
+            <p>Non appare sostenibile, sul piano morale, un diritto alla macro-profilazione micro-mirata di milioni di individui tramite canali apparentemente privati; al contrario, emerge un obbligo per gli Stati di contrastare tali pratiche. Analogamente, attori stranieri non dispongono di un diritto-libertà illimitato di intervenire nello spazio comunicativo di un’altra comunità politica su questioni di rilevanza pubblica. I cittadini, in quanto corpo politico, mantengono un diritto collettivo a regolare tali accessi, anche mediante restrizioni mirate ai media statali ostili, pur preservando — entro limiti — la comunicazione interpersonale transnazionale.</p>
+
+            <p>In questo quadro, le democrazie devono sviluppare un insieme coerente di contromisure. Tra queste: responsabilità legale delle piattaforme per contenuti illeciti; sistemi di licenza condizionati al rispetto di standard epistemici minimi; rimozione trasparente di contenuti falsi amplificati artificialmente; identificazione verificata degli account; obblighi di trasparenza per i comunicatori con ampia platea su temi politicamente sensibili. A tali strumenti regolativi si affiancano strategie sistemiche: cooperazione pubblico-privato-accademica per l’attribuzione e il debunking, programmi di alfabetizzazione cognitiva (prebunking, debiasing), pratiche di red teaming e interventi di “friction by design” nelle architetture delle piattaforme.</p>
+
+            <h2>Danni cognitivi e sicurezza democratica</h2>
+
+            <p>Per comprendere la specificità della guerra cognitiva è infine necessario chiarire la tipologia dei danni in gioco e il relativo statuto del conflitto.</p>
+
+            <p>Una distinzione analitica consente di individuare almeno quattro categorie: (1) danni a persone, inclusi quelli psicologici derivanti da manipolazioni delle credenze e delle disposizioni affettive che compromettono l’autonomia; (2) danni a cose e ambiente, comprendenti infrastrutture materiali e sistemi naturali; (3) danni cibernetici “morbidi” a software e dati; (4) danni istituzionali, ossia l’erosione dei processi e degli scopi delle istituzioni, spesso attraverso la perdita di fiducia da parte dei cittadini.</p>
+
+            <p>La guerra cognitiva si concentra prevalentemente sui danni psicologici e istituzionali. Sebbene tali danni non definiscano di per sé la guerra, essi possono superare soglie critiche tali da giustificare l’uso del lessico bellico o persino una risposta cinetica.</p>
+
+            <p>Al di sotto di tali soglie, restano tuttavia possibili risposte non belliche ma incisive — sanzioni, operazioni coperte, misure regolative — che possono risultare moralmente e, in alcuni casi, giuridicamente giustificate. In questo spazio intermedio si gioca la partita contemporanea della sicurezza cognitiva: un terreno grigio in cui il diritto, l’etica e la strategia devono continuamente ridefinire i propri confini.</p>
+
+            <div class="author-box">
+                <img src="assets/aldo-torchiaro.jpeg" alt="Aldo Torchiaro" onerror="this.style.display='none';">
+                <div class="author-info">
+                    <h4>Aldo Torchiaro</h4>
+                    <p>Ph.D. in Dottrine politiche, giornalista e autore per Il Riformista dal 2003. Si occupa di attualità e politica, con particolare attenzione a interviste, inchieste e analisi del dibattito pubblico.</p>
+                </div>
+            </div>
+
+        </div>
+    </article>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+            <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+            <p style="margin-top: 1rem; color: var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
