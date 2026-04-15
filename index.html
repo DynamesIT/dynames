@@ -152,8 +152,11 @@
         }
 
         .hero {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
             background-color: var(--night-blue);
-            background-image: linear-gradient(rgba(11, 17, 32, 0.85), rgba(11, 17, 32, 0.85)), url('assets/chess.png');
+            background-image: url('assets/chess.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -162,11 +165,29 @@
             padding: 8rem 2rem;
         }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(11, 17, 32, 0.88), rgba(11, 17, 32, 0.84));
+            opacity: 0;
+            z-index: 0;
+            animation: heroOverlayReveal 1.4s ease-out forwards;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 1;
+        }
+
         .hero h2 {
             font-size: 3rem;
             font-weight: 800;
             margin-bottom: 1.5rem;
             line-height: 1.2;
+            opacity: 0;
+            transform: translateY(24px);
+            animation: heroTextReveal 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
         }
 
         .hero p {
@@ -174,6 +195,9 @@
             color: var(--text-light);
             max-width: 800px;
             margin: 0 auto 2.5rem;
+            opacity: 0;
+            transform: translateY(24px);
+            animation: heroTextReveal 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
         }
 
         .btn {
@@ -692,6 +716,38 @@
             /* Sicurezza mobile */
             opacity: 0;
             animation: loaderFade 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes heroOverlayReveal {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes heroTextReveal {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero::before,
+            .hero h2,
+            .hero p {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
         }
 
 
