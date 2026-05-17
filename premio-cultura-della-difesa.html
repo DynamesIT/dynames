@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DFL8MJSKVJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-DFL8MJSKVJ');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Premio Cultura della Difesa 2026</title>
+    <meta name="description" content="Pagina dedicata alla I edizione del Premio Cultura della Difesa, riconoscimento annuale promosso da DYNAMES, FORM&ATP e Luiss – Scuola di giornalismo.">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --night-blue:#0b1120; --hero-overlay:#0b1c2d; --slate-grey:#334155; --light-grey:#f8fafc; --optical-white:#fff;
+            --text-primary:#1e293b; --text-secondary:#475569; --text-light:#cbd5e1; --paper-bg:#fdfbf7;
+            --gold-accent:#b8935a; --gold-soft:#efe4d2; --border-soft:#e2e8f0; --shadow-soft:0 20px 25px -5px rgba(0,0,0,.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Roboto',sans-serif;background:var(--paper-bg);color:var(--text-primary);line-height:1.8;font-size:1.08rem}
+        h1,h2,h3,h4,h5,h6,.brand{font-family:'Montserrat',sans-serif}
+        .serif-heading{font-family:'Playfair Display',serif}
+        .container{max-width:1200px;margin:0 auto;padding:0 2rem}
+        .content-container{max-width:980px;margin:0 auto;padding:0 2rem}
+        header{background:var(--optical-white);border-bottom:2px solid var(--night-blue);padding:1rem 0;position:sticky;top:0;z-index:1000}
+        .header-inner{display:flex;justify-content:space-between;align-items:center}
+        .brand h1{font-size:1.8rem;color:var(--night-blue);font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:10px}
+        .brand-logo{height:40px;width:auto}.brand p{font-size:.65rem;color:var(--slate-grey);text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-top:2px}
+        .desktop-nav{display:flex;gap:2rem;align-items:center}
+        .desktop-nav a{text-decoration:none;color:var(--night-blue);font-weight:600;font-family:'Montserrat',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;transition:color .3s}
+        .desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)}
+        .back-nav{padding:2rem 0 1rem}.back-nav a{text-decoration:none;color:var(--slate-grey);font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1px}.back-nav a:hover{color:var(--gold-accent)}
+
+        .award-hero{position:relative;text-align:center;margin-bottom:3.5rem;padding:6.2rem 2rem;background:
+            radial-gradient(circle at 20% 25%, rgba(184,147,90,.28), transparent 28%),
+            radial-gradient(circle at 80% 15%, rgba(255,255,255,.08), transparent 25%),
+            linear-gradient(135deg, rgba(11,17,32,.98), rgba(11,28,45,.94));
+            min-height:560px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:var(--shadow-soft)}
+        .award-hero::before{content:"";position:absolute;inset:0;background-image:
+            linear-gradient(120deg, rgba(255,255,255,.06) 0, rgba(255,255,255,.06) 1px, transparent 1px, transparent 92px),
+            linear-gradient(30deg, rgba(184,147,90,.08) 0, rgba(184,147,90,.08) 1px, transparent 1px, transparent 120px);
+            opacity:.48}
+        .award-hero::after{content:"";position:absolute;width:330px;height:330px;border:1px solid rgba(184,147,90,.45);border-radius:50%;right:-90px;bottom:-90px;box-shadow:0 0 0 32px rgba(184,147,90,.06),0 0 0 70px rgba(255,255,255,.025)}
+        .award-hero .content-container{max-width:940px;padding:0;position:relative;z-index:1}
+        .award-kicker{color:var(--gold-accent);text-transform:uppercase;font-weight:700;font-family:'Montserrat',sans-serif;font-size:.92rem;letter-spacing:2px;margin-bottom:1.2rem;display:block}
+        .award-title{font-size:3.8rem;color:var(--optical-white);font-weight:800;line-height:1.08;margin-bottom:1.35rem}
+        .award-subtitle{font-size:1.3rem;color:rgba(255,255,255,.92);font-family:'Playfair Display',serif;font-style:italic;max-width:90%;margin:0 auto 2rem;line-height:1.55}
+        .hero-actions{display:flex;gap:1rem;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:2rem}
+        .btn-primary,.btn-secondary{display:inline-block;text-decoration:none;padding:1rem 1.45rem;border-radius:999px;font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.5px;transition:transform .2s ease, opacity .2s ease}
+        .btn-primary{background:var(--gold-accent);color:var(--night-blue);border:1px solid var(--gold-accent)}
+        .btn-secondary{background:transparent;color:var(--optical-white);border:1px solid rgba(255,255,255,.7)}
+        .btn-primary:hover,.btn-secondary:hover{transform:translateY(-2px);opacity:.92}
+
+        .award-meta-wrapper{background:var(--paper-bg);margin-top:-2.2rem;position:relative;z-index:2}
+        .award-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);padding:1.15rem 0}
+        .meta-item{text-align:center;padding:.5rem}.meta-label{display:block;font-family:'Montserrat',sans-serif;text-transform:uppercase;font-size:.78rem;letter-spacing:1px;color:var(--text-secondary);margin-bottom:.2rem}.meta-value{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--night-blue);font-size:1rem}
+
+        .page-nav{margin:2.5rem auto 1rem;background:var(--optical-white);border:1px solid var(--border-soft);box-shadow:0 10px 20px rgba(15,23,42,.04);padding:.95rem 1rem}
+        .page-nav ul{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;list-style:none}
+        .page-nav a{font-family:'Montserrat',sans-serif;text-decoration:none;color:var(--night-blue);font-size:.82rem;text-transform:uppercase;font-weight:700;letter-spacing:.6px;padding:.45rem .75rem;border-radius:999px}
+        .page-nav a:hover{background:var(--gold-soft);color:var(--night-blue)}
+
+        .award-body h2{font-size:2rem;color:var(--night-blue);margin:3rem 0 1rem;font-family:'Playfair Display',serif}
+        .award-body h3{font-size:1.25rem;color:var(--night-blue);margin:2rem 0 .7rem}
+        .award-body p{margin-bottom:1.35rem;text-align:justify}
+        .award-body ul{padding-left:1.4rem;margin-bottom:1.6rem}.award-body li{margin-bottom:.65rem}
+        .lead-box{background:var(--optical-white);border:1px solid var(--border-soft);border-left:4px solid var(--gold-accent);padding:1.6rem;margin:2rem 0 2.5rem}
+        .lead-box p:last-child{margin-bottom:0}
+        .section-intro{font-size:1.13rem;color:var(--text-secondary)}
+
+        .promoter-grid,.audience-grid,.category-grid,.special-grid,.timeline-grid{display:grid;gap:1.15rem;margin-top:1.2rem}
+        .promoter-grid{grid-template-columns:repeat(3,1fr)}
+        .audience-grid{grid-template-columns:repeat(2,1fr)}
+        .category-grid{grid-template-columns:repeat(2,1fr)}
+        .special-grid{grid-template-columns:repeat(2,1fr)}
+        .timeline-grid{grid-template-columns:repeat(4,1fr)}
+        .card{background:var(--optical-white);border:1px solid var(--border-soft);padding:1.35rem;box-shadow:0 10px 20px rgba(15,23,42,.035)}
+        .card h3,.card h4{color:var(--night-blue);font-size:1.05rem;margin-bottom:.45rem}
+        .card p{margin:0;text-align:left;color:var(--text-secondary)}
+        .card .small-label{display:block;font-family:'Montserrat',sans-serif;color:var(--gold-accent);font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:.45rem}
+        .category-card{position:relative;padding-top:1.75rem}
+        .category-number{position:absolute;top:1rem;right:1.1rem;color:rgba(184,147,90,.24);font-size:2.2rem;font-weight:800;font-family:'Montserrat',sans-serif;line-height:1}
+        .timeline-card{text-align:center}
+        .timeline-card .date{display:block;font-family:'Montserrat',sans-serif;color:var(--gold-accent);font-weight:800;text-transform:uppercase;font-size:.86rem;letter-spacing:.7px;margin-bottom:.55rem}
+        .timeline-card h4{font-size:1rem;margin-bottom:.35rem}
+        .timeline-card p{text-align:center;font-size:.96rem}
+
+        .steps{counter-reset:step;display:grid;gap:1rem;margin-top:1.2rem}
+        .step{display:grid;grid-template-columns:72px 1fr;gap:1rem;align-items:start;background:var(--optical-white);border:1px solid var(--border-soft);padding:1.15rem}
+        .step::before{counter-increment:step;content:counter(step);width:52px;height:52px;border-radius:50%;background:var(--night-blue);color:var(--optical-white);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800}
+        .step h4{color:var(--night-blue);font-size:1rem;margin-bottom:.25rem}
+        .step p{margin:0;text-align:left;color:var(--text-secondary)}
+
+        .jury-box{background:linear-gradient(135deg, rgba(11,17,32,.98), rgba(11,28,45,.94));color:var(--text-light);padding:2rem;border-left:4px solid var(--gold-accent);margin-top:1.2rem}
+        .jury-box h3{color:var(--optical-white);font-size:1.25rem;margin-bottom:.5rem}
+        .jury-box p{color:rgba(255,255,255,.82);text-align:left;margin-bottom:1rem}
+        .jury-note{font-size:.95rem;color:rgba(255,255,255,.72)!important;margin-bottom:0!important}
+
+        .faq-list{margin-top:1.2rem;display:grid;gap:.9rem}
+        details{background:var(--optical-white);border:1px solid var(--border-soft);padding:1.05rem 1.2rem}
+        summary{cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:800;color:var(--night-blue)}
+        details p,details ul{margin-top:.85rem;text-align:left;color:var(--text-secondary)}
+        details ul{margin-bottom:0}
+
+        .download-box{background:var(--optical-white);border:1px solid var(--border-soft);padding:1.7rem;margin-top:1.5rem;display:grid;grid-template-columns:1.4fr .8fr;gap:1rem;align-items:center}
+        .download-box p{margin:0;text-align:left;color:var(--text-secondary)}
+        .download-actions{display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap}
+        .btn-dark{display:inline-block;text-decoration:none;padding:.9rem 1.2rem;border-radius:999px;font-family:'Montserrat',sans-serif;font-size:.86rem;font-weight:800;letter-spacing:.4px;background:var(--night-blue);color:var(--optical-white);border:1px solid var(--night-blue);transition:transform .2s ease, opacity .2s ease}
+        .btn-outline{display:inline-block;text-decoration:none;padding:.9rem 1.2rem;border-radius:999px;font-family:'Montserrat',sans-serif;font-size:.86rem;font-weight:800;letter-spacing:.4px;background:transparent;color:var(--night-blue);border:1px solid var(--night-blue);transition:transform .2s ease, opacity .2s ease}
+        .btn-dark:hover,.btn-outline:hover{transform:translateY(-2px);opacity:.92}
+
+        .contacts-box{margin-top:3rem;padding:1.6rem;background:var(--optical-white);border:1px solid var(--border-soft);border-left:4px solid var(--night-blue)}
+        .contacts-box p:last-child{margin-bottom:0}
+        .muted-note{font-size:.95rem;color:var(--text-secondary);font-style:italic}
+        footer{background:var(--night-blue);color:var(--text-light);text-align:center;padding:3rem 0;font-size:.9rem;margin-top:5rem}
+
+        @media (max-width:1040px){
+            .desktop-nav{display:none}
+            .award-meta,.timeline-grid{grid-template-columns:repeat(2,1fr)}
+            .promoter-grid,.audience-grid,.category-grid,.special-grid{grid-template-columns:1fr}
+            .award-title{font-size:3rem}
+        }
+        @media (max-width:700px){
+            .award-meta,.timeline-grid{grid-template-columns:1fr}
+            .download-box{grid-template-columns:1fr}
+            .download-actions{justify-content:flex-start}
+            .step{grid-template-columns:1fr}
+        }
+        @media (max-width:640px){
+            .container,.content-container{padding:0 1.2rem}
+            .award-hero{padding:4.2rem 1.2rem;min-height:440px}
+            .award-title{font-size:2.25rem}
+            .award-subtitle{max-width:100%;font-size:1.12rem}
+        }
+    </style>
+    <link rel="icon" href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" type="image/png">
+    <meta property="og:title" content="DYNAMES | Premio Cultura della Difesa 2026">
+    <meta property="og:description" content="I edizione del Premio Cultura della Difesa, promosso da DYNAMES, FORM&ATP e Luiss – Scuola di giornalismo.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png">
+</head>
+<body>
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="index.html" style="text-decoration:none;">
+                    <h1><img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'">DYNAMES</h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="index.html">HOME</a>
+                <a href="hub.html">ANALISI &amp; ARTICOLI</a>
+                <a href="eventi.html" class="active">EVENTI</a>
+                <a href="chi-siamo.html">CHI SIAMO</a>
+                <a href="temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container back-nav"><a href="eventi.html">← Torna agli Eventi</a></div>
+
+    <main>
+        <section class="award-hero">
+            <div class="content-container">
+                <span class="award-kicker">I Edizione – 2026</span>
+                <h1 class="serif-heading award-title">Premio Cultura della Difesa</h1>
+                <p class="award-subtitle">Il riconoscimento dedicato a persone, istituzioni, organizzazioni, imprese, realtà formative, media e società civile che promuovono la cultura della difesa come valore civico, strategico e democratico.</p>
+                <div class="hero-actions">
+                    <a href="#come-candidarsi" class="btn-primary">Come candidarsi</a>
+                    <a href="#categorie" class="btn-secondary">Scopri le categorie</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="award-meta-wrapper">
+            <section class="content-container">
+                <div class="award-meta">
+                    <div class="meta-item"><span class="meta-label">Lancio bando</span><span class="meta-value">21 maggio 2026</span></div>
+                    <div class="meta-item"><span class="meta-label">Candidature</span><span class="meta-value">21 maggio – 31 agosto</span></div>
+                    <div class="meta-item"><span class="meta-label">Valutazione</span><span class="meta-value">Settembre 2026</span></div>
+                    <div class="meta-item"><span class="meta-label">Premiazione</span><span class="meta-value">Ottobre 2026</span></div>
+                </div>
+            </section>
+        </div>
+
+        <nav class="content-container page-nav" aria-label="Navigazione interna">
+            <ul>
+                <li><a href="#premio">Il Premio</a></li>
+                <li><a href="#promotori">Promotori</a></li>
+                <li><a href="#destinatari">Destinatari</a></li>
+                <li><a href="#categorie">Categorie</a></li>
+                <li><a href="#calendario">Calendario</a></li>
+                <li><a href="#come-candidarsi">Candidature</a></li>
+                <li><a href="#regolamento">FAQ</a></li>
+                <li><a href="#contatti">Contatti</a></li>
+            </ul>
+        </nav>
+
+        <section class="content-container award-body" id="premio">
+            <h2>Il Premio</h2>
+            <p class="section-intro">DYNAMES, FORM&amp;ATP e Luiss – Scuola di giornalismo promuovono la prima edizione del Premio “Cultura della Difesa”, riconoscimento annuale nato per valorizzare esperienze, percorsi e progettualità capaci di rafforzare il legame tra difesa, democrazia, conoscenza, responsabilità civica e resilienza del Sistema Paese.</p>
+            <p>In un contesto internazionale segnato da incertezza geopolitica, trasformazioni tecnologiche, minacce ibride, competizione informativa e crescente instabilità dei sistemi sociali, promuovere cultura della difesa significa contribuire alla qualità del dibattito pubblico, alla preparazione civile e alla consapevolezza collettiva del Paese.</p>
+
+            <div class="lead-box">
+                <p><strong>La finalità del Premio</strong> è riconoscere chi contribuisce a rendere la difesa non soltanto una funzione specialistica dello Stato, ma una cultura pubblica condivisa, fondata su responsabilità, conoscenza, partecipazione, innovazione e coesione nazionale.</p>
+            </div>
+
+            <h2 id="promotori">Soggetti promotori</h2>
+            <div class="promoter-grid">
+                <div class="card">
+                    <span class="small-label">Promotore</span>
+                    <h3>DYNAMES</h3>
+                    <p>Progetto editoriale e scientifico dedicato all’analisi delle dinamiche che governano i sistemi complessi, con particolare attenzione ai temi della difesa, della sicurezza e della resilienza del Sistema Paese.</p>
+                </div>
+                <div class="card">
+                    <span class="small-label">Promotore</span>
+                    <h3>FORM&amp;ATP</h3>
+                    <p>Realtà impegnata nella formazione, nella valorizzazione delle competenze professionali, nella comunicazione e nello sviluppo di percorsi di crescita individuale, organizzativa e istituzionale.</p>
+                </div>
+                <div class="card">
+                    <span class="small-label">Promotore</span>
+                    <h3>Luiss – Scuola di giornalismo</h3>
+                    <p>Istituzione formativa dedicata alla preparazione delle nuove generazioni di professionisti dell’informazione, con attenzione alla qualità del giornalismo e alla responsabilità pubblica della comunicazione.</p>
+                </div>
+            </div>
+
+            <h2 id="destinatari">A chi è rivolto</h2>
+            <p>Il Premio è rivolto a soggetti italiani o operanti in Italia, persone fisiche o enti, organizzazioni, gruppi, progetti, iniziative e programmi che abbiano contribuito in modo significativo alla diffusione della cultura della difesa.</p>
+            <div class="audience-grid">
+                <div class="card"><h4>Istituzioni e sicurezza nazionale</h4><p>Istituzioni pubbliche, amministrazioni centrali e territoriali, Forze Armate, comparto sicurezza e organizzazioni collegate alla sicurezza nazionale.</p></div>
+                <div class="card"><h4>Formazione, ricerca e giovani</h4><p>Università, scuole, accademie, enti formativi, centri di ricerca, studenti, giovani ricercatori, giovani professionisti e gruppi giovanili.</p></div>
+                <div class="card"><h4>Imprese e innovazione</h4><p>Imprese, aziende, fondazioni, startup, realtà industriali e tecnologiche, academy aziendali e programmi di sviluppo delle competenze.</p></div>
+                <div class="card"><h4>Informazione e società civile</h4><p>Giornalisti, comunicatori, autori, editori, media, associazioni, corpi intermedi, organizzazioni del terzo settore, ONG, reti civiche e personalità della cultura.</p></div>
+            </div>
+
+            <h2 id="categorie">Categorie del Premio</h2>
+            <p>La I edizione del Premio si articola in cinque categorie ordinarie, pensate per rappresentare le diverse dimensioni della cultura della difesa: istituzionale, tecnologica, formativa, comunicativa e civica.</p>
+            <div class="category-grid">
+                <div class="card category-card">
+                    <span class="category-number">01</span>
+                    <h3>Promozione della cultura istituzionale</h3>
+                    <p>Per persone, istituzioni, enti pubblici, fondazioni, amministrazioni o progettualità che abbiano rafforzato la conoscenza del ruolo delle istituzioni, della difesa, della sicurezza nazionale, dell’interesse pubblico e della democrazia costituzionale.</p>
+                </div>
+                <div class="card category-card">
+                    <span class="category-number">02</span>
+                    <h3>Innovazione e tecnologia</h3>
+                    <p>Per imprese, startup, centri di ricerca, università, laboratori, progetti o personalità che abbiano sviluppato soluzioni, studi o tecnologie per rafforzare sicurezza, resilienza, autonomia strategica e protezione delle infrastrutture critiche.</p>
+                </div>
+                <div class="card category-card">
+                    <span class="category-number">03</span>
+                    <h3>Educazione e formazione</h3>
+                    <p>Per scuole, università, accademie, enti formativi, imprese, aziende, fondazioni, docenti, ricercatori, studenti e programmi educativi capaci di promuovere pensiero critico, cultura della sicurezza e cittadinanza responsabile.</p>
+                </div>
+                <div class="card category-card">
+                    <span class="category-number">04</span>
+                    <h3>Comunicazione strategica e informazione</h3>
+                    <p>Per giornalisti, comunicatori, media, autori, divulgatori, uffici comunicazione, progetti editoriali o campagne che abbiano raccontato con rigore, chiarezza e responsabilità i temi della difesa e dell’interesse nazionale.</p>
+                </div>
+                <div class="card category-card">
+                    <span class="category-number">05</span>
+                    <h3>Corpi intermedi e cittadinanza attiva</h3>
+                    <p>Per associazioni, fondazioni, ONG, ordini professionali, reti territoriali, enti del terzo settore, gruppi civici, comunità o personalità che abbiano rafforzato partecipazione, coesione, solidarietà e preparazione civile.</p>
+                </div>
+            </div>
+
+            <h2>Premi speciali</h2>
+            <p>Il Comitato promotore, d’intesa con la Giuria, potrà attribuire premi speciali o riconoscimenti a personalità, enti, organizzazioni o progettualità che si siano distinti per particolare rilevanza, continuità, originalità o impatto nella promozione della cultura della difesa.</p>
+            <div class="special-grid">
+                <div class="card">
+                    <span class="small-label">Riconoscimento speciale</span>
+                    <h3>Premio alla Carriera per la Difesa</h3>
+                    <p>Destinato a una personalità, istituzione, organizzazione o progettualità che abbia contribuito in modo significativo e continuativo alla diffusione della cultura della difesa, favorendo il dialogo tra istituzioni, difesa, accademia, industria, informazione e società civile.</p>
+                </div>
+                <div class="card">
+                    <span class="small-label">Riconoscimento speciale</span>
+                    <h3>Premio Giovani per la Difesa</h3>
+                    <p>Destinato a studenti, giovani ricercatori, giovani professionisti, gruppi giovanili, startup o realtà emergenti che abbiano sviluppato studi, progetti, iniziative, prodotti, percorsi formativi, attività comunicative o esperienze civiche coerenti con le finalità del Premio.</p>
+                </div>
+            </div>
+
+            <h2 id="calendario">Calendario</h2>
+            <div class="timeline-grid">
+                <div class="card timeline-card">
+                    <span class="date">21 maggio 2026</span>
+                    <h4>Lancio del bando</h4>
+                    <p>Presentazione ufficiale della I edizione del Premio.</p>
+                </div>
+                <div class="card timeline-card">
+                    <span class="date">21 maggio – 31 agosto</span>
+                    <h4>Candidature aperte</h4>
+                    <p>Periodo utile per l’invio delle candidature attraverso il modulo online.</p>
+                </div>
+                <div class="card timeline-card">
+                    <span class="date">Settembre 2026</span>
+                    <h4>Valutazione</h4>
+                    <p>Istruttoria delle candidature e valutazione da parte della Giuria.</p>
+                </div>
+                <div class="card timeline-card">
+                    <span class="date">Ottobre 2026</span>
+                    <h4>Premiazione</h4>
+                    <p>Cerimonia di conferimento della I edizione del Premio a Roma.</p>
+                </div>
+            </div>
+
+            <h2 id="come-candidarsi">Come candidarsi</h2>
+            <p>Le candidature potranno essere presentate attraverso l’apposito modulo online, disponibile sui canali ufficiali dei soggetti promotori. La candidatura potrà essere diretta, proposta da terzi o formulata su invito del Comitato promotore o della Giuria.</p>
+            <div class="steps">
+                <div class="step">
+                    <div>
+                        <h4>Scegliere la categoria</h4>
+                        <p>Individuare la categoria più coerente con il profilo, il progetto, l’iniziativa o il percorso candidato.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div>
+                        <h4>Preparare la documentazione</h4>
+                        <p>Raccogliere profilo del candidato, descrizione dell’iniziativa, motivazione della candidatura, impatto prodotto ed eventuali materiali di supporto.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div>
+                        <h4>Compilare il modulo online</h4>
+                        <p>Inviare la candidatura entro il 31 agosto 2026, allegando le informazioni richieste e autorizzando il trattamento dei dati personali.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id="giuria">Giuria</h2>
+            <div class="jury-box">
+                <h3>Una valutazione fondata su competenza, autonomia e trasparenza</h3>
+                <p>La valutazione delle candidature sarà affidata a una Giuria composta da personalità di riconosciuta competenza nei settori della difesa, della sicurezza, della comunicazione, del giornalismo, della formazione, dell’università, dell’innovazione, dell’impresa, delle istituzioni e della società civile.</p>
+                <p class="jury-note">La composizione della Giuria sarà resa pubblica attraverso i canali ufficiali del Premio prima dell’avvio della fase di valutazione.</p>
+            </div>
+
+            <h2 id="regolamento">Regolamento sintetico</h2>
+            <div class="faq-list">
+                <details>
+                    <summary>A chi è rivolto il Premio?</summary>
+                    <p>Il Premio è rivolto a persone fisiche, enti, organizzazioni, gruppi, progetti, iniziative o programmi italiani o operanti in Italia che abbiano contribuito alla diffusione della cultura della difesa come valore civico, strategico e democratico.</p>
+                </details>
+                <details>
+                    <summary>Chi può presentare una candidatura?</summary>
+                    <p>Le candidature possono essere presentate direttamente dal soggetto interessato, attraverso segnalazione di terzi oppure su invito del Comitato promotore o della Giuria.</p>
+                </details>
+                <details>
+                    <summary>Quale documentazione è richiesta?</summary>
+                    <ul>
+                        <li>categoria o categorie di candidatura;</li>
+                        <li>dati del candidato, dell’ente, dell’organizzazione o del progetto;</li>
+                        <li>dati del referente e recapiti;</li>
+                        <li>breve profilo del candidato o dell’organizzazione;</li>
+                        <li>descrizione dell’attività, progetto o iniziativa;</li>
+                        <li>motivazione della candidatura e indicazione dell’impatto prodotto;</li>
+                        <li>eventuali materiali di supporto, link, pubblicazioni, video, report o attestazioni.</li>
+                    </ul>
+                </details>
+                <details>
+                    <summary>Come saranno valutate le candidature?</summary>
+                    <p>Le candidature saranno valutate in base a coerenza con le finalità del Premio, impatto prodotto, originalità e innovazione, rigore e autorevolezza, capacità di creare relazioni tra mondi diversi, continuità, replicabilità e contributo alla resilienza del Sistema Paese.</p>
+                </details>
+                <details>
+                    <summary>Quando si terrà la premiazione?</summary>
+                    <p>La cerimonia di conferimento della I edizione del Premio “Cultura della Difesa” è prevista nel mese di ottobre 2026 a Roma. I dettagli organizzativi saranno comunicati sui canali ufficiali del Premio.</p>
+                </details>
+            </div>
+
+            <h2>Documenti e candidatura</h2>
+            <div class="download-box">
+                <p>Il bando completo, il modulo di candidatura e l’informativa privacy saranno disponibili in occasione del lancio ufficiale del Premio. Per la candidatura sarà necessario utilizzare il modulo online predisposto dalla Segreteria del Premio.</p>
+                <div class="download-actions">
+                    <a href="#contatti" class="btn-dark">Modulo online</a>
+                    <a href="#contatti" class="btn-outline">Bando completo</a>
+                </div>
+            </div>
+
+            <div class="contacts-box" id="contatti">
+                <h3>Contatti</h3>
+                <p>Per informazioni relative al Premio, alle modalità di candidatura e alla documentazione richiesta sarà possibile contattare la Segreteria del Premio attraverso i recapiti ufficiali che saranno pubblicati su questa pagina.</p>
+                <p><strong>Email:</strong> in aggiornamento</p>
+                <p><strong>Modulo candidatura:</strong> disponibile dal 21 maggio 2026</p>
+                <p class="muted-note">Bozza di pagina pubblica: i link al modulo, al bando completo e all’informativa privacy potranno essere aggiornati prima della pubblicazione definitiva.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size:1.5rem; margin-bottom:1rem; letter-spacing:1px;">DYNAMES</h3>
+            <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+            <p style="margin-top:1rem; color:var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+</body>
+</html>
