@@ -308,6 +308,27 @@
             margin-bottom: 2rem;
         }
 
+        .timeline-item-link {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .timeline-item-link .timeline-item {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        }
+
+        .timeline-item-link:hover .timeline-item {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 18px rgba(11, 17, 32, 0.12);
+            background: rgba(30,58,138,0.08) !important;
+        }
+
+        .timeline-item-link:focus-visible .timeline-item {
+            outline: 3px solid var(--accent);
+            outline-offset: 4px;
+        }
+
         .roadmap-layout {
             display: grid;
             grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
@@ -985,18 +1006,15 @@
             <div class="roadmap-text-panel">
                 <h3 style="font-size: 1.8rem; color: var(--night-blue); margin-bottom: 2rem;">Agenda istituzionale e roadmap</h3>
                 <div class="timeline roadmap-scrollbox">
-                    <div class="timeline-item" style="background: rgba(30,58,138,0.04); padding: 1rem 1.5rem; border-radius: 6px; border-left: 4px solid #1e3a8a;">
-                        <div class="timeline-date">21 Maggio 2026 · ore 17:00</div>
-                        <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #1e3a8a; letter-spacing: 1px;">Evento principale</span>
-                        <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Biblioteca della Camera dei deputati "Nilde Iotti"</h3>
-                        <p style="margin-bottom: 0.5rem;">Presentazione Report <strong>"Cultura della Difesa"</strong></p>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary);">In collaborazione con LUISS - Scuola di Giornalismo e Form&amp;ATP</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Giugno 2026</div>
-                        <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Napoli</h3>
-                        <p>Data e luogo da confermare</p>
-                    </div>
+                    <a href="events/20260521-presentazione-report.html" class="timeline-item-link" aria-label="Vai ai dettagli dell’evento Presentazione Report Cultura della Difesa del 21 maggio 2026">
+                        <div class="timeline-item" style="background: rgba(30,58,138,0.04); padding: 1rem 1.5rem; border-radius: 6px; border-left: 4px solid #1e3a8a;">
+                            <div class="timeline-date">21 Maggio 2026 · ore 17:00</div>
+                            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #1e3a8a; letter-spacing: 1px;">Evento principale</span>
+                            <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Biblioteca della Camera dei deputati "Nilde Iotti"</h3>
+                            <p style="margin-bottom: 0.5rem;">Presentazione Report <strong>"Cultura della Difesa"</strong></p>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary);">In collaborazione con LUISS - Scuola di Giornalismo e Form&amp;ATP</p>
+                        </div>
+                    </a>
                     <div class="timeline-item">
                         <div class="timeline-date">Luglio 2026</div>
                         <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Brussels</h3>
@@ -1004,12 +1022,7 @@
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-date">Settembre 2026</div>
-                        <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Bari</h3>
-                        <p>Data e luogo da confermare</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Settembre 2026</div>
-                        <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Sanremo</h3>
+                        <h3 style="margin: 0.5rem 0; color: var(--night-blue);">Napoli</h3>
                         <p>Data e luogo da confermare</p>
                     </div>
                     <div class="timeline-item">
