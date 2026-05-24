@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-DFL8MJSKVJ"></script>
+<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-DFL8MJSKVJ');
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Pubblicazioni</title>
+<meta content="Pubblicazioni, report, dossier e materiali editoriali DYNAMES dedicati a geopolitica, sicurezza, cultura della difesa, resilienza e governance dei sistemi complessi." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .page-header {
+            background-color: var(--night-blue);
+            color: var(--optical-white);
+            padding: 6rem 0;
+            text-align: center;
+            border-bottom: 8px solid var(--gold-accent);
+            background-image: linear-gradient(rgba(11, 17, 32, 0.82), rgba(11, 17, 32, 0.92)), url('assets/chess.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--text-light);
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .publications-content {
+            padding: 5rem 0;
+        }
+
+        .intro-panel {
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 6px solid var(--gold-accent);
+            padding: 3rem;
+            margin-bottom: 5rem;
+            box-shadow: 0 16px 26px -14px rgba(11, 17, 32, 0.24);
+        }
+
+        .intro-panel h2 {
+            color: var(--night-blue);
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro-panel p {
+            color: var(--text-secondary);
+            font-size: 1.08rem;
+            max-width: 980px;
+            margin-bottom: 1rem;
+        }
+
+        .intro-panel p:last-child {
+            margin-bottom: 0;
+        }
+
+        .publication-section-title {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            margin-bottom: 3rem;
+            margin-top: 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
+
+        .publications-structured {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .publication-row {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 3rem;
+        }
+
+
+        a.publication-row,
+        a.publication-row:visited {
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .publication-link-card {
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .publication-link-card:hover {
+            transform: translateY(-3px);
+            border-bottom-color: var(--gold-accent);
+        }
+
+        .publication-link-card:hover .publication-image {
+            border-color: var(--gold-accent);
+            box-shadow: 0 22px 34px rgba(11, 17, 32, 0.22);
+        }
+
+        .publication-link-card:hover .btn {
+            background-color: var(--optical-white);
+            color: var(--night-blue);
+        }
+
+        .publication-text h3 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin-bottom: 1rem;
+        }
+
+        .publication-meta {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--gold-accent);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .publication-text p {
+            color: var(--text-secondary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.08rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .publication-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .publication-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.8rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--night-blue);
+            color: var(--optical-white);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            border: 1px solid var(--night-blue);
+            font-size: 0.86rem;
+        }
+
+        .btn:hover {
+            background-color: var(--optical-white);
+            color: var(--night-blue);
+        }
+
+        .btn-secondary {
+            background-color: var(--optical-white);
+            color: var(--night-blue);
+            border-color: #cbd5e1;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--night-blue);
+            background-color: var(--light-grey);
+            color: var(--night-blue);
+        }
+
+        .publication-cover {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .publication-cover > div {
+            width: 100%;
+            max-width: 280px;
+            margin-left: auto;
+        }
+
+        .publication-card-visual {
+            width: 100%;
+            min-height: 340px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background:
+                linear-gradient(150deg, rgba(11, 17, 32, 0.92), rgba(30, 58, 138, 0.78)),
+                radial-gradient(circle at 30% 20%, rgba(184, 147, 90, 0.8), transparent 36%),
+                var(--night-blue);
+            box-shadow: 0 18px 30px rgba(11, 17, 32, 0.20);
+            padding: 2rem;
+            color: var(--optical-white);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .publication-card-visual::after {
+            content: "";
+            position: absolute;
+            right: -50px;
+            bottom: -50px;
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        .publication-card-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            position: relative;
+            z-index: 2;
+        }
+
+        .publication-card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            line-height: 1.15;
+            position: relative;
+            z-index: 2;
+        }
+
+        .publication-card-footer {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-light);
+            position: relative;
+            z-index: 2;
+        }
+
+        .publication-image {
+            display: block;
+            width: 100%;
+            max-height: 360px;
+            object-fit: contain;
+            object-position: center;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #f1f5f9;
+            box-shadow: 0 18px 30px rgba(11, 17, 32, 0.16);
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 5rem;
+        }
+
+        .theme-card {
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid var(--gold-accent);
+            padding: 1.6rem;
+            min-height: 170px;
+            box-shadow: 0 12px 22px -18px rgba(11, 17, 32, 0.28);
+        }
+
+        .theme-card h4 {
+            color: var(--night-blue);
+            font-size: 1.05rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .theme-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 1050px) {
+            .desktop-nav {
+                gap: 1.2rem;
+            }
+
+            .desktop-nav a {
+                font-size: 0.78rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .intro-panel {
+                padding: 2rem;
+            }
+
+            .publication-row {
+                grid-template-columns: 1fr;
+                gap: 1.75rem;
+            }
+
+            .publication-cover > div {
+                max-width: 280px;
+                margin: 0 auto;
+            }
+
+            .publication-card-visual {
+                min-height: 320px;
+            }
+
+            .publication-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                text-align: center;
+            }
+
+            .themes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="index.html">HOME</a>
+<a href="hub.html">ANALISI &amp; ARTICOLI</a>
+<a class="active" href="pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="eventi.html">EVENTI</a>
+<a href="chi-siamo.html">CHI SIAMO</a>
+<a href="temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="page-header">
+<div class="container">
+<h1>Pubblicazioni</h1>
+<p>"Report, dossier e materiali editoriali per interpretare le dinamiche strategiche e rafforzare la cultura della sicurezza."</p>
+</div>
+</div>
+<section class="publications-content container">
+<div class="intro-panel">
+<h2>La produzione editoriale DYNAMES</h2>
+<p>DYNAMES raccoglie in questa sezione le pubblicazioni, i report, i dossier e i materiali di approfondimento prodotti nell’ambito delle proprie attività di analisi, ricerca e confronto pubblico.</p>
+<p>La pagina è concepita come archivio progressivo: ai materiali già disponibili si affiancheranno nel tempo nuove uscite editoriali, report di evento, policy brief e pubblicazioni tematiche.</p>
+</div>
+<h3 class="publication-section-title">
+            Catalogo pubblicazioni
+        </h3>
+<div class="publications-structured">
+<a aria-label="Apri la pubblicazione Cultura della Difesa" class="publication-row publication-link-card" href="pubblicazioni/2026-report.html">
+<div class="publication-text">
+<h3 class="serif-heading">Report “Cultura della Difesa”</h3>
+<span class="publication-meta">Report di progetto · 2026 · DYNAMES, LUISS - Scuola di Giornalismo, Form&amp;ATP</span>
+<p>Il report raccoglie e valorizza il percorso avviato con il progetto <strong>Cultura della Difesa</strong>, dedicato al rapporto tra sicurezza, comunicazione strategica, formazione, resilienza nazionale e consapevolezza collettiva.</p>
+<p>Il documento si inserisce in una piattaforma più ampia di analisi e relazione tra istituzioni, accademia, mondo della comunicazione, imprese e società civile.</p>
+<div class="publication-actions"><span class="btn">Apri la pubblicazione</span></div>
+</div>
+<div class="publication-cover">
+<div><img alt="Copertina del report Cultura della Difesa, Comunicazione, geopolitica, formazione per l’interesse nazionale" class="publication-image" src="pubblicazioni/Archivio/report.png"/></div>
+</div>
+</a>
+</div>
+</section>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
