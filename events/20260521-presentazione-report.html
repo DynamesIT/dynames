@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DYNAMES | Presentazione Report Cultura della Difesa</title>
-    <meta name="description" content="Pagina evento dedicata alla presentazione del Report Cultura della Difesa, in programma il 21 maggio 2026 presso la Biblioteca della Camera dei deputati Nilde Iotti.">
+    <meta name="description" content="Pagina post-evento dedicata alla presentazione del Report Cultura della Difesa, svoltasi il 21 maggio 2026 presso la Biblioteca della Camera dei deputati Nilde Iotti.">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -70,6 +70,49 @@
         .org-box{margin-top:3rem;padding:1.6rem;background:var(--optical-white);border:1px solid var(--border-soft);border-left:4px solid var(--night-blue)}
         .org-box p:last-child{margin-bottom:0}
 
+        .event-video{margin-top:3rem;margin-bottom:3.2rem}
+        .event-video h2{font-size:2rem;color:var(--night-blue);margin-bottom:.8rem;text-align:center;font-family:'Playfair Display',serif}
+        .event-video p{max-width:820px;margin:0 auto 1.4rem;text-align:center;color:var(--text-secondary)}
+        .video-preview{display:block;position:relative;text-decoration:none;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-soft);border:1px solid rgba(11,17,32,.08);background:#0b1120;transition:transform .25s ease, box-shadow .25s ease}
+        .video-preview:hover{transform:translateY(-3px);box-shadow:0 24px 35px -10px rgba(0,0,0,.18)}
+        .video-preview img{width:100%;height:auto;display:block;border-radius:16px}
+        .youtube-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+        .youtube-icon::before{content:"";display:block;width:116px;height:80px;border-radius:24px;background:rgba(255,0,0,.72);box-shadow:0 14px 32px rgba(0,0,0,.28);backdrop-filter:blur(1px);transition:background .25s ease, transform .25s ease}
+        .youtube-icon::after{content:"";position:absolute;width:0;height:0;border-top:21px solid transparent;border-bottom:21px solid transparent;border-left:33px solid rgba(255,255,255,.92);margin-left:8px}
+        .video-preview:hover .youtube-icon::before{background:rgba(255,0,0,.86);transform:scale(1.04)}
+        .video-actions{display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
+        .video-link{display:inline-block;text-decoration:none;background:var(--night-blue);color:var(--optical-white);font-family:'Montserrat',sans-serif;font-weight:700;font-size:.86rem;text-transform:uppercase;letter-spacing:.8px;padding:.75rem 1rem;border-radius:999px;transition:transform .2s ease, opacity .2s ease}
+        .video-link:hover{transform:translateY(-2px);opacity:.92}
+
+        .project-preview{margin-top:3rem;margin-bottom:3.2rem}
+        .project-preview h2{font-size:2rem;color:var(--night-blue);margin-bottom:.8rem;text-align:center;font-family:'Playfair Display',serif}
+        .project-preview p{max-width:820px;margin:0 auto 1.4rem;text-align:center;color:var(--text-secondary)}
+        .project-pdf-card{background:var(--optical-white);border:1px solid var(--border-soft);border-radius:16px;box-shadow:var(--shadow-soft);overflow:hidden;padding:.8rem}
+        .project-pdf-frame{width:100%;height:620px;border:0;border-radius:10px;display:block;background:#eef2f7}
+        .project-pdf-fallback{min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;background:#f8fafc;border-radius:10px}
+        .project-pdf-fallback p{text-align:center;margin:0 0 1rem;max-width:640px}
+        .project-actions{display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
+        .project-link{display:inline-block;text-decoration:none;background:var(--night-blue);color:var(--optical-white);font-family:'Montserrat',sans-serif;font-weight:700;font-size:.86rem;text-transform:uppercase;letter-spacing:.8px;padding:.75rem 1rem;border-radius:999px;transition:transform .2s ease, opacity .2s ease}
+        .project-link:hover{transform:translateY(-2px);opacity:.92}
+        .project-link-secondary{background:var(--gold-accent)}
+        .event-gallery{margin-top:4rem;margin-bottom:3rem}
+        .event-gallery h2{font-size:2rem;color:var(--night-blue);margin-bottom:.6rem;text-align:center;font-family:'Playfair Display',serif}
+        .gallery-note{max-width:780px;margin:0 auto 1.5rem;text-align:center;color:var(--text-secondary)}
+        .gallery-track{display:flex;gap:1rem;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;padding-bottom:.5rem}
+        .gallery-track::-webkit-scrollbar{display:none}
+        .gallery-item{min-width:320px;max-width:320px;flex:0 0 auto;cursor:pointer}
+        .gallery-item img{width:100%;height:220px;object-fit:cover;display:block;border-radius:14px;box-shadow:var(--shadow-soft);background:#eef2f7}
+        .gallery-caption{margin-top:.6rem;font-size:.9rem;color:var(--text-secondary);text-align:center}
+        .gallery-placeholder{cursor:default}
+        .placeholder-box{height:220px;border:1px dashed var(--border-soft);border-radius:14px;background:rgba(255,255,255,.74);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+        .gallery-controls{display:flex;justify-content:center;gap:.8rem;margin-top:1.3rem}
+        .gallery-btn{background:var(--night-blue);color:var(--optical-white);border:none;width:44px;height:44px;border-radius:50%;font-size:1.1rem;cursor:pointer;transition:transform .2s ease, opacity .2s ease}
+        .gallery-btn:hover{transform:translateY(-2px);opacity:.92}
+        .lightbox{display:none;position:fixed;z-index:5000;inset:0;background:rgba(11,17,32,.92);justify-content:center;align-items:center;padding:2rem}
+        .lightbox.active{display:flex}
+        .lightbox img{max-width:92vw;max-height:85vh;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+        .lightbox-close{position:absolute;top:20px;right:24px;background:transparent;color:#fff;border:none;font-size:2rem;cursor:pointer}
+
         .event-flyers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;margin:3rem 0 3.2rem;align-items:start}
         .event-flyer{background:var(--optical-white);border:1px solid var(--border-soft);padding:.75rem;box-shadow:var(--shadow-soft);border-radius:14px}
         .event-flyer img{width:100%;height:auto;display:block;border-radius:8px}
@@ -100,12 +143,17 @@
             .event-header{padding:3.8rem 1.2rem;min-height:330px}
             .event-title{font-size:2rem}
             .event-subtitle{max-width:100%}
+            .gallery-item{min-width:260px;max-width:260px}
+            .gallery-item img,.placeholder-box{height:190px}
+            .youtube-icon::before{width:82px;height:58px;border-radius:17px}
+            .youtube-icon::after{border-top-width:15px;border-bottom-width:15px;border-left-width:24px;margin-left:6px}
+            .project-pdf-frame{height:480px}
         }
     </style>
     <link rel="icon" href="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" type="image/png">
     <meta property="og:title" content="DYNAMES | Presentazione Report Cultura della Difesa">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://dynames.it/events/20260521/locandina-evento.png">
+    <meta property="og:image" content="https://dynames.it/events/20260521/20260521-tappo.jpg">
 </head>
 <body>
     <header>
@@ -133,7 +181,7 @@
             <div class="content-container">
                 <span class="event-category">Presentazione report</span>
                 <h1 class="serif-heading event-title">Cultura della Difesa</h1>
-                <p class="event-subtitle">Comunicazione, geopolitica e formazione per l’interesse nazionale. Presentazione del Report presso la Biblioteca della Camera dei deputati “Nilde Iotti”.</p>
+                <p class="event-subtitle">Comunicazione, geopolitica e formazione per l’interesse nazionale. Il resoconto della presentazione del Report presso la Biblioteca della Camera dei deputati “Nilde Iotti”.</p>
             </div>
         </section>
 
@@ -147,76 +195,139 @@
             </section>
         </div>
 
+        <section class="content-container event-video" aria-label="Registrazione video dell’evento">
+            <h2 class="serif-heading">Rivedi l’evento</h2>
+            <p>La registrazione integrale della presentazione del Report “Cultura della Difesa” è disponibile sul canale YouTube del progetto.</p>
+            <a class="video-preview" href="https://youtu.be/OQYDyUdA11g" target="_blank" rel="noopener" aria-label="Apri la registrazione dell’evento su YouTube">
+                <img src="20260521/20260521-tappo.jpg" alt="Anteprima della registrazione dell’evento Cultura della Difesa" loading="lazy">
+                <span class="youtube-icon" aria-hidden="true"></span>
+            </a>
+            <div class="video-actions">
+                <a class="video-link" href="https://youtu.be/OQYDyUdA11g" target="_blank" rel="noopener">Apri su YouTube</a>
+            </div>
+        </section>
+
+
+        <section class="content-container event-gallery" aria-label="Galleria fotografica dell’evento">
+            <h2 class="serif-heading">Galleria fotografica</h2>
+            <p class="gallery-note">Alcuni momenti della presentazione del Report “Cultura della Difesa”, svoltasi presso la Biblioteca della Camera dei deputati “Nilde Iotti”.</p>
+            <div class="gallery-track" id="galleryTrack">
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(19).jpg" alt="Momento di confronto prima dell’avvio dei lavori - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Momento di confronto prima dell’avvio dei lavori</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(20).jpg" alt="Foto di gruppo dei relatori e dei promotori - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Foto di gruppo dei relatori e dei promotori</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(21).jpg" alt="Intervento dal podio - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Intervento dal podio</div></div>
+                <div class="gallery-item"><img src="20260521/foto/1.jpg" alt="Consegna del volume e momento istituzionale - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Consegna del volume e momento istituzionale</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto%202.jpg" alt="Intervento durante la tavola rotonda - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Intervento durante la tavola rotonda</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(3).jpg" alt="Vista della sala durante i lavori - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Vista della sala durante i lavori</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(4).jpg" alt="Intervento istituzionale - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Intervento istituzionale</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(5).jpg" alt="Confronto tra i relatori - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Confronto tra i relatori</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(6).jpg" alt="Tavola rotonda e pubblico in sala - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Tavola rotonda e pubblico in sala</div></div>
+                <div class="gallery-item"><img src="20260521/foto/4.jpg" alt="Relatori e promotori al termine dell’iniziativa - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Relatori e promotori al termine dell’iniziativa</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(8).jpg" alt="Saluto tra i partecipanti - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Saluto tra i partecipanti</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(9).jpg" alt="Momento di ascolto durante il panel - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Momento di ascolto durante il panel</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(10).jpg" alt="Consegna del volume Cultura della Difesa - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Consegna del volume Cultura della Difesa</div></div>
+                <div class="gallery-item"><img src="20260521/foto/3.jpg" alt="Vista d’insieme della Biblioteca - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Vista d’insieme della Biblioteca</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(12).jpg" alt="Intervento nel corso della tavola rotonda - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Intervento nel corso della tavola rotonda</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(13).jpg" alt="Dialogo istituzionale a margine dell’evento - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Dialogo istituzionale a margine dell’evento</div></div>
+                <div class="gallery-item"><img src="20260521/foto/2.jpg" alt="Intervento conclusivo dal podio - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Intervento conclusivo dal podio</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(15).jpg" alt="Sessione di confronto tra i relatori - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Sessione di confronto tra i relatori</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(17).jpg" alt="Presentazione del progetto editoriale - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Presentazione del progetto editoriale</div></div>
+                <div class="gallery-item"><img src="20260521/foto/foto1%20(18).jpg" alt="Dialogo tra moderazione e relatori - Presentazione Report Cultura della Difesa" loading="lazy"><div class="gallery-caption">Dialogo tra moderazione e relatori</div></div>
+            </div>
+            <div class="gallery-controls">
+                <button class="gallery-btn" id="prevBtn" aria-label="Scorri a sinistra">‹</button>
+                <button class="gallery-btn" id="nextBtn" aria-label="Scorri a destra">›</button>
+            </div>
+        </section>
+
         <section class="content-container event-body">
 
-            <div class="event-flyers" aria-label="Locandine dell’evento">
-                <figure class="event-flyer">
-                    <img src="20260521/locandina-evento.png" alt="Locandina dell’evento Cultura della Difesa con programma, relatori e informazioni di accredito" loading="lazy">
-                </figure>
-                <figure class="event-flyer">
-                    <img src="20260521/locandina-evento2.png" alt="Seconda locandina dell’evento Cultura della Difesa con abstract, luogo, orari, promotori e partner" loading="lazy">
-                </figure>
-            </div>
-
-            <h2>Descrizione dell’iniziativa</h2>
-            <p>La presentazione del Report “Cultura della Difesa”, prevista il 21 maggio 2026 presso la Camera dei deputati, ospiti del Vicepresidente On. Giorgio Mulé, rappresenta il primo momento istituzionale di lancio del progetto avviato con l’incontro “Cultura della Difesa” del 18 settembre 2025 presso la LUISS.</p>
-            <p>La presentazione del Report intende offrire una sintesi strutturata degli interventi e un aggiornamento sugli sviluppi intervenuti nell’ultimo semestre in ambito sicurezza, comunicazione strategica, governance e sistemi complessi.</p>
-            <p>L’iniziativa si configura come uno spazio di confronto tra istituzioni, accademia, Difesa, industria e mondo dell’informazione, con l’obiettivo di promuovere una visione integrata della sicurezza come dimensione sistemica del Paese.</p>
-            <p>Nel corso dell’evento sarà inoltre presentato il progetto editoriale quadrimestrale e annunciato il lancio delle candidature al Premio “Cultura della Difesa”.</p>
+            <h2>Resoconto dell’iniziativa</h2>
+            <p>La presentazione del Report “Cultura della Difesa” si è svolta il 21 maggio 2026 presso la Biblioteca della Camera dei deputati “Nilde Iotti”, ospiti del Vicepresidente On. Giorgio Mulé. L’iniziativa ha rappresentato il primo momento istituzionale di lancio del progetto avviato con l’incontro “Cultura della Difesa” del 18 settembre 2025 presso la LUISS.</p>
+            <p>Nel corso dell’evento è stata proposta una sintesi strutturata del percorso sviluppato attorno ai temi della sicurezza, della comunicazione strategica, della governance e dei sistemi complessi, con un aggiornamento sugli sviluppi intervenuti nell’ultimo semestre.</p>
+            <p>Il confronto ha riunito istituzioni, accademia, Difesa, industria e mondo dell’informazione, confermando l’esigenza di promuovere una visione integrata della sicurezza come dimensione sistemica del Paese.</p>
+            <p>Durante la giornata sono stati inoltre presentati il progetto editoriale quadrimestrale e il lancio delle candidature al Premio “Cultura della Difesa”.</p>
 
             <div class="highlight-box">
                 <p><strong>Obiettivo dell’evento:</strong> consolidare il percorso “Cultura della Difesa” come piattaforma stabile di analisi, produzione culturale e confronto tra stakeholder, valorizzando sicurezza, difesa, formazione e interesse nazionale come dimensioni centrali della resilienza democratica e della coesione del Paese.</p>
             </div>
 
-            <h2>Orari e accesso</h2>
-            <div class="access-grid">
-                <div class="access-card"><span>16:30</span><p>Accesso alla Biblioteca della Camera dei deputati</p></div>
-                <div class="access-card"><span>16:45</span><p>Termine accesso e posizionamento degli ospiti</p></div>
-                <div class="access-card"><span>17:00</span><p>Inizio della conferenza</p></div>
-                <div class="access-card"><span>18:30</span><p>Termine previsto delle attività</p></div>
-            </div>
-
             <h2>Audience</h2>
-            <p>Rappresentanti istituzionali, policy maker, vertici della Difesa, accademici, industria, stakeholder, comunicatori e giornalisti.</p>
-
-            <h2>Punti qualificanti</h2>
+            <p>All’iniziativa hanno preso parte rappresentanti istituzionali, policy maker, vertici della Difesa, accademici, industria, stakeholder, comunicatori e giornalisti.</p>
+            <h2>Punti emersi dal confronto</h2>
             <div class="keypoints">
                 <div class="keypoint-card">
-                    <h4>Sicurezza come dimensione sistemica</h4>
-                    <p>Il progetto interpreta la difesa come ambito che coinvolge istituzioni, imprese, società civile, informazione e formazione.</p>
+                    <h4>Cultura della difesa come responsabilità diffusa</h4>
+                    <p>Il confronto ha chiarito che la difesa non riguarda solo lo strumento militare, ma il vivere quotidiano del Paese: infrastrutture, sicurezza, filiere, informazione, scuola, industria e cittadini.</p>
                 </div>
                 <div class="keypoint-card">
-                    <h4>Dialogo tra mondi diversi</h4>
-                    <p>L’evento promuove un confronto tra Parlamento, accademia, Difesa, industria e media sui temi della resilienza nazionale.</p>
+                    <h4>Consapevolezza pubblica e linguaggio comune</h4>
+                    <p>È emersa la necessità di rendere comprensibili temi complessi senza banalizzarli, superando stereotipi e formule ambigue e rafforzando il ruolo di media, comunicatori e corpi intermedi.</p>
                 </div>
                 <div class="keypoint-card">
-                    <h4>Report e sviluppo editoriale</h4>
-                    <p>Il Report costituisce il primo prodotto strutturato del percorso e apre alla nascita di un periodico quadrimestrale di analisi.</p>
+                    <h4>Pensiero critico e resilienza cognitiva</h4>
+                    <p>La difesa delle menti è stata indicata come una delle nuove frontiere della sicurezza: contro sovrainformazione, guerra cognitiva e minacce ibride, l’antidoto principale resta il pensiero critico.</p>
                 </div>
                 <div class="keypoint-card">
-                    <h4>Premio Cultura della Difesa</h4>
-                    <p>Durante l’iniziativa sarà annunciato il lancio delle candidature al Premio dedicato a contributi di eccellenza nei settori chiave del progetto.</p>
+                    <h4>Formazione per decidere nella complessità</h4>
+                    <p>La formazione della classe dirigente richiede approcci multidisciplinari, contaminazione tra ecosistemi diversi, capacità di comprendere scenari instabili e decisioni rapide fondate su visione strategica.</p>
+                </div>
+                <div class="keypoint-card">
+                    <h4>Tecnologia, industria e sovranità</h4>
+                    <p>Droni, intelligenza artificiale, procurement, scalabilità industriale e aggiornabilità delle piattaforme richiedono cooperazione selettiva, competenze adeguate e tutela degli interessi nazionali.</p>
+                </div>
+                <div class="keypoint-card">
+                    <h4>Pace, deterrenza e valori democratici</h4>
+                    <p>La pace non è più percepita come un dato acquisito: il confronto ha richiamato il legame tra deterrenza, preparazione, valori, coesione nazionale e Forze Armate come bene dell’intera comunità.</p>
                 </div>
             </div>
 
             <h2>Tavola rotonda</h2>
             <div class="speaker-groups">
                 <div class="speaker-group">
-                    <h4>Moderazione</h4>
-                    <span class="group-meta">Sky TG24</span>
+                    <h4>Saluto istituzionale</h4>
+                    <span class="group-meta">Camera dei deputati</span>
                     <ul class="speaker-list">
-                        <li>Tonia Cartolano — Caporedattrice Sky TG24</li>
+                        <li><strong>On. Giorgio Mulè</strong> — Vicepresidente della Camera dei deputati.</li>
                     </ul>
                 </div>
                 <div class="speaker-group">
-                    <h4>Relatori</h4>
+                    <h4>Introduzione</h4>
+                    <span class="group-meta">LUISS – Scuola di Giornalismo</span>
+                    <ul class="speaker-list">
+                        <li><strong>Gianni Riotta</strong> — Direttore LUISS Scuola di Giornalismo e membro del Comitato “Cultura della Difesa”.</li>
+                    </ul>
+                </div>
+                <div class="speaker-group">
+                    <h4>Presentazione del progetto</h4>
+                    <span class="group-meta">FORM&amp;ATP e DYNAMES</span>
+                    <ul class="speaker-list">
+                        <li><strong>Gen. C.A. Massimo Panizzi</strong> — Formatore, autore e consulente strategico FORM&amp;ATP.</li>
+                        <li><strong>Vincenzo D’Anna</strong> e <strong>Fabio Boscacci</strong> — Co-fondatori DYNAMES. Presentazione del percorso editoriale “Cultura della Difesa” e del Premio “Cultura della Difesa”, con apertura ufficiale delle candidature.</li>
+                    </ul>
+                </div>
+                <div class="speaker-group">
+                    <h4>Moderazione</h4>
+                    <span class="group-meta">Sky TG24</span>
+                    <ul class="speaker-list">
+                        <li><strong>Tonia Cartolano</strong> — Giornalista Sky TG24.</li>
+                    </ul>
+                </div>
+                <div class="speaker-group">
+                    <h4>Interventi</h4>
                     <span class="group-meta">Comunicazione, formazione, industria e policy</span>
                     <ul class="speaker-list">
-                        <li><strong>Maurizio Caprara</strong> — Editorialista e docente LUISS. Tema: il divario tra realtà strategica e percezione pubblica della difesa e il ruolo dei media nella costruzione della consapevolezza nazionale.</li>
-                        <li><strong>Gen. C.A. Stefano Mannino</strong> — Presidente CASD. Tema: dalla complessità dello scenario alla formazione della classe dirigente per le nuove sfide.</li>
-                        <li><strong>Prof.ssa Elena Baralis</strong> — Prorettrice Politecnico di Torino. Tema: formazione dei futuri professionisti e leader nei sistemi complessi, tra competenze tecnologiche, innovazione e responsabilità strategica.</li>
-                        <li><strong>Dott. Stefano Toncich</strong> — VP HR Italy, MBDA. Tema: attrattività del settore, ricerca dei talenti, formazione continua e competenze trasversali.</li>
+                        <li><strong>Prof.ssa Elena Baralis</strong> — Prorettore Politecnico di Torino. Tema: formazione dei futuri professionisti e leader nei sistemi complessi, tra competenze tecnologiche, innovazione e responsabilità strategica.</li>
                         <li><strong>Dott.ssa Luisa Riccardi</strong> — Vicario della Direzione Nazionale Armamenti. Tema: politica industriale della difesa, capacità tecnologiche e produttive e resilienza del sistema Paese.</li>
+                        <li><strong>Prof. Maurizio Caprara</strong> — Editorialista e docente LUISS. Tema: il divario tra realtà strategica e percezione pubblica della difesa e il ruolo dei media nella costruzione della consapevolezza nazionale.</li>
+                        <li><strong>Dott. Stefano Toncich</strong> — VP HR Italy, MBDA. Tema: attrattività del settore, ricerca dei talenti, formazione continua e competenze trasversali.</li>
+                        <li><strong>Gen. C.A. Stefano Mannino</strong> — Presidente CASD. Tema: dalla complessità dello scenario alla formazione della classe dirigente per le nuove sfide.</li>
+                    </ul>
+                </div>
+                <div class="speaker-group">
+                    <h4>Conclusioni</h4>
+                    <span class="group-meta">Esercito Italiano</span>
+                    <ul class="speaker-list">
+                        <li><strong>Gen. C.A. Carmine Masiello</strong> — Capo di Stato Maggiore dell’Esercito.</li>
                     </ul>
                 </div>
             </div>
@@ -230,6 +341,24 @@
             <h2>Una piattaforma stabile di analisi e relazione</h2>
             <p>A partire da questo presupposto, i partner promotori hanno inteso dare vita a un’iniziativa più ampia, concepita come piattaforma di analisi, produzione culturale e relazione tra stakeholder.</p>
             <p>Il progetto si fonda su un’idea chiave: la difesa non è più un ambito settoriale o esclusivamente militare, ma una dimensione sistemica che coinvolge l’intera sfera nazionale. In questo quadro, la “Cultura della Difesa” viene interpretata come un insieme di conoscenze condivise, una responsabilità diffusa tra istituzioni, imprese e cittadini e una condizione essenziale per la stabilità, lo sviluppo e la coesione del Paese.</p>
+
+            <!-- Anteprima del progetto posizionata dopo la sezione “Una piattaforma stabile di analisi e relazione” -->
+            <div class="project-preview" aria-label="Anteprima PDF del progetto Cultura della Difesa">
+                <h2 class="serif-heading">Anteprima del progetto</h2>
+                <p>Sfoglia la presentazione del progetto “Cultura della Difesa”, con le direttrici editoriali, il quadrimestrale, il Premio e la timeline delle prossime iniziative.</p>
+                <div class="project-pdf-card">
+                    <object class="project-pdf-frame" data="20260521/2026.05.21-Progetto.pdf#view=FitH" type="application/pdf" aria-label="Anteprima PDF del progetto Cultura della Difesa">
+                        <div class="project-pdf-fallback">
+                            <p>Il browser non supporta l’anteprima integrata del PDF. È comunque possibile aprire o scaricare il documento dal pulsante seguente.</p>
+                            <a class="project-link" href="20260521/2026.05.21-Progetto.pdf" target="_blank" rel="noopener">Apri il PDF</a>
+                        </div>
+                    </object>
+                </div>
+                <div class="project-actions">
+                    <a class="project-link" href="20260521/2026.05.21-Progetto.pdf" target="_blank" rel="noopener">Apri il PDF</a>
+                    <a class="project-link project-link-secondary" href="20260521/2026.05.21-Progetto.pdf" download>Scarica il PDF</a>
+                </div>
+            </div>
 
             <h2>Le direttrici del progetto</h2>
             <div class="directives-grid">
@@ -253,8 +382,23 @@
                 <p><strong>Evento ospitato da:</strong> Vicepresidente della Camera dei deputati On. Giorgio Mulé, presso la Biblioteca della Camera dei deputati “Nilde Iotti”.</p>
                 <p><strong>Finalità:</strong> promuovere la difesa come valore civico e strategico condiviso, contribuendo alla diffusione di una cultura della difesa consapevole e moderna.</p>
             </div>
+
+            <h2>Locandine dell’evento</h2>
+            <div class="event-flyers" aria-label="Locandine dell’evento">
+                <figure class="event-flyer">
+                    <img src="20260521/locandina-evento.png" alt="Locandina dell’evento Cultura della Difesa con programma, relatori e informazioni di accredito" loading="lazy">
+                </figure>
+                <figure class="event-flyer">
+                    <img src="20260521/locandina-evento2.png" alt="Seconda locandina dell’evento Cultura della Difesa con abstract, luogo, orari, promotori e partner" loading="lazy">
+                </figure>
+            </div>
         </section>
     </main>
+
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Chiudi immagine">×</button>
+        <img src="" alt="Immagine ingrandita" id="lightboxImage">
+    </div>
 
     <footer>
         <div class="container">
@@ -263,5 +407,34 @@
             <p style="margin-top:1rem; color:var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
         </div>
     </footer>
+
+    <script>
+        const galleryTrack = document.getElementById('galleryTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        if (galleryTrack && prevBtn && nextBtn) {
+            prevBtn.addEventListener('click', () => galleryTrack.scrollBy({ left: -340, behavior: 'smooth' }));
+            nextBtn.addEventListener('click', () => galleryTrack.scrollBy({ left: 340, behavior: 'smooth' }));
+        }
+
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxClose = document.getElementById('lightboxClose');
+
+        document.querySelectorAll('.gallery-item img').forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxImage.src = img.src;
+                lightboxImage.alt = img.alt;
+                lightbox.classList.add('active');
+            });
+        });
+
+        if (lightbox && lightboxClose) {
+            lightboxClose.addEventListener('click', () => lightbox.classList.remove('active'));
+            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('active'); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.classList.remove('active'); });
+        }
+    </script>
 </body>
 </html>
