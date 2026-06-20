@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cultura della Difesa e Sicurezza</title>
+  <meta name="description" content="Il progetto Cultura della Difesa e Sicurezza promuove consapevolezza, formazione, comunicazione responsabile e resilienza democratica attraverso eventi, produzione editoriale e il Premio annuale." />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" rel="icon" type="image/png" />
+  <meta property="og:title" content="Cultura della Difesa e Sicurezza" />
+  <meta property="og:description" content="Un percorso culturale, editoriale e istituzionale per rafforzare consapevolezza, resilienza e qualità del dibattito pubblico sui temi della difesa e della sicurezza." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" />
+  <style>
+    :root {
+      --granata: #6f1f2d;
+      --granata-dark: #4f1420;
+      --granata-soft: #f7eef1;
+      --granata-pale: #fbf6f7;
+      --gold: #c79900;
+      --ink: #1f2933;
+      --slate: #5d6673;
+      --line: #eadde1;
+      --white: #ffffff;
+      --smoke: #f8fafc;
+      --shadow: 0 18px 40px rgba(92, 24, 36, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--white);
+      color: var(--ink);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    .brand,
+    .btn,
+    .eyebrow,
+    nav a {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .top-ribbon {
+      background: var(--granata);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.8rem 0;
+    }
+
+    .top-ribbon .container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .top-ribbon-text {
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .top-promoters {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .top-promoters-label {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .top-promoters-logos {
+      display: flex;
+      align-items: center;
+      gap: 1.35rem;
+      flex-wrap: wrap;
+    }
+
+    .top-promoter-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-promoter-logo img {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .top-promoter-logo.form-atp img {
+      height: 32px;
+    }
+
+    .top-promoter-logo.dynames img {
+      height: 44px;
+    }
+
+    .top-promoter-logo.luiss img {
+      height: 38px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 1rem 0;
+    }
+
+    .brand {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      min-width: 260px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    .brand-title {
+      display: block;
+      font-size: 1.08rem;
+      line-height: 1.1;
+      font-weight: 800;
+      color: var(--granata);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand-subtitle {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.72rem;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.35rem;
+    }
+
+    .desktop-nav a {
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: color 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .desktop-nav a:hover {
+      color: var(--granata);
+    }
+
+    .desktop-nav .nav-cta {
+      background: var(--granata);
+      color: var(--white);
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      box-shadow: 0 8px 18px rgba(111, 31, 45, 0.18);
+    }
+
+    .desktop-nav .nav-cta:hover {
+      color: var(--white);
+      background: var(--granata-dark);
+    }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+    }
+
+    .menu-toggle span {
+      width: 27px;
+      height: 3px;
+      background: var(--granata);
+      border-radius: 2px;
+      transition: 0.25s ease;
+    }
+
+    section {
+      padding: 6.5rem 0;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 90% 20%, rgba(199, 153, 0, 0.18), transparent 28%),
+        linear-gradient(135deg, var(--white) 0%, var(--granata-pale) 48%, var(--granata-soft) 100%);
+      padding: 7.5rem 0 6rem;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(111, 31, 45, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(111, 31, 45, 0.06) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 78%);
+      pointer-events: none;
+    }
+
+    .hero-layout {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 3rem;
+      align-items: center;
+      max-width: 980px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--granata);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 34px;
+      height: 3px;
+      background: var(--gold);
+      border-radius: 99px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5.35rem);
+      line-height: 0.96;
+      color: var(--granata);
+      font-weight: 800;
+      letter-spacing: -0.055em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero .lead {
+      max-width: 760px;
+      font-size: 1.18rem;
+      color: var(--slate);
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2.25rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0.9rem 1.35rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 800;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .btn-primary {
+      color: var(--white);
+      background: var(--granata);
+      box-shadow: 0 14px 28px rgba(111, 31, 45, 0.22);
+    }
+
+    .btn-secondary {
+      color: var(--granata);
+      border: 1px solid rgba(111, 31, 45, 0.28);
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px rgba(111, 31, 45, 0.18);
+    }
+
+    .hero-panel {
+      position: relative;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-top: 6px solid var(--granata);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel::before {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      right: -34px;
+      top: -34px;
+      background: rgba(199, 153, 0, 0.18);
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .hero-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .date-box {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .date-item {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+      background: var(--granata-pale);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .date-item strong {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      background: var(--granata);
+      color: var(--white);
+      border-radius: 16px;
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .date-item h3 {
+      color: var(--granata);
+      font-size: 1.02rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .date-item p {
+      color: var(--slate);
+      font-size: 0.94rem;
+      line-height: 1.45;
+    }
+
+    .section-kicker {
+      text-align: center;
+      color: var(--granata);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.76rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      text-align: center;
+      color: var(--granata);
+      font-size: clamp(2rem, 3vw, 3rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-intro {
+      max-width: 840px;
+      margin: 0 auto 3.2rem;
+      color: var(--slate);
+      text-align: center;
+      font-size: 1.08rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+    }
+
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 2rem;
+      box-shadow: 0 10px 26px rgba(31, 41, 51, 0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: rgba(111, 31, 45, 0.25);
+    }
+
+    .card h3 {
+      color: var(--granata);
+      font-size: 1.22rem;
+      line-height: 1.25;
+      margin-bottom: 0.9rem;
+    }
+
+    .card p,
+    .card li {
+      color: var(--slate);
+      font-size: 0.98rem;
+    }
+
+    .card ul {
+      list-style: none;
+      display: grid;
+      gap: 0.55rem;
+      margin-top: 1rem;
+    }
+
+    .card li {
+      position: relative;
+      padding-left: 1.25rem;
+    }
+
+    .card li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.62rem;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .project-block {
+      background: var(--granata);
+      color: var(--white);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    }
+
+    .project-visual {
+      min-height: 420px;
+      position: relative;
+      overflow: hidden;
+      background: var(--granata-dark);
+    }
+
+    .project-carousel-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transform: scale(1.02);
+      transition: opacity 0.85s ease, transform 1.8s ease;
+    }
+
+    .project-carousel-slide::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(79, 20, 32, 0.62), rgba(79, 20, 32, 0.24)),
+        linear-gradient(180deg, rgba(79, 20, 32, 0.12), rgba(79, 20, 32, 0.72));
+      pointer-events: none;
+    }
+
+    .project-carousel-slide.active {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 1;
+    }
+
+    .project-carousel-dots {
+      position: absolute;
+      left: 2rem;
+      bottom: 1.6rem;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .project-carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      padding: 0;
+      transition: width 0.25s ease, background 0.25s ease;
+    }
+
+    .project-carousel-dot.active {
+      width: 28px;
+      background: var(--white);
+    }
+
+    .project-carousel-dot:focus-visible {
+      outline: 3px solid var(--white);
+      outline-offset: 3px;
+    }
+
+    .project-carousel-slide::after {
+      z-index: 1;
+    }
+
+    .project-carousel-caption {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      right: 2rem;
+      z-index: 2;
+      max-width: 440px;
+      padding: 1.15rem 1.25rem;
+      border-left: 4px solid var(--gold);
+      background: rgba(79, 20, 32, 0.72);
+      backdrop-filter: blur(7px);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
+    }
+
+    .project-carousel-caption span {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: rgba(255, 255, 255, 0.78);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .project-carousel-caption strong {
+      display: block;
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1rem, 1.8vw, 1.35rem);
+      line-height: 1.14;
+      margin-bottom: 0.45rem;
+    }
+
+    .project-carousel-caption p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .project-copy {
+      padding: 3rem;
+    }
+
+    .project-copy h2 {
+      color: var(--white);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      line-height: 1.08;
+      margin-bottom: 1.2rem;
+    }
+
+    .project-copy p {
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 1.1rem;
+      font-size: 1rem;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.75rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.08);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .feature-strip {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .feature-mini {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.35rem;
+    }
+
+    .feature-mini span {
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .feature-mini h3 {
+      color: var(--granata);
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-mini p {
+      color: var(--slate);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .soft-section {
+      background: linear-gradient(180deg, var(--granata-pale), var(--white));
+    }
+
+    .award-card-main {
+      border-top: 6px solid var(--granata);
+      grid-column: span 2;
+    }
+
+    .category-card {
+      min-height: 100%;
+      position: relative;
+      padding-top: 4.2rem;
+    }
+
+    .category-number {
+      position: absolute;
+      top: 1.4rem;
+      left: 1.4rem;
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--granata-soft);
+      color: var(--granata);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .timeline-step {
+      background: var(--granata-pale);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-step::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--granata);
+    }
+
+    .timeline-step .when {
+      display: block;
+      color: var(--granata);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.78rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .timeline-step h3 {
+      color: var(--ink);
+      font-size: 1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .timeline-step p {
+      color: var(--slate);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .notice {
+      margin-top: 2rem;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--gold);
+      border-radius: 18px;
+      padding: 1.5rem;
+      color: var(--slate);
+    }
+
+    .notice strong {
+      color: var(--granata);
+    }
+
+    .promoter-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .promoter-label {
+      display: inline-block;
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .contact-band {
+      background: var(--granata);
+      color: var(--white);
+      border-radius: 26px;
+      padding: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .contact-band h2 {
+      font-size: clamp(1.6rem, 3vw, 2.7rem);
+      line-height: 1.1;
+      margin-bottom: 0.7rem;
+    }
+
+    .contact-band p {
+      color: rgba(255, 255, 255, 0.84);
+      max-width: 720px;
+    }
+
+    .contact-band .btn {
+      background: var(--white);
+      color: var(--granata);
+      flex-shrink: 0;
+    }
+
+    .contact-band-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      align-items: center;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+
+    .contact-band .btn-download {
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.38);
+    }
+
+    .contact-band .btn-download:hover {
+      background: rgba(255, 255, 255, 0.22);
+      color: var(--white);
+    }
+
+    footer {
+      background: var(--granata-dark);
+      color: rgba(255, 255, 255, 0.76);
+      padding: 3rem 0 2rem;
+      font-size: 0.86rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    footer h3,
+    footer h4 {
+      color: var(--white);
+      margin-bottom: 0.9rem;
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.86);
+      text-decoration: none;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    @media (max-width: 1060px) {
+      .desktop-nav {
+        gap: 0.9rem;
+      }
+
+      .desktop-nav a {
+        font-size: 0.68rem;
+      }
+
+      .grid-5,
+      .timeline,
+      .feature-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        padding: 0 1.35rem;
+      }
+
+      .header-inner {
+        align-items: flex-start;
+      }
+
+      .menu-toggle {
+        display: flex;
+        margin-top: 0.5rem;
+      }
+
+      .desktop-nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        background: var(--white);
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 18px 30px rgba(31, 41, 51, 0.08);
+      }
+
+      .desktop-nav.active {
+        display: flex;
+      }
+
+      .desktop-nav a {
+        padding: 1rem 1.35rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .desktop-nav .nav-cta {
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      section {
+        padding: 4.4rem 0;
+      }
+
+      .hero {
+        padding: 5rem 0 4rem;
+      }
+
+      .hero-layout,
+      .project-block,
+      .grid-2,
+      .grid-3,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .award-card-main {
+        grid-column: span 1;
+      }
+
+      .project-visual {
+        min-height: 300px;
+      }
+
+      .project-copy,
+      .contact-band {
+        padding: 2rem;
+      }
+
+      .contact-band {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .contact-band-actions {
+        justify-content: flex-start;
+        align-self: stretch;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .brand {
+        min-width: 0;
+      }
+
+      .brand-title {
+        font-size: 0.82rem;
+      }
+
+      .hero h1 {
+        font-size: 2.75rem;
+      }
+
+      .hero-panel,
+      .card {
+        padding: 1.4rem;
+      }
+
+      .date-item {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-5,
+      .timeline,
+      .feature-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .top-ribbon .container,
+      .top-promoters {
+        justify-content: center;
+        text-align: center;
+      }
+
+      .top-promoters {
+        width: 100%;
+        margin-top: 0.8rem;
+      }
+
+      .top-promoters-logos {
+        justify-content: center;
+        gap: 1rem;
+      }
+
+      .top-promoter-logo.form-atp img {
+        height: 26px;
+      }
+
+      .top-promoter-logo.dynames img {
+        height: 36px;
+      }
+
+      .top-promoter-logo.luiss img {
+        height: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-ribbon">
+    <div class="container">
+      <div class="top-promoters" aria-label="Soggetti promotori">
+        <span class="top-promoters-label">Soggetti promotori</span>
+        <div class="top-promoters-logos">
+          <div class="top-promoter-logo form-atp"><img src="assets/logo-form-atp-white.png" alt="FORM&amp;ATP" /></div>
+          <div class="top-promoter-logo dynames"><img src="assets/logo-dynames-white.png" alt="DYNAMES" /></div>
+          <div class="top-promoter-logo luiss"><img src="assets/logo-luiss-scuola-giornalismo-white.png" alt="Luiss Scuola di giornalismo" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Cultura della Difesa e Sicurezza - home">
+        <img class="brand-logo" src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="" aria-hidden="true" onerror="this.style.display='none'" />
+        <span>
+          <span class="brand-title">Cultura della Difesa e Sicurezza</span>
+        </span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Apri o chiudi il menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="desktop-nav" id="desktopNav" aria-label="Navigazione principale">
+        <a href="#progetto">Progetto</a>
+        <a href="#premio">Premio</a>
+        <a href="#categorie">Categorie</a>
+        <a href="#promotori">Promotori</a>
+        <a href="#contatti" class="nav-cta">Contatti</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-label="Introduzione al progetto">
+      <div class="container hero-layout">
+        <div>
+          <h1>Cultura della Difesa e Sicurezza</h1>
+          <p class="lead">Un percorso per rafforzare la consapevolezza collettiva del Paese, la qualità del dibattito pubblico, la preparazione civile e la resilienza democratica.</p>
+          <p class="lead">Eventi, produzione editoriale, approfondimento scientifico e Premio annuale convergono in una piattaforma di dialogo tra istituzioni, difesa, accademia, informazione, industria, corpi intermedi e cittadini.</p>
+          <div class="hero-actions">
+            <a class="btn btn-secondary" href="#progetto">Il progetto</a>
+            <a class="btn btn-primary" href="#premio">Scopri il Premio</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="progetto">
+      <div class="container">
+        <div class="project-block">
+          <div class="project-visual" aria-label="Carosello fotografico del progetto Cultura della Difesa e Sicurezza">
+            <div class="project-carousel-slide active" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · Biblioteca Camera “Nilde Iotti”. Lancio del percorso, del report, del quadrimestrale e del Premio." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%281%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Presentazione progetto</span>
+                <strong>21 maggio 2026 · Biblioteca Camera “Nilde Iotti”</strong>
+                <p>Lancio del percorso, del report, del quadrimestrale e del Premio.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · Relatori e promotori. Il progetto si consolida come piattaforma stabile di analisi e relazione." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%282%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Presentazione progetto</span>
+                <strong>21 maggio 2026 · Relatori e promotori</strong>
+                <p>Il progetto si consolida come piattaforma stabile di analisi e relazione.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · Sala istituzionale. Confronto su sicurezza, comunicazione strategica e resilienza del Sistema Paese." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%283%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Presentazione progetto</span>
+                <strong>21 maggio 2026 · Sala istituzionale</strong>
+                <p>Confronto su sicurezza, comunicazione strategica e resilienza del Sistema Paese.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · Percorso editoriale. Difesa e sicurezza come responsabilità pubblica condivisa." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%284%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Presentazione progetto</span>
+                <strong>21 maggio 2026 · Percorso editoriale</strong>
+                <p>Difesa e sicurezza come responsabilità pubblica condivisa.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · LUISS Viale Pola. Comunicazione, geopolitica e formazione per l’interesse nazionale." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%281%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Cultura della Difesa</span>
+                <strong>18 settembre 2025 · LUISS Viale Pola</strong>
+                <p>Comunicazione, geopolitica e formazione per l’interesse nazionale.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · Sessione di confronto. Dialogo tra istituzioni, accademia, industria, informazione e vertici militari." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%282%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Cultura della Difesa</span>
+                <strong>18 settembre 2025 · Sessione di confronto</strong>
+                <p>Dialogo tra istituzioni, accademia, industria, informazione e vertici militari.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · Dibattito interdisciplinare. La Difesa come patrimonio civico, culturale e strategico del Paese." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%283%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Cultura della Difesa</span>
+                <strong>18 settembre 2025 · Dibattito interdisciplinare</strong>
+                <p>La Difesa come patrimonio civico, culturale e strategico del Paese.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · Tappa fondativa. La prima iniziativa da cui nasce il percorso Cultura della Difesa e Sicurezza." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%284%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Cultura della Difesa</span>
+                <strong>18 settembre 2025 · Tappa fondativa</strong>
+                <p>La prima iniziativa da cui nasce il percorso Cultura della Difesa e Sicurezza.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · LUISS The Dome. Valori, competenze e classe dirigente nei sistemi complessi." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%281%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Leadership, Etica e Formazione</span>
+                <strong>5 marzo 2026 · LUISS The Dome</strong>
+                <p>Valori, competenze e classe dirigente nei sistemi complessi.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · Dialogo educativo e istituzionale. Etica, responsabilità pubblica e formazione dei decisori." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%282%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Leadership, Etica e Formazione</span>
+                <strong>5 marzo 2026 · Dialogo educativo e istituzionale</strong>
+                <p>Etica, responsabilità pubblica e formazione dei decisori.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · Pubblico e relatori. La leadership come responsabilità, relazione e riconoscimento." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%283%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Leadership, Etica e Formazione</span>
+                <strong>5 marzo 2026 · Pubblico e relatori</strong>
+                <p>La leadership come responsabilità, relazione e riconoscimento.</p>
+              </div>
+            </div>
+            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · Panel principale. Educazione ai valori e governo della complessità." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%284%29.jpg');">
+              <div class="project-carousel-caption">
+                <span>Leadership, Etica e Formazione</span>
+                <strong>5 marzo 2026 · Panel principale</strong>
+                <p>Educazione ai valori e governo della complessità.</p>
+              </div>
+            </div>
+            <div class="project-carousel-dots" aria-label="Seleziona immagine del carosello">
+              <button class="project-carousel-dot active" type="button" aria-label="Mostra foto 1"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 2"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 3"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 4"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 5"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 6"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 7"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 8"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 9"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 10"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 11"></button>
+              <button class="project-carousel-dot" type="button" aria-label="Mostra foto 12"></button>
+            </div>
+          </div>
+          <div class="project-copy">
+            <span class="eyebrow" style="color: #ffffff;">Descrizione progetto</span>
+            <h2>Difesa e sicurezza come cultura pubblica condivisa</h2>
+            <p>Il progetto nasce per promuovere una visione integrata della sicurezza come dimensione sistemica del Paese, superando una lettura esclusivamente tecnica o specialistica della difesa.</p>
+            <p>Il percorso sviluppa momenti di confronto istituzionale, produzione editoriale, approfondimento scientifico e dialogo tra mondi diversi, con l’obiettivo di rafforzare consapevolezza, responsabilità civica, partecipazione e coesione nazionale.</p>
+            <p>La Cultura della Difesa e Sicurezza viene proposta come valore civico, strategico e democratico: un terreno comune nel quale istituzioni, Forze Armate, università, imprese, informazione e società civile possano contribuire alla resilienza del Sistema Paese.</p>
+
+          </div>
+        </div>
+
+
+      </div>
+    </section>
+
+    <section class="soft-section" id="premio">
+      <div class="container">
+        <div class="section-kicker">Premio annuale</div>
+        <h2 class="section-title">Premio “Cultura della Difesa e Sicurezza”</h2>
+        <p class="section-intro">Un riconoscimento culturale, istituzionale, formativo e civico rivolto a persone, istituzioni, organizzazioni, imprese, realtà formative, soggetti dell’informazione e società civile che abbiano contribuito alla diffusione della Cultura della Difesa e Sicurezza.</p>
+
+        <div class="grid-3">
+          <article class="card award-card-main">
+            <h3>Obiettivo del Premio</h3>
+            <p>Valorizzare esperienze, progettualità e percorsi capaci di rendere la difesa non soltanto una funzione specialistica dello Stato, ma una cultura pubblica condivisa, fondata su responsabilità, conoscenza, partecipazione, innovazione e coesione nazionale.</p>
+            <ul>
+              <li>Riconoscere buone pratiche e progetti innovativi.</li>
+              <li>Favorire il dialogo tra istituzioni, Forze Armate, università, imprese, media e corpi intermedi.</li>
+              <li>Contribuire alla costruzione di una comunità nazionale sui temi della sicurezza democratica e della resilienza.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Natura del riconoscimento</h3>
+            <p>Il Premio non prevede una competizione economica. Il riconoscimento consiste nel conferimento di una targa, attestato o altra forma simbolica di merito, accompagnata dalla valorizzazione pubblica del premiato attraverso i canali collegati all’iniziativa.</p>
+          </article>
+        </div>
+
+        <div class="timeline" aria-label="Calendario Premio">
+          <div class="timeline-step">
+            <span class="when">21 maggio 2026</span>
+            <h3>Lancio ufficiale</h3>
+            <p>Presentazione del bando nell’ambito del progetto Cultura della Difesa e Sicurezza.</p>
+          </div>
+          <div class="timeline-step">
+            <span class="when">1 luglio - 30 settembre</span>
+            <h3>Candidature</h3>
+            <p>Invio tramite modulo online e contatto della Segreteria del Premio.</p>
+          </div>
+          <div class="timeline-step">
+            <span class="when">Ottobre 2026</span>
+            <h3>Valutazione</h3>
+            <p>Istruttoria delle candidature e valutazione da parte della Giuria.</p>
+          </div>
+          <div class="timeline-step">
+            <span class="when">Ultimo trimestre 2026</span>
+            <h3>Premiazione</h3>
+            <p>Cerimonia di conferimento a Roma, presso il Senato della Repubblica.</p>
+          </div>
+        </div>
+
+        <div class="notice">
+          <strong>Pagina dedicata:</strong> questa home prevede il collegamento a una pagina autonoma del Premio, con bando completo, modulo di candidatura, regolamento, giuria, finalisti e Albo d’Oro.
+          <div style="margin-top: 1rem;">
+            <a class="btn btn-primary" href="premio-cultura-difesa-sicurezza.html">Vai alla pagina del Premio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="categorie">
+      <div class="container">
+        <div class="section-kicker">Categorie</div>
+        <h2 class="section-title">Cinque ambiti per raccontare la sicurezza democratica</h2>
+        <p class="section-intro">La I edizione del Premio riconosce contributi distinti ma convergenti: istituzioni, innovazione, formazione, comunicazione e cittadinanza attiva.</p>
+        <div class="grid-5">
+          <article class="card category-card">
+            <span class="category-number">1</span>
+            <h3>Promozione della cultura istituzionale</h3>
+            <p>Per chi rafforza la conoscenza del ruolo delle istituzioni, della difesa, della sicurezza nazionale, dell’interesse pubblico e della democrazia costituzionale.</p>
+          </article>
+          <article class="card category-card">
+            <span class="category-number">2</span>
+            <h3>Innovazione e tecnologia</h3>
+            <p>Per soluzioni, studi, iniziative o tecnologie capaci di rafforzare sicurezza, resilienza, autonomia strategica, capacità dual-use e protezione delle infrastrutture critiche.</p>
+          </article>
+          <article class="card category-card">
+            <span class="category-number">3</span>
+            <h3>Educazione e formazione</h3>
+            <p>Per percorsi educativi e formativi promossi da scuole, università, accademie, enti, imprese, aziende, fondazioni e organizzazioni professionali.</p>
+          </article>
+          <article class="card category-card">
+            <span class="category-number">4</span>
+            <h3>Comunicazione strategica e informazione</h3>
+            <p>Per giornalisti, comunicatori, media, autori, divulgatori, uffici comunicazione, progetti editoriali o campagne che raccontino con rigore i temi della sicurezza.</p>
+          </article>
+          <article class="card category-card">
+            <span class="category-number">5</span>
+            <h3>Corpi intermedi e cittadinanza attiva</h3>
+            <p>Per associazioni, fondazioni, ONG, ordini professionali, reti territoriali, terzo settore, gruppi civici e comunità impegnati in coesione e preparazione civile.</p>
+          </article>
+        </div>
+
+        <div class="grid-2" style="margin-top: 2rem;">
+          <article class="card">
+            <span class="promoter-label">Premio speciale</span>
+            <h3>Premio alla Carriera per la Difesa</h3>
+            <p>Riconoscimento destinato a una personalità, istituzione, organizzazione o progettualità che abbia contribuito in modo significativo e continuativo alla diffusione della Cultura della Difesa e Sicurezza.</p>
+          </article>
+          <article class="card">
+            <span class="promoter-label">Nuove generazioni</span>
+            <h3>Premio Giovani per la Difesa</h3>
+            <p>Riconoscimento rivolto prevalentemente a giovani under 35, studenti, ricercatori, professionisti, gruppi, startup o realtà emergenti con iniziative coerenti con le finalità del Premio.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="soft-section" id="promotori">
+      <div class="container">
+        <div class="section-kicker">Soggetti promotori</div>
+        <h2 class="section-title">Una piattaforma condivisa</h2>
+        <p class="section-intro">Il progetto e il Premio sono promossi da DYNAMES, FORM&ATP e Luiss – Scuola di giornalismo, con competenze complementari nei campi dell’analisi, della formazione, della comunicazione e dello sviluppo istituzionale.</p>
+        <div class="grid-3">
+          <article class="card promoter-card">
+            <span class="promoter-label">Editoria e analisi</span>
+            <h3>DYNAMES</h3>
+            <p>Progetto editoriale e scientifico, edito da Fondazione Boscacci ETS, dedicato all’analisi delle dinamiche che governano i sistemi complessi, con particolare attenzione a difesa, sicurezza e resilienza del Sistema Paese.</p>
+          </article>
+          <article class="card promoter-card">
+            <span class="promoter-label">Formazione e competenze</span>
+            <h3>FORM&ATP</h3>
+            <p>Realtà impegnata nella formazione, nella valorizzazione delle competenze professionali, nella comunicazione e nello sviluppo di percorsi di crescita individuale, organizzativa e istituzionale.</p>
+          </article>
+          <article class="card promoter-card">
+            <span class="promoter-label">Giornalismo e responsabilità pubblica</span>
+            <h3>Luiss – Scuola di giornalismo</h3>
+            <p>Istituzione formativa dedicata alla preparazione delle nuove generazioni di professionisti dell’informazione, con attenzione alla qualità del giornalismo e alla comprensione dei fenomeni contemporanei.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contatti">
+      <div class="container">
+        <div class="contact-band">
+          <div>
+            <h2>Partecipa alla costruzione della Cultura della Difesa e Sicurezza</h2>
+            <p>Per informazioni relative al Premio, alle modalità di candidatura e alla documentazione richiesta è possibile contattare la Segreteria del Premio.</p>
+          </div>
+          <a class="btn" href="mailto:premio@culturadifesaesicurezza.it">Scrivi alla Segreteria</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <h3>Cultura della Difesa e Sicurezza</h3>
+        <p>Un progetto promosso da DYNAMES, FORM&ATP e Luiss – Scuola di giornalismo per promuovere consapevolezza, resilienza e responsabilità democratica.</p>
+      </div>
+      <div>
+        <h4>Contatti Premio</h4>
+        <p><a href="mailto:premio@culturadifesaesicurezza.it">premio@culturadifesaesicurezza.it</a></p>
+        <p><a href="https://www.culturadifesaesicurezza.it" target="_blank" rel="noopener noreferrer">www.culturadifesaesicurezza.it</a></p>
+      </div>
+      <div>
+        <h4>Promotori</h4>
+        <p>DYNAMES<br />FORM&ATP<br />Luiss – Scuola di giornalismo</p>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>Copyright 2026 © Fondazione Boscacci ETS. Tutti i diritti sono riservati.</p>
+      <p><a href="Privacy-Policy.html">Privacy Policy</a></p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      var nav = document.getElementById('desktopNav');
+      nav.classList.toggle('active');
+    }
+
+    document.querySelectorAll('.desktop-nav a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        var nav = document.getElementById('desktopNav');
+        if (nav) nav.classList.remove('active');
+      });
+    });
+
+    (function initProjectCarousel() {
+      var slides = document.querySelectorAll('.project-carousel-slide');
+      var dots = document.querySelectorAll('.project-carousel-dot');
+      if (!slides.length || !dots.length) return;
+
+      var currentIndex = 0;
+      var timer = null;
+      var intervalMs = 4000;
+
+      function showSlide(index) {
+        currentIndex = (index + slides.length) % slides.length;
+        slides.forEach(function(slide, slideIndex) {
+          slide.classList.toggle('active', slideIndex === currentIndex);
+        });
+        dots.forEach(function(dot, dotIndex) {
+          dot.classList.toggle('active', dotIndex === currentIndex);
+        });
+      }
+
+      function startAutoplay() {
+        stopAutoplay();
+        timer = setInterval(function() {
+          showSlide(currentIndex + 1);
+        }, intervalMs);
+      }
+
+      function stopAutoplay() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      dots.forEach(function(dot, dotIndex) {
+        dot.addEventListener('click', function() {
+          showSlide(dotIndex);
+          startAutoplay();
+        });
+      });
+
+      var carousel = document.querySelector('.project-visual');
+      if (carousel) {
+        carousel.addEventListener('mouseenter', stopAutoplay);
+        carousel.addEventListener('mouseleave', startAutoplay);
+        carousel.addEventListener('focusin', stopAutoplay);
+        carousel.addEventListener('focusout', startAutoplay);
+      }
+
+      startAutoplay();
+    })();
+  </script>
+</body>
+</html>
