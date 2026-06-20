@@ -6,11 +6,11 @@
   <title>Cultura della Difesa e Sicurezza</title>
   <meta name="description" content="Il progetto Cultura della Difesa e Sicurezza promuove consapevolezza, formazione, comunicazione responsabile e resilienza democratica attraverso eventi, produzione editoriale e il Premio annuale." />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" rel="icon" type="image/png" />
+  <link href="assets/logo-dynames-white.png" rel="icon" type="image/png" />
   <meta property="og:title" content="Cultura della Difesa e Sicurezza" />
   <meta property="og:description" content="Un percorso culturale, editoriale e istituzionale per rafforzare consapevolezza, resilienza e qualità del dibattito pubblico sui temi della difesa e della sicurezza." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" />
+  <meta property="og:image" content="https://dynames.it/assets/logo-dynames-white.png" />
   <style>
     :root {
       --granata: #6f1f2d;
@@ -191,17 +191,18 @@
     .desktop-nav {
       display: flex;
       align-items: center;
-      gap: 1.35rem;
+      gap: 1.15rem;
     }
 
     .desktop-nav a {
       text-decoration: none;
-      color: var(--ink);
+      color: var(--slate);
+      background: transparent;
       font-weight: 700;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      transition: color 0.25s ease;
+      transition: color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
       white-space: nowrap;
     }
 
@@ -545,16 +546,6 @@
       transition: opacity 0.85s ease, transform 1.8s ease;
     }
 
-    .project-carousel-slide::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, rgba(79, 20, 32, 0.62), rgba(79, 20, 32, 0.24)),
-        linear-gradient(180deg, rgba(79, 20, 32, 0.12), rgba(79, 20, 32, 0.72));
-      pointer-events: none;
-    }
-
     .project-carousel-slide.active {
       opacity: 1;
       transform: scale(1);
@@ -592,10 +583,6 @@
       outline-offset: 3px;
     }
 
-    .project-carousel-slide::after {
-      z-index: 1;
-    }
-
     .project-carousel-caption {
       position: absolute;
       top: 2rem;
@@ -605,8 +592,7 @@
       max-width: 440px;
       padding: 1.15rem 1.25rem;
       border-left: 4px solid var(--gold);
-      background: rgba(79, 20, 32, 0.72);
-      backdrop-filter: blur(7px);
+      background: var(--granata-dark);
       box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
     }
 
@@ -623,10 +609,13 @@
 
     .project-carousel-caption strong {
       display: block;
-      color: var(--white);
+      color: rgba(255, 255, 255, 0.88);
       font-family: 'Montserrat', sans-serif;
-      font-size: clamp(1rem, 1.8vw, 1.35rem);
-      line-height: 1.14;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      line-height: 1.25;
       margin-bottom: 0.45rem;
     }
 
@@ -719,10 +708,67 @@
       grid-column: span 2;
     }
 
-    .category-card {
+    .award-card-wide {
+      grid-column: 1 / -1;
+    }
+
+    .award-calendar {
+      margin-top: 2.4rem;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 2rem;
+      box-shadow: 0 16px 35px rgba(112, 32, 46, 0.08);
+    }
+
+    .award-calendar-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .award-calendar-heading h3 {
+      color: var(--granata);
+      font-size: 1.45rem;
+      line-height: 1.2;
+      margin-top: 0.45rem;
+    }
+
+    .award-calendar-heading p {
+      color: var(--slate);
+      max-width: 460px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .category-card,
+    .special-award-card {
       min-height: 100%;
       position: relative;
-      padding-top: 4.2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .category-card {
+      padding-top: 2rem;
+    }
+
+    .category-icon {
+      width: 118px;
+      height: 118px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 1.15rem;
+      filter: drop-shadow(0 10px 18px rgba(111, 31, 45, 0.10));
+    }
+
+    .special-award-card .category-icon {
+      width: 128px;
+      height: 128px;
     }
 
     .category-number {
@@ -744,29 +790,56 @@
     }
 
     .timeline {
+      position: relative;
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1rem;
-      margin-top: 2rem;
+      gap: 1.35rem;
+      margin-top: 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      top: 27px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(112, 32, 46, 0.18), rgba(112, 32, 46, 0.65), rgba(112, 32, 46, 0.18));
     }
 
     .timeline-step {
-      background: var(--granata-pale);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 1.3rem;
       position: relative;
-      overflow: hidden;
+      padding: 0;
+      background: transparent;
+      border: none;
+      min-width: 0;
     }
 
     .timeline-step::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 5px;
+      content: attr(data-step);
+      position: relative;
+      z-index: 1;
+      width: 54px;
+      height: 54px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
       background: var(--granata);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 22px rgba(112, 32, 46, 0.18);
+      margin-bottom: 1rem;
+    }
+
+    .timeline-step-content {
+      background: var(--granata-pale);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.2rem;
+      min-height: 165px;
     }
 
     .timeline-step .when {
@@ -776,14 +849,14 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      font-size: 0.78rem;
-      margin-bottom: 0.45rem;
+      font-size: 0.74rem;
+      margin-bottom: 0.5rem;
     }
 
     .timeline-step h3 {
       color: var(--ink);
-      font-size: 1rem;
-      margin-bottom: 0.35rem;
+      font-size: 1.05rem;
+      margin-bottom: 0.45rem;
     }
 
     .timeline-step p {
@@ -807,9 +880,52 @@
     }
 
     .promoter-card {
+      padding: 0;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      align-items: stretch;
+      text-align: center;
       min-height: 100%;
+    }
+
+    .promoter-card .promoter-logo-wrap {
+      width: 100%;
+      background: var(--granata);
+      border-radius: 18px 18px 0 0;
+      min-height: 132px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.4rem 1.2rem;
+      margin-bottom: 0;
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .promoter-card .promoter-logo-wrap img {
+      max-width: 100%;
+      max-height: 74px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .promoter-card .promoter-content {
+      padding: 1.7rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      height: 100%;
+    }
+
+    #promotori .section-kicker,
+    #promotori .section-title,
+    #promotori .section-intro,
+    #promotori .promoter-card h3,
+    #promotori .promoter-card p {
+      text-align: center;
     }
 
     .promoter-label {
@@ -850,26 +966,6 @@
       background: var(--white);
       color: var(--granata);
       flex-shrink: 0;
-    }
-
-    .contact-band-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.85rem;
-      align-items: center;
-      justify-content: flex-end;
-      flex-shrink: 0;
-    }
-
-    .contact-band .btn-download {
-      background: rgba(255, 255, 255, 0.14);
-      color: var(--white);
-      border: 1px solid rgba(255, 255, 255, 0.38);
-    }
-
-    .contact-band .btn-download:hover {
-      background: rgba(255, 255, 255, 0.22);
-      color: var(--white);
     }
 
     footer {
@@ -920,6 +1016,10 @@
       .timeline,
       .feature-strip {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .timeline::before {
+        display: none;
       }
     }
 
@@ -981,6 +1081,15 @@
         grid-template-columns: 1fr;
       }
 
+      .award-calendar,
+      .award-calendar-heading {
+        display: block;
+      }
+
+      .award-calendar-heading p {
+        margin-top: 0.75rem;
+      }
+
       .award-card-main {
         grid-column: span 1;
       }
@@ -997,11 +1106,6 @@
       .contact-band {
         flex-direction: column;
         align-items: flex-start;
-      }
-
-      .contact-band-actions {
-        justify-content: flex-start;
-        align-self: stretch;
       }
     }
 
@@ -1031,6 +1135,14 @@
       .timeline,
       .feature-strip {
         grid-template-columns: 1fr;
+      }
+
+      .award-calendar {
+        padding: 1.35rem;
+      }
+
+      .timeline-step-content {
+        min-height: auto;
       }
 
       .top-ribbon .container,
@@ -1080,7 +1192,7 @@
   <header>
     <div class="container header-inner">
       <a class="brand" href="#top" aria-label="Cultura della Difesa e Sicurezza - home">
-        <img class="brand-logo" src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="" aria-hidden="true" onerror="this.style.display='none'" />
+        <img class="brand-logo" src="assets/logo-dynames-white.png" alt="" aria-hidden="true" onerror="this.style.display='none'" />
         <span>
           <span class="brand-title">Cultura della Difesa e Sicurezza</span>
         </span>
@@ -1093,7 +1205,8 @@
         <a href="#premio">Premio</a>
         <a href="#categorie">Categorie</a>
         <a href="#promotori">Promotori</a>
-        <a href="#contatti" class="nav-cta">Contatti</a>
+        <a href="#contatti">Contatti</a>
+        <a href="regolamento-e-candidatura.html" class="nav-cta">Regolamento e candidatura</a>
       </nav>
     </div>
   </header>
@@ -1118,87 +1231,87 @@
       <div class="container">
         <div class="project-block">
           <div class="project-visual" aria-label="Carosello fotografico del progetto Cultura della Difesa e Sicurezza">
-            <div class="project-carousel-slide active" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · Biblioteca Camera “Nilde Iotti”. Lancio del percorso, del report, del quadrimestrale e del Premio." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%281%29.jpg');">
+            <div class="project-carousel-slide active" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · presso Camera dei deputati. Lancio del percorso, del report, del quadrimestrale e del Premio." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%281%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Presentazione progetto</span>
-                <strong>21 maggio 2026 · Biblioteca Camera “Nilde Iotti”</strong>
+                <strong>21 maggio 2026 · presso Camera dei deputati</strong>
                 <p>Lancio del percorso, del report, del quadrimestrale e del Premio.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · Relatori e promotori. Il progetto si consolida come piattaforma stabile di analisi e relazione." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%282%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · presso Camera dei deputati. Il progetto si consolida come piattaforma stabile di analisi e relazione." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%282%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Presentazione progetto</span>
-                <strong>21 maggio 2026 · Relatori e promotori</strong>
+                <strong>21 maggio 2026 · presso Camera dei deputati</strong>
                 <p>Il progetto si consolida come piattaforma stabile di analisi e relazione.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · Sala istituzionale. Confronto su sicurezza, comunicazione strategica e resilienza del Sistema Paese." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%283%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · presso Camera dei deputati. Confronto su sicurezza, comunicazione strategica e resilienza del Sistema Paese." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%283%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Presentazione progetto</span>
-                <strong>21 maggio 2026 · Sala istituzionale</strong>
+                <strong>21 maggio 2026 · presso Camera dei deputati</strong>
                 <p>Confronto su sicurezza, comunicazione strategica e resilienza del Sistema Paese.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · Percorso editoriale. Difesa e sicurezza come responsabilità pubblica condivisa." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%284%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Presentazione progetto - 21 maggio 2026 · presso Camera dei deputati. Difesa e sicurezza come responsabilità pubblica condivisa." style="background-image: url('assets/Presentazione%20Progetto%20-%2021%20maggio%202026%20%284%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Presentazione progetto</span>
-                <strong>21 maggio 2026 · Percorso editoriale</strong>
+                <strong>21 maggio 2026 · presso Camera dei deputati</strong>
                 <p>Difesa e sicurezza come responsabilità pubblica condivisa.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · LUISS Viale Pola. Comunicazione, geopolitica e formazione per l’interesse nazionale." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%281%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · presso LUISS. Comunicazione, geopolitica e formazione per l’interesse nazionale." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%281%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Cultura della Difesa</span>
-                <strong>18 settembre 2025 · LUISS Viale Pola</strong>
+                <strong>18 settembre 2025 · presso LUISS</strong>
                 <p>Comunicazione, geopolitica e formazione per l’interesse nazionale.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · Sessione di confronto. Dialogo tra istituzioni, accademia, industria, informazione e vertici militari." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%282%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · presso LUISS. Dialogo tra istituzioni, accademia, industria, informazione e vertici militari." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%282%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Cultura della Difesa</span>
-                <strong>18 settembre 2025 · Sessione di confronto</strong>
+                <strong>18 settembre 2025 · presso LUISS</strong>
                 <p>Dialogo tra istituzioni, accademia, industria, informazione e vertici militari.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · Dibattito interdisciplinare. La Difesa come patrimonio civico, culturale e strategico del Paese." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%283%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · presso LUISS. La Difesa come patrimonio civico, culturale e strategico del Paese." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%283%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Cultura della Difesa</span>
-                <strong>18 settembre 2025 · Dibattito interdisciplinare</strong>
+                <strong>18 settembre 2025 · presso LUISS</strong>
                 <p>La Difesa come patrimonio civico, culturale e strategico del Paese.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · Tappa fondativa. La prima iniziativa da cui nasce il percorso Cultura della Difesa e Sicurezza." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%284%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Cultura della Difesa - 18 settembre 2025 · presso LUISS. La prima iniziativa da cui nasce il percorso Cultura della Difesa e Sicurezza." style="background-image: url('assets/Cultura%20della%20Difesa%20-%2018%20settembre%202025%20%20%20%284%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Cultura della Difesa</span>
-                <strong>18 settembre 2025 · Tappa fondativa</strong>
+                <strong>18 settembre 2025 · presso LUISS</strong>
                 <p>La prima iniziativa da cui nasce il percorso Cultura della Difesa e Sicurezza.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · LUISS The Dome. Valori, competenze e classe dirigente nei sistemi complessi." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%281%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · presso LUISS. Valori, competenze e classe dirigente nei sistemi complessi." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%281%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Leadership, Etica e Formazione</span>
-                <strong>5 marzo 2026 · LUISS The Dome</strong>
+                <strong>5 marzo 2026 · presso LUISS</strong>
                 <p>Valori, competenze e classe dirigente nei sistemi complessi.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · Dialogo educativo e istituzionale. Etica, responsabilità pubblica e formazione dei decisori." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%282%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · presso LUISS. Etica, responsabilità pubblica e formazione dei decisori." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%282%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Leadership, Etica e Formazione</span>
-                <strong>5 marzo 2026 · Dialogo educativo e istituzionale</strong>
+                <strong>5 marzo 2026 · presso LUISS</strong>
                 <p>Etica, responsabilità pubblica e formazione dei decisori.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · Pubblico e relatori. La leadership come responsabilità, relazione e riconoscimento." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%283%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · presso LUISS. La leadership come responsabilità, relazione e riconoscimento." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%283%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Leadership, Etica e Formazione</span>
-                <strong>5 marzo 2026 · Pubblico e relatori</strong>
+                <strong>5 marzo 2026 · presso LUISS</strong>
                 <p>La leadership come responsabilità, relazione e riconoscimento.</p>
               </div>
             </div>
-            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · Panel principale. Educazione ai valori e governo della complessità." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%284%29.jpg');">
+            <div class="project-carousel-slide" role="img" aria-label="Leadership, Etica e Formazione - 5 marzo 2026 · presso LUISS. Educazione ai valori e governo della complessità." style="background-image: url('assets/Leadership%2C%20Etica%20e%20Formazione%20-%205%20marzo%202026%20%284%29.jpg');">
               <div class="project-carousel-caption">
                 <span>Leadership, Etica e Formazione</span>
-                <strong>5 marzo 2026 · Panel principale</strong>
+                <strong>5 marzo 2026 · presso LUISS</strong>
                 <p>Educazione ai valori e governo della complessità.</p>
               </div>
             </div>
@@ -1238,7 +1351,7 @@
         <p class="section-intro">Un riconoscimento culturale, istituzionale, formativo e civico rivolto a persone, istituzioni, organizzazioni, imprese, realtà formative, soggetti dell’informazione e società civile che abbiano contribuito alla diffusione della Cultura della Difesa e Sicurezza.</p>
 
         <div class="grid-3">
-          <article class="card award-card-main">
+          <article class="card award-card-main award-card-wide">
             <h3>Obiettivo del Premio</h3>
             <p>Valorizzare esperienze, progettualità e percorsi capaci di rendere la difesa non soltanto una funzione specialistica dello Stato, ma una cultura pubblica condivisa, fondata su responsabilità, conoscenza, partecipazione, innovazione e coesione nazionale.</p>
             <ul>
@@ -1247,41 +1360,48 @@
               <li>Contribuire alla costruzione di una comunità nazionale sui temi della sicurezza democratica e della resilienza.</li>
             </ul>
           </article>
-          <article class="card">
-            <h3>Natura del riconoscimento</h3>
-            <p>Il Premio non prevede una competizione economica. Il riconoscimento consiste nel conferimento di una targa, attestato o altra forma simbolica di merito, accompagnata dalla valorizzazione pubblica del premiato attraverso i canali collegati all’iniziativa.</p>
-          </article>
         </div>
 
-        <div class="timeline" aria-label="Calendario Premio">
-          <div class="timeline-step">
-            <span class="when">21 maggio 2026</span>
-            <h3>Lancio ufficiale</h3>
-            <p>Presentazione del bando nell’ambito del progetto Cultura della Difesa e Sicurezza.</p>
+        <div class="award-calendar">
+          <div class="award-calendar-heading">
+            <div>
+              <span class="eyebrow">Calendario</span>
+              <h3>Le tappe della I edizione</h3>
+            </div>
+            <p>Un percorso lineare: lancio del bando, apertura delle candidature, valutazione e cerimonia di conferimento.</p>
           </div>
-          <div class="timeline-step">
-            <span class="when">1 luglio - 30 settembre</span>
-            <h3>Candidature</h3>
-            <p>Invio tramite modulo online e contatto della Segreteria del Premio.</p>
-          </div>
-          <div class="timeline-step">
-            <span class="when">Ottobre 2026</span>
-            <h3>Valutazione</h3>
-            <p>Istruttoria delle candidature e valutazione da parte della Giuria.</p>
-          </div>
-          <div class="timeline-step">
-            <span class="when">Ultimo trimestre 2026</span>
-            <h3>Premiazione</h3>
-            <p>Cerimonia di conferimento a Roma, presso il Senato della Repubblica.</p>
+          <div class="timeline" aria-label="Calendario Premio">
+            <div class="timeline-step" data-step="01">
+              <div class="timeline-step-content">
+                <span class="when">21 maggio 2026</span>
+                <h3>Lancio ufficiale</h3>
+                <p>Presentazione del bando nell’ambito del progetto Cultura della Difesa e Sicurezza.</p>
+              </div>
+            </div>
+            <div class="timeline-step" data-step="02">
+              <div class="timeline-step-content">
+                <span class="when">1 luglio - 30 settembre</span>
+                <h3>Candidature</h3>
+                <p>Invio tramite modulo online e contatto della Segreteria del Premio.</p>
+              </div>
+            </div>
+            <div class="timeline-step" data-step="03">
+              <div class="timeline-step-content">
+                <span class="when">Ottobre 2026</span>
+                <h3>Valutazione</h3>
+                <p>Istruttoria delle candidature e valutazione da parte della Giuria.</p>
+              </div>
+            </div>
+            <div class="timeline-step" data-step="04">
+              <div class="timeline-step-content">
+                <span class="when">Ultimo trimestre 2026</span>
+                <h3>Premiazione</h3>
+                <p>Cerimonia di conferimento a Roma, presso il Senato della Repubblica.</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="notice">
-          <strong>Pagina dedicata:</strong> questa home prevede il collegamento a una pagina autonoma del Premio, con bando completo, modulo di candidatura, regolamento, giuria, finalisti e Albo d’Oro.
-          <div style="margin-top: 1rem;">
-            <a class="btn btn-primary" href="premio-cultura-difesa-sicurezza.html">Vai alla pagina del Premio</a>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -1293,42 +1413,60 @@
         <div class="grid-5">
           <article class="card category-card">
             <span class="category-number">1</span>
+            <img class="category-icon" src="assets/Promozione%20della%20cultura%20istituzionale.png" alt="Icona Promozione della cultura istituzionale"/>
             <h3>Promozione della cultura istituzionale</h3>
             <p>Per chi rafforza la conoscenza del ruolo delle istituzioni, della difesa, della sicurezza nazionale, dell’interesse pubblico e della democrazia costituzionale.</p>
           </article>
           <article class="card category-card">
             <span class="category-number">2</span>
+            <img class="category-icon" src="assets/Innovazione%20e%20tecnologia.png" alt="Icona Innovazione e tecnologia"/>
             <h3>Innovazione e tecnologia</h3>
             <p>Per soluzioni, studi, iniziative o tecnologie capaci di rafforzare sicurezza, resilienza, autonomia strategica, capacità dual-use e protezione delle infrastrutture critiche.</p>
           </article>
           <article class="card category-card">
             <span class="category-number">3</span>
+            <img class="category-icon" src="assets/Educazione%20e%20formazione.png" alt="Icona Educazione e formazione"/>
             <h3>Educazione e formazione</h3>
             <p>Per percorsi educativi e formativi promossi da scuole, università, accademie, enti, imprese, aziende, fondazioni e organizzazioni professionali.</p>
           </article>
           <article class="card category-card">
             <span class="category-number">4</span>
+            <img class="category-icon" src="assets/Comunicazione%20strategica%20e%20informazione.png" alt="Icona Comunicazione strategica e informazione"/>
             <h3>Comunicazione strategica e informazione</h3>
             <p>Per giornalisti, comunicatori, media, autori, divulgatori, uffici comunicazione, progetti editoriali o campagne che raccontino con rigore i temi della sicurezza.</p>
           </article>
           <article class="card category-card">
             <span class="category-number">5</span>
+            <img class="category-icon" src="assets/Corpi%20intermedi%20e%20cittadinanza%20attiva.png" alt="Icona Corpi intermedi e cittadinanza attiva"/>
             <h3>Corpi intermedi e cittadinanza attiva</h3>
             <p>Per associazioni, fondazioni, ONG, ordini professionali, reti territoriali, terzo settore, gruppi civici e comunità impegnati in coesione e preparazione civile.</p>
           </article>
         </div>
 
         <div class="grid-2" style="margin-top: 2rem;">
-          <article class="card">
+          <article class="card special-award-card">
             <span class="promoter-label">Premio speciale</span>
+            <img class="category-icon" src="assets/Premio%20alla%20Carriera%20per%20la%20Difesa.png" alt="Icona Premio alla Carriera per la Difesa"/>
             <h3>Premio alla Carriera per la Difesa</h3>
             <p>Riconoscimento destinato a una personalità, istituzione, organizzazione o progettualità che abbia contribuito in modo significativo e continuativo alla diffusione della Cultura della Difesa e Sicurezza.</p>
           </article>
-          <article class="card">
+          <article class="card special-award-card">
             <span class="promoter-label">Nuove generazioni</span>
+            <img class="category-icon" src="assets/Premio%20Giovani%20per%20la%20Difesa.png" alt="Icona Premio Giovani per la Difesa"/>
             <h3>Premio Giovani per la Difesa</h3>
             <p>Riconoscimento rivolto prevalentemente a giovani under 35, studenti, ricercatori, professionisti, gruppi, startup o realtà emergenti con iniziative coerenti con le finalità del Premio.</p>
           </article>
+        </div>      </div>
+    </section>
+
+    <section id="contatti">
+      <div class="container">
+        <div class="contact-band">
+          <div>
+            <h2>Partecipa alla costruzione della Cultura della Difesa e Sicurezza</h2>
+            <p>Per informazioni relative al Premio, alle modalità di candidatura e alla documentazione richiesta è possibile fare riferimento al regolamento o contattare la Segreteria del Premio.</p>
+          </div>
+          <a class="btn" href="regolamento-e-candidatura.html">Leggi il regolamento e candidati</a>
         </div>
       </div>
     </section>
@@ -1340,32 +1478,35 @@
         <p class="section-intro">Il progetto e il Premio sono promossi da DYNAMES, FORM&ATP e Luiss – Scuola di giornalismo, con competenze complementari nei campi dell’analisi, della formazione, della comunicazione e dello sviluppo istituzionale.</p>
         <div class="grid-3">
           <article class="card promoter-card">
-            <span class="promoter-label">Editoria e analisi</span>
-            <h3>DYNAMES</h3>
-            <p>Progetto editoriale e scientifico, edito da Fondazione Boscacci ETS, dedicato all’analisi delle dinamiche che governano i sistemi complessi, con particolare attenzione a difesa, sicurezza e resilienza del Sistema Paese.</p>
+            <div class="promoter-logo-wrap">
+              <img src="assets/logo-dynames-white.png" alt="Logo DYNAMES" />
+            </div>
+            <div class="promoter-content">
+              <span class="promoter-label">Editoria e analisi</span>
+              <h3>DYNAMES</h3>
+              <p>Progetto editoriale e scientifico, edito da Fondazione Boscacci ETS, dedicato all’analisi delle dinamiche che governano i sistemi complessi, con particolare attenzione a difesa, sicurezza e resilienza del Sistema Paese.</p>
+            </div>
           </article>
           <article class="card promoter-card">
-            <span class="promoter-label">Formazione e competenze</span>
-            <h3>FORM&ATP</h3>
-            <p>Realtà impegnata nella formazione, nella valorizzazione delle competenze professionali, nella comunicazione e nello sviluppo di percorsi di crescita individuale, organizzativa e istituzionale.</p>
+            <div class="promoter-logo-wrap">
+              <img src="assets/logo-form-atp-white.png" alt="Logo FORM&amp;ATP" />
+            </div>
+            <div class="promoter-content">
+              <span class="promoter-label">Formazione e competenze</span>
+              <h3>FORM&amp;ATP</h3>
+              <p>Realtà impegnata nella formazione, nella valorizzazione delle competenze professionali, nella comunicazione e nello sviluppo di percorsi di crescita individuale, organizzativa e istituzionale.</p>
+            </div>
           </article>
           <article class="card promoter-card">
-            <span class="promoter-label">Giornalismo e responsabilità pubblica</span>
-            <h3>Luiss – Scuola di giornalismo</h3>
-            <p>Istituzione formativa dedicata alla preparazione delle nuove generazioni di professionisti dell’informazione, con attenzione alla qualità del giornalismo e alla comprensione dei fenomeni contemporanei.</p>
+            <div class="promoter-logo-wrap">
+              <img src="assets/logo-luiss-scuola-giornalismo-white.png" alt="Logo Luiss Scuola di giornalismo" />
+            </div>
+            <div class="promoter-content">
+              <span class="promoter-label">Giornalismo e informazione</span>
+              <h3>Luiss – Scuola di giornalismo</h3>
+              <p>Istituzione formativa dedicata alla preparazione delle nuove generazioni di professionisti dell’informazione, con attenzione alla qualità del giornalismo e alla comprensione dei fenomeni contemporanei.</p>
+            </div>
           </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="contatti">
-      <div class="container">
-        <div class="contact-band">
-          <div>
-            <h2>Partecipa alla costruzione della Cultura della Difesa e Sicurezza</h2>
-            <p>Per informazioni relative al Premio, alle modalità di candidatura e alla documentazione richiesta è possibile contattare la Segreteria del Premio.</p>
-          </div>
-          <a class="btn" href="mailto:premio@culturadifesaesicurezza.it">Scrivi alla Segreteria</a>
         </div>
       </div>
     </section>
