@@ -43,6 +43,10 @@
         --paper-bg: #fdfbf7;
         --gold-accent: #b8935a;
         --border: #e2e8f0;
+        --dynames-blue: #0b1c2d;
+        --dynames-slate: #263a58;
+        --dynames-grey: #ededed;
+        --dynames-electric: #27a8ff;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -162,72 +166,159 @@
 
     .cover-card {
         position: relative;
-        min-height: 450px;
-        padding: 1rem;
-        border: 1px solid var(--border);
-        background: var(--optical-white);
-        box-shadow: 0 22px 40px rgba(15, 23, 42, .16);
-        transform: rotate(1deg);
+        min-height: 468px;
+        padding: .65rem;
+        border: 1px solid #d8dde3;
+        background: var(--dynames-grey);
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .2);
+        transform: rotate(.6deg);
     }
     .publication-cover {
         position: relative;
         display: flex;
-        min-height: 418px;
+        min-height: 445px;
         height: 100%;
         overflow: hidden;
         flex-direction: column;
-        justify-content: space-between;
-        padding: 2rem;
         background:
-            linear-gradient(145deg, rgba(184,147,90,.18), transparent 45%),
-            linear-gradient(160deg, #0b1120 0 58%, #294967 58% 78%, #f4eadb 78%);
+            radial-gradient(circle at 76% 31%, rgba(39, 168, 255, .12), transparent 31%),
+            linear-gradient(145deg, #102946 0%, var(--dynames-blue) 58%, #071321 100%);
         color: white;
+        isolation: isolate;
+    }
+    .publication-cover::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        left: -12%;
+        right: -12%;
+        bottom: -16%;
+        height: 47%;
+        background: var(--dynames-grey);
+        transform: rotate(-8deg);
+        transform-origin: center;
     }
     .publication-cover::after {
         content: "";
         position: absolute;
-        right: -48px;
-        top: 58%;
-        width: 160px;
-        height: 160px;
-        border: 1px solid rgba(255,255,255,.28);
+        z-index: 1;
+        right: -56px;
+        bottom: 12px;
+        width: 155px;
+        height: 155px;
+        border: 1px solid rgba(39, 168, 255, .28);
         border-radius: 50%;
     }
     .cover-series {
-        color: #e8d4b5;
-        font-size: .66rem;
+        margin-bottom: .65rem;
+        color: #8fd3ff;
+        font-size: .62rem;
         font-weight: 700;
-        letter-spacing: .18em;
+        letter-spacing: .2em;
         text-transform: uppercase;
+    }
+    .cover-brand {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: 1.25rem 1.35rem 0;
+    }
+    .cover-brand-mark {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0) invert(1);
+    }
+    .cover-brand-copy {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+    }
+    .cover-brand-copy strong {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: .15em;
+    }
+    .cover-brand-copy span {
+        margin-top: .3rem;
+        color: #c6d1dc;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .46rem;
+        letter-spacing: .08em;
+    }
+    .cover-copy {
+        position: relative;
+        z-index: 3;
+        width: 88%;
+        margin: 3.1rem 1.7rem 7.4rem;
     }
     .cover-kicker {
         display: inline-block;
         width: fit-content;
-        margin-bottom: 1.2rem;
-        padding: .35rem .65rem;
-        border: 1px solid rgba(255,255,255,.55);
-        font-size: .7rem;
+        margin-bottom: 1rem;
+        padding: .38rem .7rem;
+        border: 1px solid #76c9ff;
+        background: rgba(39, 168, 255, .1);
+        color: white;
+        font-size: .64rem;
         font-weight: 700;
         letter-spacing: .16em;
         text-transform: uppercase;
     }
     .cover-title {
-        max-width: 92%;
+        max-width: 100%;
         color: white;
-        font-family: 'Playfair Display', serif;
-        font-size: 2.1rem;
-        line-height: 1.06;
-    }
-    .cover-author {
-        position: relative;
-        z-index: 1;
-        align-self: flex-start;
-        color: var(--night-blue);
         font-family: 'Montserrat', sans-serif;
-        font-size: .82rem;
+        font-size: 1.72rem;
         font-weight: 800;
-        letter-spacing: .08em;
+        letter-spacing: -.035em;
+        line-height: 1.08;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, .24);
+    }
+    .cover-footer {
+        position: absolute;
+        z-index: 4;
+        right: 1.4rem;
+        bottom: 1.2rem;
+        left: 1.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--dynames-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .68rem;
+        font-weight: 800;
+        letter-spacing: .1em;
         text-transform: uppercase;
+    }
+    .cover-year {
+        color: var(--dynames-electric);
+        font-size: .78rem;
+    }
+    .cover-network {
+        position: absolute;
+        z-index: 2;
+        top: 2.6rem;
+        right: -1.1rem;
+        width: 57%;
+        opacity: .72;
+        pointer-events: none;
+    }
+    .cover-network line,
+    .cover-network polyline {
+        fill: none;
+        stroke: rgba(201, 235, 255, .72);
+        stroke-width: 1.4;
+    }
+    .cover-network circle {
+        fill: white;
+        stroke: var(--dynames-electric);
+        stroke-width: 2.5;
+        filter: drop-shadow(0 0 4px #42b3ff);
     }
 
     .section, .paper-section { margin-bottom: 3.6rem; }
@@ -466,14 +557,36 @@
 </div>
 <div class="cover-card" aria-label="Copertina del white paper Prima del tavolo: il contesto come forza negoziale">
 <div class="publication-cover">
-<div>
-<div class="cover-series">DYNAMES · Paper &amp; Dossier</div>
+<div class="cover-brand">
+<img alt="" aria-hidden="true" class="cover-brand-mark" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+<div class="cover-brand-copy">
+<strong>DYNAMES</strong>
+<span>Governance di Forze e Sistemi</span>
 </div>
-<div>
+</div>
+<svg aria-hidden="true" class="cover-network" viewBox="0 0 260 260">
+<polyline points="36,38 92,20 138,54 202,30 228,84 184,122 224,170 164,204 104,177 58,222"/>
+<polyline points="36,38 62,96 138,54 116,128 184,122 164,204 116,128 104,177 62,96 58,222"/>
+<line x1="92" y1="20" x2="62" y2="96"/>
+<line x1="92" y1="20" x2="116" y2="128"/>
+<line x1="202" y1="30" x2="184" y2="122"/>
+<line x1="138" y1="54" x2="228" y2="84"/>
+<line x1="228" y1="84" x2="224" y2="170"/>
+<line x1="224" y1="170" x2="164" y2="204"/>
+<line x1="104" y1="177" x2="58" y2="222"/>
+<circle cx="36" cy="38" r="4"/><circle cx="92" cy="20" r="4"/>
+<circle cx="138" cy="54" r="4"/><circle cx="202" cy="30" r="4"/>
+<circle cx="228" cy="84" r="4"/><circle cx="184" cy="122" r="4"/>
+<circle cx="224" cy="170" r="4"/><circle cx="164" cy="204" r="4"/>
+<circle cx="104" cy="177" r="4"/><circle cx="58" cy="222" r="4"/>
+<circle cx="62" cy="96" r="4"/><circle cx="116" cy="128" r="4"/>
+</svg>
+<div class="cover-copy">
+<div class="cover-series">Paper &amp; Dossier</div>
 <span class="cover-kicker">White Paper</span>
 <h2 class="cover-title">Prima del tavolo: il contesto come forza negoziale</h2>
 </div>
-<div class="cover-author">Filippo Martini · 2026</div>
+<div class="cover-footer"><span>Filippo Martini</span><span class="cover-year">2026</span></div>
 </div>
 </div>
 </section>
@@ -483,9 +596,9 @@
 <div>
 <span class="small-label">Pubblicazione DYNAMES</span>
 <h2 class="serif-heading">Leggi online o scarica il white paper</h2>
-<p>La pagina riproduce il testo integrale, completo della bibliografia essenziale. Il documento originale è disponibile anche in formato Word.</p>
+<p>La pagina riproduce il testo integrale, completo della bibliografia essenziale. Il white paper è disponibile anche in formato PDF.</p>
 </div>
-<a class="button" download href="Archivio/Prima_del_tavolo_contesto_forza_negoziale_IT.docx">Scarica il paper</a>
+<a class="button" download href="Archivio/2026.07.14-white-paper-prima-del-tavolo.pdf">Scarica il PDF</a>
 </section>
 
 <section class="contents-panel" aria-labelledby="indice-title">
