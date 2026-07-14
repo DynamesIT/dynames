@@ -384,6 +384,306 @@
             box-shadow: 0 18px 30px rgba(11, 17, 32, 0.16);
         }
 
+        .paper-archive {
+            margin-top: 5rem;
+            padding-top: 0.5rem;
+        }
+
+        .paper-archive-header {
+            max-width: 860px;
+            margin-bottom: 2rem;
+        }
+
+        .paper-archive-kicker {
+            display: block;
+            margin-bottom: 0.55rem;
+            color: var(--gold-accent);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .paper-archive-title {
+            color: var(--night-blue);
+            font-size: 2.25rem;
+            line-height: 1.2;
+            margin-bottom: 0.9rem;
+        }
+
+        .paper-archive-intro {
+            color: var(--text-secondary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.08rem;
+        }
+
+        .paper-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+            padding: 1.2rem 0;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .paper-filter {
+            border: 1px solid #cbd5e1;
+            background: var(--optical-white);
+            color: var(--night-blue);
+            padding: 0.7rem 1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .paper-filter:hover,
+        .paper-filter:focus-visible,
+        .paper-filter.active {
+            border-color: var(--night-blue);
+            background: var(--night-blue);
+            color: var(--optical-white);
+        }
+
+        .papers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 2rem;
+        }
+
+        .paper-card {
+            min-width: 0;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 14px 28px -22px rgba(11, 17, 32, 0.48);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold-accent);
+            box-shadow: 0 20px 34px -22px rgba(11, 17, 32, 0.6);
+        }
+
+        .paper-card-link,
+        .paper-card-link:visited {
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .paper-card-cover {
+            position: relative;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background: #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .paper-card-cover img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .paper-card-generated-cover {
+            position: relative;
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.35rem;
+            background:
+                linear-gradient(145deg, rgba(184, 147, 90, 0.2), transparent 45%),
+                linear-gradient(160deg, #0b1120 0 62%, #294967 62% 79%, #f4eadb 79%);
+        }
+
+        .paper-card-generated-cover::after {
+            content: "";
+            position: absolute;
+            right: -38px;
+            top: 49%;
+            width: 120px;
+            height: 120px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 50%;
+        }
+
+        .paper-card-cover-series {
+            align-self: flex-end;
+            color: #e8d4b5;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+        }
+
+        .paper-card-cover-title {
+            position: relative;
+            z-index: 1;
+            max-width: 86%;
+            margin: auto 0;
+            color: var(--optical-white);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            line-height: 1.08;
+        }
+
+        .paper-card-cover-author {
+            position: relative;
+            z-index: 1;
+            color: var(--night-blue);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .paper-type-badge {
+            position: absolute;
+            left: 0;
+            top: 1rem;
+            z-index: 2;
+            padding: 0.55rem 0.9rem;
+            background: var(--night-blue);
+            color: var(--optical-white);
+            border-left: 4px solid var(--gold-accent);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .paper-card-body {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .paper-card-meta {
+            color: var(--gold-accent);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .paper-card-title {
+            margin: 0.65rem 0 0.7rem;
+            color: var(--night-blue);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            line-height: 1.25;
+        }
+
+        .paper-card-author {
+            margin-bottom: 0.8rem;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+        }
+
+        .paper-card-abstract {
+            margin-bottom: 1.2rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .paper-card-cta {
+            margin-top: auto;
+            color: var(--night-blue);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .paper-card-cta::after {
+            content: " →";
+            color: var(--gold-accent);
+        }
+
+        .paper-empty-state {
+            grid-column: 1 / -1;
+            padding: 2.7rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid var(--gold-accent);
+            text-align: center;
+        }
+
+        .paper-empty-state h4 {
+            margin-bottom: 0.65rem;
+            color: var(--night-blue);
+            font-size: 1.25rem;
+        }
+
+        .paper-empty-state p {
+            max-width: 760px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+        }
+
+        .classification-guide {
+            margin-top: 2rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+        }
+
+        .classification-guide summary {
+            padding: 1.25rem 1.5rem;
+            color: var(--night-blue);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+        }
+
+        .classification-guide[open] summary {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .classification-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.25rem;
+            padding: 1.5rem;
+        }
+
+        .classification-item {
+            padding-left: 1rem;
+            border-left: 3px solid var(--gold-accent);
+        }
+
+        .classification-item h4 {
+            margin-bottom: 0.45rem;
+            color: var(--night-blue);
+            font-size: 0.98rem;
+        }
+
+        .classification-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
         .themes-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -427,6 +727,10 @@
 
             .desktop-nav a {
                 font-size: 0.78rem;
+            }
+
+            .papers-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
@@ -487,6 +791,33 @@
             .themes-grid {
                 grid-template-columns: 1fr;
             }
+
+            .paper-archive {
+                margin-top: 4rem;
+            }
+
+            .paper-archive-title {
+                font-size: 1.85rem;
+            }
+
+            .paper-filters {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .paper-filter {
+                width: 100%;
+                text-align: center;
+            }
+
+            .papers-grid,
+            .classification-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .paper-empty-state {
+                padding: 2rem 1.25rem;
+            }
         }
     </style>
 </head>
@@ -522,10 +853,10 @@
 <div class="intro-panel">
 <h2>La produzione editoriale DYNAMES</h2>
 <p>DYNAMES raccoglie in questa sezione le pubblicazioni, i report, i dossier e i materiali di approfondimento prodotti nell’ambito delle proprie attività di analisi, ricerca e confronto pubblico.</p>
-<p>La pagina è concepita come archivio progressivo: ai materiali già disponibili si affiancheranno nel tempo nuove uscite editoriali, report di evento, policy brief e pubblicazioni tematiche.</p>
+<p>La pagina è concepita come archivio progressivo: ai materiali già disponibili si affiancheranno nel tempo nuove uscite editoriali, report di evento, Working Paper, Policy Paper, White Paper e Dossier.</p>
 </div>
 <h3 class="publication-section-title">
-            Catalogo pubblicazioni
+            Pubblicazione in evidenza
         </h3>
 <div class="publications-structured">
 <a aria-label="Apri la pubblicazione Cultura della Difesa" class="publication-row publication-link-card" href="pubblicazioni/2026-report.html">
@@ -541,6 +872,83 @@
 </div>
 </a>
 </div>
+<section aria-labelledby="paper-archive-title" class="paper-archive">
+<div class="paper-archive-header">
+<span class="paper-archive-kicker">DYNAMES Research</span>
+<h3 class="paper-archive-title" id="paper-archive-title">Paper e Dossier</h3>
+<p class="paper-archive-intro">Documenti di ricerca, analisi strategica e approfondimento prodotti da DYNAMES per contribuire alla comprensione dei fenomeni complessi e supportare il confronto scientifico, istituzionale e professionale.</p>
+</div>
+<div aria-label="Filtra le pubblicazioni per tipologia" class="paper-filters" role="group">
+<button aria-pressed="true" class="paper-filter active" data-filter="all" type="button">Tutti</button>
+<button aria-pressed="false" class="paper-filter" data-filter="working-paper" type="button">Working Paper</button>
+<button aria-pressed="false" class="paper-filter" data-filter="policy-paper" type="button">Policy Paper</button>
+<button aria-pressed="false" class="paper-filter" data-filter="white-paper" type="button">White Paper</button>
+<button aria-pressed="false" class="paper-filter" data-filter="dossier" type="button">Dossier</button>
+</div>
+<div aria-live="polite" class="papers-grid" id="papers-grid">
+<article class="paper-card" data-type="white-paper">
+<a aria-label="Apri il White Paper: Prima del tavolo: il contesto come forza negoziale" class="paper-card-link" href="pubblicazioni/Prima_del_tavolo_contesto_forza_negoziale_IT.html">
+<div class="paper-card-cover">
+<div aria-hidden="true" class="paper-card-generated-cover">
+<span class="paper-card-cover-series">DYNAMES · Paper &amp; Dossier</span>
+<span class="paper-card-cover-title">Prima del tavolo: il contesto come forza negoziale</span>
+<span class="paper-card-cover-author">Filippo Martini · 2026</span>
+</div>
+<span class="paper-type-badge">White Paper</span>
+</div>
+<div class="paper-card-body">
+<span class="paper-card-meta">White Paper · 14 luglio 2026</span>
+<h4 class="paper-card-title">Prima del tavolo: il contesto come forza negoziale</h4>
+<p class="paper-card-author">A cura di Filippo Martini</p>
+<p class="paper-card-abstract">Il contesto come configurazione dinamica di stakeholder e basi di potere che precede e condiziona il negoziato.</p>
+<span class="paper-card-cta">Apri la pubblicazione</span>
+</div>
+</a>
+</article>
+<div class="paper-empty-state paper-filter-empty" hidden>
+<h4>Nessuna pubblicazione disponibile</h4>
+<p>Non sono ancora presenti documenti DYNAMES per la tipologia selezionata.</p>
+</div>
+<!-- Modello per le future schede:
+<article class="paper-card" data-type="white-paper">
+<a aria-label="Apri il White Paper: Titolo della pubblicazione" class="paper-card-link" href="pubblicazioni/percorso-della-pubblicazione.html">
+<div class="paper-card-cover">
+<img alt="Copertina del White Paper Titolo della pubblicazione" src="pubblicazioni/Archivio/nome-copertina.jpg"/>
+<span class="paper-type-badge">White Paper</span>
+</div>
+<div class="paper-card-body">
+<span class="paper-card-meta">White Paper · Ambito tematico · 2026</span>
+<h4 class="paper-card-title">Titolo della pubblicazione</h4>
+<p class="paper-card-author">A cura di Nome Cognome</p>
+<p class="paper-card-abstract">Breve presentazione del contenuto della pubblicazione.</p>
+<span class="paper-card-cta">Apri la pubblicazione</span>
+</div>
+</a>
+</article>
+-->
+</div>
+<details class="classification-guide">
+<summary>Come classifichiamo le pubblicazioni</summary>
+<div class="classification-grid">
+<article class="classification-item">
+<h4>Working Paper</h4>
+<p>Testo di ricerca ancora in lavorazione, destinato a presentare idee, ipotesi, risultati preliminari o una prima versione di un’analisi scientifica.</p>
+</article>
+<article class="classification-item">
+<h4>Policy Paper</h4>
+<p>Documento orientato alla decisione pubblica o istituzionale, che analizza un problema concreto e propone opzioni di policy, raccomandazioni, scenari o misure operative.</p>
+</article>
+<article class="classification-item">
+<h4>White Paper</h4>
+<p>Documento autorevole e strutturato che presenta una posizione, una strategia, una soluzione o una proposta organica su un tema.</p>
+</article>
+<article class="classification-item">
+<h4>Dossier</h4>
+<p>Raccolta ordinata di informazioni su un tema, un caso, un soggetto o un fenomeno, con dati, cronologie, fonti, profili, normative, casi studio e sintesi.</p>
+</article>
+</div>
+</details>
+</section>
 </section>
 <footer>
 <div class="container">
@@ -549,5 +957,35 @@
 <p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
 </div>
 </footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = document.querySelectorAll('.paper-filter');
+    const paperCards = document.querySelectorAll('.paper-card');
+    const emptyState = document.querySelector('.paper-filter-empty');
+
+    if (!filterButtons.length || !paperCards.length) return;
+
+    filterButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            const selectedType = button.dataset.filter;
+            let visibleCards = 0;
+
+            filterButtons.forEach(function (item) {
+                const isActive = item === button;
+                item.classList.toggle('active', isActive);
+                item.setAttribute('aria-pressed', String(isActive));
+            });
+
+            paperCards.forEach(function (card) {
+                const isVisible = selectedType === 'all' || card.dataset.type === selectedType;
+                card.hidden = !isVisible;
+                if (isVisible) visibleCards += 1;
+            });
+
+            if (emptyState) emptyState.hidden = visibleCards > 0;
+        });
+    });
+});
+</script>
 </body>
 </html>
