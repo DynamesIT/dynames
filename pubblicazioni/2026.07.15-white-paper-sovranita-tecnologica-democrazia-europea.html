@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DFL8MJSKVJ"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DFL8MJSKVJ');
+</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Sovranità tecnologica: la nuova frontiera della democrazia europea</title>
+<meta content="White paper di Francesco Custureri su cloud, dati, semiconduttori, intelligenza artificiale e sovranità tecnologica come fondamento dell’autonomia e della democrazia europea." name="description"/>
+<link href="https://www.dynames.it/pubblicazioni/2026.07.15-white-paper-sovranita-tecnologica-democrazia-europea.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Sovranità tecnologica: la nuova frontiera della democrazia europea" property="og:title"/>
+<meta content="Il white paper di Francesco Custureri analizza la sovranità tecnologica europea tra infrastrutture digitali, dipendenze strategiche, diritti e controllo democratico." property="og:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/2026.07.15-white-paper-sovranita-tecnologica-democrazia-europea.html" property="og:url"/>
+<meta content="https://www.dynames.it/assets/Junior-Fellows/francesco-custureri.jpg" property="og:image"/>
+<meta content="Francesco Custureri, autore del white paper DYNAMES" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Sovranità tecnologica: la nuova frontiera della democrazia europea" name="twitter:title"/>
+<meta content="White paper di Francesco Custureri sulla sovranità tecnologica come nuova frontiera della democrazia europea." name="twitter:description"/>
+<meta content="https://www.dynames.it/assets/Junior-Fellows/francesco-custureri.jpg" name="twitter:image"/>
+<meta content="2026-07-15T09:00:00+02:00" property="article:published_time"/>
+<meta content="Francesco Custureri" name="author"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+        --night-blue: #0b1120;
+        --deep-blue: #294967;
+        --slate-grey: #334155;
+        --light-grey: #f8fafc;
+        --optical-white: #ffffff;
+        --accent: #1e3a8a;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-light: #cbd5e1;
+        --paper-bg: #fdfbf7;
+        --gold-accent: #b8935a;
+        --border: #e2e8f0;
+        --dynames-blue: #0b1c2d;
+        --dynames-grey: #ededed;
+        --dynames-electric: #27a8ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: var(--paper-bg);
+        color: var(--text-primary);
+        line-height: 1.8;
+        font-size: 1.08rem;
+    }
+    h1, h2, h3, .brand, .button, .small-label, .cover-kicker, .cover-series {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .serif-heading { font-family: 'Playfair Display', serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .article-container { max-width: 920px; margin: 0 auto; padding: 0 2rem; }
+
+    header {
+        background: var(--optical-white);
+        border-bottom: 2px solid var(--night-blue);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+    .brand a { text-decoration: none; }
+    .brand h1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--night-blue);
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+    .brand-logo { width: auto; height: 40px; }
+    .brand p {
+        margin-top: 2px;
+        color: var(--slate-grey);
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .desktop-nav { display: flex; align-items: center; gap: 2rem; }
+    .desktop-nav a {
+        color: var(--night-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color .25s;
+    }
+    .desktop-nav a:hover, .desktop-nav a.active { color: var(--gold-accent); }
+    .back-nav { padding: 2rem 0; }
+    .back-nav a {
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+    .back-nav a:hover { color: var(--gold-accent); }
+
+    .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(270px, .75fr);
+        align-items: center;
+        gap: 4rem;
+        margin-bottom: 4rem;
+    }
+    .article-category {
+        display: block;
+        margin-bottom: 1.2rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .article-title {
+        margin-bottom: 1.5rem;
+        color: var(--night-blue);
+        font-size: clamp(2.45rem, 5.5vw, 4.2rem);
+        line-height: 1.04;
+    }
+    .article-subtitle {
+        margin-bottom: 2rem;
+        color: var(--slate-grey);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.28rem;
+        font-style: italic;
+        line-height: 1.5;
+    }
+    .article-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem 1.2rem;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .8rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .meta-author { color: var(--night-blue); font-weight: 700; }
+
+    .cover-card {
+        min-height: 468px;
+        padding: .65rem;
+        border: 1px solid #d8dde3;
+        background: var(--dynames-grey);
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .2);
+        transform: rotate(.6deg);
+    }
+    .publication-cover {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        min-height: 445px;
+        height: 100%;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 76% 31%, rgba(39, 168, 255, .12), transparent 31%),
+            linear-gradient(145deg, #102946 0%, var(--dynames-blue) 58%, #071321 100%);
+        color: white;
+    }
+    .publication-cover::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        right: -12%;
+        bottom: -16%;
+        left: -12%;
+        height: 47%;
+        background: var(--dynames-grey);
+        transform: rotate(-8deg);
+    }
+    .publication-cover::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        right: -56px;
+        bottom: 12px;
+        width: 155px;
+        height: 155px;
+        border: 1px solid rgba(39, 168, 255, .28);
+        border-radius: 50%;
+    }
+    .cover-brand {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: 1.25rem 1.35rem 0;
+    }
+    .cover-brand-mark {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0) invert(1);
+    }
+    .cover-brand-copy { display: flex; flex-direction: column; line-height: 1.1; }
+    .cover-brand-copy strong {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: .15em;
+    }
+    .cover-brand-copy span {
+        margin-top: .3rem;
+        color: #c6d1dc;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .46rem;
+        letter-spacing: .08em;
+    }
+    .cover-copy {
+        position: relative;
+        z-index: 3;
+        width: 89%;
+        margin: 2.5rem 1.7rem 7.4rem;
+    }
+    .cover-series {
+        margin-bottom: .65rem;
+        color: #8fd3ff;
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+    .cover-kicker {
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: .34rem .65rem;
+        border: 1px solid rgba(255,255,255,.35);
+        color: white;
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .cover-title {
+        max-width: 300px;
+        color: white;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 1.08;
+    }
+    .cover-network {
+        position: absolute;
+        z-index: 2;
+        top: 85px;
+        right: -48px;
+        width: 270px;
+        height: 270px;
+        opacity: .34;
+        fill: var(--dynames-electric);
+        stroke: var(--dynames-electric);
+        stroke-width: 1.15;
+    }
+    .cover-footer {
+        position: absolute;
+        z-index: 3;
+        right: 1.35rem;
+        bottom: 1.15rem;
+        left: 1.35rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        color: var(--dynames-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+    .cover-year { color: #507493; font-size: .62rem; }
+
+    .article-body { padding-bottom: 5rem; }
+    .download-box, .contents-panel, .author-card {
+        display: grid;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        border: 1px solid var(--border);
+        background: var(--optical-white);
+    }
+    .download-box { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+    .download-box h2, .contents-panel h2 { margin: .2rem 0 .65rem; color: var(--night-blue); font-size: 1.9rem; }
+    .download-box p { color: var(--text-secondary); }
+    .small-label {
+        color: var(--gold-accent);
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .button {
+        display: inline-block;
+        padding: .95rem 1.35rem;
+        background: var(--night-blue);
+        color: white;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: background .2s, transform .2s;
+    }
+    .button:hover { background: var(--accent); transform: translateY(-2px); }
+    .contents-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .7rem 2rem;
+        margin: .7rem 0 0 1.3rem;
+    }
+    .contents-list a { color: var(--accent); text-decoration: none; }
+    .contents-list a:hover { text-decoration: underline; }
+    .paper-section { margin: 4rem 0; }
+    .paper-section h2 { margin: .35rem 0 1.35rem; color: var(--night-blue); font-size: 2.35rem; line-height: 1.15; }
+    .paper-section p { margin-bottom: 1.15rem; text-align: justify; }
+    .abstract-section {
+        padding: 2rem;
+        border-left: 4px solid var(--gold-accent);
+        background: var(--optical-white);
+    }
+    .pull-quote {
+        margin: 4rem 0;
+        padding-left: 2rem;
+        border-left: 3px solid var(--dynames-electric);
+        color: var(--deep-blue);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.55rem;
+        font-style: italic;
+        line-height: 1.45;
+    }
+    .figure-note {
+        margin: 1.7rem 0;
+        padding: 1.2rem 1.4rem;
+        border: 1px solid #d8e4ec;
+        background: #f3f8fb;
+        color: var(--text-secondary);
+        font-size: .92rem;
+        line-height: 1.55;
+    }
+    .figure-note strong { display: block; color: var(--night-blue); }
+    .figure-note a, .references a { color: var(--accent); word-break: break-word; }
+    .bibliography { padding-top: 1rem; border-top: 1px solid var(--border); }
+    .references { margin-left: 1.4rem; }
+    .references li { margin-bottom: 1rem; padding-left: .35rem; }
+    .author-card { grid-template-columns: 150px minmax(0, 1fr); align-items: start; margin-top: 4rem; }
+    .author-card img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: grayscale(.1);
+    }
+    .author-card h2 { margin: .15rem 0 .2rem; color: var(--night-blue); font-size: 2rem; }
+    .author-role {
+        margin-bottom: .75rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .author-card p { color: var(--text-secondary); line-height: 1.65; }
+    .author-card a { color: var(--accent); }
+    footer { padding: 3rem 0; background: var(--night-blue); color: var(--text-light); text-align: center; }
+    footer h3 { margin-bottom: .6rem; color: white; letter-spacing: .12em; }
+    footer p { font-size: .82rem; }
+
+    @media (max-width: 980px) {
+        .desktop-nav { display: none; }
+        .hero { grid-template-columns: 1fr; gap: 2.5rem; }
+        .cover-card { width: min(390px, 100%); margin: 0 auto; }
+    }
+    @media (max-width: 660px) {
+        body { font-size: 1rem; }
+        .container, .article-container { padding-right: 1.25rem; padding-left: 1.25rem; }
+        .article-title { font-size: 2.45rem; }
+        .download-box, .contents-list, .author-card { grid-template-columns: 1fr; }
+        .download-box, .contents-panel, .author-card, .abstract-section { padding: 1.45rem; }
+        .button { width: 100%; }
+        .paper-section p { text-align: left; }
+        .paper-section h2 { font-size: 2rem; }
+        .author-card img { width: 120px; height: 120px; }
+    }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "Sovranità tecnologica: la nuova frontiera della democrazia europea",
+  "author": {"@type": "Person", "name": "Francesco Custureri"},
+  "publisher": {"@type": "Organization", "name": "DYNAMES", "url": "https://www.dynames.it/"},
+  "datePublished": "2026-07-15",
+  "inLanguage": "it-IT",
+  "articleSection": "White Paper",
+  "url": "https://www.dynames.it/pubblicazioni/2026.07.15-white-paper-sovranita-tecnologica-democrazia-europea.html"
+}
+</script>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html">
+<h1><img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>DYNAMES</h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a class="active" href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+
+<div class="container back-nav">
+<a href="../pubblicazioni.html">← Torna alle Pubblicazioni</a>
+</div>
+
+<main>
+<article class="article-container">
+<section class="hero">
+<div>
+<span class="article-category">Paper</span>
+<h1 class="serif-heading article-title">Sovranità tecnologica: la nuova frontiera della democrazia europea</h1>
+<p class="article-subtitle">Cloud, dati, semiconduttori e intelligenza artificiale sono infrastrutture di potere: governarle significa difendere autonomia, diritti e libertà democratiche.</p>
+<div class="article-meta">
+<span class="meta-author">A cura di Francesco Custureri</span>
+<span>White Paper</span>
+<span>Luglio 2026</span>
+</div>
+</div>
+<div class="cover-card" aria-label="Copertina del white paper Sovranità tecnologica: la nuova frontiera della democrazia europea">
+<div class="publication-cover">
+<div class="cover-brand">
+<img alt="" aria-hidden="true" class="cover-brand-mark" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+<div class="cover-brand-copy">
+<strong>DYNAMES</strong>
+<span>Governance di Forze e Sistemi</span>
+</div>
+</div>
+<svg aria-hidden="true" class="cover-network" viewBox="0 0 260 260">
+<polyline points="36,38 92,20 138,54 202,30 228,84 184,122 224,170 164,204 104,177 58,222"/>
+<polyline points="36,38 62,96 138,54 116,128 184,122 164,204 116,128 104,177 62,96 58,222"/>
+<line x1="92" y1="20" x2="62" y2="96"/><line x1="92" y1="20" x2="116" y2="128"/>
+<line x1="202" y1="30" x2="184" y2="122"/><line x1="138" y1="54" x2="228" y2="84"/>
+<line x1="228" y1="84" x2="224" y2="170"/><line x1="224" y1="170" x2="164" y2="204"/>
+<line x1="104" y1="177" x2="58" y2="222"/>
+<circle cx="36" cy="38" r="4"/><circle cx="92" cy="20" r="4"/><circle cx="138" cy="54" r="4"/>
+<circle cx="202" cy="30" r="4"/><circle cx="228" cy="84" r="4"/><circle cx="184" cy="122" r="4"/>
+<circle cx="224" cy="170" r="4"/><circle cx="164" cy="204" r="4"/><circle cx="104" cy="177" r="4"/>
+<circle cx="58" cy="222" r="4"/><circle cx="62" cy="96" r="4"/><circle cx="116" cy="128" r="4"/>
+</svg>
+<div class="cover-copy">
+<div class="cover-series">Paper &amp; Dossier</div>
+<span class="cover-kicker">White Paper</span>
+<h2 class="cover-title">Sovranità tecnologica: la nuova frontiera della democrazia europea</h2>
+</div>
+<div class="cover-footer"><span>Francesco Custureri</span><span class="cover-year">2026</span></div>
+</div>
+</div>
+</section>
+
+<div class="article-body">
+<section class="download-box">
+<div>
+<span class="small-label">Pubblicazione DYNAMES</span>
+<h2 class="serif-heading">Leggi online o scarica il white paper</h2>
+<p>La pagina propone il testo integrale del white paper in versione web. L’impaginazione editoriale e le fonti essenziali sono disponibili anche nel documento PDF.</p>
+</div>
+<a class="button" download href="Archivio/2026.07.15-white-paper-sovranita-tecnologica-democrazia-europea.pdf">Scarica il PDF</a>
+</section>
+
+<section class="contents-panel" aria-labelledby="indice-title">
+<span class="small-label">Indice</span>
+<h2 class="serif-heading" id="indice-title">I contenuti del white paper</h2>
+<ol class="contents-list">
+<li><a href="#sintesi">In sintesi</a></li>
+<li><a href="#sovranita-tecnologica">Sovranità tecnologica: la nuova frontiera della democrazia europea</a></li>
+<li><a href="#tecnologia-potere">Tecnologia e potere: la nuova geografia delle dipendenze</a></li>
+<li><a href="#democrazia-digitale">La democrazia nell’ambiente digitale</a></li>
+<li><a href="#strategia-europea">Una strategia europea per autonomia, sicurezza e libertà</a></li>
+<li><a href="#fonti-essenziali">Fonti essenziali</a></li>
+</ol>
+</section>
+
+<section class="paper-section abstract-section" id="sintesi">
+<span class="small-label">Sintesi</span>
+<h2 class="serif-heading">In sintesi</h2>
+<p>Cloud, dati, semiconduttori e intelligenza artificiale sono diventati infrastrutture dalle quali dipendono competitività, servizi essenziali e qualità del dibattito pubblico. Il white paper legge la sovranità tecnologica come capacità europea di ridurre le dipendenze critiche, proteggere gli asset strategici e mantenere un controllo democratico sulle tecnologie. La prospettiva proposta non è quella dell’autarchia digitale, ma di un’autonomia fondata su investimenti, competenze, cybersicurezza, regole comuni e tutela effettiva dei diritti.</p>
+</section>
+
+<div class="pull-quote">“La sovranità tecnologica non significa produrre tutto da soli, ma poter decidere senza che un altro soggetto abbia la possibilità di spegnere l’interruttore.”</div>
+
+<section class="paper-section" id="sovranita-tecnologica">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Sovranità tecnologica: la nuova frontiera della democrazia europea</h2>
+<p><em>Cloud, dati, semiconduttori e intelligenza artificiale non sono più semplici strumenti di innovazione: sono infrastrutture di potere. Governarle significa difendere autonomia, diritti e libertà democratiche.</em></p>
+<p>Per anni la tecnologia è stata raccontata come un fattore neutrale di progresso: più efficienza, più accesso ai servizi, più opportunità economiche. Oggi questa rappresentazione non basta più. Le infrastrutture digitali, le piattaforme, i dati, i semiconduttori, il cloud e l’intelligenza artificiale sono diventati asset strategici capaci di determinare la competitività di un Paese, la continuità dei servizi essenziali e perfino la qualità del dibattito pubblico. La questione tecnologica è dunque entrata stabilmente nel campo della politica e della geopolitica.</p>
+<p>La domanda centrale non è soltanto chi sappia sviluppare le tecnologie più avanzate, ma chi possieda le infrastrutture che le rendono possibili, chi controlli i dati necessari al loro funzionamento e secondo quali regole vengano utilizzate. Uno Stato che dipende integralmente da soggetti esterni per il cloud, le capacità computazionali, le reti, i sistemi operativi o i modelli di intelligenza artificiale conserva formalmente la propria sovranità, ma vede restringersi la sua capacità di scelta. È da questa tensione che nasce il concetto di sovranità tecnologica.</p>
+<p>La sovranità tecnologica non coincide con l’autarchia digitale né con la chiusura dei mercati. Indica, piuttosto, la capacità di evitare dipendenze critiche, proteggere gli asset strategici e mantenere un controllo democratico sulle infrastrutture da cui dipendono istituzioni, imprese e cittadini. In altre parole, non significa produrre tutto da soli, ma poter decidere senza che un altro soggetto abbia la possibilità di spegnere l’interruttore.</p>
+</section>
+
+<section class="paper-section" id="tecnologia-potere">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Tecnologia e potere: la nuova geografia delle dipendenze</h2>
+<p>La competizione geopolitica contemporanea si gioca sempre più lungo filiere tecnologiche complesse. I semiconduttori sono indispensabili per industria, difesa, telecomunicazioni e intelligenza artificiale; il cloud ospita dati e servizi essenziali; le piattaforme mediano comunicazioni, informazione e attività economiche; i sistemi di AI richiedono enormi quantità di dati, energia e capacità computazionale. Il controllo di questi elementi genera vantaggi economici, ma anche influenza politica e capacità di pressione internazionale.</p>
+<p>La centralità dei dati è particolarmente evidente. I dati alimentano modelli predittivi, sistemi di raccomandazione, servizi pubblici digitali e processi decisionali automatizzati. Chi li raccoglie e li elabora dispone di una conoscenza dettagliata dei comportamenti individuali e collettivi. Per questo la governance dei dati non può essere ridotta a un tema tecnico o commerciale: riguarda la sicurezza, la concorrenza, la protezione della persona e la possibilità stessa di esercitare diritti in modo consapevole.</p>
+<p>Anche le grandi piattaforme digitali hanno assunto una funzione quasi infrastrutturale. Organizzano l’accesso alle informazioni, stabiliscono la visibilità dei contenuti e orientano il funzionamento di interi mercati. I loro algoritmi non si limitano a ordinare ciò che vediamo: contribuiscono a definire quali temi emergano, quali opinioni acquistino rilevanza e quali comportamenti siano premiati. Quando questa capacità è concentrata in pochi operatori globali, il potere privato può incidere sullo spazio pubblico con una forza che le istituzioni nazionali faticano a bilanciare.</p>
+<p>I principali attori globali hanno sviluppato modelli differenti. Gli Stati Uniti hanno favorito un ecosistema trainato dall’innovazione privata, dal capitale di rischio e dalla crescita di grandi imprese tecnologiche. La Cina ha integrato sviluppo digitale, politica industriale e controllo statale. L’Unione europea tenta di costruire una terza via, fondata sulla combinazione tra innovazione, regolazione, tutela dei diritti e autonomia strategica. Il Digital Services Act, il Digital Markets Act, l’AI Act, la normativa sui dati e il Chips Act sono tasselli di questo tentativo.</p>
+</section>
+
+<section class="paper-section" id="democrazia-digitale">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">La democrazia nell’ambiente digitale</h2>
+<p>La trasformazione tecnologica modifica anche il modo in cui si forma il consenso. Le piattaforme sono diventate uno dei principali luoghi della partecipazione politica e della comunicazione pubblica. Questo ha ampliato l’accesso alla conoscenza e reso più immediata l’interazione tra cittadini e istituzioni, ma ha anche favorito polarizzazione, profilazione e campagne di disinformazione. La velocità della circolazione dei contenuti rende più difficile distinguere informazione verificata, propaganda e manipolazione coordinata.</p>
+<p>La democrazia contemporanea non vive soltanto nelle aule parlamentari o nei processi elettorali. Vive anche negli spazi digitali in cui le persone si informano, discutono e costruiscono la propria percezione della realtà. Se tali spazi sono governati da logiche opache, orientate principalmente alla massimizzazione dell’attenzione o del profitto, il pluralismo può essere formalmente garantito ma sostanzialmente indebolito. Difendere la democrazia significa quindi rendere trasparenti e responsabili anche le architetture digitali che organizzano il dibattito pubblico.</p>
+<p>La stessa attenzione deve essere riservata alle disuguaglianze. Il digital divide non riguarda più soltanto la disponibilità di una connessione. Comprende la qualità delle infrastrutture, l’accesso ai dispositivi, le competenze e la capacità di comprendere l’effetto delle tecnologie sulle proprie scelte. Quando servizi pubblici, istruzione, sanità e lavoro diventano digitali, chi resta privo di strumenti o conoscenze adeguate rischia una forma concreta di esclusione dalla cittadinanza.</p>
+<p>La diffusione dell’intelligenza artificiale rende il problema ancora più delicato. Sistemi automatizzati possono intervenire nella selezione del personale, nella concessione del credito, nella diagnosi medica, nella sicurezza e nell’erogazione di prestazioni pubbliche. In questi ambiti non basta che un algoritmo sia efficiente: deve essere verificabile, proporzionato, comprensibile e sottoposto a responsabilità umana. La dignità della persona non può dipendere da decisioni opache, né la tecnologia può diventare un alibi per sottrarre le scelte pubbliche al controllo democratico.</p>
+</section>
+
+<section class="paper-section" id="strategia-europea">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Una strategia europea per autonomia, sicurezza e libertà</h2>
+<p>Per l’Europa, la sovranità tecnologica è prima di tutto capacità di scelta. Richiede investimenti coordinati nei semiconduttori, nel cloud, nella connettività, nella cybersicurezza, nell’intelligenza artificiale e nella ricerca. Richiede inoltre infrastrutture interoperabili, standard comuni e politiche industriali che riducano le dipendenze più rischiose senza rinunciare alla cooperazione internazionale.</p>
+<p>La cybersicurezza è una componente decisiva di questa strategia. Energia, telecomunicazioni, finanza, sanità, trasporti e amministrazioni pubbliche dipendono da sistemi digitali interconnessi. Un attacco contro queste infrastrutture può interrompere servizi essenziali, compromettere dati, generare sfiducia e produrre effetti sociali paragonabili a quelli di una crisi materiale. La direttiva NIS2 e le strategie europee e nazionali di sicurezza cyber riconoscono che la resilienza digitale è ormai parte della sicurezza collettiva.</p>
+<p>Accanto alle infrastrutture servono competenze. Senza capitale umano, gli investimenti tecnologici rischiano di produrre dipendenze nuove invece di ridurre quelle esistenti. L’Europa deve rafforzare la formazione specialistica, l’alfabetizzazione digitale, la capacità amministrativa e il rapporto tra università, ricerca, imprese e istituzioni. Le competenze non sono soltanto un fattore di competitività: consentono ai cittadini di comprendere le tecnologie, valutarne i rischi e partecipare alle decisioni che ne regolano l’uso.</p>
+<p>Infine, occorre una governance democratica dell’intelligenza artificiale. Trasparenza, auditabilità, supervisione umana, valutazione degli impatti e responsabilità lungo l’intero ciclo di vita dei sistemi devono diventare condizioni ordinarie, soprattutto nei settori ad alto impatto. L’obiettivo non è frenare l’innovazione, ma impedire che l’innovazione eroda le condizioni che rendono possibile una società libera.</p>
+<p>La sfida europea non consiste nel replicare il modello statunitense o quello cinese. Consiste nel dimostrare che competitività, sicurezza e diritti possono sostenersi reciprocamente. Una sovranità tecnologica democratica non misura il proprio successo soltanto nel numero di brevetti, data center o modelli sviluppati, ma nella capacità di utilizzare questi strumenti senza trasformare cittadini e istituzioni in soggetti dipendenti da decisioni opache.</p>
+<p>La tecnologia non è più un settore separato della vita pubblica: è l’ambiente nel quale si esercitano potere, libertà e cittadinanza. Per questo la sovranità tecnologica è una questione democratica. Proteggere infrastrutture, dati e competenze significa preservare la capacità delle istituzioni di decidere, dei cittadini di comprendere e della società di orientare l’innovazione verso il bene comune.</p>
+<p>La domanda decisiva dei prossimi anni non sarà se l’intelligenza artificiale, il cloud o le piattaforme cambieranno le nostre società. Lo stanno già facendo. La domanda sarà chi governerà questo cambiamento, con quali responsabilità e nell’interesse di chi. Da questa risposta dipenderà non soltanto la posizione dell’Europa nella competizione globale, ma la qualità della sua democrazia.</p>
+</section>
+
+<section class="paper-section bibliography" id="fonti-essenziali">
+<span class="small-label">Fonti</span>
+<h2 class="serif-heading">Fonti essenziali</h2>
+<ul class="references">
+<li>Commissione europea, <em>Digital Decade Policy Programme 2030</em>.</li>
+<li>Commissione europea, <em>Artificial Intelligence Act</em>.</li>
+<li>Commissione europea, <em>Digital Services Act</em> e <em>Digital Markets Act</em>.</li>
+<li>Commissione europea, <em>European Strategy for Data</em> e <em>Common European Data Spaces</em>.</li>
+<li>Commissione europea, <em>European Chips Act</em>.</li>
+<li>Commissione europea, Direttiva NIS2 e <em>EU Cybersecurity Strategy</em>.</li>
+<li>Parlamento europeo, <em>Technological Sovereignty</em>.</li>
+<li>ENISA, <em>Threat Landscape 2025</em>.</li>
+<li>ACN, <em>Strategia nazionale di cybersicurezza 2022-2026</em>.</li>
+<li>Consiglio d’Europa, <em>Framework Convention on Artificial Intelligence, Human Rights, Democracy and the Rule of Law</em>.</li>
+<li>OECD, <em>AI Principles</em> e <em>Reinforcing Democracy Initiative</em>.</li>
+<li>UNESCO, <em>Recommendation on the Ethics of Artificial Intelligence</em>.</li>
+</ul>
+</section>
+
+
+<section class="author-card" id="autore">
+<img alt="Francesco Custureri" onerror="this.style.display='none'" src="../assets/Junior-Fellows/francesco-custureri.jpg"/>
+<div>
+<span class="small-label">L’autore</span>
+<h2 class="serif-heading">Francesco Custureri</h2>
+<div class="author-role">Tecnologie e Sistemi Complessi</div>
+<p>AI Engineer con focus su intelligenza artificiale, cybersecurity, infrastrutture critiche e interesse nazionale. Si occupa di applicazioni AI strategiche in contesti enterprise, integrando competenze tecniche, trasformazione digitale e visione sui sistemi complessi. Affianca al profilo ingegneristico un percorso di approfondimento su geopolitica, intelligence economica e sovranità tecnologica.</p>
+<p><a href="../chi-siamo.html#francesco-custureri">Profilo completo su DYNAMES</a></p>
+</div>
+</section>
+</div>
+</article>
+</main>
+
+<footer>
+<div class="container">
+<h3>DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p>© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
+

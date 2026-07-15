@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DFL8MJSKVJ"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DFL8MJSKVJ');
+</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | La minaccia della Federazione Russa verso le democrazie europee</title>
+<meta content="White paper di Francesco Trevisan sulle operazioni sotto soglia della Federazione Russa, la disinformazione, le infrastrutture critiche e gli scenari di pressione sul fianco orientale NATO." name="description"/>
+<link href="https://www.dynames.it/pubblicazioni/2026.07.15-white-paper-minaccia-russa-democrazie-europee.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="La minaccia della Federazione Russa verso le democrazie europee" property="og:title"/>
+<meta content="Il white paper di Francesco Trevisan analizza sabotaggi, minacce ibride, manipolazione informativa e scenari di pressione russa contro le democrazie europee." property="og:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/2026.07.15-white-paper-minaccia-russa-democrazie-europee.html" property="og:url"/>
+<meta content="https://www.dynames.it/assets/Junior-Fellows/marco-trevisan.jpg" property="og:image"/>
+<meta content="Francesco Trevisan, autore del white paper DYNAMES" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="La minaccia della Federazione Russa verso le democrazie europee" name="twitter:title"/>
+<meta content="White paper di Francesco Trevisan sulle minacce ibride russe alle democrazie europee." name="twitter:description"/>
+<meta content="https://www.dynames.it/assets/Junior-Fellows/marco-trevisan.jpg" name="twitter:image"/>
+<meta content="2026-07-15T09:00:00+02:00" property="article:published_time"/>
+<meta content="Francesco Trevisan" name="author"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+        --night-blue: #0b1120;
+        --deep-blue: #294967;
+        --slate-grey: #334155;
+        --light-grey: #f8fafc;
+        --optical-white: #ffffff;
+        --accent: #1e3a8a;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-light: #cbd5e1;
+        --paper-bg: #fdfbf7;
+        --gold-accent: #b8935a;
+        --border: #e2e8f0;
+        --dynames-blue: #0b1c2d;
+        --dynames-grey: #ededed;
+        --dynames-electric: #27a8ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: var(--paper-bg);
+        color: var(--text-primary);
+        line-height: 1.8;
+        font-size: 1.08rem;
+    }
+    h1, h2, h3, .brand, .button, .small-label, .cover-kicker, .cover-series {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .serif-heading { font-family: 'Playfair Display', serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .article-container { max-width: 920px; margin: 0 auto; padding: 0 2rem; }
+
+    header {
+        background: var(--optical-white);
+        border-bottom: 2px solid var(--night-blue);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+    .brand a { text-decoration: none; }
+    .brand h1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--night-blue);
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+    .brand-logo { width: auto; height: 40px; }
+    .brand p {
+        margin-top: 2px;
+        color: var(--slate-grey);
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .desktop-nav { display: flex; align-items: center; gap: 2rem; }
+    .desktop-nav a {
+        color: var(--night-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color .25s;
+    }
+    .desktop-nav a:hover, .desktop-nav a.active { color: var(--gold-accent); }
+    .back-nav { padding: 2rem 0; }
+    .back-nav a {
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+    .back-nav a:hover { color: var(--gold-accent); }
+
+    .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(270px, .75fr);
+        align-items: center;
+        gap: 4rem;
+        margin-bottom: 4rem;
+    }
+    .article-category {
+        display: block;
+        margin-bottom: 1.2rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .article-title {
+        margin-bottom: 1.5rem;
+        color: var(--night-blue);
+        font-size: clamp(2.45rem, 5.5vw, 4.2rem);
+        line-height: 1.04;
+    }
+    .article-subtitle {
+        margin-bottom: 2rem;
+        color: var(--slate-grey);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.28rem;
+        font-style: italic;
+        line-height: 1.5;
+    }
+    .article-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem 1.2rem;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .8rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .meta-author { color: var(--night-blue); font-weight: 700; }
+
+    .cover-card {
+        min-height: 468px;
+        padding: .65rem;
+        border: 1px solid #d8dde3;
+        background: var(--dynames-grey);
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .2);
+        transform: rotate(.6deg);
+    }
+    .publication-cover {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        min-height: 445px;
+        height: 100%;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 76% 31%, rgba(39, 168, 255, .12), transparent 31%),
+            linear-gradient(145deg, #102946 0%, var(--dynames-blue) 58%, #071321 100%);
+        color: white;
+    }
+    .publication-cover::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        right: -12%;
+        bottom: -16%;
+        left: -12%;
+        height: 47%;
+        background: var(--dynames-grey);
+        transform: rotate(-8deg);
+    }
+    .publication-cover::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        right: -56px;
+        bottom: 12px;
+        width: 155px;
+        height: 155px;
+        border: 1px solid rgba(39, 168, 255, .28);
+        border-radius: 50%;
+    }
+    .cover-brand {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: 1.25rem 1.35rem 0;
+    }
+    .cover-brand-mark {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0) invert(1);
+    }
+    .cover-brand-copy { display: flex; flex-direction: column; line-height: 1.1; }
+    .cover-brand-copy strong {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: .15em;
+    }
+    .cover-brand-copy span {
+        margin-top: .3rem;
+        color: #c6d1dc;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .46rem;
+        letter-spacing: .08em;
+    }
+    .cover-copy {
+        position: relative;
+        z-index: 3;
+        width: 89%;
+        margin: 2.5rem 1.7rem 7.4rem;
+    }
+    .cover-series {
+        margin-bottom: .65rem;
+        color: #8fd3ff;
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+    .cover-kicker {
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: .34rem .65rem;
+        border: 1px solid rgba(255,255,255,.35);
+        color: white;
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .cover-title {
+        max-width: 300px;
+        color: white;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 1.08;
+    }
+    .cover-network {
+        position: absolute;
+        z-index: 2;
+        top: 85px;
+        right: -48px;
+        width: 270px;
+        height: 270px;
+        opacity: .34;
+        fill: var(--dynames-electric);
+        stroke: var(--dynames-electric);
+        stroke-width: 1.15;
+    }
+    .cover-footer {
+        position: absolute;
+        z-index: 3;
+        right: 1.35rem;
+        bottom: 1.15rem;
+        left: 1.35rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        color: var(--dynames-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+    .cover-year { color: #507493; font-size: .62rem; }
+
+    .article-body { padding-bottom: 5rem; }
+    .download-box, .contents-panel, .author-card {
+        display: grid;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        border: 1px solid var(--border);
+        background: var(--optical-white);
+    }
+    .download-box { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+    .download-box h2, .contents-panel h2 { margin: .2rem 0 .65rem; color: var(--night-blue); font-size: 1.9rem; }
+    .download-box p { color: var(--text-secondary); }
+    .small-label {
+        color: var(--gold-accent);
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .button {
+        display: inline-block;
+        padding: .95rem 1.35rem;
+        background: var(--night-blue);
+        color: white;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: background .2s, transform .2s;
+    }
+    .button:hover { background: var(--accent); transform: translateY(-2px); }
+    .contents-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .7rem 2rem;
+        margin: .7rem 0 0 1.3rem;
+    }
+    .contents-list a { color: var(--accent); text-decoration: none; }
+    .contents-list a:hover { text-decoration: underline; }
+    .paper-section { margin: 4rem 0; }
+    .paper-section h2 { margin: .35rem 0 1.35rem; color: var(--night-blue); font-size: 2.35rem; line-height: 1.15; }
+    .paper-section p { margin-bottom: 1.15rem; text-align: justify; }
+    .abstract-section {
+        padding: 2rem;
+        border-left: 4px solid var(--gold-accent);
+        background: var(--optical-white);
+    }
+    .pull-quote {
+        margin: 4rem 0;
+        padding-left: 2rem;
+        border-left: 3px solid var(--dynames-electric);
+        color: var(--deep-blue);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.55rem;
+        font-style: italic;
+        line-height: 1.45;
+    }
+    .figure-note {
+        margin: 1.7rem 0;
+        padding: 1.2rem 1.4rem;
+        border: 1px solid #d8e4ec;
+        background: #f3f8fb;
+        color: var(--text-secondary);
+        font-size: .92rem;
+        line-height: 1.55;
+    }
+    .figure-note strong { display: block; color: var(--night-blue); }
+    .figure-note a, .references a { color: var(--accent); word-break: break-word; }
+    .bibliography { padding-top: 1rem; border-top: 1px solid var(--border); }
+    .references { margin-left: 1.4rem; }
+    .references li { margin-bottom: 1rem; padding-left: .35rem; }
+    .author-card { grid-template-columns: 150px minmax(0, 1fr); align-items: start; margin-top: 4rem; }
+    .author-card img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: grayscale(.1);
+    }
+    .author-card h2 { margin: .15rem 0 .2rem; color: var(--night-blue); font-size: 2rem; }
+    .author-role {
+        margin-bottom: .75rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .author-card p { color: var(--text-secondary); line-height: 1.65; }
+    .author-card a { color: var(--accent); }
+    footer { padding: 3rem 0; background: var(--night-blue); color: var(--text-light); text-align: center; }
+    footer h3 { margin-bottom: .6rem; color: white; letter-spacing: .12em; }
+    footer p { font-size: .82rem; }
+
+    @media (max-width: 980px) {
+        .desktop-nav { display: none; }
+        .hero { grid-template-columns: 1fr; gap: 2.5rem; }
+        .cover-card { width: min(390px, 100%); margin: 0 auto; }
+    }
+    @media (max-width: 660px) {
+        body { font-size: 1rem; }
+        .container, .article-container { padding-right: 1.25rem; padding-left: 1.25rem; }
+        .article-title { font-size: 2.45rem; }
+        .download-box, .contents-list, .author-card { grid-template-columns: 1fr; }
+        .download-box, .contents-panel, .author-card, .abstract-section { padding: 1.45rem; }
+        .button { width: 100%; }
+        .paper-section p { text-align: left; }
+        .paper-section h2 { font-size: 2rem; }
+        .author-card img { width: 120px; height: 120px; }
+    }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "La minaccia della Federazione Russa verso le democrazie europee",
+  "author": {"@type": "Person", "name": "Francesco Trevisan"},
+  "publisher": {"@type": "Organization", "name": "DYNAMES", "url": "https://www.dynames.it/"},
+  "datePublished": "2026-07-15",
+  "inLanguage": "it-IT",
+  "articleSection": "White Paper",
+  "url": "https://www.dynames.it/pubblicazioni/2026.07.15-white-paper-minaccia-russa-democrazie-europee.html"
+}
+</script>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html">
+<h1><img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>DYNAMES</h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a class="active" href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+
+<div class="container back-nav">
+<a href="../pubblicazioni.html">← Torna alle Pubblicazioni</a>
+</div>
+
+<main>
+<article class="article-container">
+<section class="hero">
+<div>
+<span class="article-category">Paper</span>
+<h1 class="serif-heading article-title">La minaccia della Federazione Russa verso le democrazie europee</h1>
+<p class="article-subtitle">Operazioni sotto soglia, sabotaggi, manipolazione informativa e scenari di pressione sul fianco orientale dell’Alleanza.</p>
+<div class="article-meta">
+<span class="meta-author">A cura di Francesco Trevisan</span>
+<span>White Paper</span>
+<span>Luglio 2026</span>
+</div>
+</div>
+<div class="cover-card" aria-label="Copertina del white paper La minaccia della Federazione Russa verso le democrazie europee">
+<div class="publication-cover">
+<div class="cover-brand">
+<img alt="" aria-hidden="true" class="cover-brand-mark" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+<div class="cover-brand-copy">
+<strong>DYNAMES</strong>
+<span>Governance di Forze e Sistemi</span>
+</div>
+</div>
+<svg aria-hidden="true" class="cover-network" viewBox="0 0 260 260">
+<polyline points="36,38 92,20 138,54 202,30 228,84 184,122 224,170 164,204 104,177 58,222"/>
+<polyline points="36,38 62,96 138,54 116,128 184,122 164,204 116,128 104,177 62,96 58,222"/>
+<line x1="92" y1="20" x2="62" y2="96"/><line x1="92" y1="20" x2="116" y2="128"/>
+<line x1="202" y1="30" x2="184" y2="122"/><line x1="138" y1="54" x2="228" y2="84"/>
+<line x1="228" y1="84" x2="224" y2="170"/><line x1="224" y1="170" x2="164" y2="204"/>
+<line x1="104" y1="177" x2="58" y2="222"/>
+<circle cx="36" cy="38" r="4"/><circle cx="92" cy="20" r="4"/><circle cx="138" cy="54" r="4"/>
+<circle cx="202" cy="30" r="4"/><circle cx="228" cy="84" r="4"/><circle cx="184" cy="122" r="4"/>
+<circle cx="224" cy="170" r="4"/><circle cx="164" cy="204" r="4"/><circle cx="104" cy="177" r="4"/>
+<circle cx="58" cy="222" r="4"/><circle cx="62" cy="96" r="4"/><circle cx="116" cy="128" r="4"/>
+</svg>
+<div class="cover-copy">
+<div class="cover-series">Paper &amp; Dossier</div>
+<span class="cover-kicker">White Paper</span>
+<h2 class="cover-title">La minaccia della Federazione Russa verso le democrazie europee</h2>
+</div>
+<div class="cover-footer"><span>Francesco Trevisan</span><span class="cover-year">2026</span></div>
+</div>
+</div>
+</section>
+
+<div class="article-body">
+<section class="download-box">
+<div>
+<span class="small-label">Pubblicazione DYNAMES</span>
+<h2 class="serif-heading">Leggi online o scarica il white paper</h2>
+<p>La pagina propone il testo del white paper in versione web. Le figure, l’impaginazione editoriale e la bibliografia completa sono disponibili anche nel documento PDF.</p>
+</div>
+<a class="button" download href="Archivio/2026.07.15-white-paper-minaccia-russa-democrazie-europee.pdf">Scarica il PDF</a>
+</section>
+
+<section class="contents-panel" aria-labelledby="indice-title">
+<span class="small-label">Indice</span>
+<h2 class="serif-heading" id="indice-title">I contenuti del white paper</h2>
+<ol class="contents-list">
+<li><a href="#sintesi">In sintesi</a></li>
+<li><a href="#introduzione">Introduzione</a></li>
+<li><a href="#operazioni-sotto-soglia">Le operazioni “sotto soglia”</a></li>
+<li><a href="#target-metodologia">Target e metodologia degli attacchi</a></li>
+<li><a href="#manipolazione-informativa">Manipolazione informativa e interferenza straniera</a></li>
+<li><a href="#scenari-russia-nato">Scenari di conflitto Russia-NATO: Narva e l’Estonia</a></li>
+<li><a href="#conclusioni">Conclusioni</a></li>
+<li><a href="#bibliografia">Bibliografia</a></li>
+</ol>
+</section>
+
+<section class="paper-section abstract-section" id="sintesi">
+<span class="small-label">Sintesi</span>
+<h2 class="serif-heading">In sintesi</h2>
+<p>Il white paper esamina la minaccia ibrida della Federazione Russa nei confronti delle democrazie europee, muovendo dalla Relazione annuale 2026 dell’intelligence italiana. L’analisi ricostruisce il ricorso a operazioni “sotto soglia”, sabotaggi contro infrastrutture critiche, attacchi cyber, jamming GPS, strumentalizzazione dei flussi migratori e campagne di manipolazione informativa. Una sezione specifica è dedicata al rischio di pressione sul fianco orientale della NATO e allo scenario di Narva, in Estonia. In chiusura, il paper richiama la necessità di rafforzare deterrenza, protezione delle infrastrutture, resilienza informativa e cooperazione tra NATO e Unione europea.</p>
+</section>
+
+<div class="pull-quote">La sicurezza non è soltanto tecnica: l’intelligence deve localizzare le minacce ibride e ridurre la “zona grigia” nella quale possono operare gli attori ostili.</div>
+
+<section class="paper-section" id="introduzione">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Introduzione</h2>
+<p>E se non fosse tutto così calcolabile? Se i paradigmi di politica internazionale fossero completamente diversi rispetto al passato e le aspettative degli attori coinvolti venissero disattese bruscamente, portando ad un conflitto armato tra l’Europa e la Russia? A mio parere, queste due domande fungono da guida per poter interpretare al meglio il report dell’intelligence italiana sulla sicurezza nazionale del 2026, intitolato <em>Governare il cambiamento</em>. La relazione, divisa in diversi capitoli, ognuno dei quali analizza varie dinamiche interne ed esterne al territorio italiano, pone l’accento sulla minaccia ibrida alle società democratiche, identificando la Federazione Russa come l’attore internazionale maggiormente critico per l’architettura strategico-securitaria del vecchio continente.</p>
+</section>
+
+<section class="paper-section" id="operazioni-sotto-soglia">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Le operazioni “sotto soglia” della Federazione Russa</h2>
+<p>Il riallineamento pressoché compiuto tra Washington e Mosca, ha costretto l’Europa a venire individuata come il centro focale di vari interventi “sotto soglia” da parte del Cremlino, attraverso i quali auspica di vedere deteriorato il supporto politico e militare a Kyiv. Tali azioni vengono definite appunto “sotto soglia” perché, seppur ostili e dirette a danneggiare un Paese, non raggiungono il livello di un attacco armato convenzionale, evitando così di far scattare automaticamente l’obbligo di difesa collettiva dell’Alleanza Atlantica (Sistema di informazione per la sicurezza della Repubblica, 2026). Esse, per di più, sono considerate un metodo sostanzialmente economico per la Federazione Russa, la quale affida il compimento di queste attività illegali a reti criminali o agenti proxies, senza poi subire ricadute diplomatiche troppo significative (Ministero della Difesa, 2025).</p>
+<p>Tra il 2023 e il 2025, infatti, la frequenza degli attacchi a infrastrutture critiche è più che quintuplicata, lasciando spazio ad eventi la cui gravità ha anch’essa visto un incremento significativo (Jones S.G., 2025). Secondo un report del CSIS (Jones S.G., 2025), gli Stati occidentali, però, non hanno mai adottato contromisure mirate a ridurre tale pressione esterna, classificando anche i casi più al limite e degni di nota per la loro gravità come azioni non comparabili allo stato di conflitto.</p>
+<p>Ad esempio, l’Articolo 5 della NATO prevede un’azione collettiva solo nel caso in cui la sicurezza di uno Stato membro venga pesantemente minacciata o lesa, accantonando in tal senso le varie “misure attive” subite per mano della Federazione russa durante l’ultimo periodo. La responsabilità politica e militare, dunque, appare difficile da poter individuare con adeguata chiarezza, sebbene il soggetto principale a capo della catena di comando, indicato dal rapporto CSIS, sia la GRU (<em>Glavnoye Razvedyvatelnoye Upravlenie</em>), ovvero la Direzione Generale dell’Intelligence russa, guidata dall’Ammiraglio Igor Kostyukov, alla quale seguono i Comitati di Influenza Speciale (fondati nel 2022) e il Consiglio di Sicurezza Nazionale, il cui Segretario è il Ministro della Difesa Shoigu.</p>
+</section>
+
+<section class="paper-section" id="target-metodologia">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Target e metodologia degli attacchi</h2>
+<p>Arrivando ora ai target e alle metodologie adottate dagli attori in campo, spiccano certamente gli attacchi ai mezzi di trasporto, come le ferrovie e gli aeroporti (con l’uso del jamming GPS), quelli rivolti verso apparati industriali di difesa e contro le infrastrutture critiche di carattere strategico-economico (Kłyszcz e Kohv, 2025). Gli eventi degli ultimi anni, frequentemente comprendenti sia danneggiamenti a gasdotti sia guasti di cavi e interconnessioni nel Mar Baltico, hanno consolidato il fatto che le infrastrutture sottomarine «sono vulnerabili non solo ad azioni “classiche”, ma anche ad interferenze internazionali a basso costo» (vedi figura 1 e 2).</p>
+<div class="figure-note"><strong>Figure 1 e 2 nel PDF</strong>Cavi sottomarini europei in fibra ottica; obiettivi degli attacchi russi in Europa. Fonte: CSIS analysis, Seth G. Jones (2025), <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" rel="noopener" target="_blank"><em>Russia’s Shadow War Against the West</em></a>.</div>
+<p>Allo stesso tempo, per quanto riguarda i mezzi attraverso cui viene posta in essere la “Shadow War”, termine utilizzato per descrivere la reale ambiguità nel momento di attribuzione degli attacchi a Mosca (Praks, 2025), si nota come tra i principali metodi utilizzati ci sia quello degli attacchi hacker e cyber volti a destabilizzare i segnali GPS, causando deviazioni di volo, errori di navigazione, breakdown informatici e ponendo a repentaglio la vita di molti cittadini europei.</p>
+<p>Un’altra “arma” utilizzata da parte della Russia contro l’Occidente è l’immigrazione illegale, diretta da Mosca e da Minsk verso la Polonia, la Finlandia, la Lettonia e la Lituania (vedi figura 3). Tra la fine del 2021 e gli inizi del 2022, infatti, se ne è registrato il picco, con l’approdo di un ingente numero di migranti ai confini dell’Unione Europea. Tali crisi di frontiera vengono orchestrate meticolosamente dalla Federazione Russa, affinché non solo le istituzioni dei paesi interessati appaiano disorientate e incapaci nel sostenere una situazione simile, ma anche per fomentare l’opinione pubblica contro queste ultime, aprendo varchi politici proficui per partiti antisistema di ambo gli estremi politici (Voo e Singh, 2025).</p>
+<div class="figure-note"><strong>Figura 3 nel PDF</strong>Armi utilizzate dagli attacchi russi in Europa. Fonte: CSIS analysis, Seth G. Jones (2025), <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" rel="noopener" target="_blank"><em>Russia’s Shadow War Against the West</em></a>.</div>
+</section>
+
+<section class="paper-section" id="manipolazione-informativa">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Manipolazione informativa e interferenza straniera</h2>
+<p>Più subdola ma ugualmente efficace, l’interferenza politica russa, di fatti, come indica la stessa relazione dei servizi italiani, costituisce una delle minacce più frequenti dirette verso numerosi paesi, compresi coloro che guardano alle istituzioni euro-atlantiche con speranza e desiderio di rivalsa dal passato sovietico (e.g. Moldavia e Georgia) (Sistema di informazione per la sicurezza della Repubblica, 2026).</p>
+<p>L’informazione assume perciò un valore puramente strategico, andando ad influenzare in maniera invasiva il processo elettorale del paese in esame. Gli attori coinvolti non solo diffondono narrazioni false o manipolate attraverso le piattaforme social (<em>Foreign information manipulation and interference</em> - FIMI), ma soprattutto tendono ad alimentare la sfiducia nel processo democratico, ampliando divaricazioni politiche già esistenti. La <em>dezinformacija</em>, già utilizzata anzitempo in Unione Sovietica nel corso della guerra fredda, viene adottata per diffondere panico, minimizzare il pericolo, giustificare operazioni militari e bersagliare la leadership occidentale ogni qualvolta essa rintracci nella Federazione Russa una minaccia esistenziale per la propria sicurezza (vedi figura 4 e 5).</p>
+<div class="figure-note"><strong>Figure 4 e 5 nel PDF</strong>La disinformazione contro le democrazie liberali; i target della propaganda russa in Europa. Fonte: Sistema di informazione per la sicurezza della Repubblica (2026), <em>Governare il Cambiamento. Relazione annuale sulla politica dell’informazione per la sicurezza</em>.</div>
+</section>
+
+<section class="paper-section" id="scenari-russia-nato">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Scenari di conflitto Russia-NATO: Narva e l’Estonia</h2>
+<p>Tuttavia, la minaccia russa non è solamente misurabile attraverso i casi menzionati precedentemente, bensì è fondamentale che essa stessa sia calibrata e valutata con meticolosità in tutti gli scenari più sensibili, compresi quelli tattico-militari. A tal proposito, il report dei servizi evidenzia chiaramente quali siano le aree più critiche, sottoposte a forte pressione strategico-politica da parte di Mosca.</p>
+<p>In un capitolo totalmente dedicato ad eventuali scenari futuri di confronto militare tra Mosca e l’Occidente, l’intelligence italiana, attraverso un esercizio di analisi previsionale condotto con l’IA, indica tre scenari in cui la Federazione Russa potrebbe testare la deterrenza NATO, scommettendo su una risposta più o meno blanda da parte degli Stati Stati membri dell’alleanza. Inoltre, ciascun scenario, validato da esperti analisti e generato in collaborazione con GenAI, prevede un probabilità di accadimento, un pretesto, determinate modalità di svolgimento, eventuali obiettivi e probabili conclusioni.</p>
+<p>Mentre la seconda (corridoio dei Suwalki tra Polonia, Kaliningrad, Lituania e Bielorussia) e la terza ipotesi (Mar di Barents, a nord della Norvegia) attestano una probabilità di attacco russo tendenzialmente bassa, o comunque non troppo superiore ad un 25%, la porzione geografica maggiormente attenzionata è quella corrispondente alla zona di Narva, a nord est dell’Estonia. Qui, infatti, la probabilità di un attacco ibrido del Cremlino incrementa significativamente, dal momento che trova spazio la narrativa russa legata alla salvaguardia delle minoranze russofone.</p>
+<p>L’Estonia, di fatti, ad oggi rappresenta uno dei paesi europei maggiormente interessati dalla presenza di una forte componente russofona, la quale, con innegabili eccezioni, guarda a Mosca e alla lingua russa con interesse non indifferente. Nel caso di Narva, dunque, il pretesto sarebbe un intervento a loro tutela, il quale potrebbe comportare attacchi cibernetici, propaganda filo regime e infiltrazioni di forze speciali russe.</p>
+<p>Non è un caso che l’obiettivo di creare una “zona grigia” tra la NATO e la Federazione Russa in Estonia venga apertamente messo per iscritto anche da Carlo Masala, professore di Politica internazionale presso la Bundeswehr University di Monaco di Baviera, nel suo libro <em>If Russia Wins, a scenario</em>. Egli, in maniera tanto dettagliata quanto paragonabile a quanto esplicitato dai servizi d’intelligence italiani, individua la città di Narva come la principale tra le aree geografiche maggiormente sottoposte alla pressione politica e militare russa.</p>
+<p>Lo scenario da lui proposto prevede un attacco armato, piuttosto inaspettato ed intenso, alla città di confine estone, la quale, dopo prolungate e fallimentari discussioni in sede atlantica sul tipo di reazione da intraprendere contro Mosca, diviene il simbolo della debolezza strategica occidentale, aprendo ad una stagione geostrategica ancor più instabile tra la NATO e la Federazione Russa (Masala, 2025). A conferma di come queste proiezioni siano pressoché verosimili e la loro concretizzazione non sia affatto lontana dalla realtà, durante le prime settimane di marzo si è andata diffondendo una notizia per cui vi sia in atto una campagna filorussa nei principali social media che promuove la nascita di una Repubblica Popolare di Narva, plasmando le esperienze poco fruttuose del Donbass ucraino (Euronews, 2026).</p>
+</section>
+
+<section class="paper-section" id="conclusioni">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Conclusioni</h2>
+<p>Se dal punto di vista militare, l’unica opzione di deterrenza attuabile è un riarmo immediato, volto al rafforzamento del pilastro europeo all’interno della NATO e ad una preparazione adeguata in caso di conflitto armato, dal punto di vista informativo e delle infrastrutture critiche l’obiettivo potrebbe essere più vicino di quanto previsto.</p>
+<p>Come indicato nel documento dall’intelligence italiana, una risorsa preziosa nel contrasto alla disinformazione, assieme al meccanismo di Counter-AI, è la tecnologia blockchain, la quale presenta delle caratteristiche fondamentali (decentralizzazione, immutabilità, crittografia), le quali consentono un registro cronologico e protetto da meccanismi inalterabili, chiusi ad eventuali modifiche con l’IA. Altro elemento considerato essenziale nel definire un sistema di sicurezza informativo efficace ed efficiente è l’identità digitale sovrana (<em>self-sovereign identity</em> - SSI), il cui utilizzo andrebbe a limitare significativamente la diffusione massiva di bot e account falsi.</p>
+<p>Per quanto riguarda la prevenzione agli attacchi contro le infrastrutture critiche, invece, la strategia si basa su tre pilastri principali: il riconoscimento dei cavi come asset critici, la creazione di procedure comuni per gestire gli incidenti e l’investimento in tecnologie sicure per ridurre le dipendenze estere. Dato questo contesto, la collaborazione tra NATO e UE appare non solo preminente ma fondamentale per un coordinamento fluido e coerente, volto alla sorveglianza costante e ad accelerare i tempi di reazione.</p>
+<p>Se in superficie il controllo si affida a satelliti e radar, sul fondale diventa cruciale e dirimente l’uso di sensori acustici, droni subacquei autonomi e intelligenza artificiale, capaci di individuare potenziali minacce e distinguere queste ultime dalle normali attività marine. Tuttavia, il report consegna ai lettori un monito, secondo cui la sicurezza non è solo mera tecnica ma essa prevede un ruolo predominante dell’intelligence nel localizzare le minacce ibride, riducendo in maniera sostanziale la “zona grigia”, all’interno della quale possono operare attori ostili, Federazione Russa in primis.</p>
+</section>
+
+<section class="paper-section bibliography" id="bibliografia">
+<span class="small-label">Fonti</span>
+<h2 class="serif-heading">Bibliografia</h2>
+<ol class="references">
+<li>Euronews (2026), “A ‘people’s republic’ on NATO’s edge: The Narva narrative testing Europe’s defence”, 19 marzo. <a href="https://www.euronews.com/2026/03/19/a-peoples-republic-on-natos-edge-the-narva-narrative-testing-europes-defences" rel="noopener" target="_blank">euronews.com</a>.</li>
+<li>Ministero della Difesa (2025), <em>Il contrasto alla guerra ibrida: una strategia attiva. Non-paper del Ministro della Difesa</em>, Roma. <a href="https://www.difesa.it/assets/allegati/83696/non-paper_il_contrasto_alla_guerra_ibrida.pdf" rel="noopener" target="_blank">difesa.it</a>.</li>
+<li>Voo, J. e Singh, V. V. (2025), <em>Russia’s Information Confrontation Doctrine in Practice (2014–Present): Intent, Evolution and Implications</em>. International Institute for Strategic Studies. <a href="https://www.iiss.org/research-paper/2025/06/russias-information-confrontation-doctrine-in-practice-2014present-intent-evolution-and-implications/" rel="noopener" target="_blank">iiss.org</a>.</li>
+<li>Kłyszcz, I. U. e Kohv, M. (2025), <em>Confronting the Russian Hydra: Continuity and Innovation in the Grey Zone</em>. International Centre for Defence and Security. <a href="https://icds.ee/en/confronting-the-russian-hydra-continuity-and-innovation-in-the-grey-zone/" rel="noopener" target="_blank">icds.ee</a>.</li>
+<li>Masala, C. (2025), <em>If Russia Wins, A Scenario</em>, Atlantic Books, pp. 5-8.</li>
+<li>Praks, H. (2025), <em>Russia’s Hybrid Attacks in Europe: From Deterrence to Attribution to Response</em>. International Centre for Defence and Security. <a href="https://icds.ee/en/russias-hybrid-attacks-in-europe-from-deterrence-to-attribution-to-response/" rel="noopener" target="_blank">icds.ee</a>.</li>
+<li>Jones, S. G. (2025), <em>Russia’s Shadow War Against the West</em>. Center for Strategic and International Studies. <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" rel="noopener" target="_blank">csis.org</a>.</li>
+<li>Sistema di informazione per la sicurezza della Repubblica (2026), <em>Governare il Cambiamento. Relazione annuale sulla politica dell’informazione per la sicurezza</em>, Roma. <a href="https://www.sicurezzanazionale.gov.it/contenuti/relazione-al-parlamento-2026" rel="noopener" target="_blank">sicurezzanazionale.gov.it</a>.</li>
+</ol>
+</section>
+
+<section class="author-card" id="autore">
+<img alt="Francesco Trevisan" onerror="this.style.display='none'" src="../assets/Junior-Fellows/marco-trevisan.jpg"/>
+<div>
+<span class="small-label">L’autore</span>
+<h2 class="serif-heading">Francesco Trevisan</h2>
+<div class="author-role">Informazione e Dominio Cognitivo</div>
+<p>Studente magistrale in Relazioni Internazionali e Studi Europei presso l’Università di Firenze, ha conseguito la laurea triennale a Gorizia con specializzazione sui partiti politici italiani e il dispiegamento delle forze armate in aree di conflitto globali.</p>
+<p>I suoi interessi di ricerca vertono sulle minacce ibride alle democrazie liberali — con particolare attenzione alle campagne di influenza, disinformazione e destabilizzazione della Federazione Russa — e sulle dinamiche di sicurezza del fianco orientale NATO/UE. Ha consolidato competenze di analisi OSINT, redazione di rapporti, gestione progettuale e comunicazione istituzionale attraverso esperienze presso l’Ambasciata d’Italia in Estonia, organizzazioni specializzate e programmi di formazione avanzata.</p>
+<p><a href="../chi-siamo.html#francesco-trevisan">Profilo completo su DYNAMES</a></p>
+</div>
+</section>
+</div>
+</article>
+</main>
+
+<footer>
+<div class="container">
+<h3>DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p>© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
