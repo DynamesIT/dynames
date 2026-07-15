@@ -357,17 +357,32 @@
         font-style: italic;
         line-height: 1.45;
     }
-    .figure-note {
-        margin: 1.7rem 0;
-        padding: 1.2rem 1.4rem;
+    .paper-figure {
+        margin: 2.2rem 0;
+        padding: 1rem;
         border: 1px solid #d8e4ec;
-        background: #f3f8fb;
+        background: var(--optical-white);
+        box-shadow: 0 12px 28px rgba(11, 28, 45, .08);
+    }
+    .paper-figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+    }
+    .paper-figure--portrait img { max-width: 620px; }
+    .paper-figure figcaption {
+        margin-top: .9rem;
         color: var(--text-secondary);
-        font-size: .92rem;
+        font-size: .86rem;
         line-height: 1.55;
     }
-    .figure-note strong { display: block; color: var(--night-blue); }
-    .figure-note a, .references a { color: var(--accent); word-break: break-word; }
+    .paper-figure figcaption strong {
+        display: block;
+        margin-bottom: .15rem;
+        color: var(--night-blue);
+    }
+    .paper-figure a, .references a { color: var(--accent); word-break: break-word; }
     .bibliography { padding-top: 1rem; border-top: 1px solid var(--border); }
     .references { margin-left: 1.4rem; }
     .references li { margin-bottom: 1rem; padding-left: .35rem; }
@@ -545,10 +560,20 @@
 <span class="small-label">White Paper</span>
 <h2 class="serif-heading">Target e metodologia degli attacchi</h2>
 <p>Arrivando ora ai target e alle metodologie adottate dagli attori in campo, spiccano certamente gli attacchi ai mezzi di trasporto, come le ferrovie e gli aeroporti (con l’uso del jamming GPS), quelli rivolti verso apparati industriali di difesa e contro le infrastrutture critiche di carattere strategico-economico (Kłyszcz e Kohv, 2025). Gli eventi degli ultimi anni, frequentemente comprendenti sia danneggiamenti a gasdotti sia guasti di cavi e interconnessioni nel Mar Baltico, hanno consolidato il fatto che le infrastrutture sottomarine «sono vulnerabili non solo ad azioni “classiche”, ma anche ad interferenze internazionali a basso costo» (vedi figura 1 e 2).</p>
-<div class="figure-note"><strong>Figure 1 e 2 nel PDF</strong>Cavi sottomarini europei in fibra ottica; obiettivi degli attacchi russi in Europa. Fonte: CSIS analysis, Seth G. Jones (2025), <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" rel="noopener" target="_blank"><em>Russia’s Shadow War Against the West</em></a>.</div>
+<figure class="paper-figure">
+<img alt="Mappa dei cavi sottomarini europei in fibra ottica" loading="lazy" src="Archivio/2026.07.15-minaccia-russa-figura-1-cavi-sottomarini.jpg"/>
+<figcaption><strong>Figura 1 — Cavi sottomarini europei in fibra ottica</strong>Fonte: CSIS analysis, Seth G. Jones (2025), <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" rel="noopener" target="_blank"><em>Russia’s Shadow War Against the West</em></a>.</figcaption>
+</figure>
+<figure class="paper-figure">
+<img alt="Grafico degli obiettivi degli attacchi russi in Europa tra il 2022 e il 2025" loading="lazy" src="Archivio/2026.07.15-minaccia-russa-figura-2-target-attacchi.jpg"/>
+<figcaption><strong>Figura 2 — Obiettivi degli attacchi russi in Europa</strong>Fonte: CSIS analysis, Seth G. Jones (2025), <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" rel="noopener" target="_blank"><em>Russia’s Shadow War Against the West</em></a>.</figcaption>
+</figure>
 <p>Allo stesso tempo, per quanto riguarda i mezzi attraverso cui viene posta in essere la “Shadow War”, termine utilizzato per descrivere la reale ambiguità nel momento di attribuzione degli attacchi a Mosca (Praks, 2025), si nota come tra i principali metodi utilizzati ci sia quello degli attacchi hacker e cyber volti a destabilizzare i segnali GPS, causando deviazioni di volo, errori di navigazione, breakdown informatici e ponendo a repentaglio la vita di molti cittadini europei.</p>
 <p>Un’altra “arma” utilizzata da parte della Russia contro l’Occidente è l’immigrazione illegale, diretta da Mosca e da Minsk verso la Polonia, la Finlandia, la Lettonia e la Lituania (vedi figura 3). Tra la fine del 2021 e gli inizi del 2022, infatti, se ne è registrato il picco, con l’approdo di un ingente numero di migranti ai confini dell’Unione Europea. Tali crisi di frontiera vengono orchestrate meticolosamente dalla Federazione Russa, affinché non solo le istituzioni dei paesi interessati appaiano disorientate e incapaci nel sostenere una situazione simile, ma anche per fomentare l’opinione pubblica contro queste ultime, aprendo varchi politici proficui per partiti antisistema di ambo gli estremi politici (Voo e Singh, 2025).</p>
-<div class="figure-note"><strong>Figura 3 nel PDF</strong>Armi utilizzate dagli attacchi russi in Europa. Fonte: CSIS analysis, Seth G. Jones (2025), <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" rel="noopener" target="_blank"><em>Russia’s Shadow War Against the West</em></a>.</div>
+<figure class="paper-figure">
+<img alt="Grafico degli strumenti impiegati negli attacchi russi in Europa tra il 2022 e il 2025" loading="lazy" src="Archivio/2026.07.15-minaccia-russa-figura-3-armi-utilizzate.jpg"/>
+<figcaption><strong>Figura 3 — Armi utilizzate negli attacchi russi in Europa</strong>Fonte: CSIS analysis, Seth G. Jones (2025), <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" rel="noopener" target="_blank"><em>Russia’s Shadow War Against the West</em></a>.</figcaption>
+</figure>
 </section>
 
 <section class="paper-section" id="manipolazione-informativa">
@@ -556,7 +581,14 @@
 <h2 class="serif-heading">Manipolazione informativa e interferenza straniera</h2>
 <p>Più subdola ma ugualmente efficace, l’interferenza politica russa, di fatti, come indica la stessa relazione dei servizi italiani, costituisce una delle minacce più frequenti dirette verso numerosi paesi, compresi coloro che guardano alle istituzioni euro-atlantiche con speranza e desiderio di rivalsa dal passato sovietico (e.g. Moldavia e Georgia) (Sistema di informazione per la sicurezza della Repubblica, 2026).</p>
 <p>L’informazione assume perciò un valore puramente strategico, andando ad influenzare in maniera invasiva il processo elettorale del paese in esame. Gli attori coinvolti non solo diffondono narrazioni false o manipolate attraverso le piattaforme social (<em>Foreign information manipulation and interference</em> - FIMI), ma soprattutto tendono ad alimentare la sfiducia nel processo democratico, ampliando divaricazioni politiche già esistenti. La <em>dezinformacija</em>, già utilizzata anzitempo in Unione Sovietica nel corso della guerra fredda, viene adottata per diffondere panico, minimizzare il pericolo, giustificare operazioni militari e bersagliare la leadership occidentale ogni qualvolta essa rintracci nella Federazione Russa una minaccia esistenziale per la propria sicurezza (vedi figura 4 e 5).</p>
-<div class="figure-note"><strong>Figure 4 e 5 nel PDF</strong>La disinformazione contro le democrazie liberali; i target della propaganda russa in Europa. Fonte: Sistema di informazione per la sicurezza della Repubblica (2026), <em>Governare il Cambiamento. Relazione annuale sulla politica dell’informazione per la sicurezza</em>.</div>
+<figure class="paper-figure">
+<img alt="Infografica sui principali temi della disinformazione contro le democrazie liberali" loading="lazy" src="Archivio/2026.07.15-minaccia-russa-figura-4-disinformazione-democrazie-liberali.jpg"/>
+<figcaption><strong>Figura 4 — La disinformazione contro le democrazie liberali</strong>Fonte: Sistema di informazione per la sicurezza della Repubblica (2026), <em>Governare il Cambiamento. Relazione annuale sulla politica dell’informazione per la sicurezza</em>.</figcaption>
+</figure>
+<figure class="paper-figure paper-figure--portrait">
+<img alt="Infografica sui principali Paesi bersaglio della rete di propaganda Pravda" loading="lazy" src="Archivio/2026.07.15-minaccia-russa-figura-5-target-rete-pravda.jpg"/>
+<figcaption><strong>Figura 5 — I principali target della rete Pravda</strong>Fonte: Sistema di informazione per la sicurezza della Repubblica (2026), <em>Governare il Cambiamento. Relazione annuale sulla politica dell’informazione per la sicurezza</em>.</figcaption>
+</figure>
 </section>
 
 <section class="paper-section" id="scenari-russia-nato">
@@ -618,3 +650,4 @@
 </footer>
 </body>
 </html>
+
