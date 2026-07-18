@@ -494,6 +494,11 @@
             object-fit: cover;
         }
 
+        .member-publication-card .paper-card-cover img {
+            object-fit: contain;
+            background: #091722;
+        }
+
         .paper-card-generated-cover {
             position: relative;
             display: flex;
@@ -966,7 +971,7 @@
 <div class="intro-panel">
 <h2>La produzione editoriale DYNAMES</h2>
 <p>DYNAMES raccoglie in questa sezione le pubblicazioni, i report, i dossier e i materiali di approfondimento prodotti nell’ambito delle proprie attività di analisi, ricerca e confronto pubblico.</p>
-<p>La pagina è concepita come archivio progressivo: ai materiali già disponibili si affiancheranno nel tempo nuove uscite editoriali, report di evento, Working Paper, Policy Paper, White Paper e Dossier.</p>
+<p>La pagina è concepita come archivio progressivo: ai materiali già disponibili si affiancheranno nel tempo nuove uscite editoriali, report di evento, Working Paper, Policy Paper, White Paper e Dossier, insieme alle pubblicazioni dei Membri DYNAMES ospitate su altre piattaforme o realizzate in forma indipendente.</p>
 </div>
 <h3 class="publication-section-title">
             Pubblicazione in evidenza
@@ -1163,6 +1168,47 @@
 </div>
 </details>
 </section>
+<section aria-labelledby="member-publications-title" class="paper-archive member-publications-archive">
+<div class="paper-archive-header">
+<span class="paper-archive-kicker">DYNAMES Network</span>
+<h3 class="paper-archive-title" id="member-publications-title">Pubblicazioni e contributi editoriali dei Membri DYNAMES su altre piattaforme o indipendenti</h3>
+<p class="paper-archive-intro">Una selezione di libri, saggi, articoli, contributi scientifici e altri lavori editoriali firmati dai Membri DYNAMES e pubblicati da editori, riviste e piattaforme esterne, oppure realizzati in forma indipendente.</p>
+</div>
+<div class="papers-grid member-publications-grid">
+<article class="paper-card member-publication-card">
+<a aria-label="Apri la pubblicazione: Conflitti e confini immateriali" class="paper-card-link" href="pubblicazioni/2026.07.18-conflitti-e-confini-immateriali.html">
+<div class="paper-card-cover">
+<img alt="Copertina del volume Guerra cognitiva e sicurezza nazionale, a cura di Roberto Sgalla e Alessandro Sterpa" src="pubblicazioni/Archivio/danna-sterpa-guerra-cognitiva.jpg"/>
+<span class="paper-type-badge">Contributo in volume</span>
+</div>
+<div class="paper-card-body">
+<span class="paper-card-meta">Editoriale Scientifica · Luglio 2026</span>
+<h4 class="paper-card-title">Conflitti e confini immateriali</h4>
+<p class="paper-card-author">Di Vincenzo D’Anna · Membro DYNAMES</p>
+<p class="paper-card-abstract">Contributo di Vincenzo D’Anna nel volume <em>Guerra cognitiva e sicurezza nazionale. Profili giuridici e istituzionali</em>, a cura di Roberto Sgalla e Alessandro Sterpa, pubblicato da Editoriale Scientifica. Un’analisi della violenza ibrida, della propaganda, del governo del caos e delle possibili strategie di difesa del dominio cognitivo.</p>
+<span class="paper-card-cta">Apri la pubblicazione</span>
+</div>
+</a>
+</article>
+<!-- Modello per le future pubblicazioni dei Membri DYNAMES:
+<article class="paper-card member-publication-card">
+<a aria-label="Apri la pubblicazione: Titolo della pubblicazione" class="paper-card-link" href="https://www.esempio.it/pubblicazione" rel="noopener noreferrer" target="_blank">
+<div class="paper-card-cover">
+<img alt="Copertina di Titolo della pubblicazione" src="pubblicazioni/Archivio/nome-copertina.jpg"/>
+<span class="paper-type-badge">Saggio</span>
+</div>
+<div class="paper-card-body">
+<span class="paper-card-meta">Nome editore o piattaforma · Mese 2026</span>
+<h4 class="paper-card-title">Titolo della pubblicazione</h4>
+<p class="paper-card-author">Di Nome Cognome · Membro DYNAMES</p>
+<p class="paper-card-abstract">Breve presentazione del contenuto della pubblicazione e del contributo dell’autore.</p>
+<span class="paper-card-cta">Leggi la pubblicazione</span>
+</div>
+</a>
+</article>
+-->
+</div>
+</section>
 </section>
 <footer>
 <div class="container">
@@ -1173,9 +1219,12 @@
 </footer>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const filterButtons = document.querySelectorAll('.paper-filter');
-    const paperCards = document.querySelectorAll('.paper-card');
-    const emptyState = document.querySelector('.paper-filter-empty');
+    const paperArchive = document.querySelector('[aria-labelledby="paper-archive-title"]');
+    if (!paperArchive) return;
+
+    const filterButtons = paperArchive.querySelectorAll('.paper-filter');
+    const paperCards = paperArchive.querySelectorAll('.paper-card');
+    const emptyState = paperArchive.querySelector('.paper-filter-empty');
 
     if (!filterButtons.length || !paperCards.length) return;
 
