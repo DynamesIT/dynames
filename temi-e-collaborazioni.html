@@ -261,14 +261,11 @@
         }
 
         .intro-layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.9fr);
-            gap: 34px;
-            align-items: stretch;
+            display: block;
         }
 
         .intro-shell {
-            max-width: none;
+            max-width: 940px;
         }
 
         .intro-visual {
@@ -566,6 +563,65 @@
             border-color: var(--night-blue);
         }
 
+        .open-collaborations {
+            margin-top: 76px;
+            padding: 54px;
+            border: 1px solid rgba(51,65,85,0.12);
+            border-top: 5px solid var(--gold);
+            border-radius: var(--radius-lg);
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: var(--shadow-md);
+        }
+
+        .collaboration-course {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(260px, .7fr);
+            gap: 42px;
+            align-items: start;
+            margin-top: 36px;
+            padding-top: 32px;
+            border-top: 1px solid rgba(51,65,85,0.16);
+        }
+
+        .course-kicker,
+        .course-status {
+            font-family: 'Montserrat', sans-serif;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .course-kicker { color: var(--gold); }
+
+        .course-title {
+            margin: 10px 0 16px;
+            color: var(--night-blue);
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+            line-height: 1.2;
+        }
+
+        .course-description {
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.08rem;
+            line-height: 1.8;
+        }
+
+        .course-data {
+            display: grid;
+            gap: 12px;
+            padding: 22px;
+            background: var(--night-blue);
+            color: var(--white);
+            border-radius: var(--radius-md);
+        }
+
+        .course-data p { line-height: 1.5; }
+        .course-data strong { color: #e8d3ad; }
+        .course-status { margin-top: 6px; color: #e8d3ad; }
+
         .lightbox-modal {
             position: fixed;
             inset: 0;
@@ -674,6 +730,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .collaboration-course {
+                grid-template-columns: 1fr;
+            }
+
             .intro-visual-card img {
                 min-height: 320px;
                 max-height: 420px;
@@ -712,6 +772,10 @@
 
             .intro-layout {
                 gap: 24px;
+            }
+
+            .open-collaborations {
+                padding: 30px 22px;
             }
 
             .intro-shell {
@@ -833,32 +897,17 @@
                     </div>
                 </div>
 
-                <div class="intro-visual">
-                    <div class="intro-visual-card">
-                        <button type="button"
-                                class="intro-visual-trigger open-lightbox"
-                                data-img="assets/themes/call-junior.png"
-                                data-alt="Call for Junior Fellows di DYNAMES"
-                                aria-label="Apri la locandina Call for Junior Fellows in formato grande">
-                            <img src="assets/themes/call-junior.png"
-                                 alt="Call for Junior Fellows di DYNAMES"
-                                 class="intro-visual-image"
-                                 loading="lazy">
-                        </button>
-                        <span class="intro-visual-caption">Clicca per ingrandire</span>
-                    </div>
-                </div>
             </div>
 
             <div class="cards-grid">
                 <article class="profile-card">
                     <div class="profile-media">
-                        <img src="assets/themes/senior.png" alt="Illustrazione del profilo Senior Fellow" class="profile-image">
+                        <img src="assets/themes/senior.png" alt="Illustrazione del profilo Senior Mentor" class="profile-image">
                     </div>
                     <div class="profile-content">
-                        <h3 class="profile-title">Senior Fellow</h3>
+                        <h3 class="profile-title">Senior Mentor</h3>
                         <p class="profile-text">
-                            I Senior Fellow sono professionisti, studiosi ed esperti con consolidata esperienza nei rispettivi ambiti disciplinari o professionali. Possono provenire dal mondo accademico, istituzionale, militare, industriale o delle professioni.<br><br>
+                            I Senior Mentor sono professionisti, studiosi ed esperti con consolidata esperienza nei rispettivi ambiti disciplinari o professionali. Possono provenire dal mondo accademico, istituzionale, militare, industriale o delle professioni.<br><br>
                             Contribuiscono allo sviluppo delle attività editoriali e scientifiche attraverso analisi, articoli, contributi di ricerca e partecipazione a eventi e iniziative pubbliche.<br><br>
                             La qualifica rappresenta un riconoscimento del contributo intellettuale e professionale apportato alla crescita della comunità scientifica di DYNAMES. <strong>La nomina avviene su invito della Direzione.</strong>
                         </p>
@@ -1033,71 +1082,31 @@
                 </p>
             </div>
         </section>
+
+        <section class="content-section container" aria-labelledby="collaborazioni-aperte-title">
+            <div class="open-collaborations">
+                <div class="section-heading">
+                    <h2 class="section-title" id="collaborazioni-aperte-title">Collaborazioni aperte</h2>
+                    <p class="section-intro">DYNAMES sviluppa collaborazioni con università, enti di formazione, istituzioni, imprese e comunità professionali per costruire percorsi capaci di unire ricerca, competenze operative e interesse pubblico.</p>
+                </div>
+
+                <article class="collaboration-course">
+                    <div>
+                        <span class="course-kicker">Formazione executive · Salute e Welfare</span>
+                        <h3 class="course-title">Executive Program in Healthcare Governance &amp; Market Access</h3>
+                        <p class="course-description">Un percorso multidisciplinare dedicato alla governance sanitaria, ai processi regolatori, alla sostenibilità economica e alle strategie di Market Access. Il programma integra lezioni, casi di studio, testimonianze aziendali e workshop per rafforzare competenze immediatamente applicabili nel settore healthcare e farmaceutico.</p>
+                    </div>
+                    <div class="course-data" aria-label="Informazioni principali sul corso">
+                        <p><strong>Direzione scientifica</strong><br>Prof. Massimo Ciccozzi</p>
+                        <p><strong>Coordinamento scientifico</strong><br>Dott. Fabio Boscacci</p>
+                        <p><strong>Avvio</strong><br>15 gennaio 2027</p>
+                        <p><strong>Formula</strong><br>70 ore · modalità blended</p>
+                        <p class="course-status">Pagina dedicata in preparazione</p>
+                    </div>
+                </article>
+            </div>
+        </section>
     </main>
-
-
-    <div class="lightbox-modal" id="posterModal" aria-hidden="true">
-        <div class="lightbox-content" role="dialog" aria-modal="true" aria-label="Immagine ingrandita">
-            <button type="button" class="lightbox-close" id="closePosterModal" aria-label="Chiudi immagine ingrandita">×</button>
-            <img src="assets/themes/call-junior.png"
-                 alt="Immagine ingrandita"
-                 class="lightbox-image"
-                 id="lightboxImage">
-        </div>
-    </div>
-
-    <script>
-        (function () {
-            const modal = document.getElementById('posterModal');
-            const closeBtn = document.getElementById('closePosterModal');
-            const lightboxImage = document.getElementById('lightboxImage');
-            const triggers = document.querySelectorAll('.open-lightbox');
-            let lastTrigger = null;
-
-            if (!modal || !closeBtn || !lightboxImage || !triggers.length) return;
-
-            function openModal(src, alt, trigger) {
-                lightboxImage.src = src;
-                lightboxImage.alt = alt || 'Immagine ingrandita';
-                modal.classList.add('open');
-                modal.setAttribute('aria-hidden', 'false');
-                document.body.style.overflow = 'hidden';
-                lastTrigger = trigger || null;
-                closeBtn.focus();
-            }
-
-            function closeModal() {
-                modal.classList.remove('open');
-                modal.setAttribute('aria-hidden', 'true');
-                document.body.style.overflow = '';
-                if (lastTrigger) {
-                    lastTrigger.focus();
-                }
-            }
-
-            triggers.forEach(trigger => {
-                trigger.addEventListener('click', function () {
-                    const src = this.getAttribute('data-img');
-                    const alt = this.getAttribute('data-alt');
-                    openModal(src, alt, this);
-                });
-            });
-
-            closeBtn.addEventListener('click', closeModal);
-
-            modal.addEventListener('click', function (event) {
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-
-            document.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape' && modal.classList.contains('open')) {
-                    closeModal();
-                }
-            });
-        })();
-    </script>
 
     <footer>
         <div class="container">
