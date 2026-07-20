@@ -1001,11 +1001,19 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(11, 17, 32, 0.94) 0%, rgba(11, 17, 32, 0.62) 45%, rgba(11, 17, 32, 0.2) 100%);
+            background: linear-gradient(to top, rgba(11, 17, 32, 0.78) 0%, rgba(11, 17, 32, 0.32) 48%, rgba(11, 17, 32, 0.04) 100%);
             z-index: 1;
         }
 
-        .dynames-card img {
+        .dynames-card--publication::before {
+            background: linear-gradient(to top, rgba(11, 17, 32, 0.7) 0%, rgba(11, 17, 32, 0.22) 48%, rgba(11, 17, 32, 0.02) 100%);
+        }
+
+        .dynames-card--publication {
+            background: #071321;
+        }
+
+        .dynames-card > img {
             position: absolute;
             inset: 0;
             width: 100%;
@@ -1015,8 +1023,192 @@
             transition: transform 0.7s ease;
         }
 
-        .dynames-card:hover img {
+        .dynames-card--publication > img {
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        .dynames-card:hover > img {
             transform: scale(1.08);
+        }
+
+        .dynames-card > .paper-card-generated-cover {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 0;
+            display: flex;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            flex-direction: column;
+            background: radial-gradient(circle at 76% 31%, rgba(39, 168, 255, 0.12), transparent 31%), linear-gradient(145deg, #102946 0%, #0b1c2d 58%, #071321 100%);
+            color: var(--optical-white);
+            isolation: isolate;
+            transform-origin: center top;
+            transition: transform 0.7s ease;
+        }
+
+        .dynames-card:hover > .paper-card-generated-cover {
+            transform: scale(1.04);
+        }
+
+        .dynames-card > .paper-card-generated-cover::before {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            left: -12%;
+            right: -12%;
+            bottom: -16%;
+            height: 47%;
+            background: #ededed;
+            transform: rotate(-8deg);
+            transform-origin: center;
+        }
+
+        .dynames-card > .paper-card-generated-cover::after {
+            content: '';
+            position: absolute;
+            z-index: 1;
+            right: -42px;
+            bottom: 10px;
+            width: 128px;
+            height: 128px;
+            border: 1px solid rgba(39, 168, 255, 0.28);
+            border-radius: 50%;
+        }
+
+        .dynames-card .paper-card-cover-brand {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 0.58rem;
+            padding: 1rem 1.1rem 0;
+        }
+
+        .dynames-card .paper-card-cover-brand img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            filter: grayscale(1) brightness(0) invert(1);
+        }
+
+        .dynames-card .paper-card-cover-brand-copy {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .dynames-card .paper-card-cover-brand-copy strong {
+            color: var(--optical-white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+        }
+
+        .dynames-card .paper-card-cover-brand-copy span {
+            margin-top: 0.2rem;
+            color: #c6d1dc;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.4rem;
+            letter-spacing: 0.08em;
+        }
+
+        .dynames-card .paper-card-cover-copy {
+            position: relative;
+            z-index: 3;
+            width: 88%;
+            margin: 2.1rem 1.25rem 6.4rem;
+        }
+
+        .dynames-card .paper-card-cover-series {
+            display: block;
+            margin-bottom: 0.42rem;
+            color: #8fd3ff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.52rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .dynames-card .paper-card-cover-kicker {
+            display: inline-block;
+            width: fit-content;
+            margin-bottom: 0.8rem;
+            padding: 0.32rem 0.56rem;
+            border: 1px solid #76c9ff;
+            background: rgba(39, 168, 255, 0.1);
+            color: var(--optical-white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .dynames-card .paper-card-cover-title {
+            position: relative;
+            z-index: 1;
+            display: block;
+            max-width: 100%;
+            color: var(--optical-white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.42rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.08;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.24);
+        }
+
+        .dynames-card .paper-card-cover-footer {
+            position: absolute;
+            z-index: 4;
+            right: 1.1rem;
+            bottom: 1rem;
+            left: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #0b1c2d;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.58rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .dynames-card .paper-card-cover-year {
+            color: #27a8ff;
+            font-size: 0.68rem;
+        }
+
+        .dynames-card .paper-card-cover-network {
+            position: absolute;
+            z-index: 2;
+            top: 2.1rem;
+            right: -0.9rem;
+            width: 57%;
+            opacity: 0.72;
+            pointer-events: none;
+        }
+
+        .dynames-card .paper-card-cover-network line,
+        .dynames-card .paper-card-cover-network polyline {
+            fill: none;
+            stroke: rgba(201, 235, 255, 0.72);
+            stroke-width: 1.4;
+        }
+
+        .dynames-card .paper-card-cover-network circle {
+            fill: var(--optical-white);
+            stroke: #27a8ff;
+            stroke-width: 2.5;
+            filter: drop-shadow(0 0 4px #42b3ff);
         }
 
         .dynames-card-label {
@@ -1109,58 +1301,105 @@
 <section id="hub" style="background: var(--optical-white); padding-bottom: 5rem;">
 <div class="container">
 <h2 class="section-title">Le ultime novità del mondo DYNAMES</h2>
-<div class="dynames-grid"><a class="dynames-card" href="articles/2026.07.16-verso-la-finale-della-coppa-del-mondo-fifa-2026.html">
-<img alt="Stadio della Coppa del Mondo FIFA 2026 con il terreno di gioco trasformato in una mappa geopolitica mondiale" src="articles/Immagini/verso-la-finale-della-coppa-del-mondo-fifa-2026-light.jpg"/>
-<span class="dynames-card-label">Rubrica: Società e Formazione</span>
+<div class="dynames-grid">
+<a class="dynames-card" href="articles/2026.07.20-colloquio-carney-trump-hormuz-iran.html">
+<img alt="Il colloquio tra Mark Carney e Donald Trump sullo Stretto di Hormuz, l’Iran e la sicurezza atlantica" src="articles/Immagini/2026.07.20-colloquio-carney-trump-hormuz-iran-light.jpg"/>
+<span class="dynames-card-label">Articolo · Difesa e Sicurezza</span>
 <div class="dynames-card-content">
-<span class="dynames-card-date">16 Luglio 2026</span>
-<h3>Verso la finale della Coppa del Mondo FIFA 2026, ma già possiamo tirare le somme geopolitiche</h3>
-<span class="dynames-card-author">di Alessio Postiglione</span>
+<span class="dynames-card-date">20 Luglio 2026</span>
+<h3>Il colloquio Carney-Trump e la sfida per stabilizzare Hormuz e l’Iran</h3>
+<span class="dynames-card-author">di Domenico Letizia</span>
 </div>
 </a>
-<a class="dynames-card" href="articles/2026.07.14-guerra-in-scatola.html">
-<img alt="Soldati giocattolo in uno scenario bellico tra mappe e schermi informativi" src="articles/Immagini/2026.07.14-guerra-in-scatola-light.jpg"/>
-<span class="dynames-card-label">Rubrica: Informazione e Dominio Cognitivo</span>
+<a class="dynames-card" href="articles/2026.07.20-il-motore-della-difesa.html">
+<img alt="Personale civile e militare della Difesa al lavoro, con i simboli di SGD, DNA e PERSOCIV" src="articles/Immagini/2026.07.20-il-motore-della-difesa-light.jpg"/>
+<span class="dynames-card-label">Articolo · Governance Pubblica</span>
 <div class="dynames-card-content">
-<span class="dynames-card-date">14 Luglio 2026</span>
-<h3>La guerra in scatola</h3>
+<span class="dynames-card-date">20 Luglio 2026</span>
+<h3>Il motore invisibile della Difesa.</h3>
 <span class="dynames-card-author">di Michele Lovato</span>
 </div>
 </a>
-<a class="dynames-card" href="articles/2026.07.13-mercato-professionisti-europei.html">
-<img alt="Fabrizio Canetto tra la gestione manuale dei progetti europei e gli strumenti digitali per l’europrogettazione" src="articles/Immagini/2026.07.13-mercato-professionisti-europei-light.jpg"/>
-<span class="dynames-card-label">Rubrica: Governance Pubblica</span>
+<a class="dynames-card" href="articles/2026.07.20-spionaggio-russo-italia-cristadoro.html">
+<img alt="La dimensione HUMINT: relazioni interpersonali, accesso e avvicinamento delle fonti" src="articles/Immagini/2026.07.20-spionaggio-russo-italia-cristadoro-light.jpg"/>
+<span class="dynames-card-label">Articolo · Difesa e Sicurezza</span>
 <div class="dynames-card-content">
-<span class="dynames-card-date">13 Luglio 2026</span>
-<h3>Manuale o digitale: la linea di demarcazione che ridefinisce il mercato dei professionisti europei</h3>
-<span class="dynames-card-author">di Domenico Letizia</span>
+<span class="dynames-card-date">20 Luglio 2026</span>
+<h3>Spionaggio russo in Italia: la sfida della prevenzione secondo il generale Cristadoro</h3>
+<span class="dynames-card-author">di Redazione</span>
 </div>
 </a>
-<a class="dynames-card" href="articles/2026.07.11-IA-sovranti%C3%A0-italiana.html">
-<img alt="Il Gen. C.A. (ris.) Massimo Panizzi interviene al convegno su intelligenza artificiale, cybersicurezza e sovranità digitale" src="articles/Immagini/2026.07.11-IA-sovranti%C3%A0-italiana-panizzi.jpg"/>
-<span class="dynames-card-label">Rubrica: Tecnologie e Sistemi Complessi</span>
+<a class="dynames-card dynames-card--publication" href="pubblicazioni/2026.07.18-conflitti-e-confini-immateriali.html">
+<img alt="Copertina del volume Guerra cognitiva e sicurezza nazionale, a cura di Roberto Sgalla e Alessandro Sterpa" src="pubblicazioni/Archivio/danna-sterpa-guerra-cognitiva.jpg"/>
+<span class="dynames-card-label">Pubblicazione · Informazione e Dominio Cognitivo / Difesa e Sicurezza</span>
 <div class="dynames-card-content">
-<span class="dynames-card-date">11 Luglio 2026</span>
-<h3>L'Italia nell'età dell'Intelligenza Artificiale. Dalla diagnosi alla cura: come costruire la nuova sovranità italiana</h3>
-<span class="dynames-card-author">di Gen. C.A. (ris.) Massimo Panizzi</span>
+<span class="dynames-card-date">18 Luglio 2026</span>
+<h3>Conflitti e confini immateriali</h3>
+<span class="dynames-card-author">di Vincenzo D’Anna</span>
 </div>
 </a>
-<a class="dynames-card" href="events/20260709-difesa-sicurezza-acerra.html">
-<img alt="Vincenzo D’Anna, co-fondatore DYNAMES, durante l’incontro Difesa, Sicurezza e Resilienza al Castello Baronale di Acerra" src="events/20260709/Vincenzo%20D%27Anna%2C%20co-fondatore%20DYNAMES.JPG"/>
-<span class="dynames-card-label">Eventi: Cultura della Difesa e Sicurezza</span>
+<a class="dynames-card dynames-card--publication" href="pubblicazioni/2026.07.15-white-paper-sovranita-tecnologica-democrazia-europea.html">
+<div aria-hidden="true" class="paper-card-generated-cover">
+<div class="paper-card-cover-brand">
+<img alt="" src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+<div class="paper-card-cover-brand-copy"><strong>DYNAMES</strong><span>Governance di Forze e Sistemi</span></div>
+</div>
+<svg class="paper-card-cover-network" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+<polyline points="36,38 92,20 138,54 202,30 228,84 184,122 224,170 164,204 104,177 58,222"></polyline>
+<polyline points="36,38 62,96 138,54 116,128 184,122 164,204 116,128 104,177 62,96 58,222"></polyline>
+<line x1="92" x2="62" y1="20" y2="96"></line><line x1="92" x2="116" y1="20" y2="128"></line>
+<line x1="202" x2="184" y1="30" y2="122"></line><line x1="138" x2="228" y1="54" y2="84"></line>
+<line x1="228" x2="224" y1="84" y2="170"></line><line x1="224" x2="164" y1="170" y2="204"></line>
+<line x1="104" x2="58" y1="177" y2="222"></line>
+<circle cx="36" cy="38" r="4"></circle><circle cx="92" cy="20" r="4"></circle><circle cx="138" cy="54" r="4"></circle>
+<circle cx="202" cy="30" r="4"></circle><circle cx="228" cy="84" r="4"></circle><circle cx="184" cy="122" r="4"></circle>
+<circle cx="224" cy="170" r="4"></circle><circle cx="164" cy="204" r="4"></circle><circle cx="104" cy="177" r="4"></circle>
+<circle cx="58" cy="222" r="4"></circle><circle cx="62" cy="96" r="4"></circle><circle cx="116" cy="128" r="4"></circle>
+</svg>
+<div class="paper-card-cover-copy">
+<span class="paper-card-cover-series">Paper &amp; Dossier</span>
+<span class="paper-card-cover-kicker">White Paper</span>
+<span class="paper-card-cover-title">Sovranità tecnologica: la nuova frontiera della democrazia europea</span>
+</div>
+<div class="paper-card-cover-footer"><span>Francesco Custureri</span><span class="paper-card-cover-year">2026</span></div>
+</div>
+<span class="dynames-card-label">Pubblicazione · Tecnologie e Sistemi Complessi</span>
 <div class="dynames-card-content">
-<span class="dynames-card-date">10 Luglio 2026</span>
-<h3>Difesa, Sicurezza e Resilienza: sala piena ad Acerra</h3>
-<span class="dynames-card-author">di Redazione DYNAMES</span>
+<span class="dynames-card-date">15 Luglio 2026</span>
+<h3>Sovranità tecnologica: la nuova frontiera della democrazia europea</h3>
+<span class="dynames-card-author">a cura di Francesco Custureri</span>
 </div>
 </a>
-<a class="dynames-card" href="articles/2026.06.30-cambogia.html">
-<img alt="Mappa digitale della Cambogia con riferimenti alla cooperazione tecnologica tra Cambogia e Unione europea nel campo dell’intelligenza artificiale" src="articles/Immagini/2026.06.30-cambogia-light.jpg"/>
-<span class="dynames-card-label">Rubrica: Tecnologia e Sistemi complessi</span>
+<a class="dynames-card dynames-card--publication" href="pubblicazioni/2026.07.15-white-paper-minaccia-russa-democrazie-europee.html">
+<div aria-hidden="true" class="paper-card-generated-cover">
+<div class="paper-card-cover-brand">
+<img alt="" src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+<div class="paper-card-cover-brand-copy"><strong>DYNAMES</strong><span>Governance di Forze e Sistemi</span></div>
+</div>
+<svg class="paper-card-cover-network" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+<polyline points="36,38 92,20 138,54 202,30 228,84 184,122 224,170 164,204 104,177 58,222"></polyline>
+<polyline points="36,38 62,96 138,54 116,128 184,122 164,204 116,128 104,177 62,96 58,222"></polyline>
+<line x1="92" x2="62" y1="20" y2="96"></line><line x1="92" x2="116" y1="20" y2="128"></line>
+<line x1="202" x2="184" y1="30" y2="122"></line><line x1="138" x2="228" y1="54" y2="84"></line>
+<line x1="228" x2="224" y1="84" y2="170"></line><line x1="224" x2="164" y1="170" y2="204"></line>
+<line x1="104" x2="58" y1="177" y2="222"></line>
+<circle cx="36" cy="38" r="4"></circle><circle cx="92" cy="20" r="4"></circle><circle cx="138" cy="54" r="4"></circle>
+<circle cx="202" cy="30" r="4"></circle><circle cx="228" cy="84" r="4"></circle><circle cx="184" cy="122" r="4"></circle>
+<circle cx="224" cy="170" r="4"></circle><circle cx="164" cy="204" r="4"></circle><circle cx="104" cy="177" r="4"></circle>
+<circle cx="58" cy="222" r="4"></circle><circle cx="62" cy="96" r="4"></circle><circle cx="116" cy="128" r="4"></circle>
+</svg>
+<div class="paper-card-cover-copy">
+<span class="paper-card-cover-series">Paper &amp; Dossier</span>
+<span class="paper-card-cover-kicker">White Paper</span>
+<span class="paper-card-cover-title">La minaccia della Federazione Russa verso le democrazie europee</span>
+</div>
+<div class="paper-card-cover-footer"><span>Francesco Trevisan</span><span class="paper-card-cover-year">2026</span></div>
+</div>
+<span class="dynames-card-label">Pubblicazione · Informazione e Dominio Cognitivo</span>
 <div class="dynames-card-content">
-<span class="dynames-card-date">30 Giugno 2026</span>
-<h3>Il futuro digitale della Cambogia parla europeo</h3>
-<span class="dynames-card-author">di Domenico Letizia</span>
+<span class="dynames-card-date">15 Luglio 2026</span>
+<h3>La minaccia della Federazione Russa verso le democrazie europee</h3>
+<span class="dynames-card-author">a cura di Francesco Trevisan</span>
 </div>
 </a>
 </div>
