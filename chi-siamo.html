@@ -288,6 +288,113 @@
             letter-spacing: 0.04em;
         }
 
+        .collaboration-section {
+            padding-top: 1rem;
+        }
+
+        .collaboration-intro {
+            max-width: 940px;
+            margin: 0 auto;
+        }
+
+        .collaboration-intro p,
+        .profile-text,
+        .participation-note p {
+            color: var(--text-secondary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .collaboration-intro p + p {
+            margin-top: 1rem;
+        }
+
+        .collaboration-highlight {
+            margin-top: 2rem;
+            padding: 1.4rem 1.6rem;
+            background: var(--optical-white);
+            border: 1px solid rgba(184, 147, 90, 0.28);
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .collaboration-highlight strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--night-blue);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .collaboration-cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .profile-card {
+            overflow: hidden;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid var(--gold-accent);
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-media {
+            aspect-ratio: 4 / 2.25;
+            max-height: 190px;
+            overflow: hidden;
+            background: #e5e7eb;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-card:hover .profile-image {
+            transform: scale(1.02);
+        }
+
+        .profile-content {
+            padding: 1.75rem 1.6rem;
+        }
+
+        .profile-title {
+            display: inline-block;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(184, 147, 90, 0.55);
+            color: var(--night-blue);
+            font-size: 1.25rem;
+        }
+
+        .participation-note {
+            max-width: 940px;
+            margin: 2.5rem auto 0;
+            padding: 1.5rem 1.75rem;
+            background: var(--optical-white);
+            border-left: 4px solid var(--gold-accent);
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .participation-note h3 {
+            margin-bottom: 0.5rem;
+            color: var(--night-blue);
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
         .team-placeholder {
             grid-column: 1 / -1;
             background: rgba(184, 147, 90, 0.08);
@@ -331,6 +438,10 @@
             .team-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
+
+            .collaboration-cards {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 900px) {
@@ -371,6 +482,13 @@
 
             .author-box {
                 padding: 2rem 1rem;
+            }
+
+            .collaboration-highlight,
+            .profile-content,
+            .participation-note {
+                padding-left: 1.25rem;
+                padding-right: 1.25rem;
             }
         }
     </style>
@@ -452,6 +570,13 @@
 <h4>Massimo Panizzi</h4><p>Direttore Editoriale di DYNAMES, contribuisce all’impostazione culturale e strategica della piattaforma, con particolare attenzione alla cultura della difesa, alla formazione e al rapporto tra sicurezza, istituzioni e cittadinanza.</p>
 </div>
 </div>
+<!-- Michele Punzi -->
+<div class="author-box" id="punzi">
+<img alt="Michele Punzi" onerror="this.style.display='none';" src="assets/michele-punzi.jpg"/>
+<div class="author-info">
+<h4>Michele Punzi</h4><p>Consulente editoriale di DYNAMES. Laureato in Giurisprudenza e in Scienze Giuridiche della Sicurezza, si occupa di governance pubblica, sicurezza nazionale, diritto delle istituzioni e analisi strategica, con particolare attenzione al rapporto tra amministrazioni, territorio, resilienza istituzionale e trasformazioni geopolitiche. Contribuisce alla definizione dell’indirizzo editoriale della piattaforma.</p>
+</div>
+</div>
 <!-- Maria Cristina Treccagnoli -->
 <div class="author-box" id="treccagnoli">
 <img alt="Maria Cristina Treccagnoli" onerror="this.style.display='none';" src="assets/Maria%20Crisitina%20Treccagnoli.png"/>
@@ -494,6 +619,52 @@
 <h4>Veronica Comple</h4><p>Digital Media &amp; Website Coordinator di DYNAMES, supporta la gestione e l’aggiornamento dei canali digitali e del sito web, contribuendo alla cura dell’identità e alla valorizzazione online delle attività editoriali e istituzionali della piattaforma.</p>
 </div>
 </div>
+</div>
+</section>
+<section class="team-section collaboration-section" id="collaborare-con-dynames">
+<div class="team-section-header">
+<h2>Collaborare con DYNAMES</h2>
+</div>
+<div class="collaboration-intro">
+<p>DYNAMES è una piattaforma editoriale e scientifica dedicata allo studio delle dinamiche strategiche che influenzano la stabilità e lo sviluppo delle comunità politiche, delle istituzioni e dei sistemi economici contemporanei. La piattaforma promuove un approccio interdisciplinare e favorisce il confronto tra studiosi, professionisti, ricercatori e operatori istituzionali provenienti da ambiti diversi.</p>
+<p>La comunità editoriale e scientifica di DYNAMES si fonda sulla partecipazione volontaria e non retribuita dei suoi membri, che contribuiscono con analisi, articoli e studi all’approfondimento dei temi trattati.</p>
+<div class="collaboration-highlight">
+<strong>La collaborazione con DYNAMES si articola in tre modalità principali</strong>
+<p>Una struttura pensata per valorizzare l’esperienza maturata, sostenere nuovi percorsi di ricerca e accogliere contributi di qualità su temi di interesse strategico.</p>
+</div>
+</div>
+<div class="collaboration-cards">
+<article class="profile-card">
+<div class="profile-media">
+<img alt="Illustrazione del profilo Senior Mentor" class="profile-image" src="assets/themes/senior.png"/>
+</div>
+<div class="profile-content">
+<h3 class="profile-title">Senior Mentor</h3>
+<p class="profile-text">I Senior Mentor sono professionisti, studiosi ed esperti con consolidata esperienza nei rispettivi ambiti disciplinari o professionali. Possono provenire dal mondo accademico, istituzionale, militare, industriale o delle professioni.<br/><br/>Contribuiscono allo sviluppo delle attività editoriali e scientifiche attraverso analisi, articoli, contributi di ricerca e partecipazione a eventi e iniziative pubbliche.<br/><br/>La qualifica rappresenta un riconoscimento del contributo intellettuale e professionale apportato alla crescita della comunità scientifica di DYNAMES. <strong>La nomina avviene su invito della Direzione.</strong></p>
+</div>
+</article>
+<article class="profile-card">
+<div class="profile-media">
+<img alt="Illustrazione del profilo Junior Fellow" class="profile-image" src="assets/themes/junior.png"/>
+</div>
+<div class="profile-content">
+<h3 class="profile-title">Junior Fellow</h3>
+<p class="profile-text">I Junior Fellow sono giovani ricercatori, dottorandi, studenti magistrali o giovani professionisti interessati a contribuire alla produzione di analisi e contenuti.<br/><br/>La partecipazione rappresenta un’opportunità di confronto e crescita in una comunità interdisciplinare impegnata nello studio delle dinamiche strategiche contemporanee attraverso articoli e analisi.<br/><br/>L’accesso avviene su candidatura spontanea. La candidatura può includere curriculum vitae, descrizione degli ambiti di ricerca ed eventuali pubblicazioni già realizzate.</p>
+</div>
+</article>
+<article class="profile-card">
+<div class="profile-media">
+<img alt="Illustrazione del profilo Contributors" class="profile-image" src="assets/themes/contributors.png"/>
+</div>
+<div class="profile-content">
+<h3 class="profile-title">Contributors</h3>
+<p class="profile-text">I Contributors sono autori ed esperti che collaborano con DYNAMES attraverso contributi editoriali occasionali.<br/><br/>Possono essere studiosi, professionisti, giornalisti, funzionari pubblici o ricercatori interessati a partecipare al dibattito promosso dalla piattaforma.<br/><br/>I Contributors partecipano con articoli, analisi o interventi su specifici temi di interesse.</p>
+</div>
+</article>
+</div>
+<div class="participation-note">
+<h3>Nota sulla partecipazione</h3>
+<p>Tutti i membri della comunità editoriale e scientifica di DYNAMES partecipano alle attività della piattaforma a titolo volontario e non retribuito, contribuendo alla produzione e alla diffusione di analisi indipendenti sui temi di interesse pubblico e strategico.</p>
 </div>
 </section>
 <section class="team-section" id="senior-mentor">
