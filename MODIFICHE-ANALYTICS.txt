@@ -1,0 +1,17 @@
+DYNAMES – Google Analytics 4 e consenso
+ID installato: G-CRR71TH6YJ
+Modalità: caricamento preventivamente bloccato; Analytics viene caricato solo dopo Accetta.
+Scelta memorizzata per 180 giorni in localStorage.
+Comando permanente: Preferenze cookie.
+Privacy Policy aggiornata con sezione dedicata.
+
+- accredito.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- chi-siamo.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- eventi.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- hub.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- index.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- premio-cultura-della-difesa.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- Privacy-Policy.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- progetto.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- pubblicazioni.html: vecchio tag rimosso=1, nuovo sistema inserito=1
+- temi-e-collaborazioni.html: vecchio tag rimosso=1, nuovo sistema inserito=1
