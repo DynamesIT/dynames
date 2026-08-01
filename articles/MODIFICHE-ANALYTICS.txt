@@ -1,0 +1,54 @@
+DYNAMES — MODIFICHE GOOGLE ANALYTICS E CONSENSO
+====================================================
+
+Data elaborazione: 2026-08-01T18:32:59.293072+00:00
+ID di misurazione attivo: G-CRR71TH6YJ
+ID precedente rimosso dove presente: G-DFL8MJSKVJ
+
+MODIFICHE APPLICATE
+- Rimozione del precedente caricamento diretto di Google Analytics, dove presente.
+- Inserimento del nuovo ID GA4 G-CRR71TH6YJ.
+- Analytics non viene caricato prima del consenso.
+- Consent Mode con analytics_storage negato per impostazione predefinita.
+- Pulsanti Accetta e Rifiuta con pari evidenza.
+- Memorizzazione della scelta nel localStorage per 180 giorni.
+- Pulsante permanente «Preferenze cookie».
+- Revoca del consenso e cancellazione dei cookie Analytics riconoscibili.
+- Google Signals e personalizzazione pubblicitaria disattivati.
+- Collegamento a /Privacy-Policy.html#cookie-analytics.
+- Contenuti, metadati, layout e script preesistenti lasciati invariati.
+
+FILE HTML GENERATI: 20
+- 2026.06.02-2-giugno-comunicazione-strategica.html  [OK; vecchio tag rimosso]
+- 2026.05.30-potenza-artificiale.html  [OK; vecchio tag rimosso]
+- 2026.05.28-repubblica-tecnologica.html  [OK; vecchio tag rimosso]
+- 20260525-myhos.html  [OK; vecchio tag rimosso]
+- 2026.04.13-quando-un-post-diventa-geopolitica.html  [OK; vecchio tag rimosso]
+- 2026.05.02-instant-marketing.html  [OK; vecchio tag rimosso]
+- 2026.05.12-asse-cipro-libano.html  [OK; vecchio tag rimosso]
+- 2026.05.15-difesa-portatori-interesse.html  [OK; vecchio tag rimosso]
+- 2026.05.18-farmaco-potere.html  [OK; vecchio tag rimosso]
+- cinema-guerra-cognitiva.html  [OK; vecchio tag rimosso]
+- guerra-cognitiva-aldo-torchiaro.html  [OK; nessun vecchio tag presente]
+- leadership.html  [OK; vecchio tag rimosso]
+- perche-dynames.html  [OK; vecchio tag rimosso]
+- per-non-portare-clausewitz-all-estremo.html  [OK; vecchio tag rimosso]
+- tecnologia-hybrid-warfare.html  [OK; vecchio tag rimosso]
+- 2026.06.18-high-north.html  [OK; vecchio tag rimosso]
+- 2026.06.18-dominio-e-difesa-aerea.html  [OK; vecchio tag rimosso]
+- 2026.06.18-forum-machiavelli-procurement-europeo.html  [OK; vecchio tag rimosso]
+- 2026.06.14-canada-difesa-navale.html  [OK; vecchio tag rimosso]
+- 2026.06.06-vietnam-spacex.html  [OK; vecchio tag rimosso]
+
+CONTROLLI AUTOMATICI
+- Vecchio ID assente.
+- Nuovo ID presente una sola volta per pagina.
+- Nessun tag Google Analytics statico caricato prima del consenso.
+- Un solo sistema di consenso per pagina.
+- Pulsanti Accetta, Rifiuta e Preferenze cookie presenti.
+- Link alla Privacy Policy presente.
+- Chiusura dei tag body e html verificata.
+
+NOTA
+La Privacy Policy di riferimento deve essere la versione già aggiornata con la sezione
+identificata dall'ancora #cookie-analytics.
