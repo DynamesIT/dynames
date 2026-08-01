@@ -288,6 +288,95 @@
             letter-spacing: 0.04em;
         }
 
+
+        .bio-toggle {
+            width: 100%;
+            margin-top: 0;
+            text-align: left;
+        }
+
+        .bio-toggle summary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            width: 100%;
+            padding: 0;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+
+        .bio-toggle summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .bio-summary-copy {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .profile-name {
+            display: block;
+            color: var(--night-blue);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.35;
+            transition: color 0.25s ease;
+        }
+
+        .bio-summary-copy .strategic-theme {
+            margin: 0.65rem 0 0;
+        }
+
+        .bio-toggle summary::after {
+            content: "";
+            width: 0.55rem;
+            height: 0.55rem;
+            flex: 0 0 auto;
+            border-right: 2px solid var(--gold-accent);
+            border-bottom: 2px solid var(--gold-accent);
+            transform: rotate(45deg);
+            transition: transform 0.25s ease;
+        }
+
+        .bio-toggle[open] summary {
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .bio-toggle[open] summary::after {
+            transform: rotate(225deg);
+        }
+
+        .bio-toggle summary:hover .profile-name,
+        .bio-toggle summary:focus-visible .profile-name {
+            color: var(--gold-accent);
+        }
+
+        .bio-toggle summary:focus-visible {
+            outline: 2px solid rgba(184, 147, 90, 0.55);
+            outline-offset: 5px;
+            border-radius: 3px;
+        }
+
+        .bio-content {
+            padding: 1rem 0 0.25rem;
+        }
+
+        .author-info .bio-content p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.96rem;
+            line-height: 1.65;
+            text-align: left;
+        }
+
         .collaboration-section {
             padding-top: 1rem;
         }
@@ -546,78 +635,78 @@
 <div class="author-box" id="boscacci">
 <img alt="Fabio Boscacci" onerror="this.style.display='none';" src="assets/Fabio%20Boscacci.jfif"/>
 <div class="author-info">
-<h4>Fabio Boscacci</h4><p>Cofondatore e Direttore Responsabile di DYNAMES, promuove l’indirizzo strategico, la supervisione editoriale e il coordinamento dei contenuti della piattaforma, con attenzione alla qualità dell’analisi e allo sviluppo della Fondazione Boscacci ETS.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Fabio Boscacci" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Fabio Boscacci</span></span></summary><div class="bio-content"><p>Cofondatore e Direttore Responsabile di DYNAMES, promuove l’indirizzo strategico, la supervisione editoriale e il coordinamento dei contenuti della piattaforma, con attenzione alla qualità dell’analisi e allo sviluppo della Fondazione Boscacci ETS.</p></div></details></div>
 </div>
 <!-- Vincenzo D'Anna -->
 <div class="author-box" id="d-anna">
 <img alt="Vincenzo D'Anna" onerror="this.style.display='none';" src="assets/Vinenzo%20D'ANNA.png"/>
 <div class="author-info">
-<h4>Vincenzo D’Anna</h4><p>Cofondatore, Consigliere editoriale e scientifico di DYNAMES, ex allievo della Scuola Militare Nunziatella. Si occupa di analisi geopolitica, comunicazione strategica, cultura della difesa e rapporto tra sicurezza, istituzioni e società civile, contribuendo all’indirizzo scientifico della piattaforma.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Vincenzo D’Anna" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Vincenzo D’Anna</span></span></summary><div class="bio-content"><p>Cofondatore, Consigliere editoriale e scientifico di DYNAMES, ex allievo della Scuola Militare Nunziatella. Si occupa di analisi geopolitica, comunicazione strategica, cultura della difesa e rapporto tra sicurezza, istituzioni e società civile, contribuendo all’indirizzo scientifico della piattaforma.</p></div></details></div>
 </div>
 <!-- Alessio Postiglione -->
 <div class="author-box" id="postiglione">
 <img alt="Alessio Postiglione" onerror="this.style.display='none';" src="assets/Alessiopostiglione.jpeg"/>
 <div class="author-info">
-<h4>Alessio Postiglione</h4><p>Direttore Scientifico di DYNAMES, cura il coordinamento delle attività di ricerca e il rigore analitico delle pubblicazioni, favorendo il dialogo tra metodo accademico, analisi strategica e divulgazione pubblica.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Alessio Postiglione" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Alessio Postiglione</span></span></summary><div class="bio-content"><p>Direttore Scientifico di DYNAMES, cura il coordinamento delle attività di ricerca e il rigore analitico delle pubblicazioni, favorendo il dialogo tra metodo accademico, analisi strategica e divulgazione pubblica.</p></div></details></div>
 </div>
 <!-- Massimo Panizzi -->
 <div class="author-box" id="panizzi">
 <img alt="Massimo Panizzi" onerror="this.style.display='none';" src="assets/massimo%20panizzi.jpeg"/>
 <div class="author-info">
-<h4>Massimo Panizzi</h4><p>Direttore Editoriale di DYNAMES, contribuisce all’impostazione culturale e strategica della piattaforma, con particolare attenzione alla cultura della difesa, alla formazione e al rapporto tra sicurezza, istituzioni e cittadinanza.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Massimo Panizzi" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Massimo Panizzi</span></span></summary><div class="bio-content"><p>Direttore Editoriale di DYNAMES, contribuisce all’impostazione culturale e strategica della piattaforma, con particolare attenzione alla cultura della difesa, alla formazione e al rapporto tra sicurezza, istituzioni e cittadinanza.</p></div></details></div>
 </div>
 <!-- Michele Punzi -->
 <div class="author-box" id="punzi">
 <img alt="Michele Punzi" onerror="this.style.display='none';" src="assets/michele-punzi.jpg"/>
 <div class="author-info">
-<h4>Michele Punzi</h4><p>Consulente editoriale di DYNAMES. Laureato in Giurisprudenza e in Scienze Giuridiche della Sicurezza, si occupa di governance pubblica, sicurezza nazionale, diritto delle istituzioni e analisi strategica, con particolare attenzione al rapporto tra amministrazioni, territorio, resilienza istituzionale e trasformazioni geopolitiche. Contribuisce alla definizione dell’indirizzo editoriale della piattaforma.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Michele Punzi" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Michele Punzi</span></span></summary><div class="bio-content"><p>Consulente editoriale di DYNAMES. Laureato in Giurisprudenza e in Scienze Giuridiche della Sicurezza, si occupa di governance pubblica, sicurezza nazionale, diritto delle istituzioni e analisi strategica, con particolare attenzione al rapporto tra amministrazioni, territorio, resilienza istituzionale e trasformazioni geopolitiche. Contribuisce alla definizione dell’indirizzo editoriale della piattaforma.</p></div></details></div>
 </div>
 <!-- Maria Cristina Treccagnoli -->
 <div class="author-box" id="treccagnoli">
 <img alt="Maria Cristina Treccagnoli" onerror="this.style.display='none';" src="assets/Maria%20Crisitina%20Treccagnoli.png"/>
 <div class="author-info">
-<h4>Maria Cristina Treccagnoli</h4><p>HR &amp; Compliance Manager di DYNAMES, segue le relazioni interne, la gestione delle risorse e gli adempimenti organizzativi e normativi, supportando la crescita ordinata della fondazione.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Maria Cristina Treccagnoli" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Maria Cristina Treccagnoli</span></span></summary><div class="bio-content"><p>HR &amp; Compliance Manager di DYNAMES, segue le relazioni interne, la gestione delle risorse e gli adempimenti organizzativi e normativi, supportando la crescita ordinata della fondazione.</p></div></details></div>
 </div>
 <!-- Elisabetta Panico -->
 <div class="author-box" id="panico">
 <img alt="Elisabetta Panico" onerror="this.style.display='none';" src="assets/Elisabetta%20Panico.jpg"/>
 <div class="author-info">
-<h4>Elisabetta Panico</h4><p>Consulente e Ufficio Stampa di DYNAMES, cura le relazioni con i media, la comunicazione pubblica delle iniziative e la diffusione dei contenuti editoriali e istituzionali della piattaforma.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Elisabetta Panico" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Elisabetta Panico</span></span></summary><div class="bio-content"><p>Consulente e Ufficio Stampa di DYNAMES, cura le relazioni con i media, la comunicazione pubblica delle iniziative e la diffusione dei contenuti editoriali e istituzionali della piattaforma.</p></div></details></div>
 </div>
 <!-- Guglielmo Brancato -->
 <div class="author-box" id="brancato">
 <img alt="Guglielmo Brancato" onerror="this.style.display='none';" src="assets/io%20giacca%20blu.png"/>
 <div class="author-info">
-<h4>Guglielmo Brancato</h4><p>Technology Advisor di DYNAMES ed ex allievo della Scuola Militare Nunziatella. Supporta la piattaforma sui temi dell’innovazione digitale, delle tecnologie emergenti e dell’evoluzione dei sistemi informativi, contribuendo all’analisi dell’impatto tecnologico sui processi strategici.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Guglielmo Brancato" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Guglielmo Brancato</span></span></summary><div class="bio-content"><p>Technology Advisor di DYNAMES ed ex allievo della Scuola Militare Nunziatella. Supporta la piattaforma sui temi dell’innovazione digitale, delle tecnologie emergenti e dell’evoluzione dei sistemi informativi, contribuendo all’analisi dell’impatto tecnologico sui processi strategici.</p></div></details></div>
 </div>
 <!-- Simone Pallotta -->
 <div class="author-box" id="pallotta">
 <img alt="Simone Pallotta" onerror="this.style.display='none';" src="assets/Pallotta%20simone.jpeg"/>
 <div class="author-info">
-<h4>Simone Pallotta</h4><p>Coordinatore eventi di DYNAMES, organizza e supervisiona tavole rotonde, seminari e iniziative pubbliche, curando logistica, relazioni operative e valorizzazione dei momenti di confronto promossi dalla piattaforma.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Simone Pallotta" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Simone Pallotta</span></span></summary><div class="bio-content"><p>Coordinatore eventi di DYNAMES, organizza e supervisiona tavole rotonde, seminari e iniziative pubbliche, curando logistica, relazioni operative e valorizzazione dei momenti di confronto promossi dalla piattaforma.</p></div></details></div>
 </div>
 <!-- Serena Conticelli -->
 <div class="author-box" id="conticelli">
 <img alt="Serena Conticelli" onerror="this.style.display='none';" src="assets/Serena%20Conticelli.jpg"/>
 <div class="author-info">
-<h4>Serena Conticelli</h4><p>Consulente grafica e fotografia di DYNAMES, contribuisce alla cura dell’identità visiva, alla produzione fotografica e alla valorizzazione estetica dei contenuti, degli eventi e dei materiali editoriali.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Serena Conticelli" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Serena Conticelli</span></span></summary><div class="bio-content"><p>Consulente grafica e fotografia di DYNAMES, contribuisce alla cura dell’identità visiva, alla produzione fotografica e alla valorizzazione estetica dei contenuti, degli eventi e dei materiali editoriali.</p></div></details></div>
 </div>
 <!-- Veronica Comple -->
 <div class="author-box" id="veronica-comple">
 <img alt="Veronica Comple" onerror="this.style.display='none';" src="assets/veronica-comple.jpg"/>
 <div class="author-info">
-<h4>Veronica Comple</h4><p>Digital Media &amp; Website Coordinator di DYNAMES, supporta la gestione e l’aggiornamento dei canali digitali e del sito web, contribuendo alla cura dell’identità e alla valorizzazione online delle attività editoriali e istituzionali della piattaforma.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Veronica Comple" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Veronica Comple</span></span></summary><div class="bio-content"><p>Digital Media &amp; Website Coordinator di DYNAMES, supporta la gestione e l’aggiornamento dei canali digitali e del sito web, contribuendo alla cura dell’identità e alla valorizzazione online delle attività editoriali e istituzionali della piattaforma.</p></div></details></div>
 </div>
 </div>
 </section>
@@ -677,17 +766,15 @@
 <div class="author-box" id="crocco-barisano-colizza">
 <img alt="Gen. B. (ris) Massimo Crocco Barisano Colizza" onerror="this.style.display='none';" src="assets/crocco.jpg"/>
 <div class="author-info">
-<h4>Gen. B. (ris) Massimo Crocco Barisano Colizza</h4>
-<p>Già Comandante dello storico Reggimento “Lancieri di Montebello”, ha operato nelle principali missioni internazionali, dalla Somalia ai Balcani, fino all’Iraq e all’Afghanistan, oltre alla guida della Task Force “Giubileo” a Roma e del contingente ITALBATT in Libano. Con una lunghissima esperienza al Comando Operativo di Vertice Interforze, è stato recentemente Capo Divisione Operazioni Correnti presso il NATO Allied Land Command di Izmir (Turchia). È oggi fondatore di “Barisano Advisory” e stimato consulente strategico esperto NATO.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Gen. B. (ris) Massimo Crocco Barisano Colizza" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Gen. B. (ris) Massimo Crocco Barisano Colizza</span></span></summary><div class="bio-content"><p>Già Comandante dello storico Reggimento “Lancieri di Montebello”, ha operato nelle principali missioni internazionali, dalla Somalia ai Balcani, fino all’Iraq e all’Afghanistan, oltre alla guida della Task Force “Giubileo” a Roma e del contingente ITALBATT in Libano. Con una lunghissima esperienza al Comando Operativo di Vertice Interforze, è stato recentemente Capo Divisione Operazioni Correnti presso il NATO Allied Land Command di Izmir (Turchia). È oggi fondatore di “Barisano Advisory” e stimato consulente strategico esperto NATO.</p></div></details></div>
 </div>
 <!-- Marco Di Liddo -->
 <div class="author-box" id="marco-di-liddo">
 <img alt="Marco Di Liddo" onerror="this.style.display='none';" src="assets/marco-diliddo.jpg"/>
 <div class="author-info">
-<h4>Marco Di Liddo</h4>
-<p>Direttore del CeSI – Centro Studi Internazionali, è laureato in Scienze Internazionali e Diplomatiche e ha conseguito un Master in Peacekeeping e Studi sulla Sicurezza. Già analista per Russia, Balcani e Africa e Responsabile del Dipartimento Analisi del CeSI, è docente aggiunto presso la Scuola di Formazione della Polizia Economico-Finanziaria e lecturer presso la Scuola di Formazione del Dipartimento delle informazioni per la sicurezza (DIS). Collabora con testate nazionali ed è commentatore di politica internazionale per i principali media italiani.</p>
-</div>
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Marco Di Liddo" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Marco Di Liddo</span></span></summary><div class="bio-content"><p>Direttore del CeSI – Centro Studi Internazionali, è laureato in Scienze Internazionali e Diplomatiche e ha conseguito un Master in Peacekeeping e Studi sulla Sicurezza. Già analista per Russia, Balcani e Africa e Responsabile del Dipartimento Analisi del CeSI, è docente aggiunto presso la Scuola di Formazione della Polizia Economico-Finanziaria e lecturer presso la Scuola di Formazione del Dipartimento delle informazioni per la sicurezza (DIS). Collabora con testate nazionali ed è commentatore di politica internazionale per i principali media italiani.</p></div></details></div>
 </div>
 </div>
 </section>
@@ -701,182 +788,161 @@
 <div class="author-box" id="barbesino">
 <img alt="Nicola Barbesino" onerror="this.style.display='none';" src="assets/Junior-Fellows/nicola-barbesino.jpg"/>
 <div class="author-info">
-<h4>Nicola Barbesino</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Difesa e Sicurezza</strong></div>
-<p>Analista e ricercatore sui temi della difesa e della sicurezza, approfondisce l’evoluzione degli scenari strategici, il rapporto tra Forze Armate, società e innovazione, e le trasformazioni della sicurezza nazionale. Contribuisce alle attività di ricerca di DYNAMES con attenzione a deterrenza, resilienza e cultura della difesa.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Nicola Barbesino" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Nicola Barbesino</span><span class="strategic-theme"><span>Tema strategico</span><strong>Difesa e Sicurezza</strong></span></span></summary><div class="bio-content"><p>Analista e ricercatore sui temi della difesa e della sicurezza, approfondisce l’evoluzione degli scenari strategici, il rapporto tra Forze Armate, società e innovazione, e le trasformazioni della sicurezza nazionale. Contribuisce alle attività di ricerca di DYNAMES con attenzione a deterrenza, resilienza e cultura della difesa.</p></div></details></div>
 </div>
 <!-- Andrea Giacomazza -->
 <div class="author-box" id="giacomazza">
 <img alt="Andrea Giacomazza" onerror="this.style.display='none';" src="assets/Junior-Fellows/andrea-giacomazza.jpg"/>
 <div class="author-info">
-<h4>Andrea Giacomazza</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Diritto e Legittimità</strong></div>
-<p>Profilo giuridico orientato ai temi della sicurezza internazionale, approfondisce deterrenza cibernetica, diritto internazionale umanitario, cyber warfare, militarized AI e resilienza cibernetica. Il suo contributo si concentra sul rapporto tra innovazione tecnologica, cornici normative e legittimità dell’azione pubblica e militare.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Andrea Giacomazza" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Andrea Giacomazza</span><span class="strategic-theme"><span>Tema strategico</span><strong>Diritto e Legittimità</strong></span></span></summary><div class="bio-content"><p>Profilo giuridico orientato ai temi della sicurezza internazionale, approfondisce deterrenza cibernetica, diritto internazionale umanitario, cyber warfare, militarized AI e resilienza cibernetica. Il suo contributo si concentra sul rapporto tra innovazione tecnologica, cornici normative e legittimità dell’azione pubblica e militare.</p></div></details></div>
 </div>
 <!-- Francesco Cirigliano -->
 <div class="author-box" id="cirigliano">
 <img alt="Francesco Cirigliano" onerror="this.style.display='none';" src="assets/Junior-Fellows/francesco-cirigliano.jpg"/>
 <div class="author-info">
-<h4>Francesco Cirigliano</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Informazione e Dominio Cognitivo</strong></div>
-<p>Laureato magistrale in Relazioni Internazionali, si occupa di intelligence, tecnologie emergenti, sicurezza globale e dominio cognitivo. I suoi interessi riguardano l’impatto dell’informazione, delle percezioni e degli strumenti digitali sui processi decisionali, sulla competizione strategica e sulla resilienza democratica.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Francesco Cirigliano" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Francesco Cirigliano</span><span class="strategic-theme"><span>Tema strategico</span><strong>Informazione e Dominio Cognitivo</strong></span></span></summary><div class="bio-content"><p>Laureato magistrale in Relazioni Internazionali, si occupa di intelligence, tecnologie emergenti, sicurezza globale e dominio cognitivo. I suoi interessi riguardano l’impatto dell’informazione, delle percezioni e degli strumenti digitali sui processi decisionali, sulla competizione strategica e sulla resilienza democratica.</p></div></details></div>
 </div>
 <!-- Ivan De Vita -->
 <div class="author-box" id="ivan-de-vita">
 <img alt="Ivan De Vita" onerror="this.style.display='none';" src="assets/Junior-Fellows/ivan-devita.jpg"/>
 <div class="author-info">
-<h4>Ivan De Vita</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Tecnologie e Sistemi Complessi</strong></div>
-<p>Profilo interdisciplinare sui sistemi digitali e sulla sicurezza contemporanea, approfondisce rischio, cybercrime, minacce ibride e tecnologie emergenti. Contribuisce all’analisi di DYNAMES sul rapporto tra complessità tecnologica, vulnerabilità sistemiche, sicurezza delle organizzazioni e governance dei sistemi digitali.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Ivan De Vita" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Ivan De Vita</span><span class="strategic-theme"><span>Tema strategico</span><strong>Tecnologie e Sistemi Complessi</strong></span></span></summary><div class="bio-content"><p>Profilo interdisciplinare sui sistemi digitali e sulla sicurezza contemporanea, approfondisce rischio, cybercrime, minacce ibride e tecnologie emergenti. Contribuisce all’analisi di DYNAMES sul rapporto tra complessità tecnologica, vulnerabilità sistemiche, sicurezza delle organizzazioni e governance dei sistemi digitali.</p></div></details></div>
 </div>
 <!-- Giulia Caracuta -->
 <div class="author-box" id="caracuta">
 <img alt="Giulia Caracuta" onerror="this.style.display='none';" src="assets/Junior-Fellows/giulia-caracuta.jpg"/>
 <div class="author-info">
-<h4>Giulia Caracuta</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Economia e Industria</strong></div>
-<p>Laureanda magistrale in Relazioni Internazionali all’Università di Bologna, ha maturato esperienze in azione umanitaria, gestione dei conflitti e sicurezza euro-atlantica. Approfondisce dossier europei di difesa e spazio, con attenzione al rapporto tra economia, industria, politica estera e autonomia strategica.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Giulia Caracuta" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Giulia Caracuta</span><span class="strategic-theme"><span>Tema strategico</span><strong>Economia e Industria</strong></span></span></summary><div class="bio-content"><p>Laureanda magistrale in Relazioni Internazionali all’Università di Bologna, ha maturato esperienze in azione umanitaria, gestione dei conflitti e sicurezza euro-atlantica. Approfondisce dossier europei di difesa e spazio, con attenzione al rapporto tra economia, industria, politica estera e autonomia strategica.</p></div></details></div>
 </div>
 <!-- Francesco Perrone -->
 <div class="author-box" id="perrone">
 <img alt="Francesco Perrone" onerror="this.style.display='none';" src="assets/Junior-Fellows/francesco-perrone.jpg"/>
 <div class="author-info">
-<h4>Francesco Perrone</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Società ed Educazione</strong></div>
-<p>Opera a Milano nel Terzo settore e nelle organizzazioni educative, occupandosi di fundraising, partnership, co-progettazione, co-amministrazione e sviluppo organizzativo. Laureato in Giurisprudenza e formato in Terzo Settore e Impresa Sociale, trasforma l’esperienza di volontariato in una professione orientata al servizio della società.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Francesco Perrone" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Francesco Perrone</span><span class="strategic-theme"><span>Tema strategico</span><strong>Società ed Educazione</strong></span></span></summary><div class="bio-content"><p>Opera a Milano nel Terzo settore e nelle organizzazioni educative, occupandosi di fundraising, partnership, co-progettazione, co-amministrazione e sviluppo organizzativo. Laureato in Giurisprudenza e formato in Terzo Settore e Impresa Sociale, trasforma l’esperienza di volontariato in una professione orientata al servizio della società.</p></div></details></div>
 </div>
 <!-- Francesco Bianchi -->
 <div class="author-box" id="bianchi">
 <img alt="Francesco Bianchi" onerror="this.style.display='none';" src="assets/Junior-Fellows/francesco-bianchi.jpg"/>
 <div class="author-info">
-<h4>Francesco Bianchi</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Salute e Welfare</strong></div>
-<p>Laureato in Chimica e Tecnologie Farmaceutiche, approfondisce regolazione farmaceutica, governance sanitaria e accesso all’innovazione terapeutica. I suoi interessi riguardano politiche sanitarie, market access, sostenibilità dei sistemi di welfare e ruolo strategico della sanità negli equilibri economici, sociali e geopolitici.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Francesco Bianchi" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Francesco Bianchi</span><span class="strategic-theme"><span>Tema strategico</span><strong>Salute e Welfare</strong></span></span></summary><div class="bio-content"><p>Laureato in Chimica e Tecnologie Farmaceutiche, approfondisce regolazione farmaceutica, governance sanitaria e accesso all’innovazione terapeutica. I suoi interessi riguardano politiche sanitarie, market access, sostenibilità dei sistemi di welfare e ruolo strategico della sanità negli equilibri economici, sociali e geopolitici.</p></div></details></div>
 </div>
 <!-- Antonino Brigandì -->
 <div class="author-box" id="brigandi">
 <img alt="Antonino Brigandì" onerror="this.style.display='none';" src="assets/Junior-Fellows/antonio-brigandi.JPG"/>
 <div class="author-info">
-<h4>Antonino Brigandì</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Governance Pubblica</strong></div>
-<p>Laureato magistrale in Relazioni internazionali e sicurezza globale presso La Sapienza, ha conseguito un master in Public Affairs e Lobbying alla Luiss Business School. Consulente di relazioni istituzionali, lavora con clienti nei settori difesa, cybersicurezza ed energia e scrive di geopolitica e politica italiana.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Antonino Brigandì" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Antonino Brigandì</span><span class="strategic-theme"><span>Tema strategico</span><strong>Governance Pubblica</strong></span></span></summary><div class="bio-content"><p>Laureato magistrale in Relazioni internazionali e sicurezza globale presso La Sapienza, ha conseguito un master in Public Affairs e Lobbying alla Luiss Business School. Consulente di relazioni istituzionali, lavora con clienti nei settori difesa, cybersicurezza ed energia e scrive di geopolitica e politica italiana.</p></div></details></div>
 </div>
 <!-- Luca Oriani -->
 <div class="author-box" id="oriani">
 <img alt="Luca Oriani" onerror="this.style.display='none';" src="assets/Junior-Fellows/luca-oriani.JPG"/>
 <div class="author-info">
-<h4>Luca Oriani</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Tecnologie e Sistemi Complessi</strong></div>
-<p>Laureato in Scienze Statistiche, ha una formazione in modellazione statistica, apprendimento automatico e sicurezza delle informazioni. Ha maturato competenze applicate nella compliance antiriciclaggio e ha sviluppato una tesi magistrale sull’incontro tra deep learning e crittografia neurale.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Luca Oriani" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Luca Oriani</span><span class="strategic-theme"><span>Tema strategico</span><strong>Tecnologie e Sistemi Complessi</strong></span></span></summary><div class="bio-content"><p>Laureato in Scienze Statistiche, ha una formazione in modellazione statistica, apprendimento automatico e sicurezza delle informazioni. Ha maturato competenze applicate nella compliance antiriciclaggio e ha sviluppato una tesi magistrale sull’incontro tra deep learning e crittografia neurale.</p></div></details></div>
 </div>
 <!-- Matteo Bonetti Pancher -->
 <div class="author-box" id="bonetti-pancher">
 <img alt="Matteo Bonetti Pancher" onerror="this.style.display='none';" src="assets/Junior-Fellows/matteo-bonetti.jpg"/>
 <div class="author-info">
-<h4>Matteo Bonetti Pancher</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Diritto e Legittimità</strong></div>
-<p>Studente di Giurisprudenza tra Trento e Washington University in St. Louis, dove frequenta un LL.M. in Negotiation and Dispute Resolution &amp; International Law. Il suo percorso intreccia diritto internazionale, politica estera e public affairs, con interesse per la foreign policy statunitense e gli equilibri globali.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Matteo Bonetti Pancher" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Matteo Bonetti Pancher</span><span class="strategic-theme"><span>Tema strategico</span><strong>Diritto e Legittimità</strong></span></span></summary><div class="bio-content"><p>Studente di Giurisprudenza tra Trento e Washington University in St. Louis, dove frequenta un LL.M. in Negotiation and Dispute Resolution &amp; International Law. Il suo percorso intreccia diritto internazionale, politica estera e public affairs, con interesse per la foreign policy statunitense e gli equilibri globali.</p></div></details></div>
 </div>
 <!-- Matteo Bellè -->
 <div class="author-box" id="matteo-belle">
 <img alt="Matteo Bellè" onerror="this.style.display='none';" src="assets/Junior-Fellows/matteo-belle.jpg"/>
 <div class="author-info">
-<h4>Matteo Bellè</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Diritto e Legittimità</strong></div>
-<p>Studente di Giurisprudenza presso l’Università di Trento, con indirizzo in European and Transnational Comparative Law, sviluppa un profilo orientato ai temi della comparazione, della governance e della regolazione. Ha maturato esperienza in ambito legal &amp; compliance, occupandosi di contrattualistica, protezione dei dati personali e conformità normativa. I suoi interessi riguardano diritto civile e societario, legal risk management e regulatory compliance, con particolare attenzione al ruolo delle regole nella gestione del rischio e nella costruzione della legittimità istituzionale.</p>
-</div>
-</div>
 
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Matteo Bellè" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Matteo Bellè</span><span class="strategic-theme"><span>Tema strategico</span><strong>Diritto e Legittimità</strong></span></span></summary><div class="bio-content"><p>Studente di Giurisprudenza presso l’Università di Trento, con indirizzo in European and Transnational Comparative Law, sviluppa un profilo orientato ai temi della comparazione, della governance e della regolazione. Ha maturato esperienza in ambito legal &amp; compliance, occupandosi di contrattualistica, protezione dei dati personali e conformità normativa. I suoi interessi riguardano diritto civile e societario, legal risk management e regulatory compliance, con particolare attenzione al ruolo delle regole nella gestione del rischio e nella costruzione della legittimità istituzionale.</p></div></details></div>
+</div>
 <!-- Giorgia Zanotel -->
 <div class="author-box" id="zanotel">
 <img alt="Giorgia Zanotel" onerror="this.style.display='none';" src="assets/Junior-Fellows/giorgia-zanotel.jpg"/>
 <div class="author-info">
-<h4>Giorgia Zanotel</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Società ed Educazione</strong></div>
-<p>Laureanda magistrale in Studi Europei a Udine, già dottoressa in Lingue, Civiltà e Scienze del Linguaggio a Ca’ Foscari, sviluppa un profilo interdisciplinare tra relazioni internazionali, diritto europeo, scienze politiche e cooperazione. Approfondisce l’allargamento UE ai Balcani occidentali, pacificazione, società, identità culturali e dinamiche linguistiche.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Giorgia Zanotel" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Giorgia Zanotel</span><span class="strategic-theme"><span>Tema strategico</span><strong>Società ed Educazione</strong></span></span></summary><div class="bio-content"><p>Laureanda magistrale in Studi Europei a Udine, già dottoressa in Lingue, Civiltà e Scienze del Linguaggio a Ca’ Foscari, sviluppa un profilo interdisciplinare tra relazioni internazionali, diritto europeo, scienze politiche e cooperazione. Approfondisce l’allargamento UE ai Balcani occidentali, pacificazione, società, identità culturali e dinamiche linguistiche.</p></div></details></div>
 </div>
 <!-- Aniello Inverso -->
 <div class="author-box" id="inverso">
 <img alt="Aniello Inverso" onerror="this.style.display='none';" src="assets/Junior-Fellows/aniello-inverso.jpg"/>
 <div class="author-info">
-<h4>Aniello Inverso</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Infrastrutture Strategiche</strong></div>
-<p>Intelligence analyst con formazione in investigazione, criminalità e sicurezza internazionale. Si occupa di analisi strategica su minacce ibride, rischio cibernetico, criminalità organizzata transnazionale e scenari multi-dominio. I suoi interessi riguardano protezione delle infrastrutture critiche, resilienza sistemica e modelli di warning e decision support.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Aniello Inverso" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Aniello Inverso</span><span class="strategic-theme"><span>Tema strategico</span><strong>Infrastrutture Strategiche</strong></span></span></summary><div class="bio-content"><p>Intelligence analyst con formazione in investigazione, criminalità e sicurezza internazionale. Si occupa di analisi strategica su minacce ibride, rischio cibernetico, criminalità organizzata transnazionale e scenari multi-dominio. I suoi interessi riguardano protezione delle infrastrutture critiche, resilienza sistemica e modelli di warning e decision support.</p></div></details></div>
 </div>
 <!-- Luigi Piccione -->
 <div class="author-box" id="piccione">
 <img alt="Luigi Piccione" onerror="this.style.display='none';" src="assets/Junior-Fellows/luigi_piccione.jpg"/>
 <div class="author-info">
-<h4>Luigi Piccione</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Risorse ed Energia</strong></div>
-<p>Analista geopolitico presso il Centro Studi Amistades di Roma, opera nelle aree MENA e Difesa e Sicurezza. Si occupa di monitoraggio strategico del Medio Oriente e Nord Africa, con focus su Iran, difesa, sicurezza internazionale e analisi OSINT degli scenari geopolitici contemporanei.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Luigi Piccione" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Luigi Piccione</span><span class="strategic-theme"><span>Tema strategico</span><strong>Risorse ed Energia</strong></span></span></summary><div class="bio-content"><p>Analista geopolitico presso il Centro Studi Amistades di Roma, opera nelle aree MENA e Difesa e Sicurezza. Si occupa di monitoraggio strategico del Medio Oriente e Nord Africa, con focus su Iran, difesa, sicurezza internazionale e analisi OSINT degli scenari geopolitici contemporanei.</p></div></details></div>
 </div>
 <!-- Luciano Pastore -->
 <div class="author-box" id="pastore">
 <img alt="Luciano Pastore" onerror="this.style.display='none';" src="assets/Junior-Fellows/luciano_pastore.jpg"/>
 <div class="author-info">
-<h4>Luciano Pastore</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Infrastrutture Strategiche</strong></div>
-<p>Laureato magistrale in Scienze del Governo presso l'Università degli Studi di Torino, ha conseguito un master in Corporate communication, Lobbying &amp; Public Affairs alla 24Ore Business School. Ha maturato esperienza nell’ambito dei Public Affairs, lavorando come consulente per diversi clienti in una società di lobbying e come account in-house in azienda.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Luciano Pastore" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Luciano Pastore</span><span class="strategic-theme"><span>Tema strategico</span><strong>Infrastrutture Strategiche</strong></span></span></summary><div class="bio-content"><p>Laureato magistrale in Scienze del Governo presso l'Università degli Studi di Torino, ha conseguito un master in Corporate communication, Lobbying &amp; Public Affairs alla 24Ore Business School. Ha maturato esperienza nell’ambito dei Public Affairs, lavorando come consulente per diversi clienti in una società di lobbying e come account in-house in azienda.</p></div></details></div>
 </div>
 <!-- Francesco Custureri -->
 <div class="author-box" id="custureri">
 <img alt="Francesco Custureri" onerror="this.style.display='none';" src="assets/Junior-Fellows/francesco-custureri.jpg"/>
 <div class="author-info">
-<h4>Francesco Custureri</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Tecnologie e Sistemi Complessi</strong></div>
-<p>AI Engineer con focus su intelligenza artificiale, cybersecurity, infrastrutture critiche e interesse nazionale. Si occupa di applicazioni AI strategiche in contesti enterprise, integrando competenze tecniche, trasformazione digitale e visione sui sistemi complessi. Affianca al profilo ingegneristico un percorso di approfondimento su geopolitica, intelligence economica e sovranità tecnologica.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Francesco Custureri" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Francesco Custureri</span><span class="strategic-theme"><span>Tema strategico</span><strong>Tecnologie e Sistemi Complessi</strong></span></span></summary><div class="bio-content"><p>AI Engineer con focus su intelligenza artificiale, cybersecurity, infrastrutture critiche e interesse nazionale. Si occupa di applicazioni AI strategiche in contesti enterprise, integrando competenze tecniche, trasformazione digitale e visione sui sistemi complessi. Affianca al profilo ingegneristico un percorso di approfondimento su geopolitica, intelligence economica e sovranità tecnologica.</p></div></details></div>
 </div>
 <!-- Danilo Mattera Trimonti -->
 <div class="author-box" id="mattera-trimonti">
 <img alt="Danilo Mattera Trimonti" onerror="this.style.display='none';" src="assets/Junior-Fellows/mattera_danilo.jpg"/>
 <div class="author-info">
-<h4>Danilo Mattera Trimonti</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Difesa e Sicurezza</strong></div>
-<p>Laureato magistrale in Relazioni Internazionali presso l’Università degli Studi Roma Tre. Si interessa di tematiche afferenti agli Studi Strategici e alla Storia delle Relazioni Internazionali come l’evoluzione della difesa euro-atlantica, l’innovazione militare e la diffusione degli armamenti nel sistema internazionale. Nel corso degli anni ha avuto modo di collaborare con istituzioni pubbliche e centri di ricerca privati, scrivendo contributi per diverse testate tra cui AffarInternazionali, Aspenia, Formiche.net/AirPress, Rivista Marittima e Geopolitica.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Danilo Mattera Trimonti" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Danilo Mattera Trimonti</span><span class="strategic-theme"><span>Tema strategico</span><strong>Difesa e Sicurezza</strong></span></span></summary><div class="bio-content"><p>Laureato magistrale in Relazioni Internazionali presso l’Università degli Studi Roma Tre. Si interessa di tematiche afferenti agli Studi Strategici e alla Storia delle Relazioni Internazionali come l’evoluzione della difesa euro-atlantica, l’innovazione militare e la diffusione degli armamenti nel sistema internazionale. Nel corso degli anni ha avuto modo di collaborare con istituzioni pubbliche e centri di ricerca privati, scrivendo contributi per diverse testate tra cui AffarInternazionali, Aspenia, Formiche.net/AirPress, Rivista Marittima e Geopolitica.</p></div></details></div>
 </div>
 <!-- Guido Dello Ioio -->
 <div class="author-box" id="dello-ioio">
 <img alt="Guido Dello Ioio" onerror="this.style.display='none';" src="assets/Junior-Fellows/guido-dello-ioio.jpg"/>
 <div class="author-info">
-<h4>Guido Dello Ioio</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Economia e Industria</strong></div>
-<p>Laureato magistrale in Giurisprudenza presso l’Università degli Studi di Napoli Federico II, praticante avvocato presso l’Avvocatura Distrettuale dello Stato di Napoli ed ex allievo della Scuola Militare “Nunziatella”. Si occupa di antitrust, regolazione dei mercati, sicurezza economica europea, Golden Power e tutela dei settori strategici.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Guido Dello Ioio" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Guido Dello Ioio</span><span class="strategic-theme"><span>Tema strategico</span><strong>Economia e Industria</strong></span></span></summary><div class="bio-content"><p>Laureato magistrale in Giurisprudenza presso l’Università degli Studi di Napoli Federico II, praticante avvocato presso l’Avvocatura Distrettuale dello Stato di Napoli ed ex allievo della Scuola Militare “Nunziatella”. Si occupa di antitrust, regolazione dei mercati, sicurezza economica europea, Golden Power e tutela dei settori strategici.</p></div></details></div>
 </div>
 <!-- Francesco Mitrangolo -->
 <div class="author-box" id="mitrangolo">
 <img alt="Francesco Mitrangolo" onerror="this.style.display='none';" src="assets/Junior-Fellows/francesco-mitrangolo.jpg"/>
 <div class="author-info">
-<h4>Francesco Mitrangolo</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Infrastrutture Strategiche</strong></div>
-<p>Analista con formazione in sicurezza internazionale, intelligence e difesa, approfondisce tecnologie emergenti, sistemi complessi e innovazione militare. I suoi interessi riguardano C4ISR, UAV, dominio elettromagnetico, cyber warfare, intelligenza artificiale e impatto delle tecnologie disruptive sugli ecosistemi strategici contemporanei.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Francesco Mitrangolo" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Francesco Mitrangolo</span><span class="strategic-theme"><span>Tema strategico</span><strong>Infrastrutture Strategiche</strong></span></span></summary><div class="bio-content"><p>Analista con formazione in sicurezza internazionale, intelligence e difesa, approfondisce tecnologie emergenti, sistemi complessi e innovazione militare. I suoi interessi riguardano C4ISR, UAV, dominio elettromagnetico, cyber warfare, intelligenza artificiale e impatto delle tecnologie disruptive sugli ecosistemi strategici contemporanei.</p></div></details></div>
 </div>
 <!-- Francesco Trevisan -->
 <div class="author-box" id="trevisan">
 <img alt="Francesco Trevisan" onerror="this.style.display='none';" src="assets/Junior-Fellows/marco-trevisan.jpg"/>
 <div class="author-info">
-<h4>Francesco Trevisan</h4>
-<div class="strategic-theme"><span>Tema strategico</span><strong>Informazione e Dominio Cognitivo</strong></div>
-<p>Studente magistrale in Relazioni Internazionali e Studi Europei presso l’Università di Firenze, ha conseguito la laurea triennale a Gorizia con specializzazione sui partiti politici italiani e il dispiegamento delle forze armate in aree di conflitto globali. I suoi interessi di ricerca vertono sulle minacce ibride alle democrazie liberali — con particolare attenzione alle campagne di influenza, disinformazione e destabilizzazione della Federazione Russa — e sulle dinamiche di sicurezza del fianco orientale NATO/UE. Ha consolidato competenze di analisi OSINT, redazione di rapporti, gestione progettuale e comunicazione istituzionale attraverso esperienze presso l’Ambasciata d’Italia in Estonia, organizzazioni specializzate e programmi di formazione avanzata.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Francesco Trevisan" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Francesco Trevisan</span><span class="strategic-theme"><span>Tema strategico</span><strong>Informazione e Dominio Cognitivo</strong></span></span></summary><div class="bio-content"><p>Studente magistrale in Relazioni Internazionali e Studi Europei presso l’Università di Firenze, ha conseguito la laurea triennale a Gorizia con specializzazione sui partiti politici italiani e il dispiegamento delle forze armate in aree di conflitto globali. I suoi interessi di ricerca vertono sulle minacce ibride alle democrazie liberali — con particolare attenzione alle campagne di influenza, disinformazione e destabilizzazione della Federazione Russa — e sulle dinamiche di sicurezza del fianco orientale NATO/UE. Ha consolidato competenze di analisi OSINT, redazione di rapporti, gestione progettuale e comunicazione istituzionale attraverso esperienze presso l’Ambasciata d’Italia in Estonia, organizzazioni specializzate e programmi di formazione avanzata.</p></div></details></div>
 </div>
 </div>
 </section>
@@ -890,50 +956,49 @@
 <div class="author-box" id="rodolfo-belcastro">
 <img alt="Rodolfo Belcastro" onerror="this.style.display='none';" src="assets/sme-contributors/rodolfo-belcastro.jpeg"/>
 <div class="author-info">
-<h4>Rodolfo Belcastro</h4>
-<div class="strategic-theme"><span>Ambiti di competenza</span><strong>Economia, Finanza e Industria della Difesa</strong></div>
-<p>Executive manager, board member, giornalista professionista ed editorialista, opera all’intersezione tra finanza, industria, tecnologia, comunicazione strategica e relazioni istituzionali. Ha maturato una consolidata esperienza in gruppi multinazionali e società quotate, occupandosi di posizionamento, reputation management, public affairs e rapporti tra imprese, istituzioni e stakeholder. Analizza l’economia e la finanza della difesa, con attenzione a spesa militare, procurement, filiere strategiche, strumenti finanziari, tecnologie dual-use e autonomia industriale europea, approfondendo il rapporto tra capitale, capacità produttiva, reputazione, resilienza industriale e deterrenza.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Rodolfo Belcastro" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Rodolfo Belcastro</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Economia, Finanza e Industria della Difesa</strong></span></span></summary><div class="bio-content"><p>Executive manager, board member, giornalista professionista ed editorialista, opera all’intersezione tra finanza, industria, tecnologia, comunicazione strategica e relazioni istituzionali. Ha maturato una consolidata esperienza in gruppi multinazionali e società quotate, occupandosi di posizionamento, reputation management, public affairs e rapporti tra imprese, istituzioni e stakeholder. Analizza l’economia e la finanza della difesa, con attenzione a spesa militare, procurement, filiere strategiche, strumenti finanziari, tecnologie dual-use e autonomia industriale europea, approfondendo il rapporto tra capitale, capacità produttiva, reputazione, resilienza industriale e deterrenza.</p></div></details></div>
 </div>
 <!-- Domenico Letizia -->
 <div class="author-box" id="letizia">
 <img alt="Domenico Letizia" onerror="this.style.display='none';" src="assets/sme-contributors/domenico-letizia.jfif"/>
 <div class="author-info">
-<h4>Domenico Letizia</h4>
-<div class="strategic-theme"><span>Ambiti di competenza</span><strong>Geopolitica, Diritti Umani e Blue Economy</strong></div><p>Giornalista pubblicista, saggista e analista, collabora con testate nazionali occupandosi di geopolitica, diritti umani, Blue Economy e sostenibilità. Approfondisce Artico, Canada, sicurezza energetica e sviluppo dei mercati globali, unendo attività editoriale, comunicazione e partecipazione pubblica.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Domenico Letizia" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Domenico Letizia</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Geopolitica, Diritti Umani e Blue Economy</strong></span></span></summary><div class="bio-content"><p>Giornalista pubblicista, saggista e analista, collabora con testate nazionali occupandosi di geopolitica, diritti umani, Blue Economy e sostenibilità. Approfondisce Artico, Canada, sicurezza energetica e sviluppo dei mercati globali, unendo attività editoriale, comunicazione e partecipazione pubblica.</p></div></details></div>
 </div>
 <!-- Laura Laportella -->
 <div class="author-box" id="laportella">
 <img alt="Laura Laportella" onerror="this.style.display='none';" src="assets/sme-contributors/Laura-laportella.jpg"/>
 <div class="author-info">
-<h4>Laura Laportella</h4>
-<div class="strategic-theme"><span>Ambiti di competenza</span><strong>Comunicazione Digitale e Narrazioni</strong></div><p>Digital strategist, consulente di comunicazione pubblica e analista della comunicazione digitale. Collabora con istituzioni, università, Terzo Settore e organizzazioni politiche, occupandosi di strategie digitali, social media, campagne, formazione e narrazioni online nei processi pubblici e geopolitici.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Laura Laportella" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Laura Laportella</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Comunicazione Digitale e Narrazioni</strong></span></span></summary><div class="bio-content"><p>Digital strategist, consulente di comunicazione pubblica e analista della comunicazione digitale. Collabora con istituzioni, università, Terzo Settore e organizzazioni politiche, occupandosi di strategie digitali, social media, campagne, formazione e narrazioni online nei processi pubblici e geopolitici.</p></div></details></div>
 </div>
 <!-- Francesco Scordo -->
 <div class="author-box" id="scordo">
 <img alt="Francesco Scordo" onerror="this.style.display='none';" src="assets/Junior-Fellows/francesco-scordo.jpeg"/>
 <div class="author-info">
-<h4>Francesco Scordo</h4>
-<div class="strategic-theme"><span>Ambiti di competenza</span><strong>Tecnologie e Sistemi Complessi</strong></div><p>Giurista specializzato in A.I. e Cybersecurity, ex allievo della Scuola Militare Nunziatella. Studia e investe in Bitcoin dal 2012, con competenze legali, informatiche ed economiche su criptovalute, blockchain, ICT, modelli di A.I. e sistemi quantistici. Socio CLUSIT, è docente, pubblicista e consulente per istituzioni italiane ed europee.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Francesco Scordo" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Francesco Scordo</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Tecnologie e Sistemi Complessi</strong></span></span></summary><div class="bio-content"><p>Giurista specializzato in A.I. e Cybersecurity, ex allievo della Scuola Militare Nunziatella. Studia e investe in Bitcoin dal 2012, con competenze legali, informatiche ed economiche su criptovalute, blockchain, ICT, modelli di A.I. e sistemi quantistici. Socio CLUSIT, è docente, pubblicista e consulente per istituzioni italiane ed europee.</p></div></details></div>
 </div>
 <!-- Piervito Tria -->
 <div class="author-box" id="tria">
 <img alt="Piervito Tria" onerror="this.style.display='none';" src="assets/Junior-Fellows/piervito-tria.JPG"/>
 <div class="author-info">
-<h4>Piervito Tria</h4>
-<div class="strategic-theme"><span>Ambiti di competenza</span><strong>Tecnologie e Sistemi Complessi</strong></div><p>Subject matter expert in tecnologia, sistemi complessi, sicurezza e infrastrutture strategiche. Lavora su cybersecurity, governance del rischio e resilienza organizzativa in contesti internazionali. Ex allievo della Scuola Militare Nunziatella e laureato LUISS, ha esperienze tra Germania, Australia, Messico e Danimarca e collabora con Aliseo su cyber power e trasformazioni geopolitiche.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Piervito Tria" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Piervito Tria</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Tecnologie e Sistemi Complessi</strong></span></span></summary><div class="bio-content"><p>Subject matter expert in tecnologia, sistemi complessi, sicurezza e infrastrutture strategiche. Lavora su cybersecurity, governance del rischio e resilienza organizzativa in contesti internazionali. Ex allievo della Scuola Militare Nunziatella e laureato LUISS, ha esperienze tra Germania, Australia, Messico e Danimarca e collabora con Aliseo su cyber power e trasformazioni geopolitiche.</p></div></details></div>
 </div>
 <!-- Filippo Martini -->
 <div class="author-box" id="filippo-martini">
 <img alt="Filippo Martini" onerror="this.style.display='none';" src="assets/sme-contributors/filippo-martini.jpg"/>
 <div class="author-info">
-<h4>Filippo Martini</h4>
-<div class="strategic-theme"><span>Ambiti di competenza</span><strong>Governance Pubblica · Tecnologie e Sistemi Complessi</strong></div><p>Docente, formatore e consulente in negoziazione e mediazione, opera tra università, formazione executive e ricerca applicata. È Adjunct Professor di Tecniche di Negoziazione e Mediazione presso l’Università di Ferrara e docente presso Bologna Business School. Co-founder del Journal for Global Negotiation e Fellow dell’Institute for Global Negotiation, si occupa di preparazione negoziale, gestione del conflitto e uso critico dell’AI nei processi decisionali complessi.</p>
-</div>
+
+
+<details class="bio-toggle"><summary aria-label="Mostra o nascondi la biografia di Filippo Martini" class="bio-summary"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Filippo Martini</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Governance Pubblica · Tecnologie e Sistemi Complessi</strong></span></span></summary><div class="bio-content"><p>Docente, formatore e consulente in negoziazione e mediazione, opera tra università, formazione executive e ricerca applicata. È Adjunct Professor di Tecniche di Negoziazione e Mediazione presso l’Università di Ferrara e docente presso Bologna Business School. Co-founder del Journal for Global Negotiation e Fellow dell’Institute for Global Negotiation, si occupa di preparazione negoziale, gestione del conflitto e uso critico dell’AI nei processi decisionali complessi.</p></div></details></div>
 </div>
 </div>
 </section>
