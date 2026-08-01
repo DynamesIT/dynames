@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | The European Union in a multipolar world: a view from the Sahel</title>
+<meta content="An interview with Emanuela C. Del Re on Europe’s credibility in a multipolar world, the Sahel, Russian influence, humanitarian diplomacy and the Mattei Plan." name="description"/>
+<link href="https://www.dynames.it/articles/2026.08.02-interview-emanuela-del-re.html" rel="canonical"/>
+<meta content="en_GB" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="The European Union in a multipolar world: a view from the Sahel" property="og:title"/>
+<meta content="An interview with Emanuela C. Del Re on Europe’s credibility in a multipolar world, the Sahel, Russian influence, humanitarian diplomacy and the Mattei Plan." property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.08.02-interview-emanuela-del-re.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.02-interview-emanuela-del-re-light.jpg?v=2" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.02-interview-emanuela-del-re-light.jpg?v=2" property="og:image:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.02-interview-emanuela-del-re-light.jpg?v=2" property="og:image:secure_url"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="Emanuela Claudia Del Re with a geopolitical map of the Sahel and European Union imagery" property="og:image:alt"/>
+<link href="https://www.dynames.it/articles/Immagini/2026.08.02-interview-emanuela-del-re-light.jpg?v=2" rel="image_src"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="The European Union in a multipolar world: a view from the Sahel" name="twitter:title"/>
+<meta content="An interview with Emanuela C. Del Re on Europe’s credibility in a multipolar world, the Sahel, Russian influence, humanitarian diplomacy and the Mattei Plan." name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.02-interview-emanuela-del-re-light.jpg?v=2" name="twitter:image"/>
+<meta content="Emanuela Claudia Del Re davanti a una mappa geopolitica del Sahel con riferimenti all’Unione europea" name="twitter:image:alt"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.02-interview-emanuela-del-re-light.jpg?v=2" name="twitter:image:src"/>
+<meta content="Matteo Bonetti Pancher" name="author"/>
+<meta content="Matteo Bonetti Pancher" property="article:author"/>
+<meta content="2026-08-02T09:00:00+02:00" property="article:published_time"/>
+<meta content="Difesa e Sicurezza" property="article:section"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+
+
+        .article-figure {
+            margin: 0 0 4rem 0;
+        }
+
+        .article-figure .article-hero {
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .article-image-caption {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+
+        .interviewee-box {
+            margin: 2rem 0 3rem 0;
+            padding: 2rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .interviewee-box figure {
+            margin: 0;
+        }
+
+        .interviewee-box img {
+            width: 160px;
+            height: 160px;
+            border-radius: 4px;
+            object-fit: cover;
+            display: block;
+            background: #e2e8f0;
+        }
+
+        .interviewee-caption {
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            color: var(--text-secondary);
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .interviewee-info p {
+            margin-bottom: 0;
+            text-align: left;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .author-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+
+            .interviewee-box {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .interviewee-box img {
+                margin: 0 auto;
+            }
+
+            .interviewee-caption,
+            .interviewee-info p {
+                text-align: center;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article lang="en">
+<div class="article-container article-header">
+<span class="article-category">Difesa e Sicurezza</span>
+<h1 class="serif-heading article-title">The European Union in a multipolar world: a view from the Sahel</h1>
+<p class="article-abstract">An interview with Emanuela C. Del Re on Europe’s credibility in a multipolar world, the Sahel, Russian influence, humanitarian diplomacy and the Mattei Plan.</p>
+<div class="article-meta"><span class="meta-author">Matteo Bonetti Pancher</span><span>2 Agosto 2026</span><span>Tempo di lettura: 11 min</span></div>
+</div>
+<figure class="article-figure">
+<img alt="Emanuela Claudia Del Re davanti a una mappa geopolitica del Sahel con riferimenti all’Unione europea" class="article-hero" decoding="async" fetchpriority="high" height="1086" onerror="this.closest('figure').style.display='none'" src="Immagini/2026.08.02-interview-emanuela-del-re.png" width="1448"/>
+<figcaption class="article-image-caption">Emanuela Claudia Del Re e il Sahel in una composizione editoriale DYNAMES.</figcaption>
+</figure>
+<div class="article-container article-body"><p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">T</span>he rise of a multipolar order has confronted the European Union with a question it has not yet fully answered: how can Europe remain central in a world that no longer takes its normative and values-based framework as a reference?</p><p>It is a question that Emanuela C. Del Re has engaged with not only from the outside, but from within the European institutions themselves. Former Deputy Minister for Foreign Affairs (2018-2021) of Italy and EU Special Representative for the Sahel (2021-2024) and political sociologist, she has spent decades working on the field in conflict zones - from the Balkans and the Caucasus to the Middle East and sub-Saharan Africa - bringing to this conversation both the analytical rigour of an academic and the operational experience of someone who has negotiated at the table, not only written about it.</p><h2>Professor Del Re, when you participate in events on international affairs and you are asked to address Europe’s role in the current global order, what is your reading of the situation?</h2><p>My starting point is an honest recognition of where we stand. The European Union operates today in a world that is no longer structured around Western-defined norms and values, even if those were genuinely universal in aspiration. In fact, the world order today has become increasingly multipolar. For example, part of the Global South does not anymore perceive European values as universal, rather as norms universalized by Europe. Europe must reflect on this, not abandoning its principles, rather rethinking the way Europe engages in the global debate. The urgency of current events makes Europe concentrate on the relationships with actors involved such as the United States, Russia and Ukraine, China, India. But the world is far more interconnected. One element emerges strongly: the fact that the countries of the Global South share perspectives, historical experiences, and geopolitical interests that are simply not reducible to alignment or non-alignment with the West. The colonial experience alone makes Europe’s relationship with much of the developing world structurally complex. However, it must be recognized that Europe has genuine assets: a welfare model that remains, in many respects, the most functional in the world; its diplomatic tradition of not being maximally aligned with any single power bloc is today; and a proven capacity to build multilateral frameworks. The challenge is to deploy these assets without the paternalism that has historically undermined the European Union’s engagement.</p><h2>Europe’s internal decision-making is frequently cited as a structural obstacle to effective foreign policy. Is the debate on qualified majority voting a genuine solution, or does it risk creating a different set of problems?</h2><p>No doubt that there is a constant tension in a positive a critical sense, and I say this as someone who has experienced the constraints of unanimity firsthand. Reaching consensus among twenty-seven member states on issues as sensitive as foreign policy can be difficult. There can be bilateral sensitivities - Greece on issues related to Turkey for instance, or diverging positions on Russia or other, the influence of historical memories regarding specific regions. These issues can   influence collective decision-making to the point of blocking it in some cases. Qualified majority voting would probably make EU decision making processes faster and more operational. But the cost could be high: No member state would like to find itself in a minority position on a decision that directly affects its national interests or security environment. Italy opposes the ending of unanimity because the national veto can protect vital state interests. This is reasonable, and reflects also the fact that European governments are accountable to their Parliaments and their populations for decisions that have a democratic legitimacy. An interesting proposal is the differentiated approach: not a blanket shift to qualified majority, but a selective one, calibrated to the nature and urgency of each type of decision. Some domains may be more suited to faster procedures than others. The challenge is agreeing on which ones, which is itself a political negotiation that requires unanimity to begin.</p><h2>You were EU Special Representative for the Sahel during a period – 2021 to 2024 - that saw several military coups in Mali, Burkina Faso, and Niger, explicitly invoking anti-neocolonial sentiment, often directed at France. How did you navigate dialogue in that context?</h2><p>What makes the Sahel a unique region, particularly in the case of the three coup-affected countries, is not only its complexity – not always recognized and understood by Europe - but the weight of the colonial past and its contemporary resonance in the relationship with the world. It impacts on all its choices in international relations, from welcoming Russia as the military partner to asking the UN to end its MINUSMA mission and other. The governments in Bamako, Ouagadougou, and Niamey, in addition to a complete opposition to France’s military presence, also articulated such a rejection in terms of a broader historical grievance in a continental context that shares the same sentiment although not at the cost of endangering the solid partnership with the EU and its member states.</p><p>In my political and diplomatic action, I insisted on the necessity of always maintaining an open dialogue. The countries that have decided to form the Alliance of the Sahel (Mali, Niger, Burkina Faso) have always interacted with Europe, prevalently through France. They know European mechanisms very well, they speak French, they are capable of using cross-cultural means having studied mostly in Western countries. Their diplomatic skills are very high and challenging. This is why I think there is an opportunity to talk, on which common solutions can be built, despite their strenuous opposition to European positions.</p><p>The United Nations and the World Bank in fact decided to insist on dialogue: when the three central Sahel countries broke away from ECOWAS (Economic Community of West African States), they continued to maintain dialogue with frequent visit and agreements. I instead found myself in a position different from that of the High Representative Borrell, who, in the case of the coup in Niger, decided that the EU should have delegate the political actions to the regional organization ECOWAS and not to engage directly with the country. I thought that the EU should have acted on its own also because the regional organization, composed of several countries, was not presenting a single, uniform position. While the United Nations and the World Bank were in Niger, and ECOWAS was trying to engage and finding considerable difficulty, the EU remained in a position of wait-and-see. The problem was that the EU risked to be perceived as irrelevant in the political processes in the region.</p><p>Another difficult issue was the attitude toward the current leaders in Mali, Burkina Faso and Niger. They came to power through a coup, however, they have acquired a global stature as representatives of an anti-neocolonial movement that is, in my view, extremely widespread - not only in Africa, but beyond the borders of the continent. In particular in Burkina Faso, President Ibrahim Traoré has become a global icon. In my opinion for the EU political action to be effective, it is crucial to understand the impact of these leaders today above all at the global level, to avoid strategic errors. It is necessary to find formulas for engagement that do not betray in the slightest our principles and our red lines - on civil rights, on the return to constitutional order, etc. - but that nonetheless preserves the possibility of constructive communication, above all for the benefit of civilian populations.</p><p>On this, I want to underline that the EU has always maintained its engagement in humanitarian aid that is a true and most effective diplomatic instrument. The EU continues to provide humanitarian aid consistently - even in cases of government hostility or coups, because the EU is always on the side of the population. In the end there is a rationality in all this: the EU must work on its profile as a genuine interlocutor in the world capable of advancing its principles through strategic instruments such as humanitarian aid. Because as I have always say, humanitarian aid is a political statement. It is not a form of charity or do-goodism:  providing humanitarian aid means recognizing that a problem exists (there are governments that deny it), that populations are suffering, and that it is necessary to intervene to improve conditions.</p><div class="pull-quote">Humanitarian aid is a political statement. It is not a form of charity or do-goodism.</div><h2>Russia’s role in the region, first through Wagner, now through what is formally described as the Africa Corps, is often presented as a destabilizing factor. How do you assess the strategic weight of Russian influence in the Sahel?</h2><p>Russia is not a new actor in Africa. The historical relationship goes back at least to the 1940s, and has deepened consistently during the decolonization period, when the Soviet Union positioned itself as a natural ally of independence movements against European colonial powers. History provides Russia with a reservoir of symbolic capital that Western actors systematically underestimate and do not possess.</p><p>In the Sahel specifically, Russia’s capacity to project influence has been amplified by a pre-existing substrate of anti-Western sentiment, particularly anti-French sentiment, that Russian actors have exploited with considerable effectiveness. Disinformation campaigns - distributed through social media, influencers, and informal networks - have found fertile ground in societies where the narrative of Western exploitation has deep structural resonance.</p><p>That said, I would be cautious against overstating Russian military capacity in the region. The actual operational footprint of what was Wagner, and is now the Africa Corps, is more limited than the geopolitical narrative suggests. The strategic damage Russia inflicts is less through military presence than through what I would call a short-circuit effect: by consistently reinforcing the idea that any Western engagement is neocolonial in nature, it makes constructive partnership far more difficult to build, regardless of its actual merit. Europe is a fundamental partner for the countries of the Sahel, they know this well: despite the efforts of Russia and the ideological opposition, the partnership with the EU will always be a priority for them because of pragmatism and of the fact perspectives for development offered by the partnership with the EU.</p><p>It cannot be denied that there is a deeper problem related to the credibility and influence of the European Union. This emerged for example when the EU promoted UN resolutions against Russia not all African countries voted in favour. This was not because African governments were pro-Russian, but because they were navigating their own interests in a multipolar world, and because decades of asymmetrical relationships have left a legacy of mistrust that Russia knows how to amplify. The EU needs to understand this dynamic more clearly, and respond to it more intelligently and strategically. More knowledge and recognition of the complexity of African thinking is crucial.</p><div class="pull-quote">More knowledge and recognition of the complexity of African thinking is crucial.</div><h2>Is the Mattei Plan a genuine contribution to this recalibration, or does it risk to reproduce the same structural problems in a different format?</h2><p>I would begin with a point that is worth stating plainly: the fact that a major European country has decided to develop a structured strategic framework for engagement with Africa is, in itself, a positive and effective action. Africa is chronically absent from European public discourse. It appears episodically, in the context of migration or security crises, and then disappears again. Mattei Plan put Africa amongst the priorities of the political agenda of an important country such as Italy, and this can act as an inspiration for others.</p><p>After all it is surprising that in 2026 Italy must still reassure the African governments that the Mattei Plan is not a predatory initiative, that the intention is genuine partnership, that billions of euros in investments, including significant climate-related commitments, are not simply a new form of conditionality. The fact that this reassurance remains necessary despite the consolidated partnership tells us something important: the credibility deficit of the West in Africa is structural and persistent, and it will not be resolved by any single plan, however well-designed. The Mattei Plan contributes to change this situation significantly.</p><p>We must reflect on how to remain influential, credible, and how to sustain our principles over time. In conclusion I can summarize my thought mentioning the three greatest challenges that in my opinion are going to emerge in this century: preserve diplomacy, protect human rights, render sustainable our interventions. These are the questions we must seriously engage with.</p><h2>About Emanuela Claudia Del Re</h2><div class="interviewee-box"><figure><img alt="Emanuela Claudia Del Re" decoding="async" height="447" loading="lazy" onerror="this.style.display='none';" src="Immagini/emanuela-del-re.jpg" width="447"/><figcaption class="interviewee-caption">Emanuela Claudia Del Re.</figcaption></figure><div class="interviewee-info"><p>Emanuela Claudia Del Re is a member of the Board of the European Council on Foreign Relations (ECFR) and Vice Chair of the Department of Foreign Affairs of Forza Italia. She served as EU Special Representative for the Sahel (2021 - 2024) and as Deputy Minister for Foreign Affairs and International Cooperation of Italy (2018–2021). She was a member of the Italian Parliament in the XVIII Legislature and President of the Agenda 2030 Commission in the Parliament (2018–2021). A university professor of Political Sociology specializing in foreign policy, geopolitics, international relations, migration, and conflict, she has conducted field research in conflict zones since 1991, across the Balkans, the Caucasus, the Middle East, and Africa. She is the author of numerous publications, including <em>Women and Borders: Refugees, Migrants and Communities</em> (Tauris, 2018) and <em>Female Combatants in Conflict and Peace: Challenging Gender in Violence and Post-Conflict Reintegration</em> (Palgrave, 2015).</p></div></div><div class="author-box"><img alt="Matteo Bonetti Pancher" decoding="async" height="80" loading="lazy" onerror="this.style.display='none';" src="../assets/Junior-Fellows/matteo-bonetti.jpg" width="80"/><div class="author-info"><h4>Matteo Bonetti Pancher</h4><p>Studente di Giurisprudenza tra Trento e Washington University in St. Louis, dove frequenta un LL.M. in Negotiation and Dispute Resolution &amp; International Law. Il suo percorso intreccia diritto internazionale, politica estera e public affairs, con interesse per la foreign policy statunitense e gli equilibri globali.</p></div></div></div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
