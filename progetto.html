@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+                deleteAnalyticsCookies();
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Progetto Cultura della Difesa</title>
+    <meta name="description" content="Il progetto Cultura della Difesa: una piattaforma permanente di analisi, confronto, produzione editoriale e valorizzazione per portare la cultura della difesa nei luoghi civili, formativi e istituzionali del Sistema Paese.">
+    <link rel="canonical" href="https://www.dynames.it/progetto.html">
+    <meta property="og:locale" content="it_IT">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="DYNAMES">
+    <meta property="og:title" content="DYNAMES | Progetto Cultura della Difesa">
+    <meta property="og:description" content="Una piattaforma permanente di analisi, confronto, produzione editoriale e valorizzazione sui temi della difesa, della sicurezza e della resilienza del Sistema Paese.">
+    <meta property="og:url" content="https://www.dynames.it/progetto.html">
+    <meta property="og:image" content="https://www.dynames.it/assets/progetto-cultura-della-difesa-share.png">
+    <meta property="og:image:secure_url" content="https://www.dynames.it/assets/progetto-cultura-della-difesa-share.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Progetto Cultura della Difesa, collaborazione tra DYNAMES, FORM&ATP e Luiss Scuola di Giornalismo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DYNAMES | Progetto Cultura della Difesa">
+    <meta name="twitter:description" content="Una piattaforma permanente di analisi, confronto, produzione editoriale e valorizzazione sui temi della difesa, della sicurezza e della resilienza del Sistema Paese.">
+    <meta name="twitter:image" content="https://www.dynames.it/assets/progetto-cultura-della-difesa-share.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --night-blue:#0b1120;
+            --deep-blue:#0b1c2d;
+            --dynames-blue:#0f4aa2;
+            --slate-grey:#334155;
+            --light-grey:#f8fafc;
+            --optical-white:#ffffff;
+            --text-primary:#1e293b;
+            --text-secondary:#475569;
+            --text-light:#cbd5e1;
+            --paper-bg:#fdfbf7;
+            --gold-accent:#b8935a;
+            --gold-soft:#efe4d2;
+            --border-soft:#e2e8f0;
+            --shadow-soft:0 20px 25px -5px rgba(0,0,0,.08);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family:'Roboto', sans-serif;
+            background:var(--paper-bg);
+            color:var(--text-primary);
+            line-height:1.8;
+            font-size:1.08rem;
+        }
+        h1,h2,h3,h4,h5,h6,.brand { font-family:'Montserrat', sans-serif; }
+        .serif-heading { font-family:'Playfair Display', serif; }
+        .container { max-width:1200px; margin:0 auto; padding:0 2rem; }
+        .content-container { max-width:980px; margin:0 auto; padding:0 2rem; }
+
+        header {
+            background:var(--optical-white);
+            border-bottom:2px solid var(--night-blue);
+            padding:1rem 0;
+            position:sticky;
+            top:0;
+            z-index:1000;
+        }
+        .header-inner { display:flex; justify-content:space-between; align-items:center; }
+        .brand h1 {
+            font-size:1.8rem;
+            color:var(--night-blue);
+            font-weight:800;
+            letter-spacing:1px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .brand-logo { height:40px; width:auto; }
+        .brand p {
+            font-size:.65rem;
+            color:var(--slate-grey);
+            text-transform:uppercase;
+            letter-spacing:2px;
+            font-weight:600;
+            margin-top:2px;
+        }
+        .desktop-nav { display:flex; gap:2rem; align-items:center; }
+        .desktop-nav a {
+            text-decoration:none;
+            color:var(--night-blue);
+            font-weight:600;
+            font-family:'Montserrat', sans-serif;
+            font-size:.9rem;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            transition:color .3s;
+        }
+        .desktop-nav a:hover,.desktop-nav a.active { color:var(--gold-accent); }
+        .back-nav { padding:2rem 0 1rem; }
+        .back-nav a {
+            text-decoration:none;
+            color:var(--slate-grey);
+            font-family:'Montserrat', sans-serif;
+            font-size:.9rem;
+            font-weight:600;
+            text-transform:uppercase;
+            letter-spacing:1px;
+        }
+        .back-nav a:hover { color:var(--gold-accent); }
+
+        .project-hero {
+            position:relative;
+            overflow:hidden;
+            margin-bottom:3.5rem;
+            background:
+                radial-gradient(circle at 18% 20%, rgba(184,147,90,.28), transparent 30%),
+                radial-gradient(circle at 90% 0%, rgba(15,74,162,.35), transparent 26%),
+                linear-gradient(135deg, rgba(11,17,32,.99), rgba(11,28,45,.96));
+            color:var(--optical-white);
+            box-shadow:var(--shadow-soft);
+        }
+        .project-hero::before {
+            content:"";
+            position:absolute;
+            inset:0;
+            background-image:
+                linear-gradient(120deg, rgba(255,255,255,.06) 0, rgba(255,255,255,.06) 1px, transparent 1px, transparent 92px),
+                linear-gradient(30deg, rgba(184,147,90,.08) 0, rgba(184,147,90,.08) 1px, transparent 1px, transparent 120px);
+            opacity:.45;
+        }
+        .project-hero-inner {
+            position:relative;
+            z-index:1;
+            display:grid;
+            grid-template-columns:minmax(0, 1.05fr) minmax(360px, .95fr);
+            gap:3rem;
+            align-items:center;
+            min-height:620px;
+            padding:5rem 2rem;
+        }
+        .project-kicker {
+            color:var(--gold-accent);
+            text-transform:uppercase;
+            font-weight:800;
+            font-family:'Montserrat', sans-serif;
+            font-size:.92rem;
+            letter-spacing:2px;
+            margin-bottom:1.1rem;
+            display:block;
+        }
+        .project-title {
+            font-size:4rem;
+            color:var(--optical-white);
+            font-weight:800;
+            line-height:1.05;
+            margin-bottom:1.4rem;
+        }
+        .project-subtitle {
+            font-size:1.28rem;
+            color:rgba(255,255,255,.9);
+            font-family:'Playfair Display', serif;
+            font-style:italic;
+            max-width:92%;
+            line-height:1.55;
+            margin-bottom:2rem;
+        }
+        .hero-actions {
+            display:flex;
+            gap:1rem;
+            align-items:center;
+            flex-wrap:wrap;
+            margin-top:2rem;
+        }
+        .btn-primary,.btn-secondary,.btn-dark,.btn-outline {
+            display:inline-block;
+            text-decoration:none;
+            padding:1rem 1.35rem;
+            border-radius:999px;
+            font-family:'Montserrat', sans-serif;
+            font-size:.88rem;
+            font-weight:800;
+            letter-spacing:.45px;
+            transition:transform .2s ease, opacity .2s ease, background .2s ease;
+        }
+        .btn-primary { background:var(--gold-accent); color:var(--night-blue); border:1px solid var(--gold-accent); }
+        .btn-secondary { background:transparent; color:var(--optical-white); border:1px solid rgba(255,255,255,.72); }
+        .btn-dark { background:var(--night-blue); color:var(--optical-white); border:1px solid var(--night-blue); }
+        .btn-outline { background:transparent; color:var(--night-blue); border:1px solid var(--night-blue); }
+        .btn-primary:hover,.btn-secondary:hover,.btn-dark:hover,.btn-outline:hover { transform:translateY(-2px); opacity:.92; }
+        .project-visual {
+            position:relative;
+            background:rgba(255,255,255,.06);
+            border:1px solid rgba(255,255,255,.18);
+            padding:.75rem;
+            box-shadow:0 22px 45px rgba(0,0,0,.28);
+        }
+        .project-visual img {
+            width:100%;
+            height:auto;
+            display:block;
+            border-radius:4px;
+            background:var(--optical-white);
+        }
+        .visual-caption {
+            display:block;
+            margin-top:.65rem;
+            color:rgba(255,255,255,.72);
+            font-family:'Montserrat', sans-serif;
+            font-size:.75rem;
+            letter-spacing:.08em;
+            text-transform:uppercase;
+            text-align:right;
+        }
+
+        .project-meta-wrapper { background:var(--paper-bg); margin-top:-2.2rem; position:relative; z-index:2; }
+        .project-meta {
+            display:grid;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:1rem;
+            border-top:1px solid var(--border-soft);
+            border-bottom:1px solid var(--border-soft);
+            padding:1.15rem 0;
+        }
+        .meta-item { text-align:center; padding:.5rem; }
+        .meta-label {
+            display:block;
+            font-family:'Montserrat', sans-serif;
+            text-transform:uppercase;
+            font-size:.78rem;
+            letter-spacing:1px;
+            color:var(--text-secondary);
+            margin-bottom:.2rem;
+        }
+        .meta-value {
+            font-family:'Montserrat', sans-serif;
+            font-weight:800;
+            color:var(--night-blue);
+            font-size:1rem;
+        }
+
+        .page-nav {
+            margin:2.5rem auto 1rem;
+            background:var(--optical-white);
+            border:1px solid var(--border-soft);
+            box-shadow:0 10px 20px rgba(15,23,42,.04);
+            padding:.95rem 1rem;
+        }
+        .page-nav ul { display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; list-style:none; }
+        .page-nav a {
+            font-family:'Montserrat', sans-serif;
+            text-decoration:none;
+            color:var(--night-blue);
+            font-size:.82rem;
+            text-transform:uppercase;
+            font-weight:800;
+            letter-spacing:.6px;
+            padding:.45rem .75rem;
+            border-radius:999px;
+        }
+        .page-nav a:hover { background:var(--gold-soft); color:var(--night-blue); }
+
+        .project-body h2 { font-size:2.05rem; color:var(--night-blue); margin:3rem 0 1rem; font-family:'Playfair Display', serif; line-height:1.2; }
+        .project-body h3 { font-size:1.25rem; color:var(--night-blue); margin:2rem 0 .7rem; }
+        .project-body p { margin-bottom:1.35rem; text-align:justify; }
+        .project-body ul { padding-left:1.4rem; margin-bottom:1.6rem; }
+        .project-body li { margin-bottom:.65rem; }
+        .section-intro { font-size:1.13rem; color:var(--text-secondary); }
+        .lead-box {
+            background:var(--optical-white);
+            border:1px solid var(--border-soft);
+            border-left:4px solid var(--gold-accent);
+            padding:1.6rem;
+            margin:2rem 0 2.5rem;
+        }
+        .lead-box p:last-child { margin-bottom:0; }
+
+        .pillar-grid,.ecosystem-grid,.audience-grid,.category-grid,.timeline-grid { display:grid; gap:1.15rem; margin-top:1.2rem; }
+        .pillar-grid { grid-template-columns:repeat(2,1fr); }
+        .ecosystem-grid { grid-template-columns:repeat(5,1fr); }
+        .audience-grid { grid-template-columns:repeat(2,1fr); }
+        .category-grid { grid-template-columns:repeat(2,1fr); }
+        .timeline-grid { grid-template-columns:repeat(4,1fr); }
+        .card {
+            background:var(--optical-white);
+            border:1px solid var(--border-soft);
+            padding:1.35rem;
+            box-shadow:0 10px 20px rgba(15,23,42,.035);
+        }
+        .card h3,.card h4 { color:var(--night-blue); font-size:1.05rem; margin-bottom:.45rem; }
+        .card p { margin:0; text-align:left; color:var(--text-secondary); }
+        .card .small-label {
+            display:block;
+            font-family:'Montserrat', sans-serif;
+            color:var(--gold-accent);
+            font-size:.75rem;
+            font-weight:800;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            margin-bottom:.45rem;
+        }
+        .pillar-card { position:relative; overflow:hidden; min-height:250px; }
+        .pillar-card::after {
+            content:"";
+            position:absolute;
+            right:-70px;
+            bottom:-70px;
+            width:190px;
+            height:190px;
+            border-radius:50%;
+            border:1px solid rgba(184,147,90,.32);
+            box-shadow:0 0 0 26px rgba(184,147,90,.06);
+        }
+        .pillar-card h3 { font-size:1.35rem; margin-bottom:.75rem; }
+        .ecosystem-card { text-align:center; padding:1rem; }
+        .ecosystem-card h4 { font-size:.95rem; margin:0; }
+        .category-card { position:relative; padding-top:1.75rem; }
+        .category-number {
+            position:absolute;
+            top:1rem;
+            right:1.1rem;
+            color:rgba(184,147,90,.24);
+            font-size:2.2rem;
+            font-weight:800;
+            font-family:'Montserrat', sans-serif;
+            line-height:1;
+        }
+        .timeline-card { text-align:center; }
+        .timeline-card .date {
+            display:block;
+            font-family:'Montserrat', sans-serif;
+            color:var(--gold-accent);
+            font-weight:800;
+            text-transform:uppercase;
+            font-size:.86rem;
+            letter-spacing:.7px;
+            margin-bottom:.55rem;
+        }
+        .timeline-card h4 { font-size:1rem; margin-bottom:.35rem; }
+        .timeline-card p { text-align:center; font-size:.96rem; }
+
+        .project-strip {
+            margin:3rem 0 1rem;
+            background:linear-gradient(135deg, rgba(11,17,32,.98), rgba(11,28,45,.94));
+            color:var(--text-light);
+            padding:2rem;
+            border-left:4px solid var(--gold-accent);
+        }
+        .project-strip h3 { color:var(--optical-white); margin-top:0; }
+        .project-strip p { color:rgba(255,255,255,.82); text-align:left; }
+        .project-strip p:last-child { margin-bottom:0; }
+
+        .cta-box {
+            background:var(--optical-white);
+            border:1px solid var(--border-soft);
+            padding:1.7rem;
+            margin-top:1.5rem;
+            display:grid;
+            grid-template-columns:1.3fr .9fr;
+            gap:1rem;
+            align-items:center;
+        }
+        .cta-box p { margin:0; text-align:left; color:var(--text-secondary); }
+        .cta-actions { display:flex; gap:.75rem; justify-content:flex-end; flex-wrap:wrap; }
+        .contacts-box {
+            margin-top:3rem;
+            padding:1.6rem;
+            background:var(--optical-white);
+            border:1px solid var(--border-soft);
+            border-left:4px solid var(--night-blue);
+        }
+        .contacts-box p:last-child { margin-bottom:0; }
+        .muted-note { font-size:.95rem; color:var(--text-secondary); font-style:italic; }
+
+
+        .quote-box {
+            margin:2.5rem 0;
+            padding:2rem;
+            background:linear-gradient(135deg, rgba(11,17,32,.98), rgba(11,28,45,.94));
+            color:var(--text-light);
+            border-left:4px solid var(--gold-accent);
+            box-shadow:0 16px 30px rgba(15,23,42,.10);
+        }
+        .quote-box .quote-label {
+            display:block;
+            color:var(--gold-accent);
+            font-family:'Montserrat', sans-serif;
+            font-size:.78rem;
+            font-weight:800;
+            text-transform:uppercase;
+            letter-spacing:1.4px;
+            margin-bottom:.7rem;
+        }
+        .quote-box p {
+            color:rgba(255,255,255,.86);
+            text-align:left;
+            margin-bottom:1rem;
+        }
+        .quote-box p:last-child { margin-bottom:0; }
+        .theme-grid,.route-grid,.output-grid { display:grid; gap:1.15rem; margin-top:1.2rem; }
+        .theme-grid { grid-template-columns:repeat(2,1fr); }
+        .route-grid { grid-template-columns:repeat(3,1fr); }
+        .output-grid { grid-template-columns:repeat(2,1fr); }
+        .theme-card h4,.route-card h4,.output-card h4 { color:var(--night-blue); font-size:1rem; margin-bottom:.45rem; }
+        .theme-card p,.route-card p,.output-card p { text-align:left; color:var(--text-secondary); margin:0; }
+        .numbered-list { counter-reset:item; display:grid; gap:1rem; margin:1.2rem 0 1.6rem; }
+        .numbered-list .numbered-item { display:grid; grid-template-columns:58px 1fr; gap:1rem; align-items:start; background:var(--optical-white); border:1px solid var(--border-soft); padding:1.1rem; }
+        .numbered-list .numbered-item::before { counter-increment:item; content:counter(item); width:42px; height:42px; border-radius:50%; background:var(--night-blue); color:var(--optical-white); display:flex; align-items:center; justify-content:center; font-family:'Montserrat', sans-serif; font-weight:800; }
+        .numbered-list h4 { margin:0 0 .25rem 0; color:var(--night-blue); font-size:1rem; }
+        .numbered-list p { margin:0; text-align:left; color:var(--text-secondary); }
+
+        footer {
+            background:var(--night-blue);
+            color:var(--text-light);
+            text-align:center;
+            padding:3rem 0;
+            font-size:.9rem;
+            margin-top:5rem;
+        }
+
+        @media (max-width:1040px) {
+            .desktop-nav { display:none; }
+            .project-hero-inner { grid-template-columns:1fr; min-height:auto; }
+            .project-title { font-size:3.1rem; }
+            .project-subtitle { max-width:100%; }
+            .project-meta,.timeline-grid { grid-template-columns:repeat(2,1fr); }
+            .pillar-grid,.audience-grid,.category-grid,.theme-grid,.route-grid,.output-grid { grid-template-columns:1fr; }
+            .ecosystem-grid { grid-template-columns:repeat(2,1fr); }
+        }
+        @media (max-width:700px) {
+            .project-meta,.timeline-grid,.ecosystem-grid { grid-template-columns:1fr; }
+            .cta-box { grid-template-columns:1fr; }
+            .cta-actions { justify-content:flex-start; }
+            .project-visual { padding:.45rem; }
+        }
+        @media (max-width:640px) {
+            .container,.content-container { padding:0 1.2rem; }
+            .project-hero-inner { padding:4rem 1.2rem; }
+            .project-title { font-size:2.35rem; }
+            .project-subtitle { font-size:1.12rem; }
+        }
+    </style>
+    <link rel="icon" href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" type="image/png">
+</head>
+<body>
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="index.html" style="text-decoration:none;">
+                    <h1><img src="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'">DYNAMES</h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="index.html">HOME</a>
+                <a href="hub.html">ANALISI &amp; ARTICOLI</a>
+                <a href="pubblicazioni.html">PUBBLICAZIONI</a>
+                <a href="eventi.html">EVENTI</a>
+                <a href="chi-siamo.html">CHI SIAMO</a>
+                <a href="temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container back-nav"><a href="index.html">← Torna alla Home</a></div>
+
+    <main>
+        <section class="project-hero">
+            <div class="container project-hero-inner">
+                <div>
+                    <span class="project-kicker">DYNAMES · FORM&amp;ATP · Luiss Scuola di Giornalismo</span>
+                    <h1 class="serif-heading project-title">Progetto Cultura della Difesa</h1>
+                    <p class="project-subtitle">Una piattaforma permanente per portare la cultura della difesa fuori dai soli ambiti specialistici, coinvolgendo giovani, istituzioni, accademia, industria, comunicazione e società civile.</p>
+                    <div class="hero-actions">
+                        <a href="#progetto" class="btn-primary">Scopri il progetto</a>
+                        <a href="#assi" class="btn-secondary">Quadrimestrale e Premio</a>
+                    </div>
+                </div>
+                <figure class="project-visual">
+                    <img src="assets/progetto-cultura-della-difesa-hero.png" alt="Progetto Cultura della Difesa, collaborazione tra DYNAMES, FORM&ATP e Luiss Scuola di Giornalismo" onerror="this.style.display='none'; this.parentElement.style.display='none';">
+                    <figcaption class="visual-caption">Elaborazione grafica: DYNAMES</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <div class="project-meta-wrapper">
+            <section class="content-container">
+                <div class="project-meta">
+                    <div class="meta-item"><span class="meta-label">Avvio progetto</span><span class="meta-value">18 settembre 2025</span></div>
+                    <div class="meta-item"><span class="meta-label">Formato</span><span class="meta-value">Piattaforma permanente</span></div>
+                    <div class="meta-item"><span class="meta-label">Assi operativi</span><span class="meta-value">Quadrimestrale e Premio</span></div>
+                    <div class="meta-item"><span class="meta-label">Focus</span><span class="meta-value">Difesa, sicurezza, resilienza</span></div>
+                </div>
+            </section>
+        </div>
+
+        <nav class="content-container page-nav" aria-label="Navigazione interna">
+            <ul>
+                <li><a href="#progetto">Il progetto</a></li>
+                <li><a href="#senso-difesa">Senso della difesa</a></li>
+                <li><a href="#ecosistema">Ecosistema</a></li>
+                <li><a href="#assi">Assi operativi</a></li>
+                <li><a href="#temi">Dieci temi</a></li>
+                <li><a href="#giovani">Giovani</a></li>
+                <li><a href="#premio">Premio</a></li>
+                <li><a href="#timeline">Timeline</a></li>
+                <li><a href="#contatti">Contatti</a></li>
+            </ul>
+        </nav>
+
+        <section class="content-container project-body" id="progetto">
+            <h2>Il progetto</h2>
+            <p class="section-intro">Il progetto “Cultura della Difesa” nasce per trasformare una riflessione avviata in ambito universitario e istituzionale in una piattaforma permanente di analisi, confronto e valorizzazione. Il suo obiettivo è portare la cultura della difesa fuori dai soli ambiti militari o specialistici, rendendola un tema pubblico, civile e democratico.</p>
+            <p>Avviato con l’evento del 18 settembre 2025 presso la Luiss, il percorso promosso da DYNAMES, FORM&amp;ATP e Luiss – Scuola di giornalismo si sviluppa oggi attraverso iniziative editoriali, momenti di confronto, attività itineranti e un premio annuale. Il progetto vuole rafforzare la consapevolezza del ruolo strategico della difesa nel Sistema Paese, collegando istituzioni, Forze Armate, università, imprese, media, corpi intermedi e società civile.</p>
+
+            <div class="lead-box">
+                <p><strong>Cultura della Difesa</strong> significa recuperare il senso profondo della difesa come responsabilità condivisa: non soltanto protezione dei confini materiali, delle infrastrutture o degli interessi nazionali, ma anche tutela dei confini immateriali, della coesione sociale, della capacità critica dei cittadini e della resilienza democratica.</p>
+            </div>
+
+            <h2 id="senso-difesa">Recuperare il senso della difesa</h2>
+            <p>La difesa non è una condizione data una volta per tutte. È una costruzione quotidiana di equilibrio, sicurezza e pace. In questa prospettiva, parlare di cultura della difesa significa ricordare che la pace non è mai un automatismo, ma il risultato di consapevolezza, preparazione, responsabilità collettiva e capacità di leggere le trasformazioni del mondo.</p>
+            <p>Il progetto nasce anche dalla convinzione che oggi non si difendano più soltanto territori, confini, apparati o infrastrutture strategiche. Si difendono anche le menti. La dimensione cognitiva, la sovrainformazione, la disinformazione, la pressione emotiva e la competizione narrativa rendono il pensiero critico una vera infrastruttura di sicurezza democratica.</p>
+
+            <div class="quote-box">
+                <span class="quote-label">La nuova frontiera</span>
+                <p>La mente è una delle nuove frontiere della difesa. Per questo l’antidoto alla guerra cognitiva non può essere soltanto tecnologico o securitario: deve essere culturale, educativo e civile.</p>
+                <p>Educare al pensiero critico significa aiutare cittadini e giovani a riflettere prima di reagire, ad approfondire prima di giudicare, a comprendere prima di condividere.</p>
+            </div>
+
+            <h2 id="ecosistema">Un ecosistema di confronto</h2>
+            <p>La forza del progetto risiede nella capacità di mettere in relazione mondi diversi, chiamati a contribuire alla sicurezza nazionale e alla preparazione collettiva del Paese. Il metodo è interdisciplinare e intersettoriale: non separa difesa, comunicazione, innovazione, economia, formazione e società civile, ma li considera parti di uno stesso sistema.</p>
+            <p>L’obiettivo è generare consapevolezza e creare luoghi di contaminazione tra comunità che spesso non dialogano abbastanza: decisori pubblici, militari e civili, imprese e filiere strategiche, università e think tank, giornalisti e comunicatori, corpi intermedi e giovani generazioni.</p>
+            <div class="ecosystem-grid">
+                <div class="card ecosystem-card"><h4>Istituzioni</h4></div>
+                <div class="card ecosystem-card"><h4>Accademia</h4></div>
+                <div class="card ecosystem-card"><h4>Industria</h4></div>
+                <div class="card ecosystem-card"><h4>Comunicazione</h4></div>
+                <div class="card ecosystem-card"><h4>Società civile</h4></div>
+            </div>
+
+            <h2 id="assi">I due assi operativi</h2>
+            <p>Il progetto si articola in due strumenti complementari: un quadrimestrale, cartaceo e digitale, e un riconoscimento annuale. Il primo costruisce continuità di analisi e produce un oggetto editoriale tangibile, da portare nei luoghi di confronto; il secondo valorizza persone, enti, organizzazioni, imprese e iniziative che rendono concreta la cultura della difesa.</p>
+            <div class="pillar-grid">
+                <div class="card pillar-card">
+                    <span class="small-label">Asse editoriale</span>
+                    <h3>Quadrimestrale</h3>
+                    <p>Uno spazio editoriale dedicato a un approccio interdisciplinare ai temi della difesa, della sicurezza e della resilienza civile-militare. Il quadrimestrale vive in formato digitale, per assicurare ampia diffusione, e in formato cartaceo, per diventare prodotto tangibile di confronto nei consessi istituzionali, accademici e professionali.</p>
+                    <div style="margin-top:1.25rem; position:relative; z-index:2;">
+                        <a href="pubblicazioni/2026-report.html" class="btn-outline">Vai al report</a>
+                    </div>
+                </div>
+                <div class="card pillar-card">
+                    <span class="small-label">Asse di valorizzazione</span>
+                    <h3>Premio Cultura della Difesa</h3>
+                    <p>Un riconoscimento annuale volto a far emergere esperienze, progetti e percorsi spesso poco visibili, anche nei territori e fuori dal perimetro strettamente militare. Il Premio non è soltanto una cerimonia: è uno strumento per raccogliere, ordinare e valorizzare buone pratiche civili, istituzionali, formative, industriali e comunicative.</p>
+                    <div style="margin-top:1.25rem; position:relative; z-index:2;">
+                        <a href="premio-cultura-della-difesa.html" class="btn-outline">Vai al Premio</a>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id="temi">Dieci temi per una resilienza stratificata</h2>
+            <p>Il quadrimestrale nasce dall’esigenza di racchiudere in un perimetro chiaro l’insieme delle dimensioni che, direttamente o indirettamente, riguardano la cultura della difesa. L’impostazione si ispira al concetto di <em>layered resilience</em>: resilienza militare, resilienza civile, infrastrutture critiche, risorse strategiche e, soprattutto, resilienza sociale.</p>
+            <p>I primi due ambiti restano fissi in ogni numero: <strong>difesa e sicurezza</strong> e <strong>governance pubblica</strong>. A questi si affiancano, di volta in volta, altri temi strategici e interdisciplinari.</p>
+            <div class="theme-grid">
+                <div class="card theme-card"><h4>Difesa e sicurezza</h4><p>Il quadro strategico, militare e istituzionale della protezione nazionale e collettiva.</p></div>
+                <div class="card theme-card"><h4>Governance pubblica</h4><p>Decisione, coordinamento, amministrazione, regole e capacità dello Stato di agire in sistemi complessi.</p></div>
+                <div class="card theme-card"><h4>Economia e industria</h4><p>Filiere strategiche, capacità produttive, autonomia industriale e base tecnologica nazionale.</p></div>
+                <div class="card theme-card"><h4>Tecnologia e sistemi complessi</h4><p>Innovazione, intelligenza artificiale, cyber, infrastrutture digitali e sicurezza dei sistemi interconnessi.</p></div>
+                <div class="card theme-card"><h4>Risorse ed energia</h4><p>Materie prime, sicurezza energetica, approvvigionamenti e vulnerabilità delle catene del valore.</p></div>
+                <div class="card theme-card"><h4>Informazione e dominio cognitivo</h4><p>Disinformazione, comunicazione strategica, guerra cognitiva e difesa del pensiero critico.</p></div>
+                <div class="card theme-card"><h4>Educazione e formazione</h4><p>Scuola, università, competenze, cultura civica e preparazione delle nuove generazioni.</p></div>
+                <div class="card theme-card"><h4>Salute, welfare e società</h4><p>Tenuta sociale, sicurezza sanitaria, coesione comunitaria e continuità dei servizi essenziali.</p></div>
+                <div class="card theme-card"><h4>Territori e corpi intermedi</h4><p>Associazioni, comunità, reti civiche e luoghi di mediazione sociale come risorse di resilienza.</p></div>
+                <div class="card theme-card"><h4>Europa e Alleanza Atlantica</h4><p>Dimensione europea, NATO, cooperazione internazionale e collegamento tra sicurezza nazionale e collettiva.</p></div>
+            </div>
+
+            <h2 id="giovani">Giovani, mediatori e nuove competenze</h2>
+            <p>Il progetto guarda in modo particolare ai giovani. Non per “convincerli”, ma per parlare con loro e renderli protagonisti di una riflessione sul senso della difesa. Scuole, università, frequentatori della Luiss – Scuola di giornalismo, junior fellow DYNAMES e giovani professionisti sono chiamati a contribuire con analisi, articoli, interviste, dossier e progetti.</p>
+            <p>In un mondo spesso non mediato, il ruolo dei giornalisti, dei comunicatori e dei corpi intermedi diventa essenziale. Sono mediatori di senso, interpreti tra istituzioni e cittadini, tra competenze specialistiche e opinione pubblica. Per questo la cultura della difesa non può essere solo comunicazione istituzionale: deve diventare conversazione pubblica qualificata.</p>
+            <div class="route-grid">
+                <div class="card route-card"><span class="small-label">Futuri analisti</span><h4>Junior Fellow</h4><p>Giovani laureati e laureandi coinvolti nella produzione di analisi e contenuti interdisciplinari.</p></div>
+                <div class="card route-card"><span class="small-label">Futuri giornalisti</span><h4>Scuola di giornalismo</h4><p>Studenti e professionisti dell’informazione chiamati a raccontare la difesa con rigore e responsabilità.</p></div>
+                <div class="card route-card"><span class="small-label">Futuri manager</span><h4>FORM&amp;ATP</h4><p>Persone in formazione che interagiranno con stakeholder, policy maker e senior leader civili e militari.</p></div>
+            </div>
+
+            <h2>Un progetto non romanocentrico</h2>
+            <p>Il quadrimestrale e il Premio sono pensati come strumenti da portare nei luoghi del Paese e, quando opportuno, anche nelle sedi europee e dell’Alleanza Atlantica. L’ambizione è creare occasioni di confronto diffuse: Roma, Bruxelles, Napoli, Milano, Torino e altri contesti nazionali ed europei possono diventare tappe di una conversazione più ampia sulla difesa come cultura pubblica.</p>
+            <p>Il progetto non vuole limitarsi all’evento singolo. Gli eventi sono importanti quando aprono processi. Per questo ogni iniziativa deve produrre continuità: contenuti, reti, candidature, buone pratiche, incontri, nuove collaborazioni.</p>
+
+            <div class="output-grid">
+                <div class="card output-card"><span class="small-label">Output editoriale</span><h4>Un prodotto cartaceo e digitale</h4><p>Report, articoli e dossier destinati a circolare nei luoghi del dibattito pubblico, della formazione e della decisione.</p></div>
+                <div class="card output-card"><span class="small-label">Output relazionale</span><h4>Una rete di esperienze</h4><p>Una mappa di persone, organizzazioni, imprese, scuole, associazioni e istituzioni che già contribuiscono alla cultura della difesa.</p></div>
+            </div>
+
+            <h2 id="premio">Il Premio</h2>
+            <p>Il Premio è un riconoscimento annuale diviso in cinque categorie ordinarie, pensate per rappresentare le diverse dimensioni della cultura della difesa: istituzionale, tecnologica, formativa, comunicativa e civica. A queste si affiancano due riconoscimenti speciali: il Premio alla Carriera per la Difesa e il Premio Giovani per la Difesa.</p>
+            <div class="category-grid">
+                <div class="card category-card">
+                    <span class="category-number">01</span>
+                    <h3>Promozione della cultura istituzionale</h3>
+                    <p>Per chi rafforza conoscenza delle istituzioni, difesa, sicurezza nazionale, interesse pubblico e democrazia costituzionale.</p>
+                </div>
+                <div class="card category-card">
+                    <span class="category-number">02</span>
+                    <h3>Innovazione e tecnologia</h3>
+                    <p>Per soluzioni, studi e tecnologie che rafforzano sicurezza, resilienza, autonomia strategica e protezione delle infrastrutture critiche.</p>
+                </div>
+                <div class="card category-card">
+                    <span class="category-number">03</span>
+                    <h3>Educazione e formazione</h3>
+                    <p>Per scuole, università, accademie, imprese, fondazioni, enti formativi e programmi capaci di promuovere pensiero critico e cittadinanza responsabile.</p>
+                </div>
+                <div class="card category-card">
+                    <span class="category-number">04</span>
+                    <h3>Comunicazione strategica e informazione</h3>
+                    <p>Per giornalisti, comunicatori, media, autori, editori e campagne che raccontano con rigore i temi della difesa e dell’interesse nazionale.</p>
+                </div>
+                <div class="card category-card">
+                    <span class="category-number">05</span>
+                    <h3>Corpi intermedi e cittadinanza attiva</h3>
+                    <p>Per associazioni, terzo settore, ONG, reti civiche e comunità che rafforzano partecipazione, coesione, solidarietà e preparazione civile.</p>
+                </div>
+            </div>
+
+            <div class="project-strip">
+                <h3>Il Premio come raccolta di esperienze</h3>
+                <p>Il valore del Premio non si esaurisce nella cerimonia. La sua funzione è far emergere progetti, pratiche e percorsi che spesso restano fuori dal racconto pubblico, in particolare quando nascono nei territori, nelle scuole, nelle imprese, nelle associazioni o nei corpi intermedi.</p>
+                <p>Raccogliere queste esperienze significa costruire una memoria viva della cultura della difesa e renderla disponibile come patrimonio comune.</p>
+            </div>
+
+            <h2 id="candidature">Candidature e destinatari</h2>
+            <p>Il Premio è rivolto a persone, enti, organizzazioni, imprese e realtà della società civile che operano in Italia o contribuiscono al rafforzamento della cultura della difesa nel contesto nazionale. È possibile candidarsi direttamente o segnalare terzi, attraverso la piattaforma condivisa tra DYNAMES, FORM&amp;ATP e Luiss – Scuola di giornalismo.</p>
+            <div class="audience-grid">
+                <div class="card"><h4>Istituzioni e sicurezza</h4><p>Istituzioni pubbliche, amministrazioni, Forze Armate, comparto sicurezza e organizzazioni collegate.</p></div>
+                <div class="card"><h4>Formazione e ricerca</h4><p>Università, scuole, accademie, enti formativi, centri di ricerca, studenti, giovani ricercatori e giovani professionisti.</p></div>
+                <div class="card"><h4>Impresa e tecnologia</h4><p>Imprese, aziende, fondazioni, startup, realtà tecnologiche e programmi aziendali di sviluppo delle competenze.</p></div>
+                <div class="card"><h4>Informazione e società civile</h4><p>Giornalisti, comunicatori, autori, editori, media, associazioni, corpi intermedi, terzo settore, ONG e reti civiche.</p></div>
+            </div>
+
+            <h2 id="timeline">Timeline 2026</h2>
+            <div class="timeline-grid">
+                <div class="card timeline-card">
+                    <span class="date">21 maggio</span>
+                    <h4>Lancio ufficiale del bando</h4>
+                    <p>Presentazione pubblica della I edizione del Premio.</p>
+                </div>
+                <div class="card timeline-card">
+                    <span class="date">31 agosto</span>
+                    <h4>Termine candidature</h4>
+                    <p>Chiusura della finestra per l’invio delle candidature.</p>
+                </div>
+                <div class="card timeline-card">
+                    <span class="date">Settembre</span>
+                    <h4>Valutazione</h4>
+                    <p>Esame delle candidature e valutazione da parte della Giuria.</p>
+                </div>
+                <div class="card timeline-card">
+                    <span class="date">Ottobre</span>
+                    <h4>Premiazione</h4>
+                    <p>Cerimonia presso il Senato della Repubblica.</p>
+                </div>
+            </div>
+
+            <h2>Perché un progetto sulla Cultura della Difesa</h2>
+            <div class="numbered-list">
+                <div class="numbered-item"><div><h4>Perché la sicurezza è interdisciplinare</h4><p>Difesa, sicurezza e resilienza non sono sinonimi, ma dimensioni complementari di uno stesso problema strategico.</p></div></div>
+                <div class="numbered-item"><div><h4>Perché la società è parte della difesa</h4><p>La tenuta democratica dipende anche da scuola, informazione, impresa, comunità locali, corpi intermedi e cittadini.</p></div></div>
+                <div class="numbered-item"><div><h4>Perché servono mediatori</h4><p>In un mondo frammentato e sovraesposto all’informazione, giornalisti, comunicatori e formatori aiutano a costruire senso pubblico.</p></div></div>
+                <div class="numbered-item"><div><h4>Perché i giovani devono contribuire</h4><p>La cultura della difesa non va solo trasmessa: va discussa, aggiornata e reinterpretata dalle nuove generazioni.</p></div></div>
+            </div>
+            <p>In una fase storica segnata da instabilità geopolitica, trasformazioni tecnologiche, vulnerabilità informative e nuove forme di competizione ibrida, la cultura della difesa diventa una componente essenziale della resilienza nazionale. Promuoverla significa costruire linguaggi comuni, collegare competenze e favorire una relazione più matura tra istituzioni e cittadini.</p>
+            <p>Il progetto intende offrire continuità a questo percorso, combinando elaborazione culturale, produzione editoriale, riconoscimento pubblico delle buone pratiche e attivazione di reti tra soggetti diversi.</p>
+
+            <div class="cta-box" id="contatti">
+                <div>
+                    <h3 style="margin-top:0;">Approfondisci il progetto</h3>
+                    <p>Scopri il Premio Cultura della Difesa e il report editoriale collegato al percorso avviato da DYNAMES, FORM&amp;ATP e Luiss – Scuola di giornalismo.</p>
+                </div>
+                <div class="cta-actions">
+                    <a href="premio-cultura-della-difesa.html" class="btn-dark">Premio</a>
+                    <a href="pubblicazioni/2026-report.html" class="btn-outline">Report</a>
+                </div>
+            </div>
+
+            <div class="contacts-box">
+                <h3>Contatti</h3>
+                <p>Per informazioni sul progetto, sulle attività editoriali e sulle iniziative collegate è possibile contattare la redazione e la segreteria DYNAMES.</p>
+                <p><strong>Redazione:</strong> <a href="mailto:redazione@dynames.it" style="color:var(--night-blue); font-weight:700; text-decoration:none;">redazione@dynames.it</a></p>
+                <p><strong>Segreteria:</strong> <a href="mailto:segreteria@dynames.it" style="color:var(--night-blue); font-weight:700; text-decoration:none;">segreteria@dynames.it</a></p>
+                <p class="muted-note">Pagina pubblica del progetto “Cultura della Difesa”. I collegamenti a report, bando, piattaforma candidature e contenuti editoriali potranno essere aggiornati con l’evoluzione del progetto.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size:1.5rem; margin-bottom:1rem; letter-spacing:1px;">DYNAMES</h3>
+            <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+            <p style="margin-top:1rem; color:var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+</body>
+</html>
