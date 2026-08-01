@@ -1,0 +1,110 @@
+[
+  {
+    "source": "2026.08.04-guerra-ibrida(2).html",
+    "output": "2026.08.04-guerra-ibrida.html",
+    "old_ga_blocks_removed": 1,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.08.04-infrastrutture-difesa(2).html",
+    "output": "2026.08.04-infrastrutture-difesa.html",
+    "old_ga_blocks_removed": 1,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.08.04-personale-militare(2).html",
+    "output": "2026.08.04-personale-militare.html",
+    "old_ga_blocks_removed": 1,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.08.04-sovranita-multidominio(2).html",
+    "output": "2026.08.04-sovranita-multidominio.html",
+    "old_ga_blocks_removed": 1,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.08.04-cyber-autonomia-competenze(2).html",
+    "output": "2026.08.04-cyber-autonomia-competenze.html",
+    "old_ga_blocks_removed": 1,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.08.04-governance-decisione(2).html",
+    "output": "2026.08.04-governance-decisione.html",
+    "old_ga_blocks_removed": 1,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  }
+]
