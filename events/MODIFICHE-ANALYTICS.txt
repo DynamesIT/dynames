@@ -1,0 +1,38 @@
+DYNAMES — MODIFICHE GOOGLE ANALYTICS E CONSENSO
+====================================================
+
+Data elaborazione: 2026-08-01T18:25:36.880402+00:00
+ID di misurazione attivo: G-CRR71TH6YJ
+ID precedente rimosso: G-DFL8MJSKVJ
+
+MODIFICHE APPLICATE
+- Rimozione del precedente caricamento diretto di Google Analytics.
+- Inserimento del nuovo ID GA4 G-CRR71TH6YJ.
+- Analytics non viene caricato prima del consenso.
+- Consent Mode con analytics_storage negato per impostazione predefinita.
+- Pulsanti Accetta e Rifiuta con pari evidenza.
+- Memorizzazione della scelta nel localStorage per 180 giorni.
+- Pulsante permanente «Preferenze cookie».
+- Revoca del consenso e cancellazione dei cookie Analytics riconoscibili.
+- Google Signals e personalizzazione pubblicitaria disattivati.
+- Collegamento a /Privacy-Policy.html#cookie-analytics.
+- Contenuti, metadati, layout e script preesistenti lasciati invariati.
+
+FILE GENERATI
+- 20260305-leadership.html  [controlli: OK]
+- 20260521-presentazione-report.html  [controlli: OK]
+- 20260709-difesa-sicurezza-acerra.html  [controlli: OK]
+- 20250918-cultura-della-difesa.html  [controlli: OK]
+
+CONTROLLI AUTOMATICI
+- Vecchio ID assente.
+- Nuovo ID presente una sola volta per pagina.
+- Nessun tag Google Analytics statico caricato prima del consenso.
+- Un solo sistema di consenso per pagina.
+- Pulsanti Accetta, Rifiuta e Preferenze cookie presenti.
+- Link alla Privacy Policy presente.
+- Chiusura dei tag body e html verificata.
+
+NOTA
+La Privacy Policy di riferimento deve essere la versione già aggiornata con la sezione
+identificata dall'ancora #cookie-analytics.
