@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+    <!-- Categoria editoriale verificata: Governance Pubblica -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="max-image-preview:large">
+    <title>DYNAMES | Prima del tavolo: il contesto come forza negoziale</title>
+    <meta name="description" content="Prima che le parti inizino a parlare, i margini di manovra sono già delimitati e alcune scelte hanno assunto un costo reputazionale.">
+    <meta name="author" content="Filippo Martini">
+    <link rel="canonical" href="https://www.dynames.it/articles/2026.08.04-forza-negoziale.html">
+
+    <meta property="og:locale" content="it_IT">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="DYNAMES">
+    <meta property="og:title" content="Prima del tavolo: il contesto come forza negoziale">
+    <meta property="og:description" content="Prima che le parti inizino a parlare, i margini di manovra sono già delimitati e alcune scelte hanno assunto un costo reputazionale.">
+    <meta property="og:url" content="https://www.dynames.it/articles/2026.08.04-forza-negoziale.html">
+    <meta property="og:image" content="https://www.dynames.it/articles/Immagini/2026.08.04-forza-negoziale-light.jpg">
+    <meta property="og:image:secure_url" content="https://www.dynames.it/articles/Immagini/2026.08.04-forza-negoziale-light.jpg">
+    <meta property="og:image:url" content="https://www.dynames.it/articles/Immagini/2026.08.04-forza-negoziale-light.jpg">
+    <meta property="og:image" content="https://dynames.it/articles/Immagini/2026.08.04-forza-negoziale-light.jpg">
+    <meta name="image" property="og:image" content="https://www.dynames.it/articles/Immagini/2026.08.04-forza-negoziale-light.jpg">
+    <meta itemprop="image" content="https://www.dynames.it/articles/Immagini/2026.08.04-forza-negoziale-light.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1004">
+    <meta property="og:image:height" content="564">
+    <meta property="og:image:alt" content="Due negoziatori al tavolo osservati da stakeholder dietro pareti di vetro, con un orologio centrale">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Prima del tavolo: il contesto come forza negoziale">
+    <meta name="twitter:description" content="Prima che le parti inizino a parlare, i margini di manovra sono già delimitati e alcune scelte hanno assunto un costo reputazionale.">
+    <meta name="twitter:image" content="https://www.dynames.it/articles/Immagini/2026.08.04-forza-negoziale-light.jpg">
+
+    <meta property="article:published_time" content="2026-08-04T09:00:00+02:00">
+    <meta property="article:author" content="Filippo Martini">
+    <meta property="article:section" content="Governance Pubblica">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+            text-decoration: none;
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(30, 58, 138, 0.25);
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .article-body a:hover {
+            color: var(--gold-accent);
+            border-color: rgba(184, 147, 90, 0.5);
+        }
+
+        .article-body p.source-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: -1.4rem;
+            margin-bottom: 1.8rem;
+            line-height: 1.5;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    
+    
+    
+
+        .article-body .bibliography-entry {
+            margin: 0 0 1rem 0;
+            padding-left: 1.4rem;
+            text-indent: -1.4rem;
+            color: var(--text-secondary);
+            font-size: 0.94rem;
+            line-height: 1.55;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        .article-body .bibliography-entry a {
+            word-break: break-word;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="../index.html" style="text-decoration: none;">
+                    <h1>
+                        <img src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo"
+                            class="brand-logo" onerror="this.style.display='none'">
+                        DYNAMES
+                    </h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="../index.html">HOME</a>
+                <a href="../hub.html" class="active">ANALISI &amp; ARTICOLI</a>
+                <a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+                <a href="../eventi.html">EVENTI</a>
+                <a href="../chi-siamo.html">CHI SIAMO</a>
+                <a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container back-nav">
+        <a href="../hub.html">&larr; Torna all'Hub</a>
+    </div>
+
+    <article>
+        <div class="article-container article-header">
+            <span class="article-category">Governance Pubblica</span>
+            <h1 class="serif-heading article-title">Prima del tavolo: il contesto come forza negoziale</h1>
+            <p class="article-abstract">La negoziazione viene spesso raccontata attraverso la scena del tavolo: offerte, controfferte, concessioni. Questa rappresentazione coglie solo una parte del fenomeno. Prima che le parti inizino a parlare, i margini di manovra sono già delimitati e alcune scelte hanno assunto un costo reputazionale. Questo articolo propone di analizzare il contesto negozialmente rilevante come una configurazione dinamica di stakeholder, basi di influenza, vincoli di autorizzazione e condizioni temporali: il campo entro cui l’accordo prende forma e può essere implementato. Muovendo dai risultati di Mapping the European Negotiation Landscape: Insights from the 2025 European Negotiation Conference, (Nuehnen et al., 2026), l’articolo sviluppa una lente integrata per preparare negoziati il cui campo cambia durante il processo. L’Unione europea offre un’applicazione illustrativa: la legittimità prodotta dalla sua architettura multilivello entra in tensione quando il contesto evolve più rapidamente delle procedure. Meccanismi analoghi operano nelle organizzazioni, pur entro configurazioni istituzionali diverse: anche una discussione apparentemente circoscritta sul prezzo può dipendere da attori assenti e da criteri di legittimazione che condizionano la sostenibilità dell’accordo.</p>
+            <div class="article-meta">
+                <a href="../chi-siamo.html#filippo-martini" class="meta-author">Filippo Martini</a>
+                <span>4 Agosto 2026</span>
+                <span>Tempo di lettura: 15 min</span>
+            </div>
+        </div>
+
+        <img src="Immagini/2026.08.04-forza-negoziale.png"
+            alt="Due negoziatori al tavolo osservati da stakeholder dietro pareti di vetro, con un orologio centrale"
+            class="article-hero" onerror="this.style.display='none'">
+
+        <div class="article-container article-body">
+            <h2>Il tavolo arriva tardi</h2><p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">L</span>a negoziazione viene spesso immaginata come una scena ordinata, che comincia quando due o più parti si siedono al tavolo per cercare un accordo. Il limite dell’immagine sta nel punto da cui fa cominciare la negoziazione: troppo tardi.</p><p>Prima della prima proposta, le parti sono già dentro un sistema di vincoli. Dispongono di alternative più o meno credibili e agiscono entro mandati di diversa rigidità, formati anche dalle relazioni pregresse e dalle pressioni che gravano sull’organizzazione. Alcune concessioni sono disponibili; altre sono formalmente possibili, ma impraticabili. Anche quando esiste la volontà, il costo di sostenerle può superare il vantaggio ottenuto al tavolo.</p><p>Il contesto negozialmente rilevante comprende la configurazione di attori, basi di influenza, vincoli di autorizzazione e condizioni temporali che accompagna le parti dentro il negoziato. Un superiore assente può esercitare potere legittimo, mentre un regolatore può attivare quello coercitivo. L’esperto tecnico orienta la valutazione delle opzioni e un pubblico interno può rendere reputazionalmente impraticabile una concessione pur restando fuori dalla stanza. Chi siede al tavolo porta con sé questa configurazione, anche quando non la nomina.</p><p>La ricerca contemporanea ha progressivamente messo in discussione l’idea del negoziato come evento isolato dalle relazioni in cui prende forma. Boothby, Cooney e Schweitzer (2023) leggono la negoziazione come un fenomeno più complesso rispetto ai modelli lineari tradizionali, attraversato da relazioni, emozioni, identità e potere. Olekalns (2026) insiste su un punto vicino: molta ricerca economica e psicologica ha trattato la negoziazione come un evento circoscritto nel tempo, mentre nella pratica essa resta incorporata in relazioni organizzative e sociali che ne condizionano possibilità ed esiti.</p><p>Il tavolo è un punto di emersione. La proposta formulata, la concessione rifiutata o l’irrigidimento improvviso di una parte segnalano un contesto già attivo nella negoziazione. Una preparazione limitata agli argomenti lascia scoperta una parte decisiva del lavoro: l’ambiente di potere in cui quegli argomenti dovranno reggere.</p><h2>Preparare una configurazione mobile</h2><p>La preparazione è sempre stata il fulcro della negoziazione. La distinzione tra posizioni e interessi, l’individuazione di alternative all’accordo, la selezione dei criteri oggettivi e la costruzione di opzioni appartengono da tempo alla grammatica essenziale del negoziare (Fisher et al., 2011). Senza questa base, anche l’improvvisazione perde qualità: resta necessaria in molte interazioni reali, ma rischia di trasformarsi in semplice reazione tattica.</p><p>In un campo stabile, prepararsi vuol dire soprattutto comprendere le parti, gli interessi e lo spazio possibile dell’accordo. Quando il campo è instabile, quello stesso lavoro non basta più, perché una crisi o l’ingresso di nuovi stakeholder possono spostare rapidamente l’arena decisionale. Una strategia ragionevole in una certa fase può diventare fragile poche settimane dopo. Cambia il modo in cui le informazioni disponibili diventano potere negoziale.</p><p>Lax e Sebenius spostano l’attenzione oltre la tattica al tavolo, verso il <em>setup</em><em> negoziale</em>: la configurazione delle parti, delle questioni, delle sequenze, delle alternative e del tavolo stesso (Lax &amp; Sebenius, 2006). Preparare, qui, diventa un lavoro sulla struttura del campo, che può richiedere di cambiare chi partecipa, l’ordine delle decisioni o il modo in cui le questioni sono collegate.</p><p>La stessa proposta assume significati diversi a seconda del momento e del pubblico davanti al quale dovrà essere difesa. Può apparire collaborativa in una fase distesa e minacciosa in una fase polarizzata; praticabile quando il mandato è ampio e impraticabile quando il negoziatore deve rispondere a un pubblico interno già mobilitato. Quando il contesto si restringe, le parti si proteggono. Semplificano. Scelgono posizioni più difendibili, anche quando riducono la qualità dell’accordo possibile.</p><p>Preparare il negoziato richiede di ricostruire le condizioni di sostenibilità dell’accordo. La domanda riguarda ciò che l’altra parte desidera ottenere e, insieme, ciò che può sostenere nel proprio sistema di riferimento. Spesso una parte rifiuta una proposta pur comprendendone il valore, perché non riesce a difenderla davanti ai propri stakeholder. La difficoltà, in quel caso, nasce dall’architettura del campo.</p><h2>Che cosa osservare nel contesto</h2><p>Nel linguaggio comune, il contesto coincide spesso con circostanze generali come il settore o il momento storico. Ai fini della preparazione negoziale, il contesto può essere analizzato come la configurazione dinamica di attori, basi di influenza, vincoli di autorizzazione e condizioni temporali che delimita ciò che le parti possono proporre e sostenere senza perdere legittimità, controllo o coerenza davanti ai propri interlocutori rilevanti.</p><p>Il modello classico di French e Raven aiuta a precisare una componente di questa configurazione. Il potere può derivare da legittimazione, competenza, ricompensa, coercizione, identificazione o controllo dell’informazione (French &amp; Raven, 1959; Raven, 1993). L’esercizio di queste basi dipende anche dalle procedure e dai pubblici interni, spesso sostenuti da apparati tecnici o autorità regolative. La negoziazione visibile è spesso il momento in cui questa distribuzione emerge nelle mosse compiute al tavolo.</p><p>Il mandato non coincide mai del tutto con la posizione dichiarata. Anche quando il negoziatore appare formalmente autorizzato, la sua libertà d’azione dipende da vincoli che precedono l’interazione e continuano a operare durante il suo svolgimento. Nei negoziati politici, istituzionali e organizzativi, ogni proposta deve poter essere ricondotta a una fonte di autorizzazione e poi difesa nel sistema interno. La teoria dei <em>two-level</em><em> games</em> ha chiarito questa doppia esposizione: chi negozia su un piano esterno deve preservare la possibilità di ratifica o legittimazione nel proprio sistema interno (Putnam, 1988). Nei contesti multilivello, come quello europeo, l’accordo deve attraversare livelli istituzionali diversi, procedure di autorizzazione e punti di veto (Hooghe &amp; Marks, 2001; Tsebelis, 2002). A questi vincoli si aggiunge la pressione dell’opinione pubblica, che delimita lo spazio politico entro cui i decisori possono muoversi senza determinarne meccanicamente le scelte (Burstein, 2003; Ahrens, 2024). Nei negoziati europei, questa pressione diventa più visibile quando le posizioni assunte dai governi nel Consiglio devono essere difese anche davanti agli elettorati nazionali (Wratil, 2018; Yordanova et al., 2025).</p><p>La reputazione può rendere impraticabile una concessione altrimenti razionale. Una parte può rifiutare un accordo perché non saprebbe giustificarlo senza apparire debole o incoerente. La letteratura sugli audience costs aiuta a comprendere questa dinamica: quando una posizione è stata assunta pubblicamente, arretrare può generare costi politici che irrigidiscono il mandato negoziale (Fearon, 1994; Takei, 2024). Nel contesto europeo, questa pressione si intreccia con la politicizzazione dell’integrazione: ciò che in una fase può essere trattato come aggiustamento tecnico, in un’altra può diventare un segnale identitario o elettorale (Kriesi, 2016; Hobolt &amp; Wratil, 2020).</p><p>Il tempo cambia la qualità della negoziazione. Un accordo possibile in sei mesi può diventare impraticabile in sei giorni. La compressione temporale riduce lo spazio di esplorazione e rende più difficile l’allineamento interno; aumenta così il peso delle posizioni già formalizzate. Nei contesti europei, la “crisisification” del policy-making descrive il modo in cui emergenze ricorrenti alterano il processo e le aspettative sulla rapidità della decisione collettiva (Rhinard, 2019). Quando il tempo si restringe, alcune basi di potere acquistano peso: chi controlla l’urgenza, le procedure o l’accesso alle informazioni può incidere molto più di quanto apparirebbe in una lettura formale del tavolo.</p><p>La credibilità dipende anche dalla coerenza percepita tra ciò che una parte dichiara, ciò che ha fatto in passato e ciò che può realisticamente implementare. Gli impegni già assunti e le relazioni pregresse rendono più o meno credibili le dichiarazioni presenti. Il potere negoziale comprende anche ciò che accade oltre il tavolo: le condizioni che rendono sostenibile una posizione e possibile attuarla (Western, 2020).</p><p>Gli stakeholder invisibili incidono spesso più di quanto appaia. Chi parla al tavolo può non coincidere con chi determina davvero i margini dell’accordo. Il decisore può essere assente; il vincolo può trovarsi altrove. La letteratura sullo <em>stakeholder engagement</em> mostra, più in generale, che rilevanza e coinvolgimento degli attori evolvono nel tempo (Kujala et al., 2022). Mitchell, Agle e Wood (1997) hanno proposto di leggere la salienza degli stakeholder attraverso potere, legittimità e urgenza. Per la negoziazione, questo schema è particolarmente utile perché il peso degli stakeholder varia tra attori e nel tempo. Un attore marginale può diventare decisivo quando acquisisce urgenza. Altri, pur restando fuori dal tavolo, possono orientare o bloccare l’accordo grazie alla propria legittimità o al controllo delle informazioni.</p><p>Osservare il contesto significa collocare i vincoli effettivi della decisione. Il budget rende visibile un vincolo; la fragilità del mandato o il costo reputazionale possono invece emergere solo ricostruendo ciò che precede la trattativa. La qualità della preparazione dipende dalla capacità di distinguere questi livelli senza ridurre il contesto a una raccolta preliminare di informazioni.</p><p>Operativamente, la mappa del contesto richiede di rispondere a sei domande:</p><ul><li>Chi può autorizzare, bloccare o legittimare l’accordo?</li><li>Quali basi di influenza controlla ciascun attore?</li><li>Quali vincoli delimitano il mandato?</li><li>Come possono urgenza e sequenza modificare la salienza degli stakeholder?</li><li>Davanti a quali pubblici l’accordo dovrà essere difeso?</li><li>Chi dovrà trasformarlo in comportamento effettivo?</li></ul><p>Le risposte non formano una fotografia definitiva: vanno aggiornate ogni volta che cambia il campo negoziale.</p><h2>Il caso europeo: legittimità, tempo e credibilità</h2><p>L’Unione europea offre un terreno illustrativo particolarmente utile per osservare il ruolo negoziale del contesto. La sua architettura multilivello combina consenso, cooperazione regolata e credibilità normativa, facendo dipendere la legittimità delle decisioni anche dal processo attraverso cui vengono formate. Una decisione europea, quando riesce a consolidarsi, trae legittimità da un percorso che attraversa più livelli e più forme di autorizzazione.</p><p>Letta attraverso stakeholder e basi di potere, l’UE è insieme attore negoziale e campo negoziale complesso. Accanto alle istituzioni e agli Stati membri, anche attori esterni al tavolo formale esercitano influenza. I trattati ne formalizzano una parte; altre forme passano, per esempio, attraverso la competenza tecnica o la pressione politica. Questa distribuzione rafforza la legittimazione del processo europeo e ne accresce la vulnerabilità ai rapidi cambiamenti di contesto.</p><p>L’architettura europea può trasformare procedure lente e inclusive in meccanismi di fiducia quando dispone di tempi compatibili con la deliberazione: le parti possono riconoscersi nel processo anche quando non ottengono tutto ciò che volevano. Le condizioni di instabilità impongono allo stesso sistema di preservare la legittimità e produrre risposte entro tempi compatibili con crisi che si muovono più rapidamente delle procedure ordinarie.</p><p>La geopoliticizzazione dell’Unione incide anche sulla macchina istituzionale che elabora e attua le sue politiche (Adriaensen et al., 2025). Il consenso costruisce durata e richiede tempo; accelerare la risposta può ridurre inclusione e senso di rappresentanza. Un governo può riconoscere la necessità e l’urgenza di un accordo senza disporre del mandato politico necessario a superare i blocchi del proprio sistema interno.</p><p>La governance multilivello europea moltiplica i punti di autorizzazione, favorendo spesso esiti incrementali o soluzioni di minimo comune denominatore (Hooghe &amp; Marks, 2001; Scharpf, 2006; Tsebelis, 2002). Nelle condizioni di crisi, la pressione temporale irrigidisce ulteriormente il sistema. La decisione deve arrivare più rapidamente, senza dissolvere i requisiti che rendono riconoscibile il processo europeo. Ciò che appare come inefficienza negoziale può essere l’effetto strutturale del contesto in cui la decisione deve essere prodotta, soprattutto quando crisi ricorrenti comprimono tempi e aspettative politiche (Rhinard, 2019; Nuehnen et al., 2026).</p><p>La credibilità normativa sostiene il potere negoziale dell’UE e richiede coerenza. L’Unione si presenta spesso come un attore fondato sulla cooperazione regolata e sull’ordine internazionale basato su regole, un’identità che può renderla un partner credibile nel lungo periodo soprattutto in un ambiente più transazionale. La distanza tra impegni proclamati ed esiti operativi diventa un costo negoziale.</p><p>È su questa tensione che si concentra <em>Mapping the </em><em>European</em><em> </em><em>Negotiation</em><em> </em><em>Landscape</em><em>: Insights from the 2025 </em><em>European</em><em> </em><em>Negotiation</em><em> Conference</em>, lo studio qualitativo condotto da Nuehnen, Martini, Cruz Torres e Gubler (2026) su 19 interviste semistrutturate a professionisti, ricercatori e formatori partecipanti all’ENC 2025. I risultati descrivono il quadro valoriale europeo come una risorsa strategica in un ambiente più transazionale e autoritario e collegano le incoerenze tra norme proclamate e risultati operativi a un indebolimento di credibilità, fiducia e potere negoziale. La legittimità europea dipende dagli output prodotti, dalla qualità del processo e dalla coerenza tra valori dichiarati, procedure seguite e risultati implementati (Schmidt, 2013).</p><p>Ogni negoziazione esposta a una pluralità di pubblici incontra lo stesso problema: l’accordo deve funzionare e deve poter essere difeso. La politicizzazione aumenta il peso dei pubblici che condizionano l’accettabilità della soluzione negoziale. Contenuto dell’accordo e condizioni di legittimazione finiscono per sovrapporsi.</p><h2>Dalla scala istituzionale a quella organizzativa</h2><p>Il passaggio alla scala organizzativa mostra come gli stessi meccanismi possano incidere sul margine di manovra di chi negozia, pur entro configurazioni istituzionali diverse. Anche una posta apparentemente circoscritta può così rivelare una configurazione di potere più ampia. Una discussione sul prezzo, ad esempio, può apparire come una normale negoziazione distributiva. Una parte chiede uno sconto, l’altra difende il valore dell’offerta. Il confronto sembra numerico. Spesso il numero è solo la superficie.</p><p>Dietro la richiesta di sconto può esserci un budget bloccato oppure una promessa già fatta internamente, che rende costoso creare un precedente. Può esserci anche un’alternativa debole, che l’altra parte non può rendere visibile senza perdere potere negoziale. Vista attraverso le basi di potere, la situazione cambia: il vincolo di budget diventa un limite autorizzativo; la promessa fatta internamente attiva reputazione e legittimità; il controllo dell’informazione modifica il peso delle alternative percepite.</p><p>La questione del prezzo diventa allora inseparabile dalla forma dell’accordo che l’altra parte può sostenere nel proprio contesto. La soluzione può richiedere di intervenire sulla struttura del pagamento o di distinguere una fase pilota dall’accordo quadro, così da renderne più semplice l’approvazione interna. Una proposta regge solo se il sistema che la riceve riesce ad approvarla e poi a tradurla in comportamento.</p><p>Quando una parte percepisce che il proprio spazio di manovra si restringe, protegge il mandato e la posizione acquisita nel proprio sistema interno. Ristrutturare chi partecipa o l’ordine del processo può spostare la trattativa dal prezzo alle condizioni che rendono l’accordo praticabile. La forma praticabile dell’accordo dipende così dal contesto.</p><h2>Il contesto come luogo del potere distribuito</h2><p>Leggere il contesto in questa prospettiva amplia la nozione di potere oltre la forza contrattuale apparente. Contano anche le basi di influenza già descritte e, in particolare, il tempo che ciascuna parte può permettersi di attendere.</p><p>Una parte apparentemente debole può controllare una risorsa critica o beneficiare dei tempi stretti dell’altra parte. Una parte forte può trovarsi esposta se deve ottenere ratifiche multiple o se non può permettersi il fallimento dell’accordo. Anche la legittimità può trasformarsi in vincolo, quando l’attore che ne dispone fatica a convertirla in rapidità decisionale.</p><p>La presenza di veto players, vincoli di autorizzazione e sequenze decisionali condiziona lo spazio delle decisioni possibili (Tsebelis, 2002). Il potere negoziale include anche la capacità di influenzare le condizioni entro cui il tavolo viene interpretato, autorizzato e successivamente implementato (Western, 2020). La configurazione di stakeholder e basi di potere può rendere coerente un rifiuto che al tavolo appare irrazionale. Anche l’impasse può derivare da un vincolo strutturale o dalla preferenza di alcuni attori per il mancato accordo, sostenuta da costi politici che il tavolo non rende immediatamente visibili (Schweinsberg et al., 2022).</p><p>L’architettura del campo viene spesso scambiata per un tratto psicologico dell’altra parte. Un negoziatore può apparire rigido per stile personale oppure essere bloccato dal proprio sistema interno, che gli impedisce di concedere nel momento richiesto. La risposta dipende dalla diagnosi: un vincolo strutturale richiede di riprogettare il campo in cui la concessione può diventare sostenibile.</p><p>Valutare il potere dell’altra parte serve a poco se resta invisibile chi ne autorizza le scelte o può impedire all’accordo di reggere. In molte negoziazioni, l’attore più influente non parla al tavolo. Definisce le condizioni entro cui il tavolo potrà produrre un esito.</p><h2>Rischi e salvaguardie</h2><p>Leggere il contesto aumenta la capacità di incidere sul negoziato. Comprendere i vincoli dell’altra parte può aiutare a costruire un accordo più sostenibile; un uso opportunistico della stessa conoscenza la trasforma in uno strumento di pressione opaca. Sapere che l’altro ha poco tempo o deve rispondere a un superiore può favorire lo sfruttamento della vulnerabilità a scapito della ricerca di una soluzione più robusta.</p><p>Il problema normativo riguarda l’uso di questa conoscenza. Conoscere i vincoli dell’altro diventa problematico quando serve a restringerne artificialmente lo spazio decisionale attraverso l’inganno o la costruzione di pressioni artificiali. Nel breve periodo, un accordo ottenuto in questo modo può sembrare efficiente. Nel tempo può ridurre la qualità informata del consenso e alimentare sfiducia e instabilità nel rapporto negoziale.</p><p>Le salvaguardie richiedono anzitutto criteri trasparenti e una verifica reale della capacità di entrambe le parti di impegnarsi. Pressioni create apposta per restringere lo spazio decisionale dell’altro compromettono la sostenibilità dell’accordo. La leggibilità del contesto aumenta la responsabilità nell’uso di quella conoscenza.</p><h2>Che cosa sta cambiando</h2><p>Oggi merita particolare attenzione la velocità con cui stakeholder, vincoli e basi di potere si riorganizzano. La discontinuità geopolitica modifica catene del valore e criteri di affidabilità. La polarizzazione aumenta il costo pubblico delle concessioni, e la comunicazione digitale rende più difficile separare il merito dell’accordo dalla sua percezione. Nelle organizzazioni l’interdipendenza cresce più rapidamente della capacità di coordinamento.</p><p>La svolta geopolitica dell’UE si manifesta anche nella ridefinizione della politica industriale, sempre più orientata a presidiare filiere e capacità strategiche (McNamara, 2024). La ricerca recente descrive questa trasformazione come una svolta “geo-dirigista”, in cui la sovranità tecnologica diventa criterio di politica industriale e di posizionamento internazionale (Seidl &amp; Schmitz, 2024). Il lessico dell’open strategic autonomy riflette la stessa tensione: preservare apertura e interdipendenza dentro un contesto internazionale segnato da logiche più competitive e da maggiore interventismo statale (Mariotti, 2025).</p><p>Queste trasformazioni entrano nella negoziazione perché modificano gli attori rilevanti e le basi di potere. Quando riguarda filiere sensibili, per esempio, un contratto di fornitura incorpora valutazioni di sicurezza e continuità strategica. L’accordo deve allora essere costruito in modo da reggere anche davanti ai pubblici chiamati a valutarlo.</p><p>Saper argomentare al tavolo resta necessario. La competenza negoziale comprende la capacità di riconoscere come si formano i vincoli e in quali condizioni possono essere ristrutturati. Occorre distinguere la volontà dell’altra parte dalla sostenibilità delle sue mosse. La negoziazione contemporanea è una pratica situata dentro ecosistemi complessi.</p><h2>Conclusione</h2><p>Il fallimento negoziale può dipendere dalle parole scelte al tavolo oppure dall’assenza di un campo in cui quelle parole possano diventare sostenibili. La preparazione classica resta indispensabile. Nei contesti mobili, deve però estendersi alle condizioni che distribuiscono potere e delimitano ciò che le parti possono sostenere.</p><p>Leggere il contesto attraverso la configurazione dinamica di attori, basi di influenza, vincoli di autorizzazione e condizioni temporali rende più precisa questa estensione. Le loro interazioni condizionano le mosse che una parte può sostenere e la possibilità che l’accordo regga nel sistema in cui dovrà essere attuato.</p><p>L’applicazione europea mostra con chiarezza questa tensione: una legittimità costruita attraverso procedure multilivello deve reggere alla pressione per decisioni più rapide. Tempi troppo lunghi consumano efficacia; un’accelerazione che sacrifica inclusione e trasparenza erode la legittimità. La stessa tensione può ricorrere, in forme istituzionali diverse, anche nelle organizzazioni: l’accordo deve reggere nel sistema di vincoli in cui verrà implementato.</p><p>La qualità degli argomenti conta quando il campo consente loro di trasformarsi in accordo. Per questo leggere il contesto appartiene alla preparazione negoziale stessa.</p><div class="pull-quote" style="margin-top: 4rem; margin-bottom: 3rem;">“In molte negoziazioni, l’attore più influente non parla al tavolo. Definisce le condizioni entro cui il tavolo potrà produrre un esito.”</div><h2>Bibliografia essenziale</h2><p class="bibliography-entry">Adriaensen, J., Vanhoonacker, S., &amp; Sarkissian, I. (2025). The effect of geopoliticisation on the EU’s polity: Exploring institutional power shifts. <em>Journal of European Public Policy</em>. Advance online publication. <a href="https://doi.org/10.1080/13501763.2025.2536546" target="_blank" rel="noopener noreferrer">https://doi.org/10.1080/13501763.2025.2536546</a></p><p class="bibliography-entry">Ahrens, L. (2024). The impact of public opinion on voting and policymaking: Is public opinion exogenous or endogenous? <em>Zeitschrift für Politikwissenschaft, 34</em>(1), 77–100. <a href="https://doi.org/10.1007/s41358-024-00366-w" target="_blank" rel="noopener noreferrer">https://doi.org/10.1007/s41358-024-00366-w</a></p><p class="bibliography-entry">Boothby, E. J., Cooney, G., &amp; Schweitzer, M. E. (2023). Embracing complexity: A review of negotiation research. <em>Annual Review of Psychology, 74</em>, 299–332. <a href="https://doi.org/10.1146/annurev-psych-033020-014116" target="_blank" rel="noopener noreferrer">https://doi.org/10.1146/annurev-psych-033020-014116</a></p><p class="bibliography-entry">Burstein, P. (2003). The impact of public opinion on public policy: A review and an agenda. <em>Political Research Quarterly, 56</em>(1), 29–40. <a href="https://doi.org/10.1177/106591290305600103" target="_blank" rel="noopener noreferrer">https://doi.org/10.1177/106591290305600103</a></p><p class="bibliography-entry">Fearon, J. D. (1994). Domestic political audiences and the escalation of international disputes. <em>American Political Science Review, 88</em>(3), 577–592. <a href="https://doi.org/10.2307/2944796" target="_blank" rel="noopener noreferrer">https://doi.org/10.2307/2944796</a></p><p class="bibliography-entry">Fisher, R., Ury, W. L., &amp; Patton, B. (2011). <em>Getting to yes: Negotiating agreement without giving in</em> (3rd ed.). Penguin Books.</p><p class="bibliography-entry">French, J. R. P., Jr., &amp; Raven, B. H. (1959). The bases of social power. In D. Cartwright (Ed.), <em>Studies in social power</em> (pp. 150–167). Institute for Social Research.</p><p class="bibliography-entry">Hobolt, S. B., &amp; Wratil, C. (2020). Contestation and responsiveness in EU Council deliberations. <em>Journal of European Public Policy, 27</em>(3), 362–381. <a href="https://doi.org/10.1080/13501763.2020.1712454" target="_blank" rel="noopener noreferrer">https://doi.org/10.1080/13501763.2020.1712454</a></p><p class="bibliography-entry">Hooghe, L., &amp; Marks, G. (2001). <em>Multi-level governance and European integration</em>. Rowman &amp; Littlefield.</p><p class="bibliography-entry">Kriesi, H. (2016). The politicization of European integration. <em>Journal of Common Market Studies, 54</em>(S1), 32–47. <a href="https://doi.org/10.1111/jcms.12406" target="_blank" rel="noopener noreferrer">https://doi.org/10.1111/jcms.12406</a></p><p class="bibliography-entry">Kujala, J., Sachs, S., Leinonen, H., Heikkinen, A., &amp; Laude, D. (2022). Stakeholder engagement: Past, present, and future. <em>Business &amp; Society, 61</em>(5), 1136–1196. <a href="https://doi.org/10.1177/00076503211066595" target="_blank" rel="noopener noreferrer">https://doi.org/10.1177/00076503211066595</a></p><p class="bibliography-entry">Lax, D. A., &amp; Sebenius, J. K. (2006). <em>3-D negotiation: Powerful tools to change the game in your most important deals</em>. Harvard Business School Press.</p><p class="bibliography-entry">Mariotti, S. (2025). “Open strategic autonomy” as an industrial policy compass for the EU competitiveness and growth: The good, the bad, or the ugly? <em>Journal of Industrial and Business Economics, 52</em>(1), 1–26. <a href="https://doi.org/10.1007/s40812-024-00327-y" target="_blank" rel="noopener noreferrer">https://doi.org/10.1007/s40812-024-00327-y</a></p><p class="bibliography-entry">McNamara, K. R. (2024). Transforming Europe? The EU’s industrial policy and geopolitical turn. <em>Journal of European Public Policy, 31</em>(9), 2371–2396. <a href="https://doi.org/10.1080/13501763.2023.2230247" target="_blank" rel="noopener noreferrer">https://doi.org/10.1080/13501763.2023.2230247</a></p><p class="bibliography-entry">Mitchell, R. K., Agle, B. R., &amp; Wood, D. J. (1997). Toward a theory of stakeholder identification and salience: Defining the principle of who and what really counts. <em>Academy of Management Review, 22</em>(4), 853–886. <a href="https://doi.org/10.5465/amr.1997.9711022105" target="_blank" rel="noopener noreferrer">https://doi.org/10.5465/amr.1997.9711022105</a></p><p class="bibliography-entry">Nuehnen, F., Martini, F., Cruz Torres, F., &amp; Gubler, J. (2026). Mapping the European negotiation landscape: Insights from the 2025 European Negotiation Conference. <em>Journal for Global Negotiation, 2</em>(1), 17–32. <a href="https://doi.org/10.70714/x3jghe28" target="_blank" rel="noopener noreferrer">https://doi.org/10.70714/x3jghe28</a></p><p class="bibliography-entry">Olekalns, M. (2026). Lost in translation: Where is the relational context in negotiation research? <em>Academy of Management Annals</em>. Advance online publication. <a href="https://doi.org/10.5465/annals.2024.0055" target="_blank" rel="noopener noreferrer">https://doi.org/10.5465/annals.2024.0055</a></p><p class="bibliography-entry">Putnam, R. D. (1988). Diplomacy and domestic politics: The logic of two-level games. <em>International Organization, 42</em>(3), 427–460. <a href="https://doi.org/10.1017/S0020818300027697" target="_blank" rel="noopener noreferrer">https://doi.org/10.1017/S0020818300027697</a></p><p class="bibliography-entry">Raven, B. H. (1993). The bases of power: Origins and recent developments. <em>Journal of Social Issues, 49</em>(4), 227–251. <a href="https://doi.org/10.1111/j.1540-4560.1993.tb01191.x" target="_blank" rel="noopener noreferrer">https://doi.org/10.1111/j.1540-4560.1993.tb01191.x</a></p><p class="bibliography-entry">Rhinard, M. (2019). The crisisification of policy-making in the European Union. <em>Journal of Common Market Studies, 57</em>(3), 616–633. <a href="https://doi.org/10.1111/jcms.12838" target="_blank" rel="noopener noreferrer">https://doi.org/10.1111/jcms.12838</a></p><p class="bibliography-entry">Scharpf, F. W. (2006). The joint-decision trap revisited. <em>Journal of Common Market Studies, 44</em>(4), 845–864. <a href="https://doi.org/10.1111/j.1468-5965.2006.00665.x" target="_blank" rel="noopener noreferrer">https://doi.org/10.1111/j.1468-5965.2006.00665.x</a></p><p class="bibliography-entry">Schmidt, V. A. (2013). Democracy and legitimacy in the European Union revisited: Input, output and “throughput”. <em>Political Studies, 61</em>(1), 2–22. <a href="https://doi.org/10.1111/j.1467-9248.2012.00962.x" target="_blank" rel="noopener noreferrer">https://doi.org/10.1111/j.1467-9248.2012.00962.x</a></p><p class="bibliography-entry">Schweinsberg, M., Thau, S., &amp; Pillutla, M. M. (2022). Negotiation impasses: Types, causes, and resolutions. <em>Journal of Management, 48</em>(1), 49–76. <a href="https://doi.org/10.1177/01492063211021657" target="_blank" rel="noopener noreferrer">https://doi.org/10.1177/01492063211021657</a></p><p class="bibliography-entry">Seidl, T., &amp; Schmitz, L. (2024). Moving on to not fall behind? Technological sovereignty and the “geo-dirigiste” turn in EU industrial policy. <em>Journal of European Public Policy, 31</em>(8), 2147–2174. <a href="https://doi.org/10.1080/13501763.2023.2248204" target="_blank" rel="noopener noreferrer">https://doi.org/10.1080/13501763.2023.2248204</a></p><p class="bibliography-entry">Takei, M. (2024). Audience costs and the credibility of public versus private threats in international crises. <em>International Studies Quarterly, 68</em>(3), sqae091. <a href="https://doi.org/10.1093/isq/sqae091" target="_blank" rel="noopener noreferrer">https://doi.org/10.1093/isq/sqae091</a></p><p class="bibliography-entry">Tsebelis, G. (2002). <em>Veto players: How political institutions work</em>. Princeton University Press.</p><p class="bibliography-entry">Western, S. D. (2020). Bargaining power at the negotiation table and beyond. <em>International Negotiation, 25</em>(2), 169–200. <a href="https://doi.org/10.1163/15718069-25131239" target="_blank" rel="noopener noreferrer">https://doi.org/10.1163/15718069-25131239</a></p><p class="bibliography-entry">Wratil, C. (2018). Modes of government responsiveness in the European Union: Evidence from Council negotiation positions. <em>European Union Politics, 19</em>(1), 52–74. <a href="https://doi.org/10.1177/1465116517735599" target="_blank" rel="noopener noreferrer">https://doi.org/10.1177/1465116517735599</a></p><p class="bibliography-entry">Yordanova, N., Ershova, A., Khokhlova, A., Obaid Ul-Islam, S., &amp; Glavaš, G. (2025). When the EU Council responds to public opinion: Negotiating European policy integration. <em>European Union Politics, 26</em>(3), 453–476. <a href="https://doi.org/10.1177/14651165251340212" target="_blank" rel="noopener noreferrer">https://doi.org/10.1177/14651165251340212</a></p>
+
+            <div class="author-box">
+                <img src="../assets/sme-contributors/filippo-martini.jpg" alt="Filippo Martini" onerror="this.style.display='none';">
+                <div class="author-info">
+                    <h4><a href="../chi-siamo.html#filippo-martini">Filippo Martini</a></h4>
+                    <p>Docente, formatore e consulente in negoziazione e mediazione, opera tra università, formazione executive e ricerca applicata. È Adjunct Professor di Tecniche di Negoziazione e Mediazione presso l’Università di Ferrara e docente presso Bologna Business School. Co-founder del Journal for Global Negotiation e Fellow dell’Institute for Global Negotiation, si occupa di preparazione negoziale, gestione del conflitto e uso critico dell’AI nei processi decisionali complessi.</p>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+            <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+            <p style="margin-top: 1rem; color: var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

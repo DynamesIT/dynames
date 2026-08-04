@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<!-- Categoria editoriale verificata: Governance Pubblica -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="max-image-preview:large" name="robots"/>
+<title>DYNAMES | Performance, merito e capacità amministrativa</title>
+<meta content="La riforma della valutazione pubblica tra sviluppo organizzativo, sicurezza nazionale e resilienza istituzionale" name="description"/>
+<meta content="Michele Punzi" name="author"/>
+<link href="https://www.dynames.it/articles/2026.08.04-performance-merito-capacita.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Performance, merito e capacità amministrativa" property="og:title"/>
+<meta content="La riforma della valutazione pubblica tra sviluppo organizzativo, sicurezza nazionale e resilienza istituzionale" property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.08.04-performance-merito-capacita.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-performance-merito-capacita-light.jpg" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-performance-merito-capacita-light.jpg" property="og:image:secure_url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-performance-merito-capacita-light.jpg" property="og:image:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-performance-merito-capacita-light.jpg" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-performance-merito-capacita-light.jpg" name="image" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-performance-merito-capacita-light.jpg" itemprop="image"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1004" property="og:image:width"/>
+<meta content="564" property="og:image:height"/>
+<meta content="Personale civile e un militare italiano in uniforme mimetica coordinano dati, infrastrutture e risposta alle emergenze" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Performance, merito e capacità amministrativa" name="twitter:title"/>
+<meta content="La riforma della valutazione pubblica tra sviluppo organizzativo, sicurezza nazionale e resilienza istituzionale" name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-performance-merito-capacita-light.jpg" name="twitter:image"/>
+<meta content="2026-08-04T09:00:00+02:00" property="article:published_time"/>
+<meta content="Michele Punzi" property="article:author"/>
+<meta content="Governance Pubblica" property="article:section"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+            text-decoration: none;
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(30, 58, 138, 0.25);
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .article-body a:hover {
+            color: var(--gold-accent);
+            border-color: rgba(184, 147, 90, 0.5);
+        }
+
+        .article-body p.source-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: -1.4rem;
+            margin-bottom: 1.8rem;
+            line-height: 1.5;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    
+    
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article>
+<div class="article-container article-header">
+<span class="article-category">Governance Pubblica</span>
+<h1 class="serif-heading article-title">Performance, merito e capacità amministrativa</h1>
+<p class="article-abstract">La riforma della valutazione pubblica tra sviluppo organizzativo, sicurezza nazionale e resilienza istituzionale</p>
+<div class="article-meta"><a class="meta-author" href="../chi-siamo.html#punzi">Michele Punzi</a><span>4 Agosto 2026</span><span>Tempo di lettura: 11 min</span></div>
+</div>
+<img alt="Personale civile e un militare italiano in uniforme mimetica coordinano dati, infrastrutture e risposta alle emergenze" class="article-hero" onerror="this.style.display='none'" src="Immagini/2026.08.04-performance-merito-capacita.jpg"/>
+<div class="article-container article-body"><h2>Dalla regolarità amministrativa alla capacità organizzativa</h2><p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">U</span>n’amministrazione può rispettare le scadenze, concludere i procedimenti e conseguire gli obiettivi formalmente assegnati. Sono risultati necessari. Non sempre, però, sono sufficienti a descriverne la capacità. La differenza emerge quando le condizioni ordinarie vengono meno: un’infrastruttura diventa indisponibile, una filiera si interrompe, le informazioni risultano incomplete, più autorità sono chiamate a decidere e coordinarsi in tempi ridotti. In queste circostanze la performance assume un significato più ampio. Non riguarda soltanto ciò che è stato fatto, ma ciò che l’organizzazione riesce a continuare a fare.</p><p>Per le amministrazioni che concorrono alla Difesa, alla sicurezza e alla protezione civile, questo passaggio è particolarmente rilevante. La disponibilità di una capacità non coincide con la sola esistenza di personale, mezzi o tecnologie. Dipende dalla programmazione, dalla formazione, dalla logistica, dall’affidabilità delle procedure, dalla protezione delle informazioni e dalla possibilità di trasformare risorse e competenze in risultati effettivamente utilizzabili.</p><p>La dimensione amministrativa non si colloca, dunque, in uno spazio separato dalla missione istituzionale. Ne assicura continuità, legittimità e sostenibilità. Da questa prospettiva può essere letto anche il sistema della performance. Non come tentativo di attribuire un punteggio alla sicurezza, ma come strumento per comprendere se l’organizzazione sia preparata a operare, coordinarsi e adattarsi quando il contesto diventa più complesso.</p><p class="source-note"><em>Fonti:</em> Art. 97 Cost.; Ministero della Difesa, Sistema di misurazione e valutazione della performance, D.M. 11 febbraio 2025; Ministero dell’Interno, Sistema di misurazione e valutazione della performance, D.M. 2 marzo 2026.</p><h2>L’evoluzione della disciplina della performance pubblica</h2><p>Il Decreto Legislativo 27 ottobre 2009, n. 150 ha costruito il ciclo della performance collegando programmazione, assegnazione degli obiettivi, misurazione, valutazione e rendicontazione. La performance organizzativa riguarda l’attuazione delle politiche, la realizzazione di piani e programmi, la qualità dei servizi, il miglioramento dell’organizzazione e l’efficienza nell’impiego delle risorse. Quella individuale considera obiettivi, contributo ai risultati della struttura, competenze e comportamenti professionali e organizzativi.</p><p>Il fondamento resta il buon andamento. La misurazione non introduce nell’amministrazione una logica estranea al diritto pubblico; tenta, piuttosto, di rendere verificabile il rapporto tra responsabilità esercitate, risorse impiegate e risultati conseguiti. Anche il merito deve essere collocato entro questa cornice: non è una qualità astratta della persona, ma il contributo offerto al migliore esercizio della funzione pubblica.</p><p>La Legge 2 luglio 2026, n. 119, recante «Disposizioni in materia di sviluppo della carriera dirigenziale e della valutazione della performance del personale dirigenziale e non dirigenziale delle pubbliche amministrazioni» veste una posizione centrale; pubblicata nella Gazzetta Ufficiale del 4 luglio ed entrata in vigore il 19 luglio 2026, essa modifica il D.Lgs. n. 150/2009 e apre una nuova fase per i sistemi di valutazione pubblici.</p><p>Il nuovo impianto valorizza le capacità manageriali, la formazione iniziale, continua e mirata, il perfezionamento delle competenze tecniche e personali e lo sviluppo del potenziale professionale. Prevede, inoltre, il progressivo superamento della semplice valutazione gerarchica e unidirezionale, attraverso la partecipazione di una pluralità di soggetti e un collegamento più stretto tra obiettivi individuali e collettivi.</p><p>La direzione era stata anticipata dalla Direttiva del Ministro per la Pubblica Amministrazione del 28 novembre 2023, che aveva richiamato il rapporto tra performance individuale e organizzativa, la differenziazione dei giudizi, la leadership, il feedback e la formazione. La Direttiva del 14 gennaio 2025 ha poi qualificato lo sviluppo delle competenze come leva per la produzione di valore pubblico e come responsabilità propria dell’amministrazione e della dirigenza. Il cambiamento più significativo riguarda, quindi, l’oggetto stesso del merito. Non soltanto il risultato raggiunto in un determinato periodo, ma la capacità di sviluppare competenze, assumere responsabilità, cooperare e contribuire alla crescita dell’organizzazione. La performance tende così a diventare una politica del capitale umano.</p><p class="source-note"><em>Fonti:</em> D.Lgs. 27 ottobre 2009, n. 150, in particolare artt. 4, 8 e 9; Legge 2 luglio 2026, n. 119; Ministro per la Pubblica Amministrazione, Direttive 28 novembre 2023 e 14 gennaio 2025.</p><h2>Il rapporto tra disciplina generale e ordinamenti speciali</h2><p>Il collegamento con la Difesa e la sicurezza impone una delimitazione rigorosa. L’articolo 3 del Decreto Legislativo 30 marzo 2001, n. 165 (c.d. Testo Unico sul Pubblico Impiego) stabilisce che il personale militare e quello delle Forze di polizia di Stato rimangono disciplinati dai rispettivi ordinamenti pubblicistici. La disciplina generale della performance non può, pertanto, essere sovrapposta automaticamente ai sistemi di valutazione caratteristica, professionale o attitudinale previsti per tali categorie. La Legge n. 119/2026 non modifica questo assetto.</p><p>La distinzione è sostanziale. La performance organizzativa riguarda il funzionamento dell’amministrazione; quella individuale trova applicazione nei confronti del personale ricompreso nel relativo regime giuridico e valutativo. Nelle amministrazioni della Difesa e della sicurezza il sistema generale coesiste con ordinamenti speciali, fondati su differenti regole di stato, impiego, responsabilità e progressione.</p><p>Lo strumento militare e gli apparati di sicurezza dipendono anche dalla capacità delle strutture amministrative di programmare risorse, gestire infrastrutture, assicurare approvvigionamenti, formare professionalità, proteggere dati e sostenere processi di innovazione. Un esempio significativo è rappresentato dal Segretariato Generale della Difesa (SEGREDIFESA). Le attività di programmazione degli investimenti, procurement, gestione industriale, standardizzazione tecnica e sviluppo delle capacità non costituiscono soltanto funzioni amministrative in senso tradizionale. Esse determinano la disponibilità effettiva dello strumento militare, trasformando risorse finanziarie, competenze specialistiche e innovazione tecnologica in capacità utilizzabili. È proprio in contesti come questo che la performance amministrativa può essere letta anche come capacità organizzativa di assicurare la funzione istituzionale. Valutare queste funzioni consente di osservare una componente della capacità complessiva dello Stato, senza ricondurre l’operato del personale in uniforme alle categorie proprie del lavoro pubblico contrattualizzato. Il Ministero della Difesa e il Ministero dell’Interno dispongono, del resto, di sistemi di misurazione e valutazione della performance amministrativa costruiti nel quadro del D.Lgs. n. 150/2009. Nel primo caso il sistema vigente è stato adottato con D.M. 11 febbraio 2025; nel secondo, con D.M. del 2 marzo 2026.</p><p class="source-note"><em>Fonti:</em> Art. 3, D.Lgs. 30 marzo 2001, n. 165; Ministero della Difesa e Ministero dell’Interno, Sistemi di misurazione e valutazione della performance.</p><h2>Una proposta interpretativa: la performance di missione</h2><p>Ai fini della presente analisi, può essere definita performance di missione la capacità di un’organizzazione pubblica di trasformare risorse, competenze, informazioni e responsabilità in risultati coerenti con il proprio mandato, preservando legalità, continuità, coordinamento e adattamento.</p><p>L’espressione non appartiene al lessico normativo, ma rappresenta una categoria interpretativa costruita combinando concetti già consolidati nella dottrina del performance management, nella resilienza organizzativa e nel quadro istituzionale NATO sulla preparazione civile e sulla continuità delle funzioni essenziali. Descrive una performance che non si limita a registrare quanto sia stato prodotto, ma considera se l’organizzazione sia effettivamente in grado di continuare a operare quando lo scenario muta. Il concetto centrale è quello di capacità disponibile: un piano approvato, una risorsa stanziata o una procedura formalmente completa non equivalgono ancora a una funzione pronta. Occorre che personale, strumenti, competenze e responsabilità possano essere attivati in tempi coerenti con la missione.</p><p>Il quadro istituzionale NATO sulla resilienza e sulla preparazione civile offre un riferimento utile. L’Alleanza definisce la resilienza come capacità individuale e collettiva di prepararsi, resistere, rispondere e recuperare rapidamente da shock e perturbazioni. La preparazione civile assicura tre funzioni essenziali: continuità del governo, continuità dei servizi essenziali alla popolazione e supporto civile alle operazioni militari. Le sette Baseline Requirements costituiscono parametri attraverso i quali gli Alleati possono misurare il proprio livello di preparazione nazionale. In ogni caso non sono indicatori per la valutazione individuale del personale, né possono essere utilizzati come tali.</p><p>Mostrano, tuttavia, un principio essenziale: una capacità pubblica deve essere pianificata, sostenuta e periodicamente verificata. Una struttura è pronta quando dispone di alternative, responsabilità definite, procedure sperimentate e competenze sufficientemente diffuse. La performance di missione osserva precisamente questo spazio: non la dichiarazione della capacità, ma la sua effettiva disponibilità.</p><p class="source-note"><em>Fonti:</em> NATO, Resilience, Civil Preparedness and Article 3, 13 novembre 2024; W.D. Roepke, H. Thankey, Resilience: The First Line of Defence, NATO Review, 2019.</p><h2>Indicatori di performance e limiti della misurazione</h2><p>Misurare è necessario. Prima ancora di scegliere un indicatore, però, occorre stabilire quale funzione esso debba svolgere.</p><p>Robert D. Behn ha individuato otto possibili finalità della misurazione: valutare, controllare, allocare le risorse, motivare, promuovere, riconoscere i risultati, apprendere e migliorare. La sua conclusione è netta: nessuna singola misura è adatta a tutte le finalità. L’indicatore deve essere costruito in relazione all’uso che se ne intende fare. Questa cautela assume un peso particolare nelle amministrazioni che concorrono alla sicurezza. Non tutti i risultati sono immediatamente visibili. La prevenzione può consistere nel mancato verificarsi di un evento. La preparazione manifesta il proprio valore soprattutto quando viene messa alla prova. La tempestività, inoltre, deve convivere con legalità, accuratezza, sostenibilità e protezione delle informazioni.</p><p>Il dato quantitativo conserva quindi la propria utilità, ma non esaurisce il giudizio. Deve essere interpretato alla luce della missione e del contesto.</p><p>La ricerca empirica conferma che l’esistenza di un sistema di performance non garantisce, da sola, migliori risultati. La metanalisi di Ed Gerrish, fondata su 2.188 effetti ricavati da 49 studi, rileva un effetto medio contenuto del performance management, più consistente quando il sistema è accompagnato da pratiche gestionali di qualità. Anche l’OCSE osserva che i sistemi di valutazione risultano maggiormente efficaci quando collegano l’azione dei dipendenti agli obiettivi dei gruppi e delle organizzazioni, individuano lacune di competenze e sostengono lo sviluppo professionale. Non esiste, pertanto, un modello unico e indipendente dalle caratteristiche dell’amministrazione.</p><p>La qualità non risiede nella quantità dei dati prodotti. Risiede nella capacità di utilizzarli per correggere le decisioni, orientare la formazione e migliorare l’impiego delle risorse.</p><p class="source-note"><em>Fonti:</em> R.D. Behn, Why Measure Performance? Different Purposes Require Different Measures, Public Administration Review, 63(5), 2003, pp. 586-606; E. Gerrish, The Impact of Performance Management on Performance in Public Organizations: A Meta-Analysis, Public Administration Review, 76(1), 2016, pp. 48-66; OECD, Government at a Glance 2025, cap. 14.3.</p><h2>La verifica della resilienza attraverso le esercitazioni</h2><p>La protezione civile mostra come la capacità possa essere verificata senza ridurla a una graduatoria. I piani individuano responsabilità, procedure, risorse e modelli di coordinamento. Le esercitazioni servono a testare il modello di intervento, aggiornare la conoscenza del territorio, verificare l’adeguatezza delle risorse e convalidare i contenuti della pianificazione. Permettono, inoltre, di valutare le capacità operative e gestionali coinvolte.</p><p>L’esercitazione nazionale EXE PO 2026, svolta dal 25 al 27 giugno nel bacino del fiume Po, ha verificato la risposta del Servizio nazionale della protezione civile a uno scenario di piena straordinaria. Sono stati testati i flussi di comunicazione, i sistemi di allertamento, i modelli di intervento e il coordinamento tra i diversi livelli istituzionali; per la prima volta è stata attivata anche l’Unità di comando e controllo del bacino del Po. Il valore dell’esercitazione non coincide con il successo formale della simulazione: consiste nella possibilità di rilevare scostamenti, vulnerabilità e necessità di aggiornamento prima che emergano durante un evento reale.</p><p>La NATO applica una logica analoga attraverso i processi di lessons learned. Il relativo Handbook distingue analisi, implementazione e condivisione delle lezioni, affinché l’esperienza produca adattamenti concreti e sostenga la trasformazione dell’organizzazione. Agli indicatori ordinari possono quindi affiancarsi esercitazioni, analisi successive agli eventi e verifiche della continuità. Non per trasferire meccanicamente categorie operative alla valutazione amministrativa, ma per osservare se l’organizzazione sia capace di apprendere. Una criticità rilevata e corretta diventa conoscenza istituzionale. Una criticità non osservata rimane una vulnerabilità.</p><p class="source-note"><em>Fonti:</em> Dipartimento della Protezione civile, Esercitazioni di protezione civile; EXE PO 2026; NATO Joint Analysis and Lessons Learned Centre, NATO Lessons Learned Handbook, 4th ed., 2022.</p><h2>Le sfide applicative del nuovo sistema della performance</h2><p>La Legge n. 119/2026 apre una fase applicativa. La sua efficacia dipenderà dai successivi interventi, dall’aggiornamento dei sistemi delle singole amministrazioni e dalla capacità di adattare i nuovi strumenti alla natura delle funzioni esercitate.</p><p>La partecipazione di soggetti esterni dovrà essere introdotta gradualmente, secondo linee guida ministeriali che tengano conto della dimensione dell’amministrazione e della complessità dell’organizzazione. La legge precisa, inoltre, che tale apporto ha natura sussidiaria e non sostitutiva rispetto al giudizio del responsabile del personale.</p><p>Nel settore della sicurezza, gradualità e appropriatezza dovranno procedere insieme. Il contributo di utenti e stakeholder potrà risultare utile quando riguardi attività effettivamente osservabili, ma dovrà essere calibrato sulla natura delle funzioni, sui limiti normativi e sulle esigenze di riservatezza, protezione dei dati e continuità istituzionale. Trasparenza e protezione delle informazioni non sono termini necessariamente alternativi. Una possibile soluzione consiste nel distinguere tra rendicontazione pubblica e analisi interna. La prima può riguardare obiettivi, risorse e risultati aggregati, nel rispetto della normativa vigente; la seconda può approfondire vulnerabilità, tempi di risposta, continuità dei servizi ed esiti delle esercitazioni entro circuiti riservati alle autorità competenti.</p><p>Il punto decisivo resta, tuttavia, il rapporto tra valutazione, formazione e fabbisogni. La riforma produrrà valore se una carenza rilevata genererà un intervento formativo, se la formazione sarà collegata alla missione e se il risultato verrà nuovamente verificato. In caso contrario, il ciclo rischierà di chiudersi sul documento anziché sull’organizzazione.</p><p>Il merito pubblico non coincide con la posizione occupata in una graduatoria. Consiste nella capacità di offrire un contributo riconoscibile all’interesse generale. Per le amministrazioni che concorrono alla Difesa, alla sicurezza e alla resilienza, la misura più significativa è allora quella della continuità: preparare oggi ciò che dovrà restare disponibile domani, anche quando le condizioni non saranno quelle previste.</p><p class="source-note"><em>Fonti:</em> Legge 2 luglio 2026, n. 119; Ministro per la Pubblica Amministrazione, Direttive 28 novembre 2023 e 14 gennaio 2025; OECD, Government at a Glance 2025; OECD, More Resilient Public Administrations after COVID-19, 2023.</p><div class="pull-quote" style="margin-top: 4rem; margin-bottom: 2rem;">“La qualità di un’amministrazione non si riconosce soltanto in ciò che produce, ma in ciò che riesce a mantenere quando il contesto cambia.”</div><div class="author-box"><img alt="Michele Punzi" onerror="this.style.display='none';" src="../assets/michele-punzi.jpg"/><div class="author-info"><h4><a href="../chi-siamo.html#punzi">Michele Punzi</a></h4><p>Consulente editoriale di DYNAMES. Laureato in Giurisprudenza e in Scienze Giuridiche della Sicurezza, si occupa di governance pubblica, sicurezza nazionale, diritto delle istituzioni e analisi strategica, con particolare attenzione al rapporto tra amministrazioni, territorio, resilienza istituzionale e trasformazioni geopolitiche. Contribuisce alla definizione dell’indirizzo editoriale della piattaforma.</p></div></div></div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>

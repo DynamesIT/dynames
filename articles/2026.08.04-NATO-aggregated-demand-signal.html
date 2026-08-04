@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | La NATO spiega la guerra per cui si prepara</title>
+<meta content="L’Aggregated Demand Signal NATO rende leggibili le esigenze militari fino al 2035 e orienta industria, ricerca e investimenti verso le capacità future." name="description"/>
+<link href="https://www.dynames.it/articles/2026.08.04-NATO-aggregated-demand-signal.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="La NATO spiega la guerra per cui si prepara" property="og:title"/>
+<meta content="L’Aggregated Demand Signal NATO rende leggibili le esigenze militari fino al 2035 e orienta industria, ricerca e investimenti verso le capacità future." property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.08.04-NATO-aggregated-demand-signal.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-NATO-aggregated-demand-signal-light.jpg?v=1" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-NATO-aggregated-demand-signal-light.jpg?v=1" property="og:image:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-NATO-aggregated-demand-signal-light.jpg?v=1" property="og:image:secure_url"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="Collage realistico delle cinque priorità NATO: forze terrestri e droni, difesa aerea e missilistica, deep strike, medicina operativa e logistica" property="og:image:alt"/>
+<link href="https://www.dynames.it/articles/Immagini/2026.08.04-NATO-aggregated-demand-signal-light.jpg?v=1" rel="image_src"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="La NATO spiega la guerra per cui si prepara" name="twitter:title"/>
+<meta content="L’Aggregated Demand Signal NATO rende leggibili le esigenze militari fino al 2035 e orienta industria, ricerca e investimenti verso le capacità future." name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-NATO-aggregated-demand-signal-light.jpg?v=1" name="twitter:image"/>
+<meta content="Collage realistico delle cinque priorità NATO: forze terrestri e droni, difesa aerea e missilistica, deep strike, medicina operativa e logistica" name="twitter:image:alt"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.04-NATO-aggregated-demand-signal-light.jpg?v=1" name="twitter:image:src"/>
+<meta content="Rodolfo Belcastro" name="author"/>
+<meta content="Rodolfo Belcastro" property="article:author"/>
+<meta content="2026-08-04T09:00:00+02:00" property="article:published_time"/>
+<meta content="Economia e Industria" property="article:section"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+
+
+        .article-figure {
+            margin: 0 0 4rem 0;
+        }
+
+        .article-figure .article-hero {
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .article-image-caption {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+
+        .interviewee-box {
+            margin: 2rem 0 3rem 0;
+            padding: 2rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .interviewee-box figure {
+            margin: 0;
+        }
+
+        .interviewee-box img {
+            width: 160px;
+            height: 160px;
+            border-radius: 4px;
+            object-fit: cover;
+            display: block;
+            background: #e2e8f0;
+        }
+
+        .interviewee-caption {
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            color: var(--text-secondary);
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .interviewee-info p {
+            margin-bottom: 0;
+            text-align: left;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .author-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+
+            .interviewee-box {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .interviewee-box img {
+                margin: 0 auto;
+            }
+
+            .interviewee-caption,
+            .interviewee-info p {
+                text-align: center;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article lang="it">
+<div class="article-container article-header">
+<span class="article-category">Economia e Industria</span>
+<h1 class="serif-heading article-title">La NATO spiega la guerra per cui si prepara</h1>
+<p class="article-abstract">È una mappa per l’industria e un messaggio politico: la deterrenza del 2035 dipenderà dalle scelte compiute oggi.</p>
+<div class="article-meta"><span class="meta-author">Rodolfo Belcastro</span><span>4 Agosto 2026</span><span>Tempo di lettura: 4 min</span></div>
+</div>
+<figure class="article-figure">
+<img alt="Collage realistico delle cinque priorità NATO: forze terrestri e droni, difesa aerea e missilistica, deep strike, medicina operativa e logistica" class="article-hero" decoding="async" fetchpriority="high" height="941" onerror="this.closest('figure').style.display='none'" src="Immagini/2026.08.04-NATO-aggregated-demand-signal.png" width="1672"/>
+<figcaption class="article-image-caption">Le cinque aree prioritarie dell’Aggregated Demand Signal NATO in una composizione editoriale DYNAMES.</figcaption>
+</figure>
+<div class="article-container article-body"><p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">L</span>’Alleanza Atlantica ha pubblicato per la prima volta il suo <em>Aggregated Demand Signal</em> non classificato: un documento che rende leggibili alcune delle principali esigenze militari previste fino al 2035. Non è un bando e non elenca sistemi d’arma. È un segnale anticipato della domanda: indica i problemi operativi da risolvere e gli effetti attesi dalle capacità future.</p><p>Il documento deriva dal processo di pianificazione della difesa NATO e fa parte dell’<em>Innovation Scale-Up Package</em> approvato a summit di Ankara. L’obiettivo è accorciare la distanza tra chi definisce il bisogno, chi sviluppa la tecnologia, chi finanzia e chi deve produrre su scala. La pubblicazione consente a gruppi industriali, startup e centri di ricerca di orientare investimenti, competenze e catene di fornitura.</p><p>Nel sistema italiano, questo raccordo trova uno dei suoi principali snodi nella Direzione Nazionale degli Armamenti (DNA). È qui che gli indirizzi del Ministro della Difesa, le esigenze tecnico-operative espresse dallo Stato Maggiore e la programmazione degli approvvigionamenti incontrano il sistema industriale, la ricerca e lo sviluppo tecnologico. La separazione, completata nel 2024, tra le funzioni del Segretario Generale della Difesa (SGD) e quelle del Direttore Nazionale degli Armamenti ha inteso rafforzare proprio questa dimensione, attribuendo maggiore autonomia e centralità alla politica industriale della Difesa, all’innovazione e alla gestione dei programmi di acquisizione. In tale quadro, l’<em>Aggregated Demand Signal</em> pubblicato dalla NATO può assumere rilievo anche per la pianificazione nazionale. Non rappresenta un catalogo di sistemi da acquistare, né determina automaticamente nuove commesse: offre, piuttosto, una traiettoria; un riferimento attraverso il quale orientare ricerca, sperimentazione, cooperazione internazionale e investimenti industriali verso capacità interoperabili, sostenibili e concretamente producibili su scala.</p><p>La novità è anche nel metodo. La NATO non prescrive un prodotto, ma formula cinque problemi e descrive il risultato desiderato. Il mercato può proporre combinazioni di sensori, software, piattaforme autonome e sistemi di comando, purché siano interoperabili e utilizzabili in condizioni reali. È un modo per non rinchiudere l’innovazione dentro requisiti costruiti intorno a tecnologie già note.</p><p>La prima priorità riguarda le grandi formazioni terrestri. La NATO immagina unità chiamate a muoversi rapidamente in ambienti urbani e rurali, contro avversari avanzati, sotto disturbo elettronico e con informazioni incomplete. Droni e sistemi autonomi non sono più un’aggiunta specialistica: diventano parte ordinaria della forza, insieme a fuochi indiretti, ricognizione, supporto aereo e comando e controllo.</p><p>La seconda area è la difesa aerea e missilistica. Le minacce vanno dai piccoli droni ai razzi, dall’artiglieria ai missili balistici e ipersonici. Il problema è la saturazione: molti bersagli, da direzioni e quote differenti, possono esaurire le munizioni e sovraccaricare sensori e centri decisionali. Per questo il documento insiste sulla profondità dei “magazzini” e sul costo per bersaglio abbattuto. Una difesa è credibile solo se può reggere senza impiegare intercettori costosissimi contro minacce molto più economiche.</p><p>La terza priorità è il <em>deep strike</em>: colpire a grande distanza obiettivi mobili, dispersi o fortificati, penetrando difese integrate e continuando a operare quando comunicazioni e spettro elettromagnetico sono degradati. La precisione è decisiva anche perché i bersagli possono trovarsi vicino a infrastrutture civili: produrre l’effetto militare significa ridurre errori, danni collaterali e consumo di risorse.</p><p>Le ultime due aree sono forse le più rivelatrici. La NATO include tra le priorità medicina operativa e logistica. Chiede evacuazione dei feriti con mezzi con e senza equipaggio, strutture sanitarie modulari e capacità di operare in ambienti contaminati. Parallelamente, considera essenziale proteggere le reti che trasportano uomini, munizioni, carburante, ricambi e mezzi pesanti, anche quando porti, aeroporti, strade e nodi logistici vengono colpiti.</p><p>È difficile non leggere in questa impostazione la lezione delle guerre contemporanee: il conflitto non si decide soltanto nello scontro iniziale, ma nella capacità di assorbire perdite, adattarsi, riparare, rifornire e continuare a combattere. La tecnologia più avanzata perde valore se non può essere prodotta in quantità, integrata, mantenuta sul campo o sostituita rapidamente.</p><p>Il valore strategico dell’<em>Aggregated Demand Signal</em> va quindi oltre la sua funzione industriale. Rendendo pubblici i problemi, la NATO rende visibile il proprio modello di guerra futura: un confronto lungo, multidominio, sottoposto a interferenza elettronica, saturazione e attacchi alle infrastrutture. Non rivela piani operativi, ma indica quali vulnerabilità considera decisive. È una mappa per l’industria e un messaggio politico: la deterrenza del 2035 dipenderà dalle scelte compiute oggi.</p>
+<div class="author-box"><img alt="Rodolfo Belcastro" decoding="async" height="80" loading="lazy" onerror="this.style.display='none';" src="../assets/sme-contributors/rodolfo-belcastro.jpeg" width="80"/><div class="author-info"><h4>Rodolfo Belcastro</h4><p>Executive manager, board member, giornalista professionista ed editorialista, opera all’intersezione tra finanza, industria, tecnologia, comunicazione strategica e relazioni istituzionali. Ha maturato una consolidata esperienza in gruppi multinazionali e società quotate, occupandosi di posizionamento, reputation management, public affairs e rapporti tra imprese, istituzioni e stakeholder. Analizza l’economia e la finanza della difesa, con attenzione a spesa militare, procurement, filiere strategiche, strumenti finanziari, tecnologie dual-use e autonomia industriale europea, approfondendo il rapporto tra capitale, capacità produttiva, reputazione, resilienza industriale e deterrenza.</p></div></div></div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
