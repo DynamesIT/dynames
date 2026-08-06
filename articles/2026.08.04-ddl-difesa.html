@@ -946,6 +946,64 @@
             .hero-placeholder strong { font-size: 1.35rem; }
             .article-map { grid-template-columns: 1fr; }
         }
+
+
+        /* Miniature delle hero nelle analisi del dossier */
+        .toc-box li {
+            display: grid;
+            grid-template-columns: 180px minmax(0, 1fr);
+            gap: 1.2rem;
+            align-items: start;
+        }
+        .toc-thumb-link {
+            grid-row: 1 / span 4;
+            display: block;
+            width: 180px;
+            min-width: 180px;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            border: none !important;
+            border-radius: 4px;
+            background: var(--night-blue);
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
+        }
+        .toc-thumb {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .toc-thumb-link:hover .toc-thumb {
+            transform: scale(1.035);
+            opacity: 0.92;
+        }
+        .toc-title,
+        .toc-meta,
+        .toc-focus,
+        .toc-status {
+            grid-column: 2;
+        }
+        @media (max-width: 700px) {
+            .toc-box li {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            .toc-thumb-link {
+                grid-row: auto;
+                grid-column: 1;
+                width: 100%;
+                min-width: 0;
+                aspect-ratio: 16 / 9;
+            }
+            .toc-title,
+            .toc-meta,
+            .toc-focus,
+            .toc-status {
+                grid-column: 1;
+            }
+        }
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -1017,43 +1075,43 @@
 <div class="toc-box">
 <h2>Le sette analisi del dossier</h2>
 <ol>
-<li>
+<li><a aria-label="Apri l’articolo: Difendere lo Stato nell’era della guerra ibrida: cultura della difesa, nuovi teatri operativi e competizione informativa" class="toc-thumb-link" href="2026.08.04-ddl/2026.08.04-guerra-ibrida.html"><img alt="Miniatura della hero: Difendere lo Stato nell’era della guerra ibrida: cultura della difesa, nuovi teatri operativi e competizione informativa" class="toc-thumb" decoding="async" loading="lazy" onerror="this.closest('.toc-thumb-link').style.display='none';" src="2026.08.04-ddl/2026.08.04-guerra-ibrida.jpg"/></a>
 <a class="toc-title" href="2026.08.04-ddl/2026.08.04-guerra-ibrida.html">Difendere lo Stato nell’era della guerra ibrida: cultura della difesa, nuovi teatri operativi e competizione informativa</a>
 <span class="toc-meta"><a class="toc-meta-link" href="2026.08.04-ddl/2026.08.04-guerra-ibrida.html"><strong>Autore:</strong> Francesco Cirigliano</a></span>
 <span class="toc-focus">La cultura della difesa, la protezione dello spazio informativo e il riconoscimento della minaccia ibrida come condizione permanente della competizione.</span>
 <a class="toc-status" href="2026.08.04-ddl/2026.08.04-guerra-ibrida.html">Leggi l’articolo completo →</a>
 </li>
-<li>
+<li><a aria-label="Apri l’articolo: Dalla tecnologia alla prontezza: il ruolo strategico del personale militare" class="toc-thumb-link" href="2026.08.04-ddl/2026.08.04-personale-militare.html"><img alt="Miniatura della hero: Dalla tecnologia alla prontezza: il ruolo strategico del personale militare" class="toc-thumb" decoding="async" loading="lazy" onerror="this.closest('.toc-thumb-link').style.display='none';" src="2026.08.04-ddl/2026.08.04-personale-militare.jpg"/></a>
 <a class="toc-title" href="2026.08.04-ddl/2026.08.04-personale-militare.html">Dalla tecnologia alla prontezza: il ruolo strategico del personale militare</a>
 <span class="toc-meta"><a class="toc-meta-link" href="2026.08.04-ddl/2026.08.04-personale-militare.html"><strong>Autore:</strong> Francesco Bianchi</a></span>
 <span class="toc-focus">Competenze, alloggi, mobilità, tutele e incentivi come componenti di una politica del capitale umano orientata alla prontezza operativa.</span>
 <a class="toc-status" href="2026.08.04-ddl/2026.08.04-personale-militare.html">Leggi l’articolo completo →</a>
 </li>
-<li>
+<li><a aria-label="Apri l’articolo: Cyber, autonomia e competenze" class="toc-thumb-link" href="2026.08.04-ddl/2026.08.04-cyber-autonomia-competenze.html"><img alt="Miniatura della hero: Cyber, autonomia e competenze" class="toc-thumb" decoding="async" loading="lazy" onerror="this.closest('.toc-thumb-link').style.display='none';" src="2026.08.04-ddl/2026.08.04-cyber-autonomia-competenze.jpg"/></a>
 <a class="toc-title" href="2026.08.04-ddl/2026.08.04-cyber-autonomia-competenze.html">Cyber, autonomia e competenze</a>
 <span class="toc-meta"><a class="toc-meta-link" href="2026.08.04-ddl/2026.08.04-cyber-autonomia-competenze.html"><strong>Autore:</strong> Aniello Inverso</a></span>
 <span class="toc-focus">Spazio cibernetico, autorità cyber, brevetto di Specialista Cyber Militare e sistemi unmanned letti come architettura di capacità, non come interventi tecnici isolati.</span>
 <a class="toc-status" href="2026.08.04-ddl/2026.08.04-cyber-autonomia-competenze.html">Leggi l’articolo completo →</a>
 </li>
-<li>
+<li><a aria-label="Apri l’articolo: Dalla difesa “a comparti” alla governance della decisione" class="toc-thumb-link" href="2026.08.04-ddl/2026.08.04-governance-decisione.html"><img alt="Miniatura della hero: Dalla difesa “a comparti” alla governance della decisione" class="toc-thumb" decoding="async" loading="lazy" onerror="this.closest('.toc-thumb-link').style.display='none';" src="2026.08.04-ddl/2026.08.04-governance-decisione.jpg"/></a>
 <a class="toc-title" href="2026.08.04-ddl/2026.08.04-governance-decisione.html">Dalla difesa “a comparti” alla governance della decisione</a>
 <span class="toc-meta"><a class="toc-meta-link" href="2026.08.04-ddl/2026.08.04-governance-decisione.html"><strong>Autore:</strong> Antonino Brigandì</a></span>
 <span class="toc-focus">La riorganizzazione del vertice, l’interforze e il raccordo interministeriale come strumenti per governare crisi energetiche, ambientali, tecnologiche e militari.</span>
 <a class="toc-status" href="2026.08.04-ddl/2026.08.04-governance-decisione.html">Leggi l’articolo completo →</a>
 </li>
-<li>
+<li><a aria-label="Apri l’articolo: Infrastrutture della Difesa: dal supporto logistico al dominio operativo" class="toc-thumb-link" href="2026.08.04-ddl/2026.08.04-infrastrutture-difesa.html"><img alt="Miniatura della hero: Infrastrutture della Difesa: dal supporto logistico al dominio operativo" class="toc-thumb" decoding="async" loading="lazy" onerror="this.closest('.toc-thumb-link').style.display='none';" src="2026.08.04-ddl/2026.08.04-infrastrutture-difesa.jpg"/></a>
 <a class="toc-title" href="2026.08.04-ddl/2026.08.04-infrastrutture-difesa.html">Infrastrutture della Difesa: dal supporto logistico al dominio operativo</a>
 <span class="toc-meta"><a class="toc-meta-link" href="2026.08.04-ddl/2026.08.04-infrastrutture-difesa.html"><strong>Autore:</strong> Luciano Pastore</a></span>
 <span class="toc-focus">Patrimonio immobiliare, energia, reti digitali, procedure ambientali e Difesa Servizi come elementi della resilienza e della continuità operativa nazionale.</span>
 <a class="toc-status" href="2026.08.04-ddl/2026.08.04-infrastrutture-difesa.html">Leggi l’articolo completo →</a>
 </li>
-<li>
+<li><a aria-label="Apri l’articolo: La fine dell’innocenza dottrinale: il DDL Difesa come imperativo di sovranità multidominio" class="toc-thumb-link" href="2026.08.04-ddl/2026.08.04-sovranita-multidominio.html"><img alt="Miniatura della hero: La fine dell’innocenza dottrinale: il DDL Difesa come imperativo di sovranità multidominio" class="toc-thumb" decoding="async" loading="lazy" onerror="this.closest('.toc-thumb-link').style.display='none';" src="2026.08.04-ddl/2026.08.04-sovranita-multidominio.jpg"/></a>
 <a class="toc-title" href="2026.08.04-ddl/2026.08.04-sovranita-multidominio.html">La fine dell’innocenza dottrinale: il DDL Difesa come imperativo di sovranità multidominio</a>
 <span class="toc-meta"><a class="toc-meta-link" href="2026.08.04-ddl/2026.08.04-sovranita-multidominio.html"><strong>Autrice:</strong> Chiara Caterina Gatti</a></span>
 <span class="toc-focus">Una lettura strategica del provvedimento come tentativo di colmare il ritardo decisionale, superare i silos e adattare il comando alla velocità della competizione contemporanea.</span>
 <a class="toc-status" href="2026.08.04-ddl/2026.08.04-sovranita-multidominio.html">Leggi l’articolo completo →</a>
 </li>
-<li>
+<li><a aria-label="Apri l’articolo: Difesa e politica industriale nel nuovo DDL: industria, innovazione e cooperazione internazionale al servizio della capacità strategica nazionale" class="toc-thumb-link" href="2026.08.04-ddl/2026.08.06-difesa-politica-industriale-nuovo-ddl.html"><img alt="Miniatura della hero: Difesa e politica industriale nel nuovo DDL: industria, innovazione e cooperazione internazionale al servizio della capacità strategica nazionale" class="toc-thumb" decoding="async" loading="lazy" onerror="this.closest('.toc-thumb-link').style.display='none';" src="2026.08.04-ddl/2026.08.06-difesa-politica-industriale-nuovo-ddl.jpg"/></a>
 <a class="toc-title" href="2026.08.04-ddl/2026.08.06-difesa-politica-industriale-nuovo-ddl.html">Difesa e politica industriale nel nuovo DDL: industria, innovazione e cooperazione internazionale al servizio della capacità strategica nazionale</a>
 <span class="toc-meta"><a class="toc-meta-link" href="2026.08.04-ddl/2026.08.06-difesa-politica-industriale-nuovo-ddl.html"><strong>Autore:</strong> Guido Dello Ioio</a></span>
 <span class="toc-focus">Politica industriale, cooperazione internazionale, sicurezza energetica e ricerca tecnologica come componenti integrate della capacità strategica nazionale.</span>
