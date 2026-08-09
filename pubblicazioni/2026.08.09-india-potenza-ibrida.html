@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+                deleteAnalyticsCookies();
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Dal non allineamento politico al non allineamento digitale: l’India come potenza ibrida nell’ordine multipolare eurasiatico</title>
+<meta content="Il contributo di Aniello Inverso interpreta l’India come potenza ibrida e tecnologicamente sovrana, dal non allineamento politico al digital non-alignment." name="description"/>
+<link href="https://www.dynames.it/pubblicazioni/2026.08.09-india-potenza-ibrida.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Dal non allineamento politico al non allineamento digitale: l’India come potenza ibrida nell’ordine multipolare eurasiatico" property="og:title"/>
+<meta content="Il contributo di Aniello Inverso interpreta l’India come potenza ibrida e tecnologicamente sovrana, dal non allineamento politico al digital non-alignment." property="og:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/2026.08.09-india-potenza-ibrida.html" property="og:url"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.08.09-india-potenza-ibrida-light.jpg" property="og:image"/>
+<meta content="Bandiera dell’India sopra una città digitale, immagine di copertina del volume India Potenza Eurasiatica" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Dal non allineamento politico al non allineamento digitale: l’India come potenza ibrida nell’ordine multipolare eurasiatico" name="twitter:title"/>
+<meta content="Il contributo di Aniello Inverso interpreta l’India come potenza ibrida e tecnologicamente sovrana, dal non allineamento politico al digital non-alignment." name="twitter:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.08.09-india-potenza-ibrida-light.jpg" name="twitter:image"/>
+<meta content="2026-08-09T09:00:00+02:00" property="article:published_time"/>
+<meta content="Aniello Inverso" name="author"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+        --night-blue: #0b1120;
+        --deep-blue: #294967;
+        --slate-grey: #334155;
+        --light-grey: #f8fafc;
+        --optical-white: #ffffff;
+        --accent: #1e3a8a;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-light: #cbd5e1;
+        --paper-bg: #fdfbf7;
+        --gold-accent: #b8935a;
+        --border: #e2e8f0;
+        --dynames-blue: #0b1c2d;
+        --dynames-slate: #263a58;
+        --dynames-grey: #ededed;
+        --dynames-electric: #27a8ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: var(--paper-bg);
+        color: var(--text-primary);
+        line-height: 1.8;
+        font-size: 1.08rem;
+    }
+    h1, h2, h3, .brand, .button, .tag, .small-label, .cover-kicker, .cover-series {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .serif-heading { font-family: 'Playfair Display', serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .article-container { max-width: 920px; margin: 0 auto; padding: 0 2rem; }
+
+    header {
+        background: var(--optical-white);
+        border-bottom: 2px solid var(--night-blue);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+    .brand a { text-decoration: none; }
+    .brand h1 {
+        font-size: 1.8rem;
+        color: var(--night-blue);
+        font-weight: 800;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .brand-logo { height: 40px; width: auto; }
+    .brand p {
+        font-size: .65rem;
+        color: var(--slate-grey);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 600;
+        margin-top: 2px;
+    }
+    .desktop-nav { display: flex; gap: 2rem; align-items: center; }
+    .desktop-nav a {
+        color: var(--night-blue);
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: color .25s;
+    }
+    .desktop-nav a:hover, .desktop-nav a.active { color: var(--gold-accent); }
+    .back-nav { padding: 2rem 0; }
+    .back-nav a {
+        color: var(--slate-grey);
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .back-nav a:hover { color: var(--gold-accent); }
+
+    .hero {
+        display: grid;
+        grid-template-columns: minmax(0, .95fr) minmax(360px, 1.05fr);
+        gap: 4rem;
+        align-items: center;
+        margin-bottom: 4rem;
+    }
+    .article-category {
+        display: block;
+        margin-bottom: 1.2rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .article-title {
+        color: var(--night-blue);
+        font-size: clamp(2.55rem, 5.8vw, 4.55rem);
+        line-height: 1.04;
+        margin-bottom: 1.5rem;
+    }
+    .article-subtitle {
+        color: var(--slate-grey);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.28rem;
+        font-style: italic;
+        line-height: 1.5;
+        margin-bottom: 2rem;
+    }
+    .article-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem 1.2rem;
+        flex-wrap: wrap;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .8rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .meta-author { color: var(--night-blue); font-weight: 700; }
+
+    .cover-card {
+        position: relative;
+        min-height: 468px;
+        padding: .65rem;
+        border: 1px solid #d8dde3;
+        background: var(--dynames-grey);
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .2);
+        transform: rotate(.6deg);
+    }
+    .publication-cover {
+        position: relative;
+        display: flex;
+        min-height: 445px;
+        height: 100%;
+        overflow: hidden;
+        flex-direction: column;
+        background:
+            radial-gradient(circle at 76% 31%, rgba(39, 168, 255, .12), transparent 31%),
+            linear-gradient(145deg, #102946 0%, var(--dynames-blue) 58%, #071321 100%);
+        color: white;
+        isolation: isolate;
+    }
+    .publication-cover::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        left: -12%;
+        right: -12%;
+        bottom: -16%;
+        height: 47%;
+        background: var(--dynames-grey);
+        transform: rotate(-8deg);
+        transform-origin: center;
+    }
+    .publication-cover::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        right: -56px;
+        bottom: 12px;
+        width: 155px;
+        height: 155px;
+        border: 1px solid rgba(39, 168, 255, .28);
+        border-radius: 50%;
+    }
+    .cover-series {
+        margin-bottom: .65rem;
+        color: #8fd3ff;
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+    .cover-brand {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: 1.25rem 1.35rem 0;
+    }
+    .cover-brand-mark {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0) invert(1);
+    }
+    .cover-brand-copy {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+    }
+    .cover-brand-copy strong {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: .15em;
+    }
+    .cover-brand-copy span {
+        margin-top: .3rem;
+        color: #c6d1dc;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .46rem;
+        letter-spacing: .08em;
+    }
+    .cover-copy {
+        position: relative;
+        z-index: 3;
+        width: 88%;
+        margin: 3.1rem 1.7rem 7.4rem;
+    }
+    .cover-kicker {
+        display: inline-block;
+        width: fit-content;
+        margin-bottom: 1rem;
+        padding: .38rem .7rem;
+        border: 1px solid #76c9ff;
+        background: rgba(39, 168, 255, .1);
+        color: white;
+        font-size: .64rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .cover-title {
+        max-width: 100%;
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.72rem;
+        font-weight: 800;
+        letter-spacing: -.035em;
+        line-height: 1.08;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, .24);
+    }
+    .cover-footer {
+        position: absolute;
+        z-index: 4;
+        right: 1.4rem;
+        bottom: 1.2rem;
+        left: 1.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--dynames-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .68rem;
+        font-weight: 800;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+    }
+    .cover-year {
+        color: var(--dynames-electric);
+        font-size: .78rem;
+    }
+    .cover-network {
+        position: absolute;
+        z-index: 2;
+        top: 2.6rem;
+        right: -1.1rem;
+        width: 57%;
+        opacity: .72;
+        pointer-events: none;
+    }
+    .cover-network line,
+    .cover-network polyline {
+        fill: none;
+        stroke: rgba(201, 235, 255, .72);
+        stroke-width: 1.4;
+    }
+    .cover-network circle {
+        fill: white;
+        stroke: var(--dynames-electric);
+        stroke-width: 2.5;
+        filter: drop-shadow(0 0 4px #42b3ff);
+    }
+
+    .section, .paper-section { margin-bottom: 3.6rem; }
+    .small-label {
+        display: block;
+        margin-bottom: .55rem;
+        color: var(--gold-accent);
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .paper-section h2, .section h2 {
+        color: var(--night-blue);
+        font-size: clamp(1.85rem, 4vw, 2.55rem);
+        line-height: 1.18;
+        margin-bottom: 1.45rem;
+    }
+    .paper-section p {
+        margin-bottom: 1.25rem;
+        color: var(--text-primary);
+        text-align: justify;
+        hyphens: auto;
+    }
+    .paper-section:not(.bibliography) > p:first-of-type::first-letter {
+        float: left;
+        margin: .05rem .48rem 0 0;
+        color: var(--night-blue);
+        font-family: 'Playfair Display', serif;
+        font-size: 3.2rem;
+        line-height: .82;
+    }
+    .abstract-section {
+        padding: 2.2rem;
+        border-left: 4px solid var(--gold-accent);
+        background: white;
+        box-shadow: 0 12px 30px rgba(15,23,42,.06);
+    }
+    .pull-quote {
+        margin: 1rem 0 4rem;
+        padding: 0 2rem;
+        border-left: 4px solid var(--gold-accent);
+        color: var(--night-blue);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.65rem;
+        font-style: italic;
+        line-height: 1.45;
+    }
+
+    .download-box {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 2rem;
+        align-items: center;
+        margin-bottom: 4rem;
+        padding: 2.2rem;
+        border: 1px solid #cbd5e1;
+        background: var(--night-blue);
+        color: white;
+        box-shadow: 0 15px 30px rgba(15,23,42,.12);
+    }
+    .download-box h2 { margin: 0 0 .5rem; color: white; font-size: 1.8rem; }
+    .download-box p { color: var(--text-light); }
+    .button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 48px;
+        padding: .8rem 1.15rem;
+        border: 1px solid var(--gold-accent);
+        background: var(--gold-accent);
+        color: var(--night-blue);
+        text-decoration: none;
+        font-size: .78rem;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        transition: transform .2s, background .2s;
+    }
+    .button:hover { transform: translateY(-2px); background: #d0aa70; }
+
+    .contents-panel {
+        margin-bottom: 4rem;
+        padding: 2.2rem;
+        border: 1px solid var(--border);
+        background: #f4f0e9;
+    }
+    .contents-panel h2 { margin-bottom: 1.2rem; }
+    .contents-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .35rem 2rem;
+        list-style: none;
+        counter-reset: contents;
+    }
+    .contents-list li { counter-increment: contents; border-bottom: 1px solid rgba(51,65,85,.15); }
+    .contents-list a {
+        display: grid;
+        grid-template-columns: 2rem 1fr;
+        gap: .5rem;
+        padding: .68rem 0;
+        color: var(--night-blue);
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .82rem;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+    .contents-list a::before {
+        content: counter(contents, decimal-leading-zero);
+        color: var(--gold-accent);
+        font-size: .7rem;
+        letter-spacing: .08em;
+    }
+    .contents-list a:hover { color: var(--gold-accent); }
+
+    .author-card {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 2rem;
+        align-items: start;
+        margin: 1rem 0 4rem;
+        padding: 2.2rem;
+        border-top: 3px solid var(--night-blue);
+        background: white;
+        box-shadow: 0 12px 30px rgba(15,23,42,.06);
+    }
+    .author-card img {
+        display: block;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: grayscale(12%);
+    }
+    .author-card h2 { margin-bottom: .2rem; color: var(--night-blue); font-size: 2rem; }
+    .author-role {
+        margin-bottom: .8rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+    .author-card p { color: var(--text-secondary); line-height: 1.65; }
+    .author-card a { color: var(--accent); }
+
+    .references {
+        padding-left: 1.45rem;
+        color: var(--text-secondary);
+        font-size: .92rem;
+        line-height: 1.55;
+    }
+    .references li { margin-bottom: .85rem; padding-left: .35rem; }
+    .references a { color: var(--accent); overflow-wrap: anywhere; }
+
+    footer {
+        margin-top: 5rem;
+        padding: 3rem 0;
+        background: var(--night-blue);
+        color: var(--text-light);
+        text-align: center;
+    }
+    footer h3 { margin-bottom: .8rem; color: white; font-size: 1.5rem; letter-spacing: 2px; }
+    footer p { margin-bottom: .45rem; font-size: .85rem; }
+
+    @media (max-width: 980px) {
+        .desktop-nav { display: none; }
+        .hero { grid-template-columns: 1fr; gap: 2.5rem; }
+        .cover-card { width: min(100%, 370px); margin: 0 auto; transform: none; }
+    }
+    @media (max-width: 700px) {
+        body { font-size: 1rem; }
+        .container, .article-container { padding-left: 1.25rem; padding-right: 1.25rem; }
+        .article-title { font-size: 2.6rem; }
+        .download-box, .contents-list, .author-card { grid-template-columns: 1fr; }
+        .download-box { align-items: start; }
+        .button { width: 100%; }
+        .paper-section p { text-align: left; }
+        .abstract-section, .contents-panel, .author-card { padding: 1.45rem; }
+        .pull-quote { padding-left: 1.25rem; font-size: 1.35rem; }
+        .author-card img { width: 120px; height: 120px; }
+    }
+
+
+    .hero-media {
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid #d8dde3;
+        background: #e8edf2;
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .20);
+    }
+    .hero-image {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1672 / 941;
+        object-fit: cover;
+    }
+    .bibliography-entry {
+        margin: 0 0 1rem;
+        padding-left: 1.4rem;
+        color: var(--text-secondary);
+        font-size: .92rem;
+        line-height: 1.55;
+        text-align: left;
+        text-indent: -1.4rem;
+        overflow-wrap: anywhere;
+    }
+    .bibliography-entry a {
+        color: var(--accent);
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+
+    .hero-media.india-cover {
+        display:flex; align-items:center; justify-content:center; padding:1rem;
+        background:#8b9497; overflow:hidden;
+    }
+    .hero-media.india-cover .hero-image {
+        width:min(100%, 430px); height:auto; max-height:650px; aspect-ratio:auto; object-fit:contain;
+        box-shadow:0 14px 30px rgba(11,28,45,.28);
+    }
+    .source-note {
+        margin:0 0 4rem; padding:1.5rem 1.7rem; border:1px solid var(--border);
+        background:#fff; color:var(--text-secondary); box-shadow:0 10px 24px rgba(15,23,42,.05);
+    }
+    .source-note strong { color:var(--night-blue); }
+    .keyword-row { margin-top:1rem; color:var(--text-secondary); font-size:.9rem; }
+    .keyword-row strong { color:var(--night-blue); font-family:'Montserrat',sans-serif; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; }
+    @media (max-width:980px){ .hero-media.india-cover .hero-image{max-height:560px;} }
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "Dal non allineamento politico al non allineamento digitale: l’India come potenza ibrida nell’ordine multipolare eurasiatico",
+  "alternativeHeadline": "From Political Non-Alignment to Digital Non-Alignment: India as a Hybrid Power in the Eurasian Multipolar Order",
+  "author": {
+    "@type": "Person",
+    "name": "Aniello Inverso",
+    "url": "https://www.dynames.it/chi-siamo.html#inverso"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DYNAMES",
+    "url": "https://www.dynames.it/"
+  },
+  "datePublished": "2026-08-09",
+  "dateModified": "2026-08-09",
+  "inLanguage": "it-IT",
+  "articleSection": "Infrastrutture Strategiche",
+  "url": "https://www.dynames.it/pubblicazioni/2026.08.09-india-potenza-ibrida.html",
+  "description": "Il contributo di Aniello Inverso interpreta l’India come potenza ibrida e tecnologicamente sovrana, dal non allineamento politico al digital non-alignment.",
+  "image": "https://www.dynames.it/pubblicazioni/Archivio/2026.08.09-india-potenza-ibrida-light.jpg",
+  "isPartOf": {
+    "@type": "Book",
+    "name": "India Potenza Eurasiatica. Le sfide della crescita economica, del posizionamento strategico e delle relazioni internazionali in evoluzione",
+    "isbn": "9788889991527",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Callive Edizioni"
+    }
+  }
+}</script>
+<meta content="max-image-preview:large" name="robots"/><meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.08.09-india-potenza-ibrida-light.jpg" property="og:image:secure_url"/><meta content="image/jpeg" property="og:image:type"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="2026-08-09T09:00:00+02:00" property="article:modified_time"/><meta content="Infrastrutture Strategiche" property="article:section"/></head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html">
+<h1><img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>DYNAMES</h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a class="active" href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../pubblicazioni.html">← Torna alle Pubblicazioni</a>
+</div>
+<main>
+<article class="article-container">
+<section class="hero">
+<div>
+<span class="article-category">Paper · Infrastrutture Strategiche</span>
+<h1 class="serif-heading article-title">Dal non allineamento politico al non allineamento digitale: l’India come potenza ibrida nell’ordine multipolare eurasiatico</h1>
+<p class="article-subtitle">Sovranità tecnologica, infrastrutture digitali, cyber e spazio ridefiniscono l’autonomia strategica indiana nel nuovo ordine multipolare eurasiatico.</p>
+<div class="article-meta"><span class="meta-author">Di Aniello Inverso</span><span>Contributo scientifico</span><span>Agosto 2026</span></div>
+</div>
+<figure class="hero-media india-cover"><img alt="Bandiera dell’India sopra una città digitale, immagine di copertina del volume India Potenza Eurasiatica" class="hero-image" decoding="async" fetchpriority="high" loading="eager" src="Archivio/2026.08.09-india-potenza-ibrida-cover.jpg"/></figure>
+</section>
+<div class="article-body">
+<section class="download-box">
+<div><span class="small-label">Estratto editoriale</span><h2 class="serif-heading">Leggi online o scarica il contributo</h2>
+<p>Il testo è pubblicato nel volume <em>India Potenza Eurasiatica</em>, collana <em>Orizzonti d’Eurasia</em>, Callive Edizioni, 2026, pp. 57–74. L’estratto allegato è disponibile anche in formato PDF.</p></div>
+<a class="button" download href="Archivio/2026.08.09-india-potenza-ibrida.pdf">Scarica il PDF</a>
+</section>
+<section class="source-note"><strong>Riferimento editoriale.</strong> <em>India Potenza Eurasiatica. Le sfide della crescita economica, del posizionamento strategico e delle relazioni internazionali in evoluzione</em>, a cura di Alberto Cossu e Tiberio Graziani, Callive Edizioni, 2026. ISBN 9788889991527. Il contributo di Aniello Inverso è inserito nella Parte I, dedicata alle radici storiche e teoriche della postura internazionale indiana.</section>
+<section aria-labelledby="indice-title" class="contents-panel"><span class="small-label">Indice</span><h2 class="serif-heading" id="indice-title">I contenuti del paper</h2><ol class="contents-list"><li><a href="#abstract">Abstract</a></li><li><a href="#premessa">Premessa</a></li><li><a href="#dal-non-allineamento-politico-all-autonomia-strategica">Dal non allineamento politico all’autonomia strategica</a></li><li><a href="#digital-india-sovranita-tecnologica">Digital India. Costruzione della sovranità tecnologica</a></li><li><a href="#dimensione-ibrida-spazio-deterrenza-informativa">Dimensione ibrida. Spazio e deterrenza informativa</a></li><li><a href="#india-cina-equilibrio-tecnologico-eurasiatico">India, Cina e il nuovo equilibrio tecnologico eurasiatico</a></li><li><a href="#conclusione">Conclusione</a></li><li><a href="#bibliografia-sitografia">Bibliografia e Sitografia</a></li><li><a href="#autore">L’autore</a></li></ol></section>
+<section class="paper-section abstract-section" id="abstract">
+<span class="small-label">Sintesi originale</span><h2 class="serif-heading">Abstract</h2>
+<p><em>From Political Non-Alignment to Digital Non-Alignment: India as a Hybrid Power in the Eurasian Multipolar Order</em></p>
+<p>This contribution reframes India’s non-alignment as digital non-alignment, interpreting the country as a technologically sovereign, hybrid balancing power within the emerging Eurasian multipolar order. India’s trajectory is read as a shift from politico-military equidistance to the active management of infrastructural and cognitive dependencies, where digital, cyber and space domains become core instruments of strategic autonomy. Using a qualitative, comparative and historical-documentary approach, the research analyses the progressive institutionalization of technological sovereignty: from Digital Public Infrastructure (Digital India, India Stack, UPI and the Aadhaar–DEPA nexus) to the national cybersecurity architecture (National Cyber Security Policy 2013, draft National Cyber Security Strategy 2020, CERT-In, NCIIPC, Defence Cyber Agency). The theoretical framework draws on the works of Jawaharlal Nehru, V. P. Menon, Shivshankar Menon, Ian Hall, Happymon Jacob, the Non-Alignment 2.0 collective, Amber Sinha and other scholars of Indian technopolitics and digital governance. The analysis shows how technopolitics turns India into a laboratory of digital statecraft and a bridge-power between competing technological and regulatory ecosystems (Quad, BRICS, SCO), where technological sovereignty simultaneously enables inclusion and the reduction of external dependencies, while reinforcing state power concentration and normative projection towards the Global South.</p>
+<p class="keyword-row"><strong>Keywords</strong> · Technological sovereignty; Hybrid Power; Digital non-alignment.</p>
+</section><section class="paper-section" id="premessa"><span class="small-label">Contributo scientifico</span><h2 class="serif-heading">Premessa</h2><p>La traiettoria dell’India nel sistema internazionale contemporaneo sfida le categorie tradizionali di classificazione delle potenze. Nuova Delhi non rientra pienamente né nel campo delle democrazie liberali occidentali, né in quello delle autocrazie revisioniste, e mantiene al tempo stesso relazioni strutturali con entrambi i poli emergenti della competizione globale (Benvenuti, 2020). Questa ambiguità strategica non costituisce un residuo di indecisione, bensì il prodotto deliberato di una cultura politica che ha fatto della preservazione dell’autonomia decisionale il proprio principio ordinatore fin dai primi anni dell’indipendenza (Nehru, 1984, pp. 243–245).</p><p>Il non allineamento nehruviano, elaborato nel contesto della decolonizzazione e della rigida polarizzazione bipolare, rappresentò il tentativo di sottrarre le nuove nazioni asiatiche e africane alla logica dei blocchi, affermando che l’indipendenza politica dovesse tradursi in capacità di giudizio autonomo nelle relazioni internazionali (Nehru, 1984, pp. 243–245). Questa postura, consolidatasi attraverso la Conferenza di Bandung del 1955 e la fondazione del Movimento dei Paesi Non Allineati nel 1961, combinava un forte universalismo morale, radicato nella solidarietà anticoloniale, con un realismo pragmatico che consentiva di intrattenere relazioni simultanee con Washington e Mosca senza compromettere la libertà di manovra (Menon, 2021, pp. 134–139; Hall, 2017, pp. 113–118).</p><p>Con la dissoluzione dell’ordine bipolare e l’apertura economica degli anni Novanta, questa dottrina perse progressivamente la propria chiarezza normativa. L’integrazione dell’India nell’economia globale, avviata dal governo Rao nel 1991 e proseguita sotto Vajpayee e Singh, rese sempre meno sostenibile una postura concepita come equidistanza rigida tra blocchi contrapposti (Menon, 2021, pp. 245–248). Tuttavia, la fine della Guerra Fredda non segnò l’abbandono dell’autonomia strategica, ma la sua trasformazione strutturale in un multiallineamento basato su partnership funzionali differenziate, in cui la cooperazione non implica subordinazione e la diversificazione dei formati diventa strumento per preservare margini di scelta in un sistema privo di centri egemonici stabili (Jacob, 2017, pp. 1–27; Hall, 2017, p. 119).</p><p>Il documento collettivo Non-Alignment 2.0, prodotto nel 2012 da un gruppo di accademici e strateghi indiani coordinato da Sunil Khilnani, rileva come la vulnerabilità contemporanea non derivi più soltanto dall’adesione formale a un’alleanza militare, bensì dall’incapacità di modulare i vincoli prodotti da regole, istituzioni e infrastrutture esterne (Khilnani et al., 2012, pp. 3–9).</p><p>All’interno di questo quadro, le tecnologie dell’informazione, lo spazio extra-atmosferico e il dominio cibernetico non appaiono più come variabili settoriali, ma come fattori strutturali che condizionano tutte le altre dimensioni della potenza, dalla crescita economica alla capacità militare, dalla coesione sociale alla proiezione normativa (Khilnani et al., 2012, pp. 38–42). La capacità di produrre e processare informazione, di controllare i flussi comunicativi e di integrare tecnologie avanzate nei processi decisionali diventa il vero moltiplicatore di forza, senza il quale anche strumenti tradizionali come l’apparato militare o la diplomazia economica risultano progressivamente meno efficaci (Khilnani et al., 2012, pp. 40–42; Menon, 2021, pp. 320–327).</p><p>Il presente contributo interpreta questa evoluzione come passaggio dal non allineamento politico al digital non-alignment, leggendo l’India contemporanea come potenza tecnologicamente sovrana e ibrida nel quadro dell’ordine multipolare eurasiatico in via di consolidamento. La costruzione delle Digital Public Infrastructure, l’espansione dei programmi spaziali dual-use, l’istituzionalizzazione di un’architettura nazionale di cybersecurity e la gestione differenziata di formati multilaterali come Quad, BRICS e SCO vengono qui analizzati non come capitoli separati di politica pubblica, ma come componenti integrate di una strategia di sovranità tecnologica che estende al piano delle infrastrutture e dei dati la logica di riduzione delle dipendenze critiche e massimizzazione dello spazio di scelta già sperimentata nei domini commerciale, energetico e militare (Sinha, 2019, pp. 45–52; Paranjpe, 2020, pp. 294–297). L’obiettivo è mostrare come la tecnopolitica trasformi l’India in laboratorio di statecraft digitale e in potenza-ponte tra ecosistemi tecnologici e regolatori in competizione, in cui la sovranità tecnologica abilita simultaneamente inclusione, riduzione delle dipendenze esterne e rafforzamento del potere statale, con proiezione normativa verso il Sud Globale (Pant, 2019, pp. 235–260; Beitelmair-Berini, 2022, pp. 177–186).</p></section><section class="paper-section" id="dal-non-allineamento-politico-all-autonomia-strategica"><span class="small-label">Contributo scientifico</span><h2 class="serif-heading">Dal non allineamento politico all’autonomia strategica</h2><p>L’identità strategica dell’India affonda le sue radici nella dottrina del non allineamento elaborata da Jawaharlal Nehru nel tornante storico della decolonizzazione e dell’emergere dell’ordine bipolare. Fin dai primi anni dell’indipendenza, Nehru concepisce l’autonomia politica come un prerequisito per preservare la libertà di scelta delle nuove nazioni asiatiche e africane, emerse dall’applicazione del principio di autodeterminazione dei popoli, e rifiuta l’obbligo di un allineamento stabile con uno dei due blocchi. La Conferenza di Bandung del 1955 e la successiva fondazione del Movimento dei Paesi Non Allineati nel 1961 traducono questa intuizione in un progetto collettivo, proponendo un’alternativa organizzata alla rigida dicotomia Est/Ovest. Nei Selected Works of Jawaharlal Nehru, il leader indiano definisce l’indipendenza non come mera neutralità, ma come esercizio di libertà di giudizio e di azione nelle relazioni internazionali, che implica al tempo stesso la responsabilità di contribuire alla costruzione di un ordine cooperativo fondato sul dialogo e sulla pace. Il paradigma del non allineamento combina un forte universalismo morale, radicato nella solidarietà anticoloniale e nella cooperazione Sud-Sud, con un realismo pragmatico, che consente a Nuova Delhi di intrattenere relazioni simultanee con Washington e Mosca quando le contingenze lo rendono necessario (Nehru, 1984, pp. 243–245). Come rileva Shivshankar Menon, diplomatico di carriera ed ex National Security Advisor e Foreign Secretary dell’India, nel suo volume India and Asian Geopolitics: The Past, Present, tale equilibrio consentì all’India di affermare una forma embrionale di autonomia, fondata sull’idea che l’indipendenza politica dovesse tradursi in capacità decisionale autonoma anche sul piano militare e tecnologico. Dopo la guerra sino-indiana del 1962, questa autonomia si consolidò nella consapevolezza che la pace e la sicurezza richiedevano una base industriale e difensiva nazionale, aprendo il cammino verso la futura strategia di autosufficienza e deterrenza (Menon, 2021, pp. 134–139). Ian Hall, professore di Relazioni Internazionali presso la Griffith University di Brisbane e Deputy Director del Griffith Asia Institute, interpreta il non allineamento come la prima manifestazione della Normative Power India (Hall, 2017, pp. 113–118). Secondo Hall, Nehru concepì il ruolo dell’India come quello di «imprenditore di norme», articolando la proiezione internazionale del paese lungo cinque direttrici: decolonizzazione, antirazzismo, diritti umani, non intervento e disarmo. (Hall, 2017, pp. 116–118). Prima ancora dell’indipendenza, l’India aveva conosciuto lunghi cicli di unità politica intermittente (Maurya, Gupta, Delhi Sultanate, Moghul), con imperi tenuti quasi interamente dalla personalità e dalla forza dell’imperatore e costellati da sovranità locali subordinate che riaffioravano quando il centro si indeboliva (V. P. Menon, Setting the Stage, 1957, p. 12). Questa tradizione di sovranità negoziata, poi rielaborata dal Raj britannico con subsidiary alliances, paramountcy e il Chamber of Princes (1921), alimenta una sensibilità federale/plurale che spiega perché il non allineamento sia stato concepito non come isolamento, ma come gestione attiva dei vincoli esterni, massimizzando lo spazio decisionale interno. I riconoscimenti di successione e gli interventi per misgovernment dimostravano già allora un equilibrio tra autonomia e dipendenza (V. P. Menon, 1957, pp. 40-45). Con l’indipendenza questa logica di bilanciamento trovò una traduzione concreta nel processo di integrazione dei principati. Al momento della Partizione, la divisione dell’India britannica in due nuovi Stati, l’Unione Indiana e il Pakistan, la prospettiva di balcanizzazione dei 565 Stati principeschi resi autonomi dal Raj rese urgente creare un rapporto organico con il nuovo centro. La soluzione fu l’Instrument of Accession su tre materie: difesa, esteri e comunicazioni; accompagnato dagli Standstill Agreements e da una serie di fusioni e covenants che portarono, nelle parole di Menon, alla «rivoluzione incruenta» dell’integrazione (Menon, 1958, p. 102). Il risultato, con un’area e una popolazione incorporate superiori alle perdite della Partizione, consolidò l’unità territoriale e pose le basi amministrative per un’autonomia effettiva anche sul piano esterno («By the integration of the States, we brought in an area of nearly 500,000 square miles…», Menon, 1958, p. 105).</p><p>Con la fine della Guerra Fredda e la dissoluzione dell’ordine bipolare, la dottrina del non allineamento perse progressivamente la propria chiarezza normativa. L’apertura economica avviata nel 1991 dal governo guidato da Narasimha Rao, e proseguita negli anni successivi sotto Atal Behari Vajpayee e Manmohan Singh, rese sempre meno sostenibile una postura intesa come equidistanza rigida e puramente simmetrica. Tuttavia, questi passaggi non segnarono la fine dell’autonomia strategica indiana, ma ne determinarono piuttosto una trasformazione strutturale. Le riforme del 1991 inaugurarono un percorso intermedio tra liberalizzazione e tutela sociale. L’India scelse di cogliere i benefici dell’integrazione nell’economia globale senza aderire integralmente alla logica neoliberale di una deregolamentazione totale. (Menon, 2021, pp. 245–248). Come ricorda Hall, dopo la Guerra Fredda l’India divenne per un periodo una norm-taker più che una norm-maker, adattandosi all’egemonia statunitense e all’ordine liberale, ma senza abbandonare del tutto l’aspirazione a un ruolo normativo (Hall, 2017, p. 119), reinterpretando la postura del non allineamento nel nuovo linguaggio della autonomia strategica. Assumendo negli anni duemila tratti di un multi-allineamento attraverso un approccio dinamico e selettivo che sostituisce l’equidistanza ideologica con una pluralità di partnership funzionali. Non rifiutando le alleanze, ne diversifica l’uso, scegliendo cooperazioni bilaterali e multilaterali capaci di rafforzare la propria posizione di potere senza compromettere l’autonomia nazionale. Con i test del 1998 e il successivo accordo di cooperazione nucleare civile del 2008, l’India divenne l’unico Stato non firmatario del Trattato di Non Proliferazione (NPT) legittimato a cooperare con il Nuclear Suppliers Group (Menon, 2021, pp. 272–278). L’inserimento nel mercato nucleare civile segnò il superamento dell’isolamento post-1974. Menon sottolinea come il dialogo tra Jaswant Singh e Strobe Talbott, protrattosi per oltre due anni, rese possibili una comprensione reciproca che trasformò il rapporto con Washington da sospetto a convergenza pragmatica (Menon, 2021, pp. 275–277). Non traducendosi mai in un’alleanza vincolante, Nuova Delhi mantenne indipendenza su Iraq, Iran e riforme del WTO, riaffermando l’idea ed il concetto che la cooperazione non implica subordinazione.</p><p>La diplomazia regionale con la Cina e il Pakistan seguì la logica della gestione duale. Con Pechino si consolidò un modus vivendi di frontiera (accordo sui Guiding Principles del 2005), accompagnato da un’espansione del commercio, sebbene fortemente sbilanciata a favore della Cina (Menon, 2021, pp. 284–288). Con Islamabad, invece, la stagione 2003–2007 vide un cessate il fuoco stabile, l’apertura di canali diplomatici e negoziati riservati sulla questione del Kashmir, culminati con la firma del SAFTA nel 2004 (Menon, 2021, pp. 290–296). La fase di relativa stabilità terminò con gli attacchi terroristici di Mumbai (2008), che resero politicamente insostenibile il dialogo, ma confermarono la solidità delle nuove relazioni tra India e Stati Uniti, la Normative Power la profondità della convergenza raggiunta (Menon, 2021, p. 278).</p><p>Come rileva Happymon Jacob, docente di International Relations and Disarmament Studies presso la Jawaharlal Nehru University (JNU) di Nuova Delhi e analista di politica estera indiana, l’evoluzione verso il multi-allineamento rappresenta la risposta di Nuova Delhi alla complessità del multipolarismo contemporaneo. Nel suo volume The Anglosphere and India’s Strategic Choices: Power and Identity in the 21st Century (2017), Jacob descrive l’India come un attore capace di muoversi su piani sovrapposti di cooperazione, la Quad con Stati Uniti, Giappone e Australia; i BRICS con Russia e Cina; i partenariati economici con l’ASEAN e l’Unione Europea, combinando apertura economica e cautela strategica (Jacob, 2017, pp. 1–27). La dottrina dell’autonomia strategica, come sottolinea Andrea Benvenuti, professore associato di International Relations presso la University of New South Wales (UNSW) a Sydney, rimane il principio ordinatore della politica estera indiana. Portando Nuova Delhi a rileggere il non allineamento, non più come mera equidistanza tra blocchi, ma come gestione attiva delle interdipendenze, con l’obiettivo di massimizzare lo spazio di scelta indiano in un sistema privo di centri egemonici stabili (Non-Alignment 2.0, 2012, pp. 3–9). La tradizionale neutralità rispetto alle alleanze militari viene reinterpretata come esigenza di mantenere la capacità di decidere caso per caso, evitando che l’inserimento in regimi economici, istituzionali o tecnologici concepiti da altri riduca progressivamente la libertà di manovra (Non-Alignment 2.0, 2012, pp. 5–7). L’idea centrale è identificare come la vulnerabilità non derivi più soltanto dall’adesione formale a un’alleanza, bensì dall’incapacità di modulare i vincoli prodotti da regole, istituzioni e infrastrutture create altrove. In un contesto di interdipendenze dense, un paese può trovarsi allineato di fatto anche senza trattati vincolanti, se dipende in modo critico da mercati, sistemi di pagamento, standard tecnologici o forniture strategiche controllati da un numero ristretto di attori (Non-Alignment 2.0, 2012, pp. 6–9). L’autonomia non coincide con l’autarchia, ma con la capacità di negoziare la propria esposizione a tali vincoli. Accettare interdipendenze che accrescono le opportunità di crescita e influenza, riducendo al minimo quelle che possono essere trasformate in strumenti di coercizione o condizionamento politico (Menon, 2021, pp. 314–318). Da qui discende una distinzione implicita tra dipendenze tollerabili e dipendenze critiche. Le prime riguardano ambiti in cui la sostituibilità dei partner è relativamente elevata e i costi di un riallineamento restano gestibili; le seconde concernono invece nodi strutturali quali energia, finanza, tecnologie sensibili, infrastrutture di comunicazione; nei quali la concentrazione del potere di mercato o normativo in poche mani rende molto più difficile sottrarsi a pressioni esterne (Non-Alignment 2.0, 2012, pp. 7–9). È su questo secondo gruppo che si concentra la sfida di non eliminare ogni forma di dipendenza, ma evitare che si cristallizzino relazioni asimmetriche tali da comprimere, nel medio periodo, la capacità indiana di perseguire politiche autonome su questioni considerate vitali (Menon, 2021, pp. 320–327). All’interno di questo quadro, la conoscenza, l’innovazione e le tecnologie dell’informazione non appaiono più come variabili settoriali, ma come fattori strutturali che condizionano tutte le altre dimensioni della potenza, che spaziano dalla crescita economica alla capacità militare, dalla coesione sociale alla proiezione normativa (Non-Alignment 2.0, 2012, pp. 38–42). La capacità di produrre e processare informazione, di controllare i flussi comunicativi e di integrare tecnologie avanzate nei processi decisionali diventa in progressivo il vero moltiplicatore di forza, senza un solido sottosuolo cognitivo e digitale, anche strumenti tradizionali come l’apparato militare o la diplomazia economica risultano progressivamente meno efficaci (Non-Alignment 2.0, 2012, pp. 40–42). La costruzione di capacità endogene in questi campi assume una valenza propriamente vitale. Investire in ricerca, infrastrutture digitali e competenze non serve soltanto ad aumentare la competitività dell’economia, ma a ridurre il grado di dipendenza da tecnologie, piattaforme e standard esterni che possono essere trasformati in leve di pressione politica, in meccanismi di sanzione o in strumenti di esclusione selettiva dall’accesso a mercati e informazioni critiche (Menon, 2021, pp. 320–327). Ne deriva un’estensione implicita della via intermedia tra apertura e protezione, già sperimentata nel dominio commerciale e finanziario, al piano cognitivo e tecnologico (Non-Alignment 2.0, 2012, pp. 38–42; Menon, 2021, pp. 314–318). Da questa impostazione discende, in modo graduale, lo spostamento del non allineamento sul piano tecnologico. In un contesto in cui piattaforme, protocolli di comunicazione e regimi di data governance determinano concretamente le condizioni di esercizio della sovranità, dall’accesso ai mercati globali alla tutela dei diritti fondamentali nello spazio digitale, l’autonomia non può più essere misurata soltanto in termini di assenza di alleanze militari vincolanti (Non-Alignment 2.0, 2012, pp. 5–9). Ciò che diventa cruciale è la capacità di evitare l’intrappolamento in un unico ecosistema tecnologico, le cui architetture digitali, standard tecnici e norme sull’uso dei dati incorporano interessi e visioni del mondo potenzialmente divergenti da quelli indiani, influenzando in modo sottile ma pervasivo le scelte di politica economica, di sicurezza e persino di ordine costituzionale (Menon, 2021, pp. 320–327).</p></section><section class="paper-section" id="digital-india-sovranita-tecnologica"><span class="small-label">Contributo scientifico</span><h2 class="serif-heading">Digital India. Costruzione della sovranità tecnologica</h2><p>Il programma Digital India, lanciato nel 2015, rappresenta il principale dispositivo attraverso cui Nuova Delhi inizia a tradurre in pratica l’estensione del non allineamento al piano tecnologico, facendo del digitale un terreno di esercizio della sovranità e non soltanto un settore di policy. Presentato come infrastruttura orizzontale del potere statale e dell’inclusione socio‑economica, esso articola la visione di un governo digitale fondato su tre pilastri: infrastrutture digitali come bene pubblico, erogazione di servizi in modalità elettronica e alfabetizzazione/empowerment digitale dei cittadini con l’obiettivo dichiarato di connettere ogni individuo, impresa e amministrazione a una medesima architettura tecnologica di base. L’estensione capillare della connettività, la creazione di identità digitali uniche e la standardizzazione delle interfacce con lo stato vengono concepite come condizioni necessarie per rendere effettivi diritti e prestazioni, riducendo le asimmetrie di accesso ai servizi tra centro e periferia. La specificità indiana risiede nella scelta di costruire un vero e proprio substrato di infrastrutture digitali pubbliche (Digital Public Infrastructure, DPI), come India Stack, l’Unified Payments Interface (UPI) o le piattaforme di autenticazione, progettate per essere modulari, interoperabili e aperte all’uso sia da parte delle amministrazioni sia da parte di attori privati (Digital India Programme, 2014, pp. 13–19). Queste DPI sono pensate come railroads digitali su cui diversi fornitori possono sviluppare servizi, ma che rimangono sotto controllo normativo e architetturale dello stato, consentendo a Nuova Delhi di definire standard, regole di accesso e modalità di utilizzo dei dati sottostanti. Le piattaforme funzionano al tempo stesso come infrastruttura abilitante per il settore privato e come leva di rafforzamento della capacità di coordinamento del settore pubblico, che vede nel digitale uno strumento per superare frammentazioni amministrative storiche e consolidare l’unità funzionale del territorio (Digital India Programme, 2014, pp. 24–27; Sinha, 2019, pp. 45–52). La dimensione infrastrutturale si intreccia con un’agenda dichiaratamente inclusiva dove il Digital India viene presentato come risposta al duplice divario territoriale e socio‑economico che ha storicamente limitato l’accesso ai servizi di welfare e alle opportunità di mercato per ampie fasce di popolazione. La possibilità di ricevere trasferimenti diretti, aprire conti bancari, accedere a schemi di assistenza o interagire con la pubblica amministrazione tramite canali digitali è letta come forma di empowerment materiale e simbolico, soprattutto nelle aree rurali e tra i gruppi tradizionalmente esclusi (donne, in particolare nelle zone agricole, comunità svantaggiate per casta, persone con bassa scolarizzazione e con disabilità) (Sinha, 2019, pp. 80–88). Le DPI operano come strumento di potere statale lungo due direttrici complementari. In primo luogo, riducono la dipendenza dai mediatori burocratici tradizionali disintermediando processi decisionali e amministrativi attraverso portali unificati, pagamenti elettronici e flussi di dati standardizzati, con l’obiettivo di accrescere trasparenza ed efficienza. Al contempo, abilitano una forma inedita di centralizzazione cognitiva, fondata sulla capacità di aggregare in tempo reale dati provenienti da settori e territori diversi, consentendo al centro di monitorare, classificare e orientare dinamiche sociali ed economiche che in passato restavano in larga misura opache e spostando il baricentro del potere verso chi controlla le infrastrutture e gli algoritmi che rendono intelligibile lo spazio nazionale (Sinha, 2019, pp. 120–129). A questa infrastruttura si collega coerentemente la centralità del sistema Aadhaar, programma nazionale di identificazione digitale che fornisce un’ancora identitaria su cui può poggiare l’ecosistema delle infrastrutture digitali pubbliche. Associando l’identificazione a un insieme di attributi personali, Aadhaar consente di ricondurre sotto un’unica chiave digitale la molteplicità dei rapporti tra individuo e stato, trasformando l’identificazione in un prerequisito operativo per l’accesso a sussidi, servizi e procedure amministrative (Digital India Programme, 2014, pp. 13–16; Sinha, 2019, pp. 60–68). Ne deriva un’identità digitale verificabile e interoperabile, che può ridurre il peso di mediazioni locali e barriere documentali tradizionali. Sul piano della data governance, il raccordo tra Aadhaar e la Data Empowerment and Protection Architecture (DEPA) rende ancora più marcato questo cambio di paradigma, perché DEPA struttura la circolazione dei dati intorno al consenso dell’utente e a standard tecnici comuni di interoperabilità. In tale modello, i dati personali generati dall’uso di servizi digitali (e detenuti dai diversi erogatori) possono essere trasferiti, nei limiti e alle condizioni del consenso, tra soggetti pubblici e privati tramite intermediari di consenso (consent managers), che orchestrano autorizzazioni e flussi secondo regole condivise. In questo schema, più che i dati di Aadhaar in senso stretto, è l’insieme dei dati detenuti nei vari domini (welfare, finanza, sanità, ecc.) a poter diventare una risorsa maggiormente governabile e riusabile, perché l’accesso è (in teoria) parametrizzato per finalità, durata, categorie di dati e obblighi di tracciabilità/rendicontazione (DEPA, 2020, pp. 10–15). Ne consegue che lo stato può rafforzare la capacità di standardizzare l’accesso a diritti e prestazioni e di orchestrare l’ambiente informativo in cui cittadini e imprese operano, pur senza implicare automaticamente una mappatura totale e unidirezionale della società (che dipende da scelte di governance, controlli e limiti effettivi). Un’implementazione concreta e spesso richiamata in questa logica è l’ecosistema degli Account Aggregator, dove il consenso e lo scambio di dati avvengono attraverso attori e standard dedicati.</p><p>La piena realizzazione del modello di sovranità digitale indiana si accompagna alla costruzione di un apparato di sicurezza progressivamente istituzionalizzato. La National Cyber Security Policy del 2013 rappresenta il primo tentativo organico di definire una cornice per la protezione dello spazio informazionale nazionale. Con l’obiettivo di costruire un cyberspazio indiano sicuro e resiliente, la policy fissa priorità quali la protezione delle infrastrutture critiche, lo sviluppo di capacità di risposta agli incidenti e la promozione di una cultura diffusa della sicurezza presso amministrazioni, imprese e cittadini (National Cyber Security Policy, 2013, pp. 1–4). All’interno di questo impianto, il Computer Emergency Response Team India (CERT-In) svolge la funzione di snodo operativo. Coordina attività di monitoraggio, allerta e risposta tecnica agli incidenti, raccoglie informazioni sulle minacce ed emette avvisi e linee guida, fungendo da interfaccia tra attori pubblici e privati (National Cyber Security Policy, 2013, pp. 5–7). In concomitanza, l’istituzione del National Critical Information Infrastructure Protection Centre (NCIIPC) consolida una linea di intervento specifica sulla protezione delle infrastrutture critiche di informazione. Individua settori e asset ritenuti vitali (energia, trasporti, finanza, telecomunicazioni, governo) e consente di definire, insieme agli stakeholder, requisiti minimi di sicurezza, protocolli di condivisione di informazioni sensibili e piani di continuità operativa (National Cyber Security Policy, 2013, pp. 7–9). La logica sottostante è la differenziazione dei livelli di protezione in base alla criticità, mentre CERT-In opera come sentinella e centro di coordinamento orizzontale, il NCIIPC agisce come regia verticale nei segmenti in cui un attacco può produrre effetti a catena sull’intero sistema Paese.</p><p>La National Cyber Security Strategy (in elaborazione nel 2020) mira ad aggiornare e approfondire il quadro alla luce della crescente digitalizzazione e dell’intensificarsi delle tensioni geopolitiche nel dominio cibernetico. La strategia articola l’azione lungo tre assi: secure, vigilant, resilient; insiste sulla necessità di integrare capacità civili e militari, riconoscendo che il confine tra minacce statuali e non statuali e tra criminalità, spionaggio e guerra informativa è sempre più poroso (National Cyber Security Strategy, 2020, pp. 4–10). In questa prospettiva, la Defence Cyber Agency, come struttura interforze incaricata di coordinare le capacità militari nel dominio cibernetico, completa il triangolo istituzionale tra CERT-In (dimensione civile e risposta tecnica), NCIIPC (protezione delle infrastrutture critiche) e componente militare, traducendo in termini operativi un approccio whole of nation alla sicurezza digitale (National Cyber Security Strategy, 2020, pp. 12–15).</p><p>L’intreccio tra queste istituzioni e il progetto Digital India comporta conseguenze ambivalenti per la governance della sicurezza. Da un lato, l’estensione delle infrastrutture digitali pubbliche amplia la superficie d’attacco e aggrava le potenziali conseguenze di un incidente, imponendo allo stato investimenti continuativi in capacità di prevenzione, rilevazione e risposta per garantire la continuità dei servizi essenziali e la tutela dei dati (National Cyber Security Strategy, 2020, pp. 10–12). Dall’altro, la definizione di ruoli, standard e procedure comuni attorno a CERT-In, NCIIPC e Defence Cyber Agency consente al centro di consolidare la propria posizione di hub cognitivo e regolativo della sicurezza cibernetica, accrescendo la dipendenza di amministrazioni locali e operatori privati da linee guida, certificazioni e meccanismi di coordinamento statali (National Cyber Security Policy, 2013, pp. 5–9; National Cyber Security Strategy, 2020, pp. 12–18). In questo modo, l’architettura di difesa cibernetica non si limita a proteggere le infrastrutture che rendono possibile l’inclusione digitale, ma diventa componente costitutiva della sovranità tecnologica indiana, nella misura in cui lega sempre più strettamente la protezione delle reti alla facoltà del centro di stabilire chi può operare, a quali condizioni e con quali obblighi di condivisione informativa nello spazio digitale nazionale.</p></section><section class="paper-section" id="dimensione-ibrida-spazio-deterrenza-informativa"><span class="small-label">Contributo scientifico</span><h2 class="serif-heading">Dimensione ibrida. Spazio e deterrenza informativa</h2><p>In continuità con la tradizione dell’autonomia strategica, Nuova Delhi ha progressivamente trasformato lo spazio extra-atmosferico in un prolungamento funzionale delle proprie infrastrutture digitali, facendo convergere dimensione civile e militare, interna ed esterna (Khilnani et al., 2012, cap. 3). L’espansione dell’Indian Space Research Organisation (ISRO) e il consolidamento di una costellazione di satelliti per comunicazioni, osservazione della Terra e navigazione non possono essere letti soltanto come successi scientifici o di sviluppo, ma come elementi di una strategia più ampia di controllo dell’informazione e di supporto alle operazioni di sicurezza e difesa (Annual Report 2022–23, pp. 15–27; Annual Report 2023–24, pp. 18–30). Le missioni recenti, da Chandrayaan-3 ad Aditya-L1, testimoniano la maturazione di competenze avanzate nel dominio spaziale, mentre il ruolo attribuito al Quad Working Group on Critical and Emerging Technologies inseriscono l’India in reti di cooperazione che intrecciano tecnologie dual use, capacità cyber e gestione dei flussi informativi (Annual Report 2023–24, pp. 40–48; Annual Report 2024–25, pp. 30–38; Khilnani et al., 2012).</p><p>Sul piano infrastrutturale, l’India dispone oggi di una costellazione articolata di satelliti per comunicazioni (INSAT/GSAT), osservazione terrestre (Resourcesat, Cartosat, RISAT), navigazione regionale (NavIC) e servizi meteorologici e di allerta precoce, che coprono l’intero spettro delle esigenze civili e di sicurezza (Annual Report 2022–23, pp. 15–27; Annual Report 2023–24, pp. 18–30). L’evoluzione dei vettori, dai lanciatori PSLV e GSLV alle nuove piattaforme modulari, ha consolidato la capacità nazionale di collocare in orbita carichi diversificati, riducendo la dipendenza da fornitori esteri per l’accesso allo spazio e rafforzando così una dimensione cruciale della sovranità tecnologica (Annual Report 2022–23, pp. 31–38; Annual Report 2024–25, pp. 20–28). il controllo dell’intera catena, che passa dalla progettazione, produzione, lancio fino alla gestione delle flotte satellitari, consente a Nuova Delhi di inscrivere il dominio spaziale nella stessa logica di riduzione delle dipendenze e di massimizzazione dello spazio di scelta che ha guidato le politiche digitali interne (Paranjpe, 2020, pp. 294-297; Menon, 2021, pp. 320-327).</p><p>La letteratura sottolinea da tempo il carattere duale di questi investimenti. I programmi civili di telecomunicazioni, osservazione della Terra e navigazione alimentano simultaneamente la modernizzazione della difesa, perché i satelliti sostengono comunicazioni sicure, consapevolezza situazionale e capacità di targeting a lungo raggio (Paranjpe, 2020, pp. 294-297; Khilnani et al., 2012, cap. 3). I partenariati spaziali con Francia e Stati Uniti, dall’osservazione terrestre e oceanografica alle intese su space situational awareness e satellite communications, rafforzano ulteriormente il profilo duale di molte piattaforme, inserendo le capacità indiane in reti di scambio dati e interoperabilità che producono effetti immediati tanto sui servizi civili quanto sulle funzioni di sicurezza (ISRO, Annual Report 2022–23, pp. 52-60; Annual Report 2023–24, pp. 40-48). Senza contraddire la narrativa di self-reliance e leading power, tali cooperazioni ampliano il margine di manovra di Nuova Delhi nei regimi di governance dello spazio, preservando il controllo nazionale sui segmenti critici della filiera (Menon, 2021, pp. 320-327).</p><p>L’integrazione tra assetti spaziali e reti digitali modifica in profondità la postura di deterrenza indiana, l’uso combinato di piattaforme come IRS e Cartosat per la ricognizione, INSAT per le comunicazioni e sensori distribuiti a terra ha favorito il passaggio da una dottrina centrata sulla conquista territoriale a una incentrata sulla destructive capability, in cui fuoco di precisione e strumenti non cinetici diventano centrali (Khilnani et al., 2012). L’abilitazione spaziale rende più credibili strategie di segnalazione e coercizione che non richiedono necessariamente grandi manovre di terra, soprattutto in un contesto segnato dall’overhang nucleare nei confronti di Pakistan e Cina (Khilnani et al., 2012; Menon, 2021, pp. 356-364).</p><p>La crescente dipendenza delle operazioni da assetti satellitari accentua la logica ibrida della deterrenza, colpire o accecare le infrastrutture spaziali di un avversario significherebbe degradarne simultaneamente capacità civili ed economiche, con un forte impatto politico ma con rischi di escalation difficilmente controllabili (Paranjpe, 2020, pp. 210-218). Ne emerge un triangolo strutturale in cui lo spazio alimenta la circolazione di informazione (sorveglianza, comunicazioni, targeting), l’informazione rende più efficace e selettivo l’uso della forza, e la domanda militare orienta a sua volta le scelte di sviluppo tecnologico e industriale nel settore spaziale (Paranjpe, 2020, pp. 294-297; Khilnani et al., 2012, cap. 3).</p><p>L’emergere del dominio cibernetico non rappresenta una rottura, ma l’estensione logica dell’intreccio tra infrastrutture tecniche e funzioni di sicurezza. I flussi informativi veicolati dai satelliti vengono raccolti, elaborati e trasferiti attraverso reti digitali che sostengono comando-controllo, logistica, finanza e servizi essenziali; la stessa architettura che sorregge la digitalizzazione dell’economia e dell’amministrazione diventa contemporaneamente volano di sviluppo e nodo critico della postura di deterrenza, poiché qualsiasi compromissione di tali reti si ripercuote immediatamente sulla capacità dello stato di gestire crisi e conflitti (Khilnani et al., 2012; DSCI, National Cyber Security Strategy 2020, pp. 4-8, 21-27). L’idea di cyber deterrence nel subcontinente nasce precisamente da questo slittamento verso infrastrutture integrate. Non si tratta più soltanto di dissuadere l’uso della forza convenzionale o nucleare, ma di rendere credibile la capacità di assorbire, attribuire e, se necessario, controcolpire nel dominio digitale, mantenendo il controllo dell’escalation in un ambiente altamente interconnesso (Khilnani et al., 2012). L’interdipendenza tra reti civili e architetture di difesa fa sì che attacchi cibernetici contro infrastrutture elettriche, sistemi di pagamento o nodi di telecomunicazione possano produrre effetti strategici comparabili a quelli di operazioni cinetiche limitate, soprattutto in un contesto, quello indo-pakistano e indo-cinese, già regolato dal vincolo nucleare e da dottrine di guerra confinata (Menon, 2021, pp. 356-364; DSCI, National Cyber Security Strategy 2020, pp. 32-40). La digital warfare assume qui una fisionomia ibrida, combinando intrusioni e sabotaggi mirati con operazioni di disinformazione e manipolazione dello spazio informativo, e sfruttando la porosità fra sfera militare, economica e politico-sociale per esercitare pressione coercitiva senza oltrepassare soglie formali di conflitto aperto (National Cyber Security Strategy 2020, pp. 40-48). La ricerca di resilienza assume una valenza tanto tecnica quanto strategica, la protezione delle infrastrutture critiche e delle piattaforme di e-governance vengono ripensate anche come strumento deterrente. Rafforzare la capacità di resistere al primo colpo, ripristinare rapidamente i servizi essenziali e mantenere operativi i sistemi di comando-controllo aumenta il costo politico e militare di qualsiasi tentativo di coercizione cibernetica (DSCI, National Cyber Security Strategy 2020, pp. 21-27, 52-60). Parallelamente, la disponibilità di strumenti di risposta sotto soglia critica, in grado di colpire in modo calibrato le vulnerabilità digitali dell’avversario, amplia il ventaglio delle opzioni di segnalazione e ritorsione e si appoggia alle componenti spaziali che forniscono dati e situational awareness (Khilnani et al., 2012). Su questo terreno si innesta anche la dimensione esterna delle politiche tecnologiche indiane. La costruzione di una credibile cyber deterrence viene sempre più collegata a formati plurilaterali dedicati alle tecnologie critiche ed emergenti, a partire dal Quad Critical and Emerging Technology Working Group, che funge da banco di prova per una cooperazione con Stati Uniti, Giappone e Australia su standard, controlli all’export, catene del valore e ricerca in ambiti come intelligenza artificiale, 5G, semiconduttori e cybersicurezza (Khilnani et al., 2012, cap. 2; DSCI, National Cyber Security Strategy 2020, pp. 72-80). L’adesione a questi formati non comporta l’abbandono della grammatica della strategic autonomy, ma ne rappresenta un adattamento a un contesto in cui la sovranità tecnologica si misura anche in termini di capacità di influire su norme, standard e architetture globali (Non-Alignment 2.0, 2012, pp. 3-9; Khilnani et al., 2012, Introduzione e cap. 6). Spazio, cyber deterrence e digital warfare non costituiscono un capitolo separato, ma il prolungamento naturale di un complesso spaziale, informativo e tecnologico che contribuisce a ridefinire dall’interno la postura di sicurezza nazionale indiana e la sua collocazione nel paesaggio multipolare eurasiatico (Paranjpe, 2020, pp. 210-218, 294-297; Menon, 2021, pp. 365-372).</p></section><section class="paper-section" id="india-cina-equilibrio-tecnologico-eurasiatico"><span class="small-label">Contributo scientifico</span><h2 class="serif-heading">India, Cina e il nuovo equilibrio tecnologico eurasiatico</h2><p>La traiettoria del Digital India, dell’autonomia spaziale e della cyber deterrence mostra come Nuova Delhi abbia progressivamente traslato la logica del non allineamento sul terreno delle infrastrutture e delle tecnologie critiche, trasformando il digitale, lo spazio e il dominio informativo in campi centrali della propria autonomia strategica. Una volta consolidato questo sottosuolo tecnologico, la competizione non può che estendersi al piano regionale. È nello spazio eurasiatico, e in particolare nel confronto con la Cina, che l’India mette alla prova la capacità di usare reti, dati e piattaforme come strumenti di potere, oltre che di sviluppo. È a questo livello che la rivalità sino‑indiana si riconfigura come contesa per il nuovo equilibrio tecnologico dell’Eurasia, dal Himalaya ai cavi sottomarini, dalle costellazioni satellitari alle infrastrutture 5G, aprendo la strada a una competizione che non riguarda più soltanto il controllo territoriale, ma l’ordinamento stesso degli ecosistemi tecnologici regionali.</p><p>Il primo banco di prova di questo slittamento è proprio il fronte himalayano, dove la modernizzazione militare e infrastrutturale cinese in Tibet e Xinjiang altera i rapporti di forza sul terreno, imponendo a Nuova Delhi di considerare logistica, sensori, comunicazioni e infrastrutture digitali come parti integranti del proprio bilancio di potenza regionale (Menon, 2021, pp. 356‑372). Gli scontri del 2020 nel Ladakh, in un quadro già segnato dalla crescente presenza cinese nel subcontinente e nell’Oceano Indiano, hanno reso evidente che la competizione sino‑indiana non si gioca più soltanto lungo la linea del controllo effettivo, ma anche sulle reti lunghe: corridoi energetici e commerciali, cavi sottomarini, sistemi satellitari e infrastrutture 5G; che collegano l’Eurasia alla regione indo‑pacifica (Pant, 2019, pp. 55‑92; 93‑129). I progetti legati alla Belt and Road Initiative e alla Digital Silk Road in Pakistan, Sri Lanka o Nepal non appaiono più come semplici strumenti di sviluppo regionale, bensì come dispositivi attraverso cui Pechino proietta influenza politica e controllo tecnologico nel vicinato indiano, erodendo la tradizionale preminenza di Nuova Delhi nel subcontinente e contribuendo a ridefinire l’equilibrio eurasiatico a favore della Cina (Menon, 2021, pp. 364‑372; Beitelmair‑Berini, 2022, pp. 177‑186).</p><p>La dimensione fisica trova un complemento nel controllo delle architetture digitali che vi scorrono sopra, spostando il baricentro della competizione sull’economia dei dati e sulle infrastrutture di rete. Pechino ha investito nell’espansione globale delle proprie imprese tecnologiche, dalle telecomunicazioni alle piattaforme social, facendone vettori di penetrazione economica e di accesso privilegiato a flussi informativi che attraversano i sistemi nazionali dei paesi partner. Queste aziende non operano solo come attori di mercato, ma come componenti di un’infrastruttura estesa di influenza, capace di generare dipendenze tecnologiche e informative suscettibili di essere mobilitate in chiave coercitiva (Pant, 2019, pp. 205‑211). Il 5G, in questo quadro, assume un ruolo centrale nella definizione degli equilibri di potere. La scelta dei fornitori non riguarda soltanto prestazioni e costi delle reti, ma determina la configurazione delle interdipendenze tecnologiche, il grado di esposizione delle infrastrutture critiche e, nel medio periodo, la possibilità per uno stato di mantenere accesso a più ecosistemi tecnologici o di essere incardinato nelle architetture di un singolo attore dominante. Per la sua natura di infrastruttura abilitante di servizi essenziali, che spazia dalle comunicazioni militari ai sistemi industriali connessi, dall’Internet delle cose ai servizi finanziari digitali, il controllo politico della filiera 5G incide direttamente sulla qualità e sulla direzione delle dipendenze tecnologiche (Khilnani et al., 2012). La progressiva esclusione di Huawei e ZTE dalle prove e dal dispiegamento del 5G in India va letta in questa chiave più ampia, e non come semplice misura di prudenza tecnica. Da un lato segnala una convergenza, almeno parziale, con il quadro di minaccia delineato da Stati Uniti, Giappone e altri partner, secondo cui fornitori strettamente connessi all’apparato statuale cinese possono essere utilizzati per accedere ai dati, interferire con il funzionamento delle reti o esercitare pressione politica attraverso vulnerabilità strutturali delle infrastrutture. Dall’altro lato esprime la volontà di ridurre il margine di manovra di Pechino all’interno dell’infrastruttura digitale indiana, riorientando la dipendenza verso vendor considerati politicamente meno problematici e aprendo spazi per lo sviluppo di componenti domestiche della filiera tecnologica (Khilnani et al., 2012; Pant, 2019, pp. 205‑211). Il bando di TikTok e di un primo pacchetto di 59 applicazioni cinesi nel 2020, tra cui WeChat, UC Browser, Shareit, Helo e Likee, adottato immediatamente dopo gli scontri in Ladakh, estende la medesima logica dal livello delle reti a quello delle piattaforme che organizzano l’accesso ai dati e allo spazio pubblico digitale (Sinha, 2019, pp. 145‑173). Colpendo applicazioni percepite come potenziali strumenti di data harvesting e di influenza informativa, Nuova Delhi rende esplicita una concezione della sicurezza digitale centrata sulla sovranità dei dati e sul controllo delle interfacce attraverso cui si struttura la relazione tra stato, cittadini ed ecosistemi transnazionali di piattaforme (NITI Aayog, 2020). Queste misure restrittive non esauriscono la risposta indiana alla competizione tecnologica con la Cina, ma si affiancano alla costruzione di un’architettura digitale nazionale che diventa a sua volta strumento di potere. L’espansione di Reliance Jio, principale operatore di telecomunicazioni e servizi digitali integrati del paese, con il suo modello che combina infrastruttura di rete, un ampio ecosistema di piattaforme online e alleanze con grandi attori internazionali come Meta, Google, Microsoft, Qualcomm, Intel, Nvidia, Samsung, Ericsson, Nokia e SpaceX (per Starlink), mostra come l’India cerchi di trasformare il proprio mercato in piattaforma per attrarre capitali e tecnologie senza cedere il controllo politico della rete. Integrata nella cornice del Digital India, questa strategia enfatizza la sovranità digitale attraverso soluzioni cloud proprietarie (JioCloud), applicazioni indigene (JioBrowser, JioChat, JioOS) e una quota crescente di componentistica 5G locale, attestata intorno all’80%, con l’obiettivo di ridurre le dipendenze critiche pur restando inseriti nelle catene globali del valore (Pant, 2019, pp. 235‑260). Ancora più significativa, in termini di proiezione normativa, è la traiettoria di UPI e, più in generale, dello India Stack, un insieme modulare di protocolli per identità digitale, pagamenti, data empowerment e servizi pubblici che, nato per rispondere a esigenze interne di inclusione e efficienza amministrativa, si configura sempre più come standard esportabile verso altri paesi del Sud globale (NITI Aayog, 2020). L’India non si limita, quindi, a chiudere spazi alle imprese cinesi, ma aspira a proporsi come fornitore di beni pubblici digitali in grado di competere con le architetture di piattaforme globali sia occidentali sia asiatiche, offrendo soluzioni interoperabili che non implicano un allineamento politico totale ma creano forme sottili di dipendenza infrastrutturale centrata su Nuova Delhi (Sinha, 2019, pp. 173‑196).</p><p>La gestione di questa rivalità tecnologica con la Cina si intreccia con la scelta di collaborazioni differenziate su scala regionale, secondo la logica di un multi‑allineamento funzionale più che di un’adesione rigida a blocchi contrapposti. Nel teatro indo‑pacifico, il Quad offre a Nuova Delhi una cornice per allineare, almeno in parte, le proprie preoccupazioni sulle tecnologie critiche a quelle di Stati Uniti, Giappone e Australia, attraverso gruppi di lavoro dedicati al 5G, alle catene del valore dei semiconduttori, alla cybersicurezza e alle infrastrutture resilienti (Khilnani et al., 2012). Questa dimensione marittima e tecnologica del Quad rafforza la capacità indiana di resistere a pressioni cinesi nel proprio immediato vicinato oceanico, grazie alla condivisione di intelligence, standard e, in prospettiva, capacità industriali nel campo delle tecnologie emergenti (Menon, 2021, pp. 365‑372). Sul versante eurasiatico, tuttavia, l’India evita di tradurre questo allineamento parziale in una rottura irreversibile con Pechino. La partecipazione attiva a BRICS+ e SCO le consente di sedere allo stesso tavolo della Cina e della Russia quando si discutono infrastrutture continentali, finanza digitale, connectivity e principi di governance tecnologica, mantenendo un canale di dialogo in contesti che privilegiano la retorica della sovranità e dello sviluppo inclusivo (Pant, 2019, pp. 211‑234; Beitelmair‑Berini, 2022, pp. 214‑229). La Dichiarazione di Nuova Delhi del Consiglio dei Capi di Stato SCO del 2023 insiste, ad esempio, sulla necessità di uno sviluppo digitale inclusivo e sostenibile, sul rispetto della sovranità degli Stati nello spazio informativo e sulla cooperazione contro l’uso malevolo delle ICT, offrendo all’esecutivo di Narendra Modi un quadro di riferimento condiviso entro cui inserire le proprie preoccupazioni su sicurezza delle reti e autonomia infrastrutturale senza iscriversi in una narrativa apertamente anti‑cinese (SCO, 2023a). I documenti SCO adottati a Bishkek e le raccomandazioni del 15° BRICS Academic Forum del 2023 enfatizzano inoltre la costruzione di infrastrutture digitali resilienti, sistemi di pagamento alternativi e piattaforme di cooperazione tecnologica Sud‑Sud, aprendo spazi in cui l’India può proporre UPI e lo India Stack come modelli di riferimento (SCO, 2023b; BRICS Academic Forum, 2023). La combinazione di Quad e BRICS+/ SCO va letta non come un semplice esercizio di equilibrismo, ma come espressione di quel pluralismo strategico che la letteratura individua come tratto distintivo della grande strategia indiana, orientata a massimizzare opzioni e ridurre i costi di una scelta di campo rigida (Khilnani et al., 2012; Beitelmair‑Berini, 2022, pp. 23‑51). In questo quadro multilivello, l’India si configura come attore ponte fra sistemi digitali divergenti e talvolta confliggenti, capace di dialogare tanto con le coalizioni guidate dagli Stati Uniti quanto con i formati centrati su Cina e Russia. La credibilità di questo ruolo di interfaccia dipende da tre fattori: il peso demografico e di mercato, che fa dell’India un laboratorio e, al tempo stesso, un terreno di prova per qualsiasi architettura digitale globale (Pant, 2019, pp. 235‑260); la capacità di produrre standard tecnologici e regolatori esportabili, dai protocolli di identità ai sistemi di pagamento, fino alle architetture di data empowerment, adottabili da altri paesi senza richiedere un allineamento politico totale (NITI Aayog, 2020); e una cultura strategica non rigidamente allineata, che utilizza un repertorio flessibile di coalizioni e formati per massimizzare l’autonomia e aumentare il potere negoziale nella definizione delle regole del gioco, inclusa la governance delle tecnologie emergenti (Khilnani et al., 2012; Beitelmair‑Berini, 2022).</p></section><div class="pull-quote">Il passaggio dal non allineamento politico al non allineamento digitale non va inteso come rottura, bensì come riformulazione di una medesima esigenza di fondo.</div><section class="paper-section" id="conclusione"><span class="small-label">Conclusione</span><h2 class="serif-heading">Conclusione</h2><p>L’insieme dei materiali analizzati consente di leggere la traiettoria indiana non come semplice somma di politiche settoriali (spazio, cyber, digitale) ma come processo di ridefinizione della propria soggettività strategica in chiave eurasiatica. Il passaggio dal non allineamento politico al non allineamento digitale non va inteso come rottura, bensì come riformulazione di una medesima esigenza di fondo. Preservare margini di autonomia decisionale in un ambiente gerarchico, spostando progressivamente il baricentro dagli allineamenti ideologico-militari alle scelte sulle infrastrutture tecnologiche, sugli standard e sui regimi di interdipendenza (Khilnani et al., 2012; Menon, 2021). Il nesso strutturale tra assetti spaziali dual use, infrastrutture informative e dottrine di deterrenza ibride mostra come l’India tenda a concepire la sovranità tecnologica non solo come fattore abilitante dello sviluppo, ma come dimensione costitutiva della propria capacità di agire sull’ordine regionale e globale (Paranjpe, 2020; DSCI, 2020). Emergendo come potenza “pivotal” del nuovo ordine policentrico non tanto per la sola combinazione di demografia, crescita e capacità militari, quanto per la posizione che occupa all’intersezione tra sistemi normativi e architetture tecnologiche concorrenti (Pant, 2019; Beitelmair-Berini, 2022). La gestione differenziata dei formati di cooperazione dal Quad nello spazio indo-pacifico a BRICS+/SCO sul versante eurasiatico non è riducibile a opportunismo tattico, ma riflette un pluralismo strategico che mira a collocare Nuova Delhi come snodo necessario nella definizione di regole e standard per le tecnologie critiche, evitando sia l’assorbimento in un blocco guidato dagli Stati Uniti sia la marginalizzazione in un ordine regionale strutturato dall’egemonia cinese (Pant, 2019; Menon, 2021). La costruzione di piattaforme domestiche come lo India Stack e la proiezione di tali dispositivi nel discorso Sud-Sud fanno parte di questo tentativo di trasformare un vantaggio di mercato in capacità di rule-making, spostando l’asse del non allineamento sul terreno della progettazione istituzionale e tecnica del digitale (NITI Aayog, 2020; BRICS Academic Forum, 2023).</p><p>La nozione di digital non-alignment che si ricava da questo percorso ha così una portata teorica che eccede il caso indiano. Essa non si limita a indicare un rifiuto della biforcazione tra piattaforme occidentali e piattaforme cinesi, ma implica l’ambizione di generare architetture alternative di beni pubblici digitali, fondate su infrastrutture aperte, interoperabilità e un diverso bilanciamento tra controllo statale, mercato e diritti individuali (Khilnani et al., 2012; NITI Aayog, 2020).</p><p>Se l’India riuscirà a consolidare meccanismi effettivi di accountability, tutela dei diritti e redistribuzione dei benefici della trasformazione tecnologica, la sua posizione di potenza ibrida eurasiatica potrà tradursi in un effettivo ampliamento degli spazi di pluralismo nell’ordine digitale globale, offrendo un’alternativa credibile tanto al modello di piattaforma-impero quanto a quello di capitalismo di sorveglianza statale (Menon, 2021; Beitelmair-Berini, 2022). In caso contrario, la stessa infrastruttura che oggi alimenta l’immagine di un attore ponte rischia di consolidare, al proprio interno, nuove gerarchie tra centri e periferie sociali e di esportare, verso il Sud globale, un paradigma di governance digitale che riproduce, in forme sofisticate, le asimmetrie di potere che il discorso sul non allineamento intendeva originariamente contestare (Khilnani et al., 2012; Pant, 2019).</p><p>Nuova Delhi si trova oggi su una soglia, le stesse scelte che la rendono attore imprescindibile nella progettazione delle nuove architetture digitali globali aprono, al proprio interno, faglie che possono erodere la legittimità democratica del progetto e limitarne l’attrattiva normativa verso altri paesi. La capacità di tradurre il digital non-alignment in un ordine interno effettivamente più aperto, egualitario e garantista costituirà dunque il vero banco di prova della sua ambizione di potenza ibrida eurasiatica; il fallimento su questo terreno, al contrario, trasformerebbe la sua traiettoria in un caso paradigmatico di come le promesse emancipative del digitale possano rovesciarsi in nuove forme di dominio, pur mantenendo un lessico di non allineamento e sovranità tecnologica.</p></section><section class="paper-section bibliography" id="bibliografia-sitografia"><span class="small-label">Riferimenti</span><h2 class="serif-heading">Bibliografia e Sitografia</h2><p class="bibliography-entry">Aa. Vv., 2023, Digital Public Infrastructure for a Digital Bharat, New Delhi, Government of India.</p><p class="bibliography-entry">Beitelmair-Berini B., 2022, India’s Grand Strategy and Foreign Policy: Strategic Pluralism and Subcultures, London, Routledge.</p><p class="bibliography-entry">Benvenuti A., 2020, India’s Foreign Policy: The Quest for Strategic Autonomy, London, Routledge.</p><p class="bibliography-entry">BRICS Academic Forum, 2023, Final Recommendations of the 15th BRICS Academic Forum 2023 to the Leaders of the BRICS Countries, BRICS Think Tanks Council, <a href="https://bricsthinktankscouncil.org/knowledge-base/final-recommendations-of-the-15th-brics-academic-forum-2023-to-the-leaders-of-the-brics-countries/" rel="noopener noreferrer" target="_blank">https://bricsthinktankscouncil.org/knowledge-base/final-recommendations-of-the-15th-brics-academic-forum-2023-to-the-leaders-of-the-brics-countries/</a>.</p><p class="bibliography-entry">Data Security Council of India (DSCI), 2020, National Cyber Security Strategy 2020. DSCI Submission, New Delhi, <a href="https://www.dsci.in/files/content/knowledge-centre/2023/National-Cyber-Security-Strategy-2020-DSCI-submission.pdf" rel="noopener noreferrer" target="_blank">https://www.dsci.in/files/content/knowledge-centre/2023/National-Cyber-Security-Strategy-2020-DSCI-submission.pdf</a>.</p><p class="bibliography-entry">Government of India, Ministry of Electronics and Information Technology, 2014, Digital India Programme, New Delhi.</p><p class="bibliography-entry">Government of India, Ministry of Communications and Information Technology, 2013, National Cyber Security Policy, New Delhi, <a href="https://www.meity.gov.in/static/uploads/2024/02/National_cyber_security_policy-2013_0.pdf" rel="noopener noreferrer" target="_blank">https://www.meity.gov.in/static/uploads/2024/02/National_cyber_security_policy-2013_0.pdf</a>.</p><p class="bibliography-entry">Government of India, National Security Council Secretariat, 2020, National Cyber Security Strategy (In-Progress Draft), New Delhi, <a href="https://database.cyberpolicyportal.org/api/files/1664377398590fe3kyzt8xwd.pdf" rel="noopener noreferrer" target="_blank">https://database.cyberpolicyportal.org/api/files/1664377398590fe3kyzt8xwd.pdf</a>.</p><p class="bibliography-entry">Hall I., 2017, Narendra Modi and India’s normative power, in «International Affairs», 93(1), pp. 113–131, <a href="https://doi.org/10.1093/ia/iiw004" rel="noopener noreferrer" target="_blank">https://doi.org/10.1093/ia/iiw004</a>.</p><p class="bibliography-entry">Indian Space Research Organisation (ISRO), 2023a, Annual Report 2022–23, Bengaluru, <a href="https://www.isro.gov.in/media_isro/pdf/AnnualReport/Annual_Report_2022_23_Eng.pdf" rel="noopener noreferrer" target="_blank">https://www.isro.gov.in/media_isro/pdf/AnnualReport/Annual_Report_2022_23_Eng.pdf</a>.</p><p class="bibliography-entry">Indian Space Research Organisation (ISRO), 2024a, Annual Report 2023–24, Bengaluru, <a href="https://www.isro.gov.in/media_isro/pdf/AnnualReport/Annual_Report_2023_24_English.pdf" rel="noopener noreferrer" target="_blank">https://www.isro.gov.in/media_isro/pdf/AnnualReport/Annual_Report_2023_24_English.pdf</a>.</p><p class="bibliography-entry">Indian Space Research Organisation (ISRO), 2025, Annual Report 2024–25, Bengaluru, <a href="https://www.isro.gov.in/media_isro/pdf/AnnualReport/Annual_Report_2024_25_Eng.pdf" rel="noopener noreferrer" target="_blank">https://www.isro.gov.in/media_isro/pdf/AnnualReport/Annual_Report_2024_25_Eng.pdf</a>.</p><p class="bibliography-entry">Jacob H., 2017, The Anglosphere and India’s Strategic Choices: Power and Identity in the 21st Century, New Delhi, Oxford University Press.</p><p class="bibliography-entry">Khilnani S., Kumar R., Mehta P.B., Menon P., Nilekani N., Raghavan S., Saran S., Varadarajan S., 2012, NonAlignment 2.0. A Foreign and Strategic Policy for India in the Twenty First Century, New Delhi, Centre for Policy Research.</p><p class="bibliography-entry">Menon S., 2021, India and Asian Geopolitics: The Past, Present, New Delhi, Penguin.</p><p class="bibliography-entry">Menon V.P., 1957, The Story of the Integration of the Indian States, New Delhi, Orient Longman.</p><p class="bibliography-entry">Menon V.P., 1958, Integration of the Indian States. Retrospect and Prospect, New Delhi, Orient Longman.</p><p class="bibliography-entry">Nehru J., 1984, Selected Works of Jawaharlal Nehru, Second Series, Vol. 2–3, New Delhi, Jawaharlal Nehru Memorial Fund.</p><p class="bibliography-entry">NITI Aayog, 2020, Data Empowerment and Protection Architecture (DEPA): A Secure Consent-Based Data Sharing Framework, New Delhi, <a href="https://www.niti.gov.in/sites/default/files/2023-03/Data-Empowerment-and-Protection-Architecture-A-Secure-Consent-Based.pdf" rel="noopener noreferrer" target="_blank">https://www.niti.gov.in/sites/default/files/2023-03/Data-Empowerment-and-Protection-Architecture-A-Secure-Consent-Based.pdf</a>.</p><p class="bibliography-entry">Pant H.V., 2019, India and Global Governance: A Rising Power and Its Discontents, London, Routledge.</p><p class="bibliography-entry">Paranjpe S., 2020, India’s Strategic Culture: The Making of National Security Policy, New Delhi, Routledge India.</p><p class="bibliography-entry">SCO (Shanghai Cooperation Organisation), 2023a, Bishkek Meeting of the SCO Heads of Government: Outcome Documents, Bishkek.</p><p class="bibliography-entry">SCO (Shanghai Cooperation Organisation), 2023b, New Delhi Declaration of the Council of Heads of State of the Shanghai Cooperation Organisation, New Delhi, <a href="https://eng.sectsco.org/files/948725/948725" rel="noopener noreferrer" target="_blank">https://eng.sectsco.org/files/948725/948725</a>.</p><p class="bibliography-entry">Sinha A., 2019, The Networked Public: How Social Media is Changing Democracy, New Delhi, Orient Blackswan.</p></section>
+<section class="author-card" id="autore"><img alt="Aniello Inverso" onerror="this.style.display='none'" src="../assets/Junior-Fellows/aniello-inverso.jpg"/><div><span class="small-label">L’autore</span><h2 class="serif-heading">Aniello Inverso</h2><div class="author-role">Junior Fellow · Infrastrutture Strategiche</div><p>Intelligence analyst con formazione in investigazione, criminalità e sicurezza internazionale. Si occupa di analisi strategica su minacce ibride, rischio cibernetico, criminalità organizzata transnazionale e scenari multi-dominio. I suoi interessi riguardano protezione delle infrastrutture critiche, resilienza sistemica e modelli di warning e decision support.</p><p><a href="../chi-siamo.html#inverso">Profilo completo su DYNAMES</a></p></div></section>
+</div></article></main>
+<footer>
+<div class="container">
+<h3>DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p>© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
