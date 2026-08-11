@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="it">
 <head>
 <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
@@ -1601,11 +1600,49 @@
                 font-size: 0.86rem;
             }
         }
-    </style>
+    
+        /* Evidenza per l'articolo più recente */
+        .dynames-card--latest {
+            grid-column: 1 / -1;
+            min-height: 390px;
+        }
+
+        .dynames-card--latest h3 {
+            font-size: 1.9rem;
+            max-width: 76%;
+        }
+
+        @media (max-width: 900px) {
+            .dynames-card--latest {
+                min-height: 300px;
+            }
+
+            .dynames-card--latest h3 {
+                font-size: 1.35rem;
+                max-width: 100%;
+            }
+        }
+</style>
 <section id="hub" style="background: var(--optical-white); padding-bottom: 5rem;">
 <div class="container">
 <h2 class="section-title">Le ultime novità del mondo DYNAMES</h2>
-<div class="dynames-grid"><a class="dynames-card" href="pubblicazioni/2026.08.09-india-potenza-ibrida.html">
+<div class="dynames-grid"><a class="dynames-card dynames-card--latest" href="articles/2026.08.11-educazione-civica.html">
+<img alt="Educazione civica, istituzioni e responsabilità della leadership pubblica" src="articles/Immagini/2026.08.11-educazione-civica-panizzi-light.jpg"/>
+<span class="dynames-card-label">IN EVIDENZA · Articolo · Istituzioni, società e resilienza</span>
+<div class="dynames-card-content">
+<span class="dynames-card-date">11 Agosto 2026</span>
+<h3>Perché l’educazione civica non dovrebbe fermarsi ai banchi di scuola</h3>
+<span class="dynames-card-author">di Gen. C.A. (ris.) Massimo Panizzi</span>
+</div>
+</a><a class="dynames-card" href="articles/2026.08.11-why-military-theory-still-matters.html">
+<img alt="Teoria militare e guerra contemporanea: Clausewitz, Douhet, Mao e Mahan" src="articles/Immagini/2026.08.11-why-military-theory-still-matters-light.jpg"/>
+<span class="dynames-card-label">Articolo · Difesa e Sicurezza</span>
+<div class="dynames-card-content">
+<span class="dynames-card-date">11 Agosto 2026</span>
+<h3>Why Military Theory Still Matters</h3>
+<span class="dynames-card-author">di Magg. Andrea Rossini</span>
+</div>
+</a><a class="dynames-card" href="pubblicazioni/2026.08.09-india-potenza-ibrida.html">
 <img alt="Bandiera dell’India sopra una città digitale, simbolo della sovranità tecnologica e del digital non-alignment indiano" src="pubblicazioni/Archivio/2026.08.09-india-potenza-ibrida-light.jpg"/>
 <span class="dynames-card-label">Pubblicazione · Infrastrutture Strategiche</span>
 <div class="dynames-card-content">
@@ -1629,24 +1666,7 @@
 <h3>DDL Difesa 2026: dalla revisione ordinativa alla capacità nazionale multidominio</h3>
 <span class="dynames-card-author">di Redazione</span>
 </div>
-</a><a class="dynames-card" href="articles/2026.08.04-NATO-aggregated-demand-signal.html">
-<img alt="Collage realistico delle cinque priorità NATO: forze terrestri e droni, difesa aerea e missilistica, deep strike, medicina operativa e logistica" src="articles/Immagini/2026.08.04-NATO-aggregated-demand-signal-light.jpg?v=1"/>
-<span class="dynames-card-label">Articolo · Economia e Industria</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">4 Agosto 2026</span>
-<h3>La NATO spiega la guerra per cui si prepara</h3>
-<span class="dynames-card-author">di Rodolfo Belcastro</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.08.04-performance-merito-capacita.html">
-<img alt="Personale civile e un militare italiano in uniforme mimetica coordinano dati, infrastrutture e risposta alle emergenze" src="articles/Immagini/2026.08.04-performance-merito-capacita-light.jpg"/>
-<span class="dynames-card-label">Articolo · Governance Pubblica</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">4 Agosto 2026</span>
-<h3>Performance, merito e capacità amministrativa</h3>
-<span class="dynames-card-author">di Michele Punzi</span>
-</div>
-</a>
-</div>
+</a></div>
 </div>
 </section>
 <section class="container" id="eventi" style="padding-top: 10rem; margin-bottom: 6rem;">
