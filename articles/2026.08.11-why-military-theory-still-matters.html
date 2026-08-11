@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Why Military Theory Still Matters</title>
+<meta content="Dalla natura politica della guerra alla potenza aerea, dalla mobilitazione delle popolazioni al controllo del mare: la riflessione del Maggiore Andrea Rossini sul valore permanente della teoria militare." name="description"/>
+<link href="https://www.dynames.it/articles/2026.08.11-why-military-theory-still-matters.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Why Military Theory Still Matters" property="og:title"/>
+<meta content="Dalla natura politica della guerra alla potenza aerea, dalla mobilitazione delle popolazioni al controllo del mare: la riflessione del Maggiore Andrea Rossini sul valore permanente della teoria militare." property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.08.11-why-military-theory-still-matters.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.11-why-military-theory-still-matters-light.jpg" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.11-why-military-theory-still-matters-light.jpg" property="og:image:secure_url"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="Teoria militare e guerra contemporanea: Clausewitz, Douhet, Mao e Mahan" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Why Military Theory Still Matters" name="twitter:title"/>
+<meta content="La riflessione del Maggiore Andrea Rossini sul valore della teoria militare per comprendere la guerra contemporanea e la competizione strategica." name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.11-why-military-theory-still-matters-light.jpg" name="twitter:image"/>
+<meta content="2026-08-11T09:00:00+02:00" property="article:published_time"/>
+<meta content="Difesa e Sicurezza" property="article:section"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .article-figure {
+            margin: 0 0 4rem 0;
+        }
+
+        .article-figure .article-hero {
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .article-image-caption {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .profile-note {
+            margin: 3rem 0;
+            padding: 2rem 2.25rem;
+            background: var(--optical-white);
+            border-top: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+        }
+
+        .profile-note h3 {
+            margin: 0 0 0.8rem 0;
+            font-size: 1.25rem;
+            color: var(--night-blue);
+        }
+
+        .profile-note p {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.65;
+            text-align: left;
+        }
+
+        .source-note {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .source-note p {
+            margin-bottom: 0.8rem;
+            text-align: left;
+        }
+
+        .author-box {
+            margin-top: 4rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: contain;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .author-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+
+            .profile-note {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article>
+<div class="article-container article-header">
+<span class="article-category">Difesa e Sicurezza</span>
+<h1 class="serif-heading article-title">Why Military Theory Still Matters</h1>
+<p class="article-abstract">Droni, cyber, intelligenza artificiale e sistemi spaziali stanno trasformando la condotta delle operazioni. Ma senza una cornice teorica capace di interpretare natura, strumenti, società e geografia della guerra, l’innovazione rischia di produrre soltanto dati senza significato strategico.</p>
+<div class="article-meta"><span class="meta-author">Magg. Andrea Rossini</span><span>11 Agosto 2026</span><span>Tempo di lettura: 9 min</span></div>
+</div>
+<figure class="article-figure">
+<img alt="Teoria militare e guerra contemporanea: Clausewitz, Douhet, Mao e Mahan" class="article-hero" onerror="this.parentElement.style.display='none'" src="Immagini/2026.08.11-why-military-theory-still-matters.png"/>
+<figcaption class="article-image-caption">Immagine hero da associare alla pagina. La composizione può richiamare le quattro dimensioni affrontate nell’articolo: natura politica della guerra, potenza aerea, mobilitazione delle popolazioni e potere marittimo.</figcaption>
+</figure>
+<div class="article-container article-body">
+<p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">L</span>a guerra contemporanea moltiplica sensori, piattaforme, dati e velocità decisionale. Il conflitto in Ucraina, la diffusione dei droni, l’impiego crescente del dominio cyber e dello spazio, l’integrazione dell’intelligenza artificiale nei processi militari e la competizione nell’Indo-Pacifico sembrano suggerire che la superiorità dipenda soprattutto dalla capacità di innovare più rapidamente dell’avversario. Nel saggio <a href="https://smallwarsjournal.com/2026/07/15/why-military-theory-still-matters/" rel="noopener noreferrer" target="_blank"><em>Why Military Theory Still Matters</em></a>, pubblicato su <strong>Small Wars Journal</strong>, il Maggiore <strong>Andrea Rossini</strong> propone una tesi diversa e complementare: proprio quando la tecnologia cambia più rapidamente, diventa ancora più importante disporre di una solida bussola teorica.</p>
+<p>Il punto di partenza è semplice: osservare la guerra senza una teoria significa accumulare fatti, lezioni e innovazioni senza possedere necessariamente gli strumenti per interpretarli. La tecnologia può modificare la condotta delle operazioni, ma non elimina la natura politica della guerra, la centralità della volontà, l’importanza della popolazione o il peso della geografia. Per Rossini, quattro pensatori offrono ancora oggi una cornice particolarmente utile e complementare: <strong>Carl von Clausewitz, Giulio Douhet, Mao Zedong e Alfred Thayer Mahan</strong>.</p>
+<div class="pull-quote">“Warfare observed without theory is data without meaning.”</div>
+<h2>Clausewitz: la natura politica della guerra</h2>
+<p>Clausewitz costituisce, nella lettura di Rossini, il punto di partenza. La guerra resta uno strumento politico e non un fenomeno autonomo: decisioni militari, obiettivi strategici, consenso interno e volontà dell’avversario devono essere compresi all’interno di un sistema politico più ampio. La celebre trinità clausewitziana — passione, caso e ragione — continua a descrivere la tensione tra società, forze armate e governo, mentre il concetto di “frizione” ricorda quanto l’esecuzione reale differisca sempre dalla pianificazione astratta.</p>
+<p>L’utilità contemporanea di Clausewitz emerge soprattutto quando il professionista militare è tentato di ridurre il conflitto a un problema tecnico. La capacità di colpire con maggiore precisione o di accelerare il ciclo decisionale non risolve automaticamente la questione fondamentale: <strong>quale obiettivo politico si intende conseguire e quale volontà deve essere modificata?</strong> La guerra rimane un’interazione tra attori razionali, passioni collettive, percezioni e imprevisti.</p>
+<h2>Douhet: tecnologia, potenza aerea e trasformazione della condotta</h2>
+<p>Con Giulio Douhet l’attenzione si sposta sulla capacità della tecnologia di modificare profondamente il modo in cui le guerre vengono combattute. Rossini richiama il teorico italiano non perché ogni sua previsione si sia realizzata, ma perché Douhet comprese prima di molti altri che l’aviazione avrebbe introdotto una discontinuità strategica: velocità, profondità, libertà dal terreno e capacità di colpire direttamente centri vitali avrebbero ampliato lo spazio della guerra.</p>
+<p>La storia ha mostrato anche i limiti delle sue previsioni, in particolare sull’idea che il bombardamento potesse spezzare rapidamente la volontà delle popolazioni. Proprio questo limite rende la sua opera ancora utile: costringe a distinguere tra <strong>distruggere capacità</strong> e <strong>ottenere un effetto politico decisivo</strong>. La superiorità tecnologica può creare condizioni favorevoli, ma raramente sostituisce da sola una teoria della vittoria.</p>
+<h2>Mao: popolazione, tempo e resistenza prolungata</h2>
+<p>Se Douhet mostra come la tecnologia trasformi la condotta del conflitto, Mao Zedong richiama l’attenzione su una dimensione spesso sottovalutata dagli eserciti tecnologicamente superiori: la popolazione. La guerra rivoluzionaria e la resistenza prolungata dimostrano che un attore materialmente più debole può compensare parte del proprio svantaggio attraverso mobilitazione politica, sostegno sociale, capacità di assorbire perdite e sfruttamento del tempo.</p>
+<p>Rossini evidenzia come questo principio non appartenga esclusivamente al contesto ideologico nel quale Mao elaborò la propria teoria. Insurrezioni, proxy, movimenti armati e attori non statali continuano a mostrare che volontà, identità, reti sociali e accesso alla popolazione possono sostenere campagne molto più lunghe di quanto la sola comparazione delle capacità militari lascerebbe prevedere. La diffusione di tecnologie commerciali a basso costo — droni, immagini satellitari, sistemi di comunicazione e capacità di precisione — può inoltre ridurre ulteriormente il vantaggio materiale dei grandi attori.</p>
+<h2>Mahan: il ritorno della geografia marittima</h2>
+<p>Il quarto riferimento scelto da Rossini è Alfred Thayer Mahan. La sua inclusione riflette il progressivo spostamento della competizione strategica verso il Pacifico occidentale, dove il controllo delle linee di comunicazione marittima, l’accesso alle aree operative, i choke point e la capacità di proiettare potenza tornano al centro della pianificazione.</p>
+<p>La teoria del sea power ricorda che la potenza nazionale non dipende soltanto dal numero delle unità navali, ma dalla relazione tra flotta, commercio, basi, geografia e capacità di garantire o negare l’accesso. Nel confronto con la Repubblica Popolare Cinese, questo quadro aiuta a leggere la competizione non come una semplice gara tra piattaforme, ma come una contesa per il controllo di spazi, rotte, infrastrutture e libertà di manovra.</p>
+<h2>Quattro teorie, una sola esigenza professionale</h2>
+<p>Il valore dell’impostazione proposta da Rossini risiede soprattutto nella complementarità. Clausewitz spiega <strong>perché</strong> la guerra resta uno strumento politico; Douhet aiuta a comprendere <strong>come</strong> l’innovazione tecnologica possa modificarne la condotta; Mao chiarisce <strong>chi</strong> può sostenere una guerra e attraverso quali forme di mobilitazione; Mahan riporta l’attenzione sul ruolo della <strong>geografia marittima e della proiezione di potenza</strong>.</p>
+<p>Nessuno dei quattro autori è sufficiente da solo. Una lettura esclusivamente clausewitziana rischierebbe di trascurare la trasformazione tecnologica; una lettura centrata solo sulla tecnologia sottovaluterebbe volontà politica e società; l’attenzione alla popolazione senza una cornice strategica più ampia non spiegherebbe il rapporto tra guerra e fini politici; ignorare il mare renderebbe incompleta qualsiasi analisi della competizione nell’Indo-Pacifico.</p>
+<h2>La teoria come antidoto all’iper-specializzazione</h2>
+<p>Il messaggio conclusivo riguarda direttamente la formazione professionale militare. Le istituzioni occidentali di Professional Military Education già studiano questi autori, ma il rischio individuato da Rossini è un progressivo spostamento verso l’iper-specializzazione tecnica. Staff officer e comandanti possono diventare estremamente competenti nei processi, nei sistemi d’arma o nei cicli di targeting, perdendo però la visione complessiva necessaria a collegare capacità, obiettivi, società e strategia.</p>
+<p>In questa prospettiva, la teoria militare non è un esercizio accademico separato dalla pratica. È uno strumento per interpretare meglio l’esperienza, evitare di scambiare la novità per superiorità strategica e riconoscere elementi ricorrenti dietro tecnologie e scenari apparentemente inediti. La sfida non consiste quindi nel sostituire i classici con nuovi manuali tecnologici, ma nel <strong>continuare a tornare ai principi fondamentali mentre cambiano gli strumenti con cui la guerra viene combattuta</strong>.</p>
+<aside class="profile-note">
+<h3>Andrea Rossini</h3>
+<p><strong>Il Maggiore Andrea Rossini è un ufficiale dell’Esercito Italiano</strong>, appartenente alla specialità della fanteria alpina. Ha conseguito un master in Scienze Strategiche presso l’Università degli Studi di Torino e un master in Relazioni Internazionali presso l’Università degli Studi di Parma. Come riportato da <em>Small Wars Journal</em>, ha recentemente completato il <strong>Command and General Staff Officer Course</strong> presso lo U.S. Army Command and General Staff College di Fort Leavenworth, Kansas.</p>
+</aside>
+<div class="source-note">
+<p><strong>Fonte:</strong> Andrea Rossini, <a href="https://smallwarsjournal.com/2026/07/15/why-military-theory-still-matters/" rel="noopener noreferrer" target="_blank">“Why Military Theory Still Matters”</a>, <em>Small Wars Journal</em>, 15 luglio 2026.</p>
+<p>Il presente contributo costituisce una rielaborazione editoriale in lingua italiana dei principali argomenti sviluppati nell’articolo originale. Per il testo integrale, la formulazione dell’autore e l’apparato completo si rinvia alla pubblicazione su <em>Small Wars Journal</em>. I diritti sul testo originale e sui relativi materiali restano in capo all’autore e al publisher.</p>
+</div>
+<div class="author-box">
+<div class="author-info">
+<h4>Magg. Andrea Rossini</h4>
+<p>Ufficiale dell’Esercito Italiano, fanteria alpina. Master in Scienze Strategiche presso l’Università di Torino e in Relazioni Internazionali presso l’Università di Parma. Ha completato il Command and General Staff Officer Course allo U.S. Army Command and General Staff College di Fort Leavenworth.</p>
+<p><a href="https://smallwarsjournal.com/2026/07/15/why-military-theory-still-matters/" rel="noopener noreferrer" target="_blank">Leggi l’articolo originale su Small Wars Journal</a>.</p>
+</div>
+</div>
+</div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Perché l’educazione civica non dovrebbe fermarsi ai banchi di scuola</title>
+<meta content="È ancora possibile risvegliare nei nostri politici un vero senso dello Stato, evitando quelle polarizzazioni che spesso sfociano in comportamenti da tifoseria da stadio? È la stessa, implicita domanda, di sostanza civica, che due Presidenti della Repubblica – Sergio Mattarella e Carlo Azeglio Ciampi – hanno posto in tempi e con espressioni differenti, ma identica urgenza. La riflessione del generale Massimo Panizzi" name="description"/>
+<link href="https://www.dynames.it/articles/2026.08.11-educazione-civica.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Perché l’educazione civica non dovrebbe fermarsi ai banchi di scuola" property="og:title"/>
+<meta content="È ancora possibile risvegliare nei nostri politici un vero senso dello Stato, evitando quelle polarizzazioni che spesso sfociano in comportamenti da tifoseria da stadio? È la stessa, implicita domanda, di sostanza civica, che due Presidenti della Repubblica – Sergio Mattarella e Carlo Azeglio Ciampi – hanno posto in tempi e con espressioni differenti, ma identica urgenza. La riflessione del generale Massimo Panizzi" property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.08.11-educazione-civica.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.11-educazione-civica-panizzi.jpg?v=1" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.11-educazione-civica-panizzi.jpg?v=1" property="og:image:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.11-educazione-civica-panizzi.jpg?v=1" property="og:image:secure_url"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1320" property="og:image:width"/>
+<meta content="880" property="og:image:height"/>
+<meta content="Educazione civica, Parlamento e responsabilità della leadership pubblica" property="og:image:alt"/>
+<link href="https://www.dynames.it/articles/Immagini/2026.08.11-educazione-civica-panizzi.jpg?v=1" rel="image_src"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Perché l’educazione civica non dovrebbe fermarsi ai banchi di scuola" name="twitter:title"/>
+<meta content="È ancora possibile risvegliare nei nostri politici un vero senso dello Stato, evitando quelle polarizzazioni che spesso sfociano in comportamenti da tifoseria da stadio? È la stessa, implicita domanda, di sostanza civica, che due Presidenti della Repubblica – Sergio Mattarella e Carlo Azeglio Ciampi – hanno posto in tempi e con espressioni differenti, ma identica urgenza. La riflessione del generale Massimo Panizzi" name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.11-educazione-civica-panizzi.jpg?v=1" name="twitter:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.11-educazione-civica-panizzi.jpg?v=1" name="twitter:image:src"/>
+<meta content="2026-08-11T18:00:00+02:00" property="article:published_time"/>
+<meta content="Istituzioni, società e resilienza" property="article:section"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center 45%;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .article-figure {
+            margin: 0 0 4rem 0;
+        }
+
+        .article-figure .article-hero {
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .article-image-caption {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.45rem;
+            color: var(--night-blue);
+            margin: 2.6rem 0 1rem 0;
+            line-height: 1.3;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .inline-figure {
+            margin: 3.5rem 0;
+        }
+
+        .inline-figure img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: 1px solid #e2e8f0;
+            background: var(--optical-white);
+            box-shadow: 0 14px 24px -16px rgba(11, 17, 32, 0.35);
+        }
+
+        .inline-figure figcaption {
+            margin-top: 0.85rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .source-note {
+            margin-top: 4rem;
+            padding: 1.5rem 1.75rem;
+            background: rgba(184, 147, 90, 0.08);
+            border-left: 4px solid var(--gold-accent);
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .source-note p {
+            margin: 0;
+            text-align: left;
+        }
+
+        .source-note a {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .author-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    
+        .article-body a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .article-body a:hover {
+            color: var(--gold-accent);
+        }
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article>
+<div class="article-container article-header">
+<span class="article-category">Istituzioni, società e resilienza</span>
+<h1 class="serif-heading article-title">Perché l’educazione civica non dovrebbe fermarsi ai banchi di scuola</h1>
+<p class="article-abstract">È ancora possibile risvegliare nei nostri politici un vero senso dello Stato, evitando quelle polarizzazioni che spesso sfociano in comportamenti da tifoseria da stadio? È la stessa, implicita domanda, di sostanza civica, che due Presidenti della Repubblica – Sergio Mattarella e Carlo Azeglio Ciampi – hanno posto in tempi e con espressioni differenti, ma identica urgenza. La riflessione del generale Massimo Panizzi</p>
+<div class="article-meta"><span class="meta-author">Gen. C.A. (ris.) Massimo Panizzi</span><span>11 Agosto 2026</span><span>Pubblicato originariamente su Formiche.net</span></div>
+</div>
+<figure class="article-figure">
+<img alt="Educazione civica, Parlamento e responsabilità della leadership pubblica" class="article-hero" onerror="this.closest('figure').style.display='none'" src="Immagini/2026.08.11-educazione-civica-panizzi.jpg"/>
+<figcaption class="article-image-caption">Il Presidente della Repubblica incontra giovani cittadini: educazione civica, istituzioni e partecipazione democratica.</figcaption>
+</figure>
+<div class="article-container article-body">
+<div class="source-note" style="margin-top:0; margin-bottom:3rem;">
+<p><strong>Pubblicazione originaria.</strong> Il testo che segue è ripubblicato integralmente da
+<a href="https://formiche.net/2026/08/educazione-civica-richiami-presidenti-panizzi/" rel="noopener noreferrer" target="_blank"><strong>Formiche.net</strong></a>,
+dove è apparso l'11 agosto 2026 con il titolo <em>“Perché l’educazione civica non dovrebbe fermarsi ai banchi di scuola”</em>, a firma di Massimo Panizzi.
+Il testo è attribuito al suo autore; la fonte editoriale originaria è Formiche.net.
+</p>
+</div>
+<p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">I</span>l 30 luglio il Presidente** Sergio Mattarella** ha ricevuto al Quirinale la stampa parlamentare per la tradizionale consegna del Ventaglio: un appuntamento che sui media è passato come semplice cronaca istituzionale, quando invece avrebbe dovuto generare una riflessione seria e profonda. Quel giorno, infatti, egli ha rivolto a tutte le forze politiche un messaggio che meriterebbe di essere esposto – quale “memento” – nelle aule di Montecitorio e di Palazzo Madama, più che recensito nelle rassegne stampa del giorno dopo: quello di non perdere di vista i problemi reali della vita quotidiana degli Italiani, mettendo in guardia contro le tensioni che il calendario elettorale sta esacerbando e nei confronti di un modo di far politica segnato da un’aggressività verbale divenuta inaccettabile.</p>
+<p>Non è la prima volta che un Capo dello Stato si pronuncia su questo tema. Ma ogni volta che ritiene di dover tornarci, offre la misura di quanto siamo ancora lontani dalla “maturità”. Stride – spiace dirlo – il fragore degli applausi che seguono “meccanicamente” i discorsi del nostro Presidente, con i comportamenti che ne seguono.</p>
+<h2>Il Parlamento, un’istituzione che rappresenta tutti, e in cui pochi si riconoscono</h2>
+<p>I numeri che ci giungono dal Rapporto Italia 2026 dell’Eurispes non sono teneri. Mentre il Presidente della Repubblica raccoglie la fiducia del 61,8% degli italiani – un dato tra i più alti tra le Istituzioni censite – il Parlamento si ferma al 26,1%, vale a dire un cittadino su quattro. Ho riflettuto a lungo, su questo numero: l’Istituzione che per definizione dovrebbe rappresentare la proiezione più diretta del voto popolare è proprio quella in cui gli italiani si riconoscono meno!</p>
+<p>Analizzando la serie storica dal 2013 al 2026, il punto più basso resta il quinquennio 2013-2017, con la sfiducia vicina al 90%; da allora qualcosa è migliorato, ma negli ultimi otto anni il dato si è comunque stabilizzato attorno a una sfiducia media del 62%. Non è, quindi, un “incidente di percorso”, piuttosto qualcosa di più radicato. Qui, molto probabilmente, troviamo la ragione per la quale la gente non va a votare: è una questione di fiducia.</p>
+<p>Lo stesso Rapporto, infatti, lega questo scollamento a un fenomeno che conosciamo fin troppo bene: l’astensionismo, arrivato a livelli che quarant’anni fa sarebbero sembrati fantascienza. La spiegazione più “onesta” non è l’inconsapevolezza del valore del voto, al di là dei meccanismi interni delle (possibili) leggi elettorali. La verità è che molti, troppi cittadini hanno smesso di credere che il voto cambi qualcosa. Il Presidente Mattarella lo ha definito, con parole misurate, un fenomeno crescente che non riguarda soltanto la prossima scadenza elettorale, ma la tenuta stessa della partecipazione democratica. Ci chiediamo, allora, se questo non debba essere uno dei temi da inserire nell’agenda di un Parlamento.</p>
+<h2>Le folle di Le Bon, in aula</h2>
+<p>Quasi centotrent’anni fa Gustave Le Bon, nel suo celebre “Psicologia delle folle”, osservava che le assemblee – comprese quelle parlamentari – quando ragionano collettivamente, tendono a perdere ciò che caratterizza il ragionamento del singolo: si semplificano, si polarizzano e si lasciano trasportare dall’emotività più che dall’argomento. Le Bon lo scriveva del Parlamento francese di fine Ottocento, ma chi ha passato qualche pomeriggio a guardare un <em>question time</em> in diretta sa che l’osservazione è quanto mai attuale.</p>
+<p>Non è un vizio nuovo, la litigiosità quasi da stadio delle nostre assemblee. Sembra, piuttosto, un tratto costante che, sommato ad una difficoltà tutta italiana nel pensare oltre la legislatura in corso, produce un effetto moltiplicatore. Chi scrive ha comandato uomini e donne per una parte consistente della vita, soprattutto tra le unità Alpine, e una cosa l’ha imparata sul campo, non sui libri: un reparto che litiga sulla precedenza di chi debba portare lo zaino più pesante non arriva in vetta. Ci arriva quello che si è messo d’accordo prima, magari litigando, ma su come dividersi il carico, non su chi ha ragione. In montagna il tempo stringe e il meteo non aspetta le beghe interne: o si decide insieme, o si resta sotto la tormenta. Mi sembra una metafora adatta a quello che chiediamo – e raramente otteniamo – alle nostre Camere.</p>
+<p>Il Rapporto Eurispes lo dice a modo suo, parlando della ricostruzione industriale del dopoguerra: quella generazione non era più intelligente della nostra, era soltanto più disposta a sacrificare il presente per costruire il futuro. È esattamente la disposizione (mentale) che sembra mancare oggi, in Parlamento e fuori.</p>
+<h2>Il Parlamento sostituito dai talk show</h2>
+<p>I media, in questo, non sono spettatori innocenti, tutt’altro. Un titolo costruito sullo scontro vende meglio di una sintesi. Quasi ogni giorno osserviamo che una rissa in diretta buca lo schermo (e i social) ben più di un emendamento tecnico spiegato bene. Non tocca al giornalismo abbellire la politica. Però, la scelta sistematica di dare voce al litigio, invece che al merito, ha una sua parte di responsabilità nel far percepire un’aula parlamentare più simile a una piazza d’armi in disordine che a un luogo di governo. Aggiungo un’altra considerazione: il luogo dove la politica si racconta si è spostato dall’aula allo studio televisivo, ove il confronto tra le parti dura pochi minuti scanditi dalla pubblicità e la misura del successo non è la qualità dell’argomento ma la battuta che resta, le capacità di eloquio degli ospiti, o il videoclip che gira sui social il giorno dopo. Il Parlamento, in questo scambio, ha perso terreno: spesso, decisioni che contano sono annunciate in un salotto televisivo prima che in aula, e il dibattito pubblico si è progressivamente adattato ai tempi e ai codici del piccolo schermo invece di imporre i propri. Manca, soprattutto, un vero approfondimento sui contenuti.</p>
+<p>Non è soltanto una mia impressione da osservatore dei media. Lo stesso Rapporto dell’Eurispes richiama, su questo punto, la lezione di <strong>Jürgen Habermas</strong>: la legittimità di un sistema politico dipende dalla qualità del dibattito pubblico che lo sostiene, non soltanto dalle procedure formali con cui si eleggono i rappresentanti. E osserva che quando quel dibattito si riduce a slogan, e i talk show e i social media prendono il posto delle sedi parlamentari come luogo reale del confronto, la democrazia si svuota progressivamente.</p>
+<p>La conclusione a cui arriva il Rapporto, però, non è nostalgica. Non si tratta di rimpiangere i partiti di massa del secolo scorso, con le loro sezioni e le loro tessere. Si dovrebbero elaborare, invece, forme nuove di partecipazione capaci di integrare la rivoluzione digitale invece di subirla, senza però illudersi che basti “portare la democrazia sui social” per risolvere il problema, come se una diretta Instagram valesse una seduta di Commissione. La politica, scrive ancora il Rapporto, deve riconquistare spessore culturale, visione di lungo periodo e un linguaggio che rispetti l’intelligenza di chi ascolta, per costruire quella che i documenti internazionali chiamano ormai la “nuova governance dei processi pubblici”.</p>
+<h2>Il rispetto della Costituzione non è un optional, né uno slogan</h2>
+<p>Il Presidente Mattarella ha toccato anche un altro punto delicato: il rischio che siano i comportamenti individuali a piegare le regole, invece del contrario. Quando i cittadini percepiscono che le norme si adattano caso per caso agli interessi di chi le applica, non si rafforza la sicurezza di nessuno; al contrario, si mina l’autorità dello Stato. Vale per tutti i cittadini e, soprattutto, per chi le leggi le scrive.</p>
+<p>Sembra opportuno rammentare che non è la prima volta che un Presidente della Repubblica affida a un discorso pubblico questo stesso pensiero: che la tenuta della democrazia dipenda meno dalle regole scritte e più dalla cultura civica di chi le regole le vive ogni giorno. Vent’anni prima di Sergio Mattarella, un altro Presidente lo aveva detto agli studenti con parole diverse, ma con lo stesso obiettivo.</p>
+<h2>Il patriottismo civile di Carlo Azeglio Ciampi</h2>
+<p>Nel settembre 2002 l’allora Presidente Ciampi aprì l’anno scolastico al Vittoriano parlando ai ragazzi, e disse una cosa che oggi suona quasi profetica: lo studio della storia, della filosofia, della letteratura è lo strumento fondamentale dell’educazione civica, non un suo ornamento. Invitò gli studenti a leggere Dante e Leopardi nello stesso respiro in cui li invitava a conoscere il Risorgimento e a coglierne la continuità ideale con la Resistenza e con la Repubblica nata dalla Costituzione. Per Ciampi la Carta non era un testo da citare nelle cerimonie, ma un libro da leggere e discutere in classe (arrivò a farne distribuire una copia a ciascun ragazzo presente, raccomandando in particolare i primi dodici articoli).</p>
+<p>In quello stesso, memorabile discorso, Ciampi raccontò di una visita fatta poche settimane prima al carcere minorile di Nisida, e lesse ai ragazzi un passo della lettera con cui i giovani detenuti lo avevano accolto. Dicevano che lì, pur privati della libertà, avevano trovato scuola e formazione professionale, e che questo li aiutava a vivere bene e onestamente. Aggiungevano una cosa che a rileggerla oggi pesa ancora di più: se avessero ricevuto prima quella stessa cura, forse non si sarebbero salvati tutti, ma buona parte di loro sì. Un passaggio, quello, che mi ha sempre fatto riflettere.</p>
+<p>Dice, inoltre, che la formazione, se la si dà per tempo, funziona sempre. Se, invece, la si rincorre dopo che il danno è fatto, non serve più a nulla. Vale per un ragazzo di sedici anni quanto per un candidato che a trenta-quarant’anni si presenta agli elettori senza aver mai studiato seriamente come funziona l’istituzione di cui vuole entrare a far parte e, soprattutto, senza aver riflettuto adeguatamente sulla responsabilità che la sua candidatura sottende.</p>
+<p>C’è un secondo aspetto, in quel discorso, che riguarda da vicino il tema di questo articolo: l’idea di un patriottismo che non si esaurisce dentro i confini nazionali. Per Ciampi la cittadinanza europea non sostituiva quella italiana, ma la completava; rafforzava il richiamo ai doveri di cittadinanza insieme alla tutela dei diritti nelle singole realtà nazionali. Un patriottismo civile ed europeo insieme, verrebbe da dire oggi, che teneva insieme l’appartenenza a una storia e l’appartenenza a un progetto più grande. È lo stesso equilibrio che manca, oggigiorno, ad un dibattito pubblico spesso incapace di parlare di Europa senza scivolare nella difesa d’ufficio o nel rigetto sistematico.</p>
+<h2>Su quali basi convincere i cittadini a tornare a votare?</h2>
+<p>C’è una domanda che a un certo punto va posta senza girarci troppo intorno: perché dovrebbe interessare a un cittadino tornare alle urne, se l’immagine che riceve del Parlamento è quella di qualche rissa verbale ripresa dalle telecamere, banchi sbattuti, cori da stadio e invettive – talvolta al limite del vilipendio – che rimbalzano sui social per un giorno e poi spariscono, per poi farle riemergere ad uso e consumo di una o dell’altra coalizione? Da fuori, l’aula sembra fatta soprattutto di quei momenti. Non è colpa soltanto di chi li mette in scena, intendiamoci; ha grosse responsabilità anche chi, tra gli osservatori, sceglie di raccontare solo o soprattutto quelli.</p>
+<p>Lo dico consapevole che una grossa parte, forse la più importante del lavoro parlamentare, non avviene in aula davanti alle telecamere. Succede all’interno delle Commissioni, nelle audizioni tecniche, negli emendamenti discussi articolo per articolo per settimane. In altre parole, in un’attività complessa che a un non addetto ai lavori sembra sconosciuta e che invece è la vera sostanza della rappresentanza. Quasi nessuno lo racconta, quel lavoro: non fa audience e, soprattutto, non produce titoli, né visibilità, o neanche una clip da condividere. Ma è lì che si gioca la differenza tra una legge scritta bene e una scritta male, oppure tra un compromesso ragionato e uno raffazzonato all’ultimo minuto. Se un cittadino conoscesse meglio quel lato del Parlamento – non necessariamente ogni dettaglio tecnico, ma almeno il fatto che esiste – forse i dati rilevati dall’Eurispes sarebbero diversi.</p>
+<p>Resta il dubbio che qualcuno abbia interesse a che l’affluenza alle urne non cresca, che un’astensione alta e stabile consegni il risultato a chi ha un elettorato più organizzato, più fedele, più facilmente mobilitabile e che, quindi, non vi sia un reale interesse a cambiare le cose. Ma lasciamo questo sospetto ai malpensanti, auspicando che le parole dei due Presidenti sopracitati tornino ad essere la stella polare delle forze politiche e di chi occupa posizioni di rilievo nelle nostre istituzioni.</p>
+<h2>Un dilemma da sciogliere: formiamo gli studenti, ma chi forma chi ci governa?</h2>
+<p>Da qualche anno il ministero dell’Istruzione ha fornito alle scuole Linee guida per l’insegnamento dell’educazione civica: trentatré ore l’anno obbligatorie fin dalla scuola dell’infanzia su tre nuclei – Costituzione, sviluppo economico e sostenibilità, cittadinanza digitale – pensati per accompagnare uno studente dai primi anni fino al diploma. Confrontato con gli altri sistemi europei censiti da Eurydice, è un impianto tra i più strutturati del continente.</p>
+<p>Allora viene da chiedersi: quel percorso, così accurato per chi siede tra i banchi di scuola, dove va a finire nel momento in cui una persona decide di candidarsi a rappresentare gli altri?</p>
+<p>Chi entra in un corpo dello Stato – che si tratti di Polizia, Esercito, Guardia di Finanza – affronta selezioni, prove attitudinali, corsi di formazione e un aggiornamento che non si esaurisce mai davvero, nemmeno da ufficiale con trent’anni di servizio alle spalle: si torna sempre sui banchi, con periodicità. L’educazione civica, in questo percorso, mantiene un ruolo chiave. Gli esami “attitudinali”, poi, non terminano mai: si rimettono in discussione procedure, si allenano l’individuo e la squadra a decidere insieme sotto pressione. E chi occupa posizioni di responsabilità viene valutato continuamente e ha l’obbligo di aggiornarsi, alla luce dei doveri costituzionali, cuore dell’educazione civica. Per chi si candida al Parlamento esiste qualcosa di comparabile? Se anche esistesse in forma sparsa, qui e là, nei singoli partiti, resta la sensazione forte che non sia mai diventato un impegno condiviso, riconoscibile, verificabile da un elettore.</p>
+<h2>Un’idea che potrebbe trasformarsi in un progetto strutturato</h2>
+<p>Da qui nasce un’idea che non tocca il diritto costituzionale di ogni cittadino a candidarsi – sarebbe sbagliato, oltre che impraticabile – ma che prova a costruire, accanto a quel diritto, un percorso di formazione riconosciuto per chi si prepara a un ruolo pubblico o già lo ricopre: moduli su Costituzione e valori repubblicani, funzionamento delle istituzioni, economia pubblica ed europea, cittadinanza digitale, etica del buon governo, comunicazione istituzionale, geopolitica, capacità di guidare senza dover per forza prevalere. È, in fondo, la stessa scommessa che faceva il Presidente Ciampi quando chiedeva ai ragazzi di studiare la Costituzione, invece di limitarsi a citarla nelle occasioni ufficiali (magari solo nelle parti che “fanno comodo” in quel momento): una scommessa che vale, questa volta, anche per chi la Costituzione la deve applicare per mestiere.</p>
+<p>Sappiamo che qualche fondazione/ente di formazione ha già attuato o sta ragionando su percorsi di questo tipo, ma resta un cantiere aperto solo parzialmente, non un progetto strutturato e codificato a livello nazionale.</p>
+<p>La direzione, però, dovrebbe essere questa: non un esame di ammissione al voto, bensì una certificazione di qualità che partiti, liste civiche ed elettori potrebbero scegliere di valorizzare, così come un curriculum accreditato pesa, giustamente, nella scelta di un professionista. Anche perché un parlamentare è, di fatto, un “professionista della politica”.</p>
+<h2>Educare alla leadership pubblica: l’urgenza di formare veri leader, memori dello storico discorso di De Gasperi a Parigi</h2>
+<p>Il cuore della faccenda, però, sta nel metodo, prima ancora che nel titolo di studio o nel curriculum. Ai giovani ufficiali, quando toccava a me spiegare cosa significasse comandare, dicevo sempre la stessa cosa, con parole diverse a seconda delle circostanze: le stellette danno il diritto di impartire un ordine, ma non la certezza di averlo dato giusto. Quella certezza si costruisce dopo, un giorno alla volta, insieme a chi ti segue, spiegando perché si è scelto in un modo e non in un altro, ascoltando chi la pensa diversamente, e ammettendo un errore quando serve, cercando quello che unisce e non ciò che divide. Un ufficiale può anche farsi obbedire senza questo metodo. Ma non si farà mai seguire davvero e la differenza, prima o poi, nel momento in cui conta, si vede sempre. Esempi edificanti e comportamenti coerenti con il ruolo ricoperto sono elementi chiave per farsi seguire, per avere il consenso dei dipendenti.</p>
+<p>Resto allibito quando mi accorgo di quanti cittadini non conoscono la storia d’Italia, dal dopoguerra a oggi. Soprattutto lo storico, indimenticabile e decisivo intervento di Alcide De Gasperi alla Conferenza di pace Parigi del 1946 che, di fatto, ha dato il via all’Italia moderna. Secondo <strong>Indro Montanelli</strong> quel discorso appartiene agli «annali della dignità nazionale». Accolto dal freddo silenzio dell’assemblea internazionale, segnò il momento in cui il leader italiano espresse con fierezza il riscatto del Paese nonostante le ostilità generali. Ecco cosa vuol dire leadership: non cercare il consenso immediato della sala, ma difendere una posizione impopolare perché è quella giusta, e farlo con la dignità di chi sa di rappresentare qualcosa di più grande di sé.</p>
+<p>Educare alla leadership pubblica vuol dire insegnare a chi aspira a rappresentare gli altri che il disaccordo non deve trasformarsi automaticamente in contrapposizione e che il bene comune non è la somma degli interessi di parte. Soprattutto, che si può fare opposizione dura senza essere ostili o adottare comportamenti inurbani. È la differenza tra chi entra in aula per vincere la giornata e chi vi entra per costruire qualcosa che duri più a lungo del proprio mandato. Ed è, anche, la stessa differenza che separa un leader da un “personaggio”. Perché il rischio, oggi, non è soltanto quello di una politica urlata: è che la leadership pubblica si stia progressivamente confondendo con l’esposizione mediatica di sé.</p>
+<p>C’è chi sembra concepire il proprio ruolo istituzionale come un <em>reality show</em> permanente, dove ciò che conta non è la coerenza di un percorso, ma la visibilità del singolo episodio; osserviamo, spesso e con mestizia, comportamenti più da “<em>creator digitale</em>” che da rappresentante eletto, inseguendo l’algoritmo invece del merito e il numero di visualizzazioni al posto della qualità dell’argomento. De Gasperi a Parigi non aveva un pubblico plaudente: aveva un’assemblea ostile, e proprio per questo quel discorso vale ancora oggi come modello. La leadership che serve alle istituzioni non si misura in engagement, ma nella capacità di tenere una rotta anche quando non porta consenso immediato, di non cedere alle lusinghe del “criterio della convenienza”, e di guardare sempre e comunque all’interesse superiore della Nazione.</p>
+<h2>Tornare ai fondamentali, prima del voto</h2>
+<p>Sergio Mattarella ha indicato un metodo: quello di una riflessione che vada oltre il momento contingente. Il collegamento con il voto che si avvicina non è un caso. Se la sfiducia verso il Parlamento nasce anche dalla sensazione di un’aula incapace di distinguere ciò che conta dal rumore di fondo, allora recuperare fiducia comincia anche da qui: dal mostrare, prima ancora delle urne, che chi chiede di rappresentarci ha investito tempo per capire davvero le istituzioni che vuole guidare e sa comportarsi con dignità e decoro. Non basterà, da solo, a far tornare tutti a votare. Ma è un punto da cui si può ripartire – più a portata di mano di quanto sembri, se solo si trova la volontà di prenderlo sul serio. Trasformare l’appello del Presidente in un vero apprendimento civico e in un modus operandi condiviso non è soltanto opportuno e necessario: è urgente.</p>
+
+<div class="source-note">
+<p><strong>Fonte e attribuzione.</strong> Articolo di <strong>Massimo Panizzi</strong>,
+pubblicato originariamente su <a href="https://formiche.net/2026/08/educazione-civica-richiami-presidenti-panizzi/" rel="noopener noreferrer" target="_blank">
+<strong>Formiche.net</strong></a> l'11 agosto 2026.
+La presente pagina DYNAMES ne ripropone integralmente il testo fornito dall'autore,
+mantenendo esplicita l'attribuzione alla sede di pubblicazione originaria.
+</p>
+</div>
+<div class="author-box">
+<img alt="Gen. C.A. (ris.) Massimo Panizzi" onerror="this.style.display='none';" src="../assets/massimo%20panizzi.jpeg"/>
+<div class="author-info">
+<h4>Gen. C.A. (ris.) Massimo Panizzi</h4>
+<p>Direttore Editoriale di DYNAMES, contribuisce all’impostazione culturale e strategica della piattaforma, con particolare attenzione alla cultura della difesa, alla formazione e al rapporto tra sicurezza, istituzioni e cittadinanza.</p>
+</div>
+</div></div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
