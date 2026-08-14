@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
-    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
-    <script>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
     (function () {
         'use strict';
 
@@ -314,7 +315,6 @@
         };
     }());
     </script>
-
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DYNAMES | Difesa è libertà</title>
@@ -621,6 +621,93 @@
     .theme-card h3 { margin: 0 0 .55rem; font-size: 1.08rem; }
     .theme-card p { margin: 0; color: var(--text-secondary); font-size: .98rem; }
 
+
+
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.25rem;
+        margin-top: 2rem;
+    }
+
+    .video-card {
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: var(--optical-white);
+        box-shadow: 0 12px 26px rgba(11, 17, 32, .08);
+    }
+
+    .video-frame {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        overflow: hidden;
+        background: #111827;
+    }
+
+    .video-poster {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: 0;
+        cursor: pointer;
+        background: #111827;
+    }
+
+    .video-poster img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+    .video-poster::after {
+        content: '▶';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 64px;
+        height: 64px;
+        transform: translate(-50%, -50%);
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        color: #fff;
+        background: rgba(213, 31, 42, .94);
+        box-shadow: 0 8px 24px rgba(0,0,0,.28);
+        font-size: 1.45rem;
+        line-height: 1;
+        padding-left: .18rem;
+    }
+
+    .video-poster:hover::after,
+    .video-poster:focus-visible::after {
+        background: var(--night-blue);
+    }
+
+    .video-frame iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    .video-caption {
+        margin: 0;
+        padding: .9rem 1rem 1rem;
+        color: var(--text-secondary);
+        font-size: .9rem;
+        line-height: 1.5;
+    }
+
+    .video-caption strong {
+        color: var(--night-blue);
+    }
+
     .book-data {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -709,7 +796,7 @@
         .article-title { font-size: 2.65rem; }
         .purchase-box, .author-card { grid-template-columns: 1fr; }
         .button { width: 100%; }
-        .contents-list, .themes-grid, .book-data { grid-template-columns: 1fr; }
+        .contents-list, .themes-grid, .video-grid, .book-data { grid-template-columns: 1fr; }
         .abstract-section, .contents-panel, .purchase-box, .author-card { padding: 1.35rem; }
         .author-card img { width: 120px; height: 120px; }
         .pull-quote { padding: 1.8rem 1.2rem; }
@@ -761,11 +848,9 @@
 </nav>
 </div>
 </header>
-
 <div class="container back-nav">
 <a href="../pubblicazioni.html">← Torna alle Pubblicazioni</a>
 </div>
-
 <main>
 <article class="article-container">
 <section class="hero">
@@ -779,11 +864,10 @@
 <span>2026</span>
 </div>
 </div>
-<div class="cover-card" aria-label="Copertina del libro Difesa è libertà">
+<div aria-label="Copertina del libro Difesa è libertà" class="cover-card">
 <img alt="Copertina del libro Difesa è libertà di Massimo Panizzi" class="cover-image" fetchpriority="high" height="815" src="Archivio/2026.07.20-difesa-e-liberta.jpg" width="536"/>
 </div>
 </section>
-
 <div class="article-body">
 <section class="purchase-box">
 <div>
@@ -793,8 +877,7 @@
 </div>
 <a class="button" href="https://www.historicaedizioni.com/prodotto/difesa-e-liberta/" rel="noopener noreferrer" target="_blank">Vai al libro</a>
 </section>
-
-<section class="contents-panel" aria-labelledby="indice-title">
+<section aria-labelledby="indice-title" class="contents-panel">
 <span class="small-label">Indice della pagina</span>
 <h2 class="serif-heading" id="indice-title">I temi del volume</h2>
 <ol class="contents-list">
@@ -802,35 +885,31 @@
 <li><a href="#liberta-e-sicurezza">Libertà e sicurezza</a></li>
 <li><a href="#difesa-oltre-confini">La Difesa oltre i confini</a></li>
 <li><a href="#cultura-responsabilita">Cultura e responsabilità</a></li>
+<li><a href="#video">Video</a></li>
 <li><a href="#dati-editoriali">Dati editoriali</a></li>
 <li><a href="#autore">L’autore</a></li>
 </ol>
 </section>
-
 <section class="paper-section abstract-section" id="il-libro">
 <span class="small-label">Il volume</span>
 <h2 class="serif-heading">Proteggere l’indipendenza significa custodire la libertà</h2>
 <p class="lead drop-cap"><em>Difesa è libertà</em> propone una riflessione sulla sicurezza nazionale che supera la rappresentazione della Difesa come materia riservata agli apparati e agli specialisti. Nel libro del Gen. C.A. (ris.) Massimo Panizzi, la capacità di proteggere un Paese coincide con la tutela delle condizioni che rendono concretamente possibile la libertà: istituzioni solide, informazione affidabile, formazione, memoria collettiva, giustizia e responsabilità.</p>
 <p>Il volume nasce in un tempo segnato da guerre tradizionali, minacce ibride e pressioni che raggiungono le società prima ancora dei territori. L’esperienza del comando e la lettura dei mutamenti geopolitici convergono in una tesi netta: <strong>la libertà non è una condizione acquisita una volta per tutte</strong>. Ha bisogno di essere riconosciuta, sostenuta e difesa attraverso una cultura condivisa capace di collegare sicurezza, dovere e partecipazione.</p>
 </section>
-
 <div class="pull-quote">
 La libertà non si conserva da sola: richiede istituzioni credibili, coscienze vigili e una cultura della responsabilità.
 </div>
-
 <section class="paper-section" id="liberta-e-sicurezza">
 <span class="small-label">Il nucleo del libro</span>
 <h2 class="serif-heading">Il nesso tra libertà e sicurezza</h2>
 <p>Panizzi riporta la Difesa alla sua funzione originaria: non esaltazione della forza, ma protezione di ciò che impedisce alla forza di trasformarsi in dominio. In questa prospettiva, sicurezza e libertà non sono termini contrapposti. La sicurezza crea lo spazio nel quale diritti, democrazia e autonomia possono continuare a esistere; la libertà, a sua volta, fornisce il criterio etico e politico che orienta l’impiego della forza.</p>
 <p>Questa distinzione aiuta a comprendere perché la cultura della Difesa non coincida con una cultura della guerra. Difendere significa ridurre le vulnerabilità, anticipare le crisi e preservare la capacità di decidere senza subire coercizioni esterne o manipolazioni interne. Significa anche riconoscere il valore del limite, della responsabilità e della proporzione nell’esercizio del potere.</p>
 </section>
-
 <section class="paper-section" id="difesa-oltre-confini">
 <span class="small-label">Sicurezza contemporanea</span>
 <h2 class="serif-heading">La Difesa oltre i confini fisici</h2>
 <p>Il conflitto contemporaneo attraversa percezioni, linguaggi e fiducia collettiva. La sicurezza nazionale comprende quindi molto più della protezione territoriale: infrastrutture, reti, energia, sovranità tecnologica, qualità dell’informazione, tenuta psicologica e credibilità delle istituzioni sono componenti della stessa capacità di resistere alle pressioni.</p>
 <p>Un’attenzione particolare è riservata alla dimensione cognitiva. Le piattaforme e i sistemi algoritmici non si limitano a distribuire contenuti: contribuiscono a modellare ciò che viene percepito come rilevante, credibile o vero. La Difesa diventa così anche capacità di mantenere aperto lo spazio del giudizio, proteggendo cittadini e istituzioni dall’anestesia prodotta dall’abitudine al disordine e dalla manipolazione permanente.</p>
-
 <div class="themes-grid">
 <div class="theme-card">
 <h3>Dominio cognitivo</h3>
@@ -850,14 +929,18 @@ La libertà non si conserva da sola: richiede istituzioni credibili, coscienze v
 </div>
 </div>
 </section>
-
 <section class="paper-section" id="cultura-responsabilita">
 <span class="small-label">Cultura della Difesa</span>
 <h2 class="serif-heading">Responsabilità, formazione e leadership</h2>
 <p>Il libro richiama la distanza che ancora separa la Difesa dalla coscienza civile italiana. Quando la sicurezza viene percepita come competenza delegata, il sistema Paese perde la capacità di riconoscere il contributo di scuola, media, istituzioni, imprese e cittadini alla protezione dell’interesse collettivo. Forze Armate preparate non sono sufficienti se intorno a esse cresce una società disabituata alla responsabilità.</p>
 <p>Per questo la formazione assume un valore strategico. Una leadership autentica non si misura soltanto nella capacità di decidere o conseguire risultati, ma nel modo in cui assume responsabilità verso le persone e le istituzioni. La cultura della Difesa comincia dunque prima dell’emergenza: nella qualità dell’educazione, nell’attenzione ai fatti, nella memoria e nella disponibilità a servire un bene comune che precede gli interessi individuali.</p>
 </section>
-
+<section class="paper-section" id="video">
+<span class="small-label">Video</span>
+<h2 class="serif-heading">Difesa è libertà in video</h2>
+<p>Tre brevi contributi video per approfondire i temi del volume e il rapporto tra Difesa, libertà e responsabilità.</p>
+<div class="video-grid"><div class="video-card"><div class="video-frame" data-video-id="Z8qEgPN78SU"><button aria-label="Riproduci: 1. Perché Difesa e Libertà - Il concetto fondativo" class="video-poster" data-youtube-url="https://youtube.com/shorts/Z8qEgPN78SU?feature=share" type="button"><img alt="Anteprima video: 1. Perché Difesa e Libertà - Il concetto fondativo" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://i.ytimg.com/vi/Z8qEgPN78SU/hqdefault.jpg"/></button></div><p class="video-caption"><strong>1. Perché Difesa e Libertà - Il concetto fondativo</strong></p></div><div class="video-card"><div class="video-frame" data-video-id="5F0c6Qh2U6g"><button aria-label="Riproduci: 3. Difendere la cultura, valori e memoria - La dimensione più ampia e civile della Difesa" class="video-poster" data-youtube-url="https://youtube.com/shorts/5F0c6Qh2U6g?feature=share" type="button"><img alt="Anteprima video: 3. Difendere la cultura, valori e memoria - La dimensione più ampia e civile della Difesa" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://i.ytimg.com/vi/5F0c6Qh2U6g/hqdefault.jpg"/></button></div><p class="video-caption"><strong>3. Difendere la cultura, valori e memoria - La dimensione più ampia e civile della Difesa</strong></p></div><div class="video-card"><div class="video-frame" data-video-id="QC0Q3Ecms14"><button aria-label="Riproduci: 2. La Difesa riguarda tutti - Responsabilità collettiva e cultura della sicurezza" class="video-poster" data-youtube-url="https://youtube.com/shorts/QC0Q3Ecms14?feature=share" type="button"><img alt="Anteprima video: 2. La Difesa riguarda tutti - Responsabilità collettiva e cultura della sicurezza" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://i.ytimg.com/vi/QC0Q3Ecms14/hqdefault.jpg"/></button></div><p class="video-caption"><strong>2. La Difesa riguarda tutti - Responsabilità collettiva e cultura della sicurezza</strong></p></div></div>
+</section>
 <section class="paper-section" id="dati-editoriali">
 <span class="small-label">Scheda bibliografica</span>
 <h2 class="serif-heading">Dati editoriali</h2>
@@ -872,11 +955,9 @@ La libertà non si conserva da sola: richiede istituzioni credibili, coscienze v
 <div><span class="book-label">Reperibilità</span><strong><a href="https://www.historicaedizioni.com/prodotto/difesa-e-liberta/" rel="noopener noreferrer" target="_blank">Scheda dell’editore</a></strong></div>
 </div>
 </section>
-
 <aside class="source-note">
 <p><strong>Fonti:</strong> presentazione elaborata sulla base della <a href="https://www.historicaedizioni.com/prodotto/difesa-e-liberta/" rel="noopener noreferrer" target="_blank">scheda di Historica Edizioni</a> e della lettura di Massimo Balducci pubblicata da <a href="https://www.startmag.it/mondo/perche-difendere-un-paese-significa-difendere-la-liberta/" rel="noopener noreferrer" target="_blank">Start Magazine il 7 luglio 2026</a>.</p>
 </aside>
-
 <section class="author-card" id="autore">
 <img alt="Gen. C.A. (ris.) Massimo Panizzi" onerror="this.style.display='none'" src="../assets/massimo%20panizzi.jpeg"/>
 <div>
@@ -890,7 +971,6 @@ La libertà non si conserva da sola: richiede istituzioni credibili, coscienze v
 </div>
 </article>
 </main>
-
 <footer>
 <div class="container">
 <h3>DYNAMES</h3>
@@ -898,5 +978,38 @@ La libertà non si conserva da sola: richiede istituzioni credibili, coscienze v
 <p>© 2026 DYNAMES. Tutti i diritti riservati.</p>
 </div>
 </footer>
-</body>
+<script>
+(function () {
+    'use strict';
+
+    document.querySelectorAll('.video-poster').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var frame = button.closest('.video-frame');
+            var videoId = frame ? frame.getAttribute('data-video-id') : '';
+            var youtubeUrl = button.getAttribute('data-youtube-url');
+
+            if (!videoId) return;
+
+            // In a local file preview there is no HTTP Referer:
+            // open YouTube directly instead of triggering player error 153.
+            if (window.location.protocol === 'file:') {
+                window.open(youtubeUrl, '_blank', 'noopener');
+                return;
+            }
+
+            var iframe = document.createElement('iframe');
+            iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(videoId)
+                + '?autoplay=1&playsinline=1&origin='
+                + encodeURIComponent('https://www.dynames.it');
+            iframe.title = button.getAttribute('aria-label') || 'Video YouTube';
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+            iframe.allowFullscreen = true;
+
+            frame.innerHTML = '';
+            frame.appendChild(iframe);
+        });
+    });
+}());
+</script></body>
 </html>
