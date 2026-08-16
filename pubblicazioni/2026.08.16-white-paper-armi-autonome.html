@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+                deleteAnalyticsCookies();
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Armi autonome: la corsa regolatoria americana e il vuoto del diritto internazionale</title>
+<meta content="White Paper di Miriam Foti sulle armi autonome, la regolazione statunitense, il negoziato multilaterale e il vuoto del diritto internazionale." name="description"/>
+<link href="https://www.dynames.it/pubblicazioni/2026.08.16-white-paper-armi-autonome.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Armi autonome: la corsa regolatoria americana e il vuoto del diritto internazionale" property="og:title"/>
+<meta content="Un'inchiesta giornalistica, un contenzioso federale ancora pendente, una richiesta di bilancio da 54,6 miliardi di dollari ed un negoziato multilaterale che entra nella sua fase conclusiva proprio in queste settimane: il 2026 ridefinisce, in tempo reale, il confine tra chi decide e chi risponde quando la funzione bellica passa, anche solo in parte, ad un sistema algoritmico." property="og:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/2026.08.16-white-paper-armi-autonome.html" property="og:url"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.08.16-white-paper-armi-autonome-light.jpg" property="og:image"/>
+<meta content="Armi autonome: tecnologia militare, intelligenza artificiale e diritto internazionale" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Armi autonome: la corsa regolatoria americana e il vuoto del diritto internazionale" name="twitter:title"/>
+<meta content="White Paper di Miriam Foti sulle armi autonome, la regolazione statunitense, il negoziato multilaterale e il vuoto del diritto internazionale." name="twitter:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.08.16-white-paper-armi-autonome-light.jpg" name="twitter:image"/>
+<meta content="2026-08-16T21:49:00+02:00" property="article:published_time"/>
+<meta content="Miriam Foti" name="author"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+        --night-blue: #0b1120;
+        --deep-blue: #294967;
+        --slate-grey: #334155;
+        --light-grey: #f8fafc;
+        --optical-white: #ffffff;
+        --accent: #1e3a8a;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-light: #cbd5e1;
+        --paper-bg: #fdfbf7;
+        --gold-accent: #b8935a;
+        --border: #e2e8f0;
+        --dynames-blue: #0b1c2d;
+        --dynames-grey: #ededed;
+        --dynames-electric: #27a8ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: var(--paper-bg);
+        color: var(--text-primary);
+        line-height: 1.8;
+        font-size: 1.08rem;
+    }
+    h1, h2, h3, .brand, .button, .small-label, .cover-kicker, .cover-series {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .serif-heading { font-family: 'Playfair Display', serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .article-container { max-width: 920px; margin: 0 auto; padding: 0 2rem; }
+
+    header {
+        background: var(--optical-white);
+        border-bottom: 2px solid var(--night-blue);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+    .brand a { text-decoration: none; }
+    .brand h1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--night-blue);
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+    .brand-logo { width: auto; height: 40px; }
+    .brand p {
+        margin-top: 2px;
+        color: var(--slate-grey);
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .desktop-nav { display: flex; align-items: center; gap: 2rem; }
+    .desktop-nav a {
+        color: var(--night-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color .25s;
+    }
+    .desktop-nav a:hover, .desktop-nav a.active { color: var(--gold-accent); }
+    .back-nav { padding: 2rem 0; }
+    .back-nav a {
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+    .back-nav a:hover { color: var(--gold-accent); }
+
+    .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(270px, .75fr);
+        align-items: center;
+        gap: 4rem;
+        margin-bottom: 4rem;
+    }
+    .article-category {
+        display: block;
+        margin-bottom: 1.2rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .article-title {
+        margin-bottom: 1.5rem;
+        color: var(--night-blue);
+        font-size: clamp(2.45rem, 5.5vw, 4.2rem);
+        line-height: 1.04;
+    }
+    .article-subtitle {
+        margin-bottom: 2rem;
+        color: var(--slate-grey);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.28rem;
+        font-style: italic;
+        line-height: 1.5;
+    }
+    .article-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem 1.2rem;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .8rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .meta-author { color: var(--night-blue); font-weight: 700; }
+
+    .cover-card {
+        min-height: 468px;
+        padding: .65rem;
+        border: 1px solid #d8dde3;
+        background: var(--dynames-grey);
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .2);
+        transform: rotate(.6deg);
+    }
+    .publication-cover {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        min-height: 445px;
+        height: 100%;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 76% 31%, rgba(39, 168, 255, .12), transparent 31%),
+            linear-gradient(145deg, #102946 0%, var(--dynames-blue) 58%, #071321 100%);
+        color: white;
+    }
+    .publication-cover::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        right: -12%;
+        bottom: -16%;
+        left: -12%;
+        height: 47%;
+        background: var(--dynames-grey);
+        transform: rotate(-8deg);
+    }
+    .publication-cover::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        right: -56px;
+        bottom: 12px;
+        width: 155px;
+        height: 155px;
+        border: 1px solid rgba(39, 168, 255, .28);
+        border-radius: 50%;
+    }
+    .cover-brand {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: 1.25rem 1.35rem 0;
+    }
+    .cover-brand-mark {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0) invert(1);
+    }
+    .cover-brand-copy { display: flex; flex-direction: column; line-height: 1.1; }
+    .cover-brand-copy strong {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: .15em;
+    }
+    .cover-brand-copy span {
+        margin-top: .3rem;
+        color: #c6d1dc;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .46rem;
+        letter-spacing: .08em;
+    }
+    .cover-copy {
+        position: relative;
+        z-index: 3;
+        width: 89%;
+        margin: 2.5rem 1.7rem 7.4rem;
+    }
+    .cover-series {
+        margin-bottom: .65rem;
+        color: #8fd3ff;
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+    .cover-kicker {
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: .34rem .65rem;
+        border: 1px solid rgba(255,255,255,.35);
+        color: white;
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .cover-title {
+        max-width: 300px;
+        color: white;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 1.08;
+    }
+    .cover-network {
+        position: absolute;
+        z-index: 2;
+        top: 85px;
+        right: -48px;
+        width: 270px;
+        height: 270px;
+        opacity: .34;
+        fill: var(--dynames-electric);
+        stroke: var(--dynames-electric);
+        stroke-width: 1.15;
+    }
+    .cover-footer {
+        position: absolute;
+        z-index: 3;
+        right: 1.35rem;
+        bottom: 1.15rem;
+        left: 1.35rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        color: var(--dynames-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+    .cover-year { color: #507493; font-size: .62rem; }
+
+    .article-body { padding-bottom: 5rem; }
+    .download-box, .contents-panel, .author-card {
+        display: grid;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        border: 1px solid var(--border);
+        background: var(--optical-white);
+    }
+    .download-box { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+    .download-box h2, .contents-panel h2 { margin: .2rem 0 .65rem; color: var(--night-blue); font-size: 1.9rem; }
+    .download-box p { color: var(--text-secondary); }
+    .small-label {
+        color: var(--gold-accent);
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .button {
+        display: inline-block;
+        padding: .95rem 1.35rem;
+        background: var(--night-blue);
+        color: white;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: background .2s, transform .2s;
+    }
+    .button:hover { background: var(--accent); transform: translateY(-2px); }
+    .contents-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .7rem 2rem;
+        margin: .7rem 0 0 1.3rem;
+    }
+    .contents-list a { color: var(--accent); text-decoration: none; }
+    .contents-list a:hover { text-decoration: underline; }
+    .paper-section { margin: 4rem 0; }
+    .paper-section h2 { margin: .35rem 0 1.35rem; color: var(--night-blue); font-size: 2.35rem; line-height: 1.15; }
+    .paper-section p { margin-bottom: 1.15rem; text-align: justify; }
+    .abstract-section {
+        padding: 2rem;
+        border-left: 4px solid var(--gold-accent);
+        background: var(--optical-white);
+    }
+    .pull-quote {
+        margin: 4rem 0;
+        padding-left: 2rem;
+        border-left: 3px solid var(--dynames-electric);
+        color: var(--deep-blue);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.55rem;
+        font-style: italic;
+        line-height: 1.45;
+    }
+    .paper-figure {
+        margin: 2.2rem 0;
+        padding: 1rem;
+        border: 1px solid #d8e4ec;
+        background: var(--optical-white);
+        box-shadow: 0 12px 28px rgba(11, 28, 45, .08);
+    }
+    .paper-figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+    }
+    .paper-figure--portrait img { max-width: 620px; }
+    .paper-figure figcaption {
+        margin-top: .9rem;
+        color: var(--text-secondary);
+        font-size: .86rem;
+        line-height: 1.55;
+    }
+    .paper-figure figcaption strong {
+        display: block;
+        margin-bottom: .15rem;
+        color: var(--night-blue);
+    }
+    .paper-figure a, .references a { color: var(--accent); word-break: break-word; }
+    .bibliography { padding-top: 1rem; border-top: 1px solid var(--border); }
+    .references { margin-left: 1.4rem; }
+    .references li { margin-bottom: 1rem; padding-left: .35rem; }
+    .author-card { grid-template-columns: 150px minmax(0, 1fr); align-items: start; margin-top: 4rem; }
+    .author-card img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: grayscale(.1);
+    }
+    .author-card h2 { margin: .15rem 0 .2rem; color: var(--night-blue); font-size: 2rem; }
+    .author-role {
+        margin-bottom: .75rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .author-card p { color: var(--text-secondary); line-height: 1.65; }
+    .author-card a { color: var(--accent); }
+    footer { padding: 3rem 0; background: var(--night-blue); color: var(--text-light); text-align: center; }
+    footer h3 { margin-bottom: .6rem; color: white; letter-spacing: .12em; }
+    footer p { font-size: .82rem; }
+
+    @media (max-width: 980px) {
+        .desktop-nav { display: none; }
+        .hero { grid-template-columns: 1fr; gap: 2.5rem; }
+        .cover-card { width: min(390px, 100%); margin: 0 auto; }
+    }
+    @media (max-width: 660px) {
+        body { font-size: 1rem; }
+        .container, .article-container { padding-right: 1.25rem; padding-left: 1.25rem; }
+        .article-title { font-size: 2.45rem; }
+        .download-box, .contents-list, .author-card { grid-template-columns: 1fr; }
+        .download-box, .contents-panel, .author-card, .abstract-section { padding: 1.45rem; }
+        .button { width: 100%; }
+        .paper-section p { text-align: left; }
+        .paper-section h2 { font-size: 2rem; }
+        .author-card img { width: 120px; height: 120px; }
+    }
+
+    .hero-figure {
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid #d8dde3;
+        background: var(--optical-white);
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .18);
+    }
+    .hero-figure img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+    .footnote-ref { font-size: .7em; vertical-align: super; line-height: 0; }
+    .footnote-ref a, .back-note { color: var(--accent); text-decoration: none; }
+    .footnote-ref a:hover, .back-note:hover { text-decoration: underline; }
+    .notes-list li { scroll-margin-top: 120px; }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "Armi autonome: la corsa regolatoria americana e il vuoto del diritto internazionale",
+  "author": {"@type": "Person", "name": "Miriam Foti"},
+  "publisher": {"@type": "Organization", "name": "DYNAMES", "url": "https://www.dynames.it/"},
+  "datePublished": "2026-08-16",
+  "inLanguage": "it-IT",
+  "articleSection": "White Paper",
+  "image": "https://www.dynames.it/pubblicazioni/Archivio/2026.08.16-white-paper-armi-autonome-light.jpg",
+  "url": "https://www.dynames.it/pubblicazioni/2026.08.16-white-paper-armi-autonome.html"
+}
+</script>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html">
+<h1><img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>DYNAMES</h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a class="active" href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../pubblicazioni.html">← Torna alle Pubblicazioni</a>
+</div>
+<main>
+<article class="article-container">
+<section class="hero">
+<div>
+<span class="article-category">Paper</span>
+<h1 class="serif-heading article-title">Armi autonome: la corsa regolatoria americana e il vuoto del diritto internazionale</h1>
+<p class="article-subtitle">Un'inchiesta giornalistica, un contenzioso federale ancora pendente, una richiesta di bilancio da 54,6 miliardi di dollari ed un negoziato multilaterale che entra nella sua fase conclusiva proprio in queste settimane: il 2026 ridefinisce, in tempo reale, il confine tra chi decide e chi risponde quando la funzione bellica passa, anche solo in parte, ad un sistema algoritmico.</p>
+<div class="article-meta">
+<span class="meta-author">A cura della Dott.ssa Miriam Foti</span>
+<span>White Paper</span>
+<span>16 agosto 2026</span>
+</div>
+</div>
+<figure class="hero-figure">
+<img alt="Armi autonome, intelligenza artificiale, decisione militare e diritto internazionale" height="909" src="Archivio/2026.08.16-white-paper-armi-autonome.png" width="1731"/>
+</figure>
+</section>
+<div class="article-body">
+<section class="download-box">
+<div>
+<span class="small-label">Pubblicazione DYNAMES</span>
+<h2 class="serif-heading">Leggi online o scarica il white paper</h2>
+<p>La pagina propone il testo del White Paper in versione web. L’impaginazione editoriale completa, le note e i riferimenti sono disponibili anche nel documento PDF.</p>
+</div>
+<a class="button" download="" href="Archivio/2026.08.16-white-paper-armi-autonome.pdf">Scarica il PDF</a>
+</section>
+<section aria-labelledby="indice-title" class="contents-panel">
+<span class="small-label">Indice</span>
+<h2 class="serif-heading" id="indice-title">I contenuti del white paper</h2>
+<ol class="contents-list">
+<li><a href="#sintesi">In sintesi</a></li>
+<li><a href="#testo-introduttivo">Testo introduttivo</a></li>
+<li><a href="#un-sistema-gia-operativo">1. Un sistema già operativo</a></li>
+<li><a href="#caso-anthropic">2. Il caso Anthropic: il rifiuto di un fornitore e le sue conseguenze</a></li>
+<li><a href="#produzione-normativa-statunitense">3. La produzione normativa statunitense, e il suo contrappeso contabile</a></li>
+<li><a href="#ginevra">4. Ginevra: la fase conclusiva di un negoziato irrisolto</a></li>
+<li><a href="#vuoto-normativo-europeo">5. Il vuoto normativo europeo: dove l'AI Act si ferma alla porta delle caserme</a></li>
+<li><a href="#regolare-in-casa">6. Regolare in casa non equivale a regolare per tutti</a></li>
+<li><a href="#precedente-kosovaro">7. Il precedente kosovaro: quando la legalità non è sufficiente</a></li>
+<li><a href="#responsabilita">8. Chi risponde quando la macchina sbaglia bersaglio</a></li>
+<li><a href="#note">Note</a></li>
+<li><a href="#bibliografia">Riferimenti bibliografici</a></li>
+<li><a href="#sitografia">Riferimenti sitografici</a></li>
+<li><a href="#autore">Profilo autrice</a></li>
+</ol>
+</section>
+<section class="paper-section abstract-section" id="sintesi">
+<span class="small-label">Sintesi</span>
+<h2 class="serif-heading">In sintesi</h2>
+<p>Un'inchiesta giornalistica, un contenzioso federale ancora pendente, una richiesta di bilancio da 54,6 miliardi di dollari ed un negoziato multilaterale che entra nella sua fase conclusiva proprio in queste settimane: il 2026 ridefinisce, in tempo reale, il confine tra chi decide e chi risponde quando la funzione bellica passa, anche solo in parte, ad un sistema algoritmico.</p>
+</section>
+<section class="paper-section" id="testo-introduttivo">
+<span class="small-label">White Paper</span>
+<p>Il 27 febbraio il Presidente Trump ha ordinato a tutte le agenzie federali statunitensi la cessazione immediata dell'uso della tecnologia sviluppata da Anthropic; poche ore dopo, secondo la ricostruzione del Wall Street Journal, il Comando Centrale statunitense impiegava ancora il modello Claude per attività di <em>intelligence assessment</em>, identificazione dei bersagli e simulazione di scenari operativi nelle prime fasi degli attacchi contro l'Iran<sup class="footnote-ref"><a aria-label="Nota 1" href="#nota-1" id="richiamo-1">1</a></sup>. Non si tratta di un aneddoto isolato, bensì della dimostrazione, per così dire, empirica di un problema strutturale: la linea di demarcazione tra funzione di supporto decisionale e sistema d'arma è, nella prassi operativa, assai più labile di quanto le categorie giuridiche vigenti riescano a descrivere.</p>
+<p>Ed è entro questa zona grigia — non già teorica, ma già misurabile nei fatti — che si colloca, nel 2026, la disciplina internazionale delle armi autonome, o più precisamente la sua perdurante assenza.</p>
+</section>
+<section class="paper-section" id="un-sistema-gia-operativo">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">1. Un sistema già operativo</h2>
+<p>Nella dottrina militare statunitense si definisce <em>Autonomous Weapon System</em> (AWS) un sistema che, una volta attivato, è in grado di selezionare ed ingaggiare un bersaglio senza l'ulteriore intervento di un operatore umano in tempo reale, secondo la definizione contenuta nella Direttiva 3000.09 del Dipartimento della Difesa<sup class="footnote-ref"><a aria-label="Nota 2" href="#nota-2" id="richiamo-2">2</a></sup>. Nel luglio 2026 il Corpo dei Marines ha selezionato Bullfrog, sistema deputato al rilevamento ed al tracciamento di minacce aeree — segnatamente di natura droniforme — nonché alla puntatura automatica delle armi da fuoco sul bersaglio identificato. Nel medesimo periodo il Pentagono ha esteso l'impiego del Maven Smart System, sviluppato da Palantir, che connette operatori umani, sensori e piattaforme d'arma in tempo reale — sistema nel quale, sino a poco tempo fa, proprio Claude svolgeva una funzione centrale nell'elaborazione del targeting<sup class="footnote-ref"><a aria-label="Nota 3" href="#nota-3" id="richiamo-3">3</a></sup>.</p>
+<p>Non si verte, dunque, in un'ipotesi meramente teorica. La distinzione tra configurazioni human-in-the-loop, nelle quali l'operatore umano determina l'ingaggio, e configurazioni human-on-the-loop, nelle quali all'operatore residua la sola facoltà di interrompere un'azione già avviata, non costituisce un dettaglio tecnico: incide direttamente sull'individuazione del soggetto chiamato a rispondere qualora il sistema identifichi erroneamente il bersaglio. Ed è esattamente questo il confine che l'episodio iraniano ha reso evanescente: un modello linguistico impiegato per finalità di assessment, identificazione e simulazione non integra, per definizione, un'arma autonoma — ma la distanza tra l'analisi che suggerisce un bersaglio ed il sistema che lo ingaggia si è ridotta al punto che il diritto internazionale non dispone ancora di strumenti idonei a tracciarne il confine con certezza.</p>
+</section>
+<section class="paper-section" id="caso-anthropic">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">2. Il caso Anthropic: il rifiuto di un fornitore e le sue conseguenze</h2>
+<p>La vicenda che ha condotto Claude nel teatro operativo iraniano origina settimane prima.</p>
+<p>Da mesi il Pentagono chiedeva ad Anthropic — fornitore del modello su reti classificate dal 2024 e tra le società che nel luglio 2025 avevano ottenuto un contratto sino a 200 milioni di dollari per l'adozione di capacità di intelligenza artificiale da parte del Dipartimento<sup class="footnote-ref"><a aria-label="Nota 4" href="#nota-4" id="richiamo-4">4</a></sup> — di rimuovere due restrizioni contrattuali: il divieto di impiego dei propri modelli per finalità di sorveglianza di massa su cittadini statunitensi e per sistemi d'arma pienamente autonomi. Anthropic ha opposto rifiuto: il CEO Dario Amodei ha dichiarato che le armi autonome «potrebbero rivelarsi decisive per la nostra difesa nazionale, ma allo stato attuale i sistemi di intelligenza artificiale non offrono affidabilità sufficiente» per governarle in piena autonomia.</p>
+<p>Il 27 febbraio la controversia è divenuta di dominio pubblico. Il Presidente Trump ha disposto la cessazione immediata dell'uso della tecnologia Anthropic da parte di tutte le agenzie federali; il Segretario della Difesa Pete Hegseth ha designato la società quale «<em>supply chain risk</em>» per la sicurezza nazionale, precludendo a fornitori e appaltatori della Difesa qualsiasi rapporto commerciale con essa — prima applicazione di tale designazione, di norma riservata a società collegate a governi esteri ostili, ad un'impresa statunitense.</p>
+<p>Poche ore dopo, secondo il Wall Street Journal, il Comando Centrale continuava ad impiegare Claude nella pianificazione degli attacchi contro l'Iran: il sistema, secondo fonti del Pentagono, risultava talmente integrato nell'architettura operativa da non poter essere sostituito nell'arco di poche ore.</p>
+<p>Anthropic ha adito le competenti autorità giurisdizionali con due azioni parallele — una corte distrettuale in California, una corte d'appello a Washington — deducendo la violazione del Primo Emendamento e delle procedure legalmente previste per l'esclusione di un fornitore dalle catene di approvvigionamento federali<sup class="footnote-ref"><a aria-label="Nota 5" href="#nota-5" id="richiamo-5">5</a></sup>.</p>
+<p>Il 26 marzo 2026 la giudice distrettuale Rita Lin ha concesso un provvedimento cautelare, sospendendo tanto la designazione quanto l'ordine di cessazione dei contratti, e qualificando la misura come «classica ritorsione» nei confronti di una società che aveva pubblicamente criticato l'amministrazione; l'8 aprile la corte d'appello ha tuttavia negato la sospensione della pronuncia, ripristinando temporaneamente l'efficacia del divieto<sup class="footnote-ref"><a aria-label="Nota 6" href="#nota-6" id="richiamo-6">6</a></sup>.</p>
+<p>Il 30 luglio, in sede di udienza sulle mozioni per giudizio sommario, la medesima giudice Lin ha manifestato l'orientamento a rendere permanente il blocco della designazione, dichiarandosi «turbata» dall'ipotesi che la critica pubblica di un'impresa nei confronti del governo possa legittimarne l'esclusione: «se la preoccupazione concerne l'integrità della catena di comando operativa», aveva scritto nella propria precedente ordinanza, «il Dipartimento della Guerra potrebbe semplicemente cessare di avvalersi di Claude».</p>
+<p>Una pronuncia definitiva non è ancora intervenuta; nelle more, secondo quanto riferito in udienza dai legali del Pentagono, la dismissione dei prodotti Anthropic dovrebbe completarsi entro il 3 settembre, salva ulteriore evoluzione del giudizio.</p>
+</section>
+<section class="paper-section" id="produzione-normativa-statunitense">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">3. La produzione normativa statunitense, e il suo contrappeso contabile</h2>
+<p>Attorno a questa vicenda si muove un Congresso in fase di intensa attività legislativa.</p>
+<p>Il 9 gennaio 2026 il Dipartimento della Difesa — ridenominato "<em>Department of War</em>" quale designazione secondaria ai sensi dell'Executive Order 14347 — ha reso pubblici due memoranda a firma del Segretario Hegseth: il primo stabilisce criteri di valutazione dei modelli di intelligenza artificiale ai fini degli appalti ed impone, entro centottanta giorni, l'inserimento della clausola standard "qualsiasi uso lecito" in ogni contratto avente ad oggetto servizi di intelligenza artificiale, in attuazione della Sezione 1513 del <em>National Defense Authorization Act</em> 2026; il secondo unifica la governance dell'innovazione difensiva sotto un unico Chief Technology Officer<sup class="footnote-ref"><a aria-label="Nota 7" href="#nota-7" id="richiamo-7">7</a></sup>, ricollegando la controversia anche al programma di difesa missilistica spaziale "Golden Dome" voluto dal Presidente Trump.</p>
+<p>Il 5 giugno un memorandum presidenziale sulla sicurezza nazionale ha incaricato il Pentagono di procedere alla riscrittura della Direttiva 3000.09, testo che dal 2012 disciplina l'autonomia nei sistemi d'arma statunitensi<sup class="footnote-ref"><a aria-label="Nota 8" href="#nota-8" id="richiamo-8">8</a></sup>. Sul versante parlamentare, il quadro normativo si è rivelato assai più articolato di quanto risultasse a inizio anno: tra maggio e giugno sono state presentate almeno cinque distinte proposte in materia di intelligenza artificiale militare — quella della senatrice Kirsten Gillibrand, che vieta le armi pienamente autonome salvi i sistemi di difesa locale sottoposti a supervisione; quella del senatore Adam Schiff (l'HALO Act, sulla catena di comando); quella della senatrice Elissa Slotkin (l'<em>AI Guardrails Act</em>); quella del senatore Mark Kelly, presentata congiuntamente al deputato Suhas Subramanyam. È stata tuttavia la proposta dei senatori Chris Coons e Jack Reed, depositata l'8 giugno, ad avere maggiore seguito: il testo — che impone una revisione di livello senior, l'istituzione di un archivio degli incidenti per il tracciamento di malfunzionamenti ed eventi quasi fatali, nonché il divieto assoluto di affidare ad un'intelligenza artificiale le decisioni relative al lancio nucleare — è stato in larga parte recepito dalla maggioranza repubblicana nel testo-base del <em>National Defense Authorization Act</em> per l'anno fiscale 2027, approvato dalla Commissione Forze Armate del Senato il 10 giugno con diciotto voti favorevoli e nove contrari.</p>
+<p>Il testo, pur imponendo "livelli appropriati di giudizio umano", conferma nondimeno il sostegno del Pentagono all'impiego di armi letali autonome, richiedendone anzi la "massimizzazione dell'uso<sup class="footnote-ref"><a aria-label="Nota 9" href="#nota-9" id="richiamo-9">9</a></sup>".</p>
+<p>Il dato che meglio misura la distanza tra il dibattito regolatorio e l'orientamento effettivo dell'amministrazione è, tuttavia, di natura contabile. La richiesta di bilancio per l'anno fiscale 2027, sottoposta al Congresso il 3 aprile 2026 nell'ambito di uno stanziamento complessivo record da 1.500 miliardi di dollari, alloca 54,6 miliardi di dollari al neocostituito <em>Defense Autonomous Warfare Group </em>(DAWG) — l'organismo che assorbe l'iniziativa Replicator, avviata nel 2023 e formalmente sciolta a fine 2025 per le difficoltà di integrazione industriale incontrate, e che accentra la programmazione dei sistemi autonomi statunitensi.</p>
+<p>Si tratta di un incremento di circa il 24.000 per cento rispetto ai 225,9 milioni stanziati per il medesimo organismo nell'esercizio precedente, e di una cifra superiore all'intera richiesta di bilancio del Corpo dei Marines. Mentre il Congresso discute soglie di giudizio umano e archivi degli incidenti, l'esecutivo pianifica, in termini di risorse effettivamente allocate, quello che l'ex Direttore della CIA David Petraeus ha definito «il più significativo impegno finanziario nella storia della guerra autonoma» — un dato che ridimensiona, quantomeno sul piano della coerenza tra intenzione normativa e prassi di bilancio, la portata delle garanzie procedurali sin qui discusse.</p>
+<p>Il percorso legislativo si è, peraltro, successivamente complicato. La Camera ha approvato la propria versione del NDAA 2027 con 216 voti favorevoli contro 212, sostanzialmente lungo linee di partito.</p>
+<p>Al Senato, per contro, i Democratici hanno per due volte impedito il passaggio in aula del testo, l'ultima con 50 voti contro 46, insufficienti al raggiungimento della soglia procedurale dei sessanta voti richiesta: non per ragioni attinenti alla disciplina dell'intelligenza artificiale, bensì per l'opposizione al coinvolgimento militare in Iran e per le riserve sulla crescita della spesa complessiva.</p>
+</section>
+<section class="paper-section" id="ginevra">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">4. Ginevra: la fase conclusiva di un negoziato irrisolto</h2>
+<p>A Ginevra, nel frattempo, il negoziato multilaterale entra nella propria fase più delicata. Il Gruppo di Esperti Governativi (GGE) sulle armi letali autonome, istituito nel 2017 nell'ambito della Convenzione sulle Armi Convenzionali (CCW) del 1980 e presieduto dall'ambasciatore olandese Robert in den Bosch, elabora dal 2021 un "<em>rolling text</em>", ossia un documento recante possibili elementi di un futuro strumento giuridico, costruito attorno al cosiddetto "approccio a due livelli": divieto dei sistemi intrinsecamente incompatibili con il diritto internazionale — in quanto imprevedibili nel funzionamento, non arrestabili una volta attivati, o concepiti per colpire persone come bersaglio primario —, regolamentazione rafforzata di tutti gli altri<sup class="footnote-ref"><a aria-label="Nota 10" href="#nota-10" id="richiamo-10">10</a></sup>.</p>
+<p>Il mandato triennale del Gruppo giunge a scadenza nel 2026, con termine fissato in coincidenza della Settima Conferenza di Revisione della CCW, in programma dal 16 al 20 novembre a Ginevra.</p>
+<p>Nel settembre 2025 un terzo dei 128 Stati parte della Convenzione — 42 Paesi, guidati dal Brasile — ha dichiarato il <em>rolling text </em>costituire «una base sufficiente» per l'avvio di negoziati formali su uno strumento vincolante. La sessione del 2-6 marzo 2026 è stata definita dagli osservatori «l'inizio della fine» del mandato del Gruppo, con circa settanta Stati che vi hanno espressamente sostenuto l'apertura di trattative formali.</p>
+<p>La seconda sessione del 2026 si svolgerà dal 31 agosto al 4 settembre — ultimo passaggio prima della Conferenza di Revisione di novembre, chiamata a stabilire se conferire al Gruppo un mandato negoziale in senso proprio, se prorogarne il solo mandato di discussione, ovvero se lasciarne decorrere il termine senza esito. La pressione internazionale si è intensificata anche per ragioni contingenti. Nei giorni immediatamente precedenti alla sessione di marzo, la rivelazione del Wall Street Journal sull'impiego di Claude negli attacchi contro l'Iran ha fatto ingresso nella sala negoziale ginevrina: secondo la ricostruzione dell'analista Francesco Vignarca, oltre settanta Paesi — tra cui un gruppo significativo di Stati africani — hanno considerato l'episodio prova che lo sviluppo tecnologico proceda più celermente dei negoziati, sollecitando l'avvio immediato di trattative formali. L'Italia, impegnata nel dossier sin dal 2013 e rappresentata in queste sessioni dall'ambasciatore Leonardo Bencini, ha ribadito la necessità di un quadro normativo «sufficientemente ampio da ricomprendere anche gli sviluppi futuri» di tali tecnologie<sup class="footnote-ref"><a aria-label="Nota 11" href="#nota-11" id="richiamo-11">11</a></sup>.</p>
+<p>Permane, tuttavia, il nodo strutturale che ha sinora impedito ogni progresso sostanziale: il GGE delibera per consenso, e a ciascuno Stato è riconosciuto, di fatto, un potere di veto. In assenza di un mutamento sostanziale nel calcolo strategico di Stati Uniti, Russia e Cina — tutti e tre membri permanenti del Consiglio di Sicurezza, tutti e tre impegnati nello sviluppo di sistemi analoghi — un protocollo vincolante entro la scadenza informale del 2026, più volte richiamata dal Segretario Generale delle Nazioni Unite e dalla Presidente del CICR, resta un obiettivo di difficile conseguimento.</p>
+</section>
+<section class="paper-section" id="vuoto-normativo-europeo">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">5. Il vuoto normativo europeo: dove l'AI Act si ferma alla porta delle caserme</h2>
+<p>Vi è, in questo quadro, un ulteriore elemento che merita di essere segnalato, e che tocca da vicino l'ordinamento dell'Unione Europea. Il Regolamento (UE) 2024/1689 — il cosiddetto AI Act, pubblicato nella Gazzetta Ufficiale dell'Unione il 12 luglio 2024 ed entrato in vigore il successivo 1° agosto — ha istituito il primo quadro regolatorio organico al mondo in materia di intelligenza artificiale, fondato su un approccio basato sul rischio e su obblighi stringenti per i sistemi ad alto rischio. L'articolo 2, paragrafo 3, esclude tuttavia espressamente dall'ambito di applicazione del Regolamento i sistemi di intelligenza artificiale immessi sul mercato, messi in servizio o utilizzati esclusivamente per finalità militari, di difesa o di sicurezza nazionale — esclusione ulteriormente precisata dal considerando 24, e giustificata dal legislatore europeo mediante il richiamo all'articolo 4, paragrafo 2, del Trattato sull'Unione Europea, che riserva agli Stati membri la competenza esclusiva in materia di sicurezza nazionale<sup class="footnote-ref"><a aria-label="Nota 12" href="#nota-12" id="richiamo-12">12</a></sup>.</p>
+<p>La conseguenza è che l'Unione, pur avendo elaborato la disciplina più ambiziosa al mondo in materia di intelligenza artificiale, non dispone di alcuno strumento vincolante applicabile ai sistemi d'arma autonomi impiegati dalle forze armate dei propri Stati membri. Il vuoto non trova, peraltro, compensazione organica negli strumenti di finanziamento della difesa comune: il Fondo Europeo per la Difesa esclude sì il finanziamento di armi letali autonome prive di un controllo umano significativo sulla selezione e sull'ingaggio del bersaglio, e una clausola analoga era stata inserita nello strumento per gli appalti congiunti EDIRPA, scaduto alla fine del 2025; il regolamento SAFE (<em>Security Action for Europe</em>), che ne ha preso il posto quale principale veicolo di finanziamento per gli approvvigionamenti comuni, non riproduce tuttavia tale clausola di salvaguardia — omissione che il Belgio ha formalmente stigmatizzato in sede di adozione del testo in Consiglio<sup class="footnote-ref"><a aria-label="Nota 13" href="#nota-13" id="richiamo-13">13</a></sup>. Restano naturalmente applicabili il diritto internazionale umanitario, le revisioni giuridiche nazionali sui nuovi sistemi d'arma di cui all'articolo 36 del I Protocollo Addizionale del 1977, e i principi dell'Alleanza Atlantica in materia di uso responsabile dell'intelligenza artificiale; si tratta, tuttavia, ancora una volta, di un mosaico di discipline eterogenee e prive di un vincolo sovranazionale comune.</p>
+</section>
+<section class="paper-section" id="regolare-in-casa">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">6. Regolare in casa non equivale a regolare per tutti</h2>
+<p>È a questo punto che la questione cessa di essere meramente tecnica, per assumere un rilievo propriamente giuridico sotto il profilo della legittimità. Una normativa nazionale, per quanto rigorosa, disciplina la condotta di un unico attore all'interno di un sistema che ne annovera una pluralità: le garanzie procedurali che essa introduce — classificazione del rischio, revisione legale, tracciabilità — restano, per definizione, unilaterali, e producono responsabilità di carattere meramente interno, non già un vincolo opponibile a Stati terzi che sviluppino sistemi analoghi in assenza di un obbligo equivalente.</p>
+<p>Il diritto internazionale umanitario presuppone, viceversa, un complesso di regole che vincolano la totalità delle parti in conflitto, indipendentemente dal livello di sofisticazione tecnologica di ciascuna: il principio di distinzione impone di colpire esclusivamente obiettivi militari; il principio di proporzionalità vieta l'attacco qualora i danni collaterali prevedibili risultino eccessivi rispetto al vantaggio militare concreto e diretto atteso; il principio di precauzione impone di verificare la natura del bersaglio e di sospendere l'azione al mutare delle circostanze.</p>
+<p>Si tratta di valutazioni che la prassi bellica tradizionale affida ad un operatore umano in tempo reale; quando esse vengono trasferite, anche solo parzialmente, ad un sistema automatizzato, il problema non attiene unicamente alla correttezza formale della decisione algoritmica, bensì all'idoneità del sistema a replicare un giudizio che il diritto internazionale ha sempre presupposto essere umano, contestuale e suscettibile di correzione in corso d'azione.</p>
+<p>La medesima frattura strutturale si riscontra sul piano geopolitico. La Repubblica Popolare Cinese persegue la dottrina della "guerra intelligentizzata" sin dal 2019, ribadita dal Presidente Xi Jinping in occasione del XX Congresso del Partito Comunista Cinese nel 2022. Nel gennaio 2026 la National University of Defence Technology ha reso noto, tramite l'emittente statale CCTV, un test nel cui ambito un unico operatore ha garantito la supervisione simultanea di oltre duecento droni, dotati — secondo i ricercatori — della capacità di ripianificare autonomamente le rotte anche in presenza di disturbo elettronico<sup class="footnote-ref"><a aria-label="Nota 14" href="#nota-14" id="richiamo-14">14</a></sup>. Due mesi dopo, il gruppo statale CETC ha presentato un sistema concorrente, denominato "Atlas": un veicolo di lancio in grado di far decollare 48 droni a intervalli di tre secondi, con un unico centro di comando capace di gestirne sino a 96. Gli analisti del China Aerospace Studies Institute mantengono cautela quanto al passaggio dalla dimostrazione all'effettivo impiego operativo, ma la traiettoria dottrinale — dallo sciame dimostrativo all'integrazione con i caccia J-20 in funzione di "nave madre" — risulta ormai consolidata nella dottrina militare cinese<sup class="footnote-ref"><a aria-label="Nota 15" href="#nota-15" id="richiamo-15">15</a></sup>.</p>
+<p>La Federazione Russa procede su un binario differente: sistemi meno onerosi, meno spettacolari, ma già concretamente impiegati sul campo. Il 16 marzo 2026 un drone "Lancet", prodotto da ZALA Aero del gruppo Kalashnikov, è precipitato in pieno centro di Kyiv, nei pressi del Monumento dell'Indipendenza, nel corso di un attacco su larga scala. L'intelligence militare ucraina (HUR), esaminando i resti, ha rilevato indizi di una significativa modernizzazione: un modulo di guida basato su un processore Nvidia Jetson, concepito per l'identificazione e il tracciamento autonomo del bersaglio senza comunicazione costante con l'operatore, unitamente a marcature circolari analoghe a quelle utilizzate dai droni russi V2U per il volo in formazione.</p>
+<p>Su 62 componenti elettronici identificati, la maggior parte risultava di origine occidentale — Stati Uniti, Svizzera, Cina — nonostante il regime sanzionatorio vigente<sup class="footnote-ref"><a aria-label="Nota 16" href="#nota-16" id="richiamo-16">16</a></sup>. Taluni analisti ucraini hanno posto in dubbio che si trattasse effettivamente di un Lancet, stante la sua limitata autonomia di volo; resta il dato per cui Mosca lavora, dichiaratamente, a rendere i propri sistemi d'attacco sempre meno dipendenti dal pilotaggio in tempo reale.</p>
+</section>
+<section class="paper-section" id="precedente-kosovaro">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">7. Il precedente kosovaro: quando la legalità non è sufficiente</h2>
+<p>La distinzione tra legalità e legittimità non costituisce acquisizione recente del diritto internazionale.</p>
+<p>Nel 1999, su iniziativa del Primo Ministro svedese Göran Persson, fu istituita la Commissione Indipendente Internazionale sul Kosovo, presieduta dal giudice sudafricano Richard Goldstone — già Procuratore Capo del Tribunale Penale Internazionale per l'ex Iugoslavia — unitamente al politico svedese Carl Tham, con l'incarico di valutare l'intervento della NATO del 1999, condotto senza l'autorizzazione del Consiglio di Sicurezza.</p>
+<p>Nel rapporto pubblicato nel 2000, la Commissione è pervenuta ad una conclusione volutamente non lineare: l'intervento era da ritenersi "illegale ma legittimo". Illegale, in quanto privo della base giuridica richiesta dall'articolo 2, paragrafo 4, della Carta delle Nazioni Unite, e non riconducibile né all'eccezione della legittima difesa di cui all'articolo 51, né ad un'autorizzazione del Consiglio di Sicurezza ai sensi del Capitolo VII; legittimo, in quanto rispondente ad un'esigenza umanitaria ampiamente riconosciuta dalla comunità internazionale, in assenza di alternative praticabili.</p>
+<p>Il rapporto della Commissione ebbe un'eco duratura: le riflessioni ivi contenute in ordine agli obblighi successivi ad un intervento contribuirono, negli anni seguenti, ad orientare l'elaborazione della dottrina della Responsibility to Protect, successivamente recepita, nel 2005, dal Documento Finale del Vertice Mondiale delle Nazioni Unite. Giova, tuttavia, precisare che il rapporto non fu inteso, né dalla dottrina prevalente né dalla prassi successiva, quale fondativo di un diritto consuetudinario all'intervento umanitario unilaterale: cautela confermata, nel 2010, dal parere consultivo della Corte Internazionale di Giustizia sulla dichiarazione di indipendenza del Kosovo, che si astenne dall'attribuire all'intervento valore di precedente.</p>
+<p>La transizione da un atto controverso ad un principio internazionalmente riconosciuto richiese, in altri termini, un processo deliberato di ratifica collettiva — il Vertice Mondiale del 2005 — e non si produsse per mera accumulazione di prassi unilaterale.</p>
+<p>Applicata alle armi autonome, la medesima distinzione può essere utilmente ribaltata.</p>
+<p>Una normativa pienamente legale — adottata secondo le procedure costituzionali statunitensi, vincolante per il Pentagono, azionabile dinanzi alle competenti autorità giurisdizionali, come dimostra la stessa vicenda Anthropic — non esaurisce, di per sé, la legittimità nel significato proprio del diritto internazionale: quella che deriva dal riconoscimento condiviso, dalla reciprocità degli obblighi, dalla possibilità, per gli altri Stati, di fare affidamento su uno standard comune. Una disposizione pienamente legale nell'ordinamento interno può, sul piano internazionale, risolversi in un atto unilaterale tra i molti: rispettabile, financo apprezzabile, ma non costitutivo di un obbligo opponibile a chi non l'abbia adottata.</p>
+<p>Trattasi di un rovesciamento significativo, proprio in quanto controintuitivo. Nel caso del Kosovo, la comunità internazionale si trovò dinanzi ad un'azione priva di base legale, ma ampiamente percepita come legittima, e la relativa eco normativa si consolidò soltanto per il tramite di un atto collettivo di ratifica.</p>
+</section>
+<section class="paper-section" id="responsabilita">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">8. Chi risponde quando la macchina sbaglia bersaglio</h2>
+<p>Il diritto internazionale umanitario dispone già di una dottrina volta ad attribuire la responsabilità nell'ipotesi in cui un subordinato commetta una violazione: la responsabilità di comando, che il I Protocollo Addizionale alle Convenzioni di Ginevra del 1977 costruisce attraverso una combinazione normativa spesso appiattita, nella trattazione divulgativa del tema, sulla sola norma di chiusura. L'articolo 86 pone il fondamento sostanziale della responsabilità, imputando al superiore le violazioni commesse dal subordinato ove il primo sapesse, o disponesse di informazioni tali da consentirgli di concludere, nelle circostanze del momento, che quella violazione si stava per commettere o si stava commettendo, e non abbia adottato tutte le misure fattibili in suo potere per impedirla o reprimerla; l'articolo 87 vi si affianca imponendo ai comandanti un dovere positivo — prevenire, reprimere, denunciare — la cui inosservanza integra, essa stessa, l'omissione rilevante ai sensi dell'articolo 86.</p>
+<p>Le due disposizioni, lette congiuntamente e riconosciute quale diritto consuetudinario dalla Norma 153 dello studio sul diritto internazionale umanitario consuetudinario elaborato dal Comitato Internazionale della Croce Rossa, compongono l'impianto della responsabilità di comando: un comandante che impartisce direttive, un subordinato che le esegue e che può, in linea di principio, essere istruito, corretto, sanzionato.</p>
+<p>La questione posta dalle armi autonom è se lo standard di conoscenza richiesto dall'articolo 86 risulti predicabile allorché il "subordinato" non sia una persona, bensì un modello che elabora bersagli in base a parametri appresi. Si consideri, a titolo esemplificativo, l'ipotesi di un sistema quale Bullfrog, schierato per l'intercettazione di droni ostili, che identifichi erroneamente quale minaccia un velivolo civile penetrato per errore nello spazio aereo controllato, ed apra il fuoco: risponderebbe, ai sensi dell'articolo 86, l'operatore che ha attivato il sistema, ignaro del difetto e privo di elementi per dubitarne? Ovvero il personale tecnico che, mesi prima e in un contesto del tutto estraneo al teatro operativo, ha definito i criteri di addestramento del sistema medesimo — soggetto che l'articolo 87, calibrato su una catena di comando militare, non è strutturato per raggiungere?</p>
+<p>Il quesito non è meramente teorico neppure sul piano della responsabilità penale individuale.</p>
+<p>Lo Statuto di Roma della Corte Penale Internazionale, all'articolo 28, distingue infatti due fattispecie con soglie soggettive diverse: la lettera a) attribuisce al comandante militare una responsabilità fondata su uno standard colposo — sapeva, o avrebbe dovuto sapere, in ragione delle circostanze del momento —, sostanzialmente allineato al parametro dell'articolo 86 del I Protocollo Addizionale; la lettera b), riservata ai superiori non militari, richiede invece che questi abbiano consapevolmente ignorato informazioni che indicavano chiaramente la violazione, soglia prossima al dolo eventuale.</p>
+<p>Se il personale tecnico che ha addestrato il sistema fosse qualificato come superiore non militare ai sensi della lettera b) — ipotesi tutt'altro che scontata, stante la sua estraneità a qualsivoglia catena di comando in senso proprio —, la sua responsabilità penale individuale richiederebbe la prova di una conoscenza consapevolmente elusa, non della semplice prevedibilità dell'errore. Dunque, la difficoltà di soddisfare un simile standard anche nei confronti di un comandante umano trova puntuale riscontro nella prassi della Corte Penale Internazionale. Nel caso Bemba — l'unico, ad oggi, in cui la CPI abbia applicato l'articolo 28 sino a una condanna — la Camera d'Appello ha ribaltato, nel giugno 2018, la condanna inflitta in primo grado a Jean-Pierre Bemba Gombo quale comandante delle truppe del Mouvement de libération du Congo per crimini commessi nella Repubblica Centrafricana, non già per l'assenza di un controllo effettivo sui subordinati, bensì per l'insufficienza della prova che l'imputato avesse omesso di adottare tutte le misure necessarie e ragionevoli per prevenire o reprimere quei crimini.</p>
+<p>Parte della dottrina propende per un'estensione, in via analogica, di logiche prossime alla responsabilità da prodotto. Il filosofo Robert Sparrow, cui si deve la formulazione originaria del concetto di "responsibility gap" applicato ai sistemi d'arma autonomi, ha per primo posto in evidenza come l'assenza di un agente umano individuabile renda strutturalmente problematica l'attribuzione della responsabilità, tanto morale quanto giuridica<sup class="footnote-ref"><a aria-label="Nota 17" href="#nota-17" id="richiamo-17">17</a></sup>. Sulla medesima linea, il giurista Thompson Chengeta ha proposto modelli di "split-responsibility", nei quali l'onere risulta ripartito tra l'operatore, il comandante ed il soggetto industriale. Taluni autori, infine, richiamano il regime convenzionale sulla responsabilità civile in materia nucleare — segnatamente, la Convenzione di Parigi del 1960 — quale modello praticabile: responsabilità oggettiva del produttore per i difetti di progettazione, temperata da tetti risarcitori e da meccanismi assicurativi obbligatori.</p>
+<p>Trattasi, in ciascun caso, di estensioni ben note al diritto interno in altri ambiti, ma che il diritto internazionale umanitario — costruito su soggetti statali e su catene di comando militari — non ha ancora integrato in modo sistematico. Sino a quando tale lacuna non sarà colmata, permane quello che la letteratura specialistica definisce accountability gap: il rischio, cioè, che la responsabilità per un errore della specie descritta non ricada, in concreto, su alcun soggetto — né sull'operatore, né sul comandante, né sull'impresa che ha sviluppato il sistema.</p>
+<p>La legittimità, nel diritto dei conflitti armati, non si esaurisce nella mera esistenza di una procedura di controllo interno. Essa coincide, piuttosto, con la possibilità di attribuire la responsabilità in modo prevedibile, verificabile ed opponibile, a prescindere dal soggetto che abbia sviluppato od impiegato il sistema — Stato, produttore o impresa tecnologica. Le iniziative legislative statunitensi sin qui esaminate, pur nella loro eterogeneità, condividono un limite comune: esse rispondono all'interrogativo "come regoliamo noi stessi", non già a quello, ben più complesso, "come garantiamo che chiunque impieghi tali sistemi risponda secondo il medesimo standard". Ciò non implica una valutazione critica del valore, in sé considerato, della regolamentazione interna: una direttiva che imponga revisione legale, tracciabilità e supervisione umana rappresenta un progresso reale rispetto all'assenza di regole — a condizione, tuttavia, che non resti smentita, sul piano sostanziale, da scelte di bilancio di segno opposto, come dimostra il caso del DAWG.</p>
+<p>Ricondurre, comunque, l'autoregolamentazione nazionale alla legittimità internazionale costituirebbe un errore di impostazione. Il vuoto determinato da un negoziato multilaterale bloccato non si colma sommando discipline nazionali, per quanto numerose od accuratamente redatte — né, tantomeno, esclusioni regolatorie come quella dell'articolo 2, paragrafo 3, dell'AI Act europeo: esso si colma soltanto laddove sussista un vincolo che tutti gli attori rilevanti — inclusi, ormai, i fornitori privati di tecnologia — siano tenuti a rispettare, a prescindere dalla propria collocazione geopolitica o dal proprio modello imprenditoriale.</p>
+<p>La Conferenza di Revisione di Ginevra, in novembre, dirà se il 2026 sarà ricordato come l'anno in cui tale vincolo ha iniziato a prendere forma, ovvero come l'ennesima occasione mancata. Nelle more, la questione giuridica di maggior rilievo permane aperta: non già se un sistema abbia rispettato la legge del proprio Stato di appartenenza, bensì se, nel colpire un bersaglio, esso abbia rispettato una legge effettivamente vincolante per la totalità dei consociati.</p>
+</section>
+<section class="paper-section bibliography" id="note">
+<span class="small-label">Apparato</span>
+<h2 class="serif-heading" id="note-title">Note</h2>
+<ol class="references notes-list">
+<li id="nota-1">Wall Street Journal, ripreso da CBS News, «Anthropic's Claude AI being used in Iran war by U.S. military, sources say», 2-3 marzo 2026; Bloomberg Opinion, «Iran Strikes: Anthropic Claude AI Helped US Attack. But How Exactly?», 4 marzo 2026; The Times of Israel, 2 marzo 2026. <a aria-label="Torna al richiamo della nota 1" class="back-note" href="#richiamo-1">↩</a></li>
+<li id="nota-2">U.S. Department of Defense, Directive 3000.09, «Autonomy in Weapon Systems»; JURIST, «Autonomous Weapons Are Outrunning the Law That Governs Them», luglio 2026 (su Bullfrog). <a aria-label="Torna al richiamo della nota 2" class="back-note" href="#richiamo-2">↩</a></li>
+<li id="nota-3">Racism and Technology Center, «Anthropic is powering the horrific strikes on Iran», 9 marzo 2026 (sul ruolo di Claude nel Maven Smart System di Palantir). <a aria-label="Torna al richiamo della nota 3" class="back-note" href="#richiamo-3">↩</a></li>
+<li id="nota-4">Congressional Research Service, IN12669, «Pentagon-Anthropic Dispute over Autonomous Weapon Systems: Potential Issues for Congress», aprile 2026 (contratto da 200 milioni di dollari, luglio 2025; dichiarazioni di Dario Amodei). <a aria-label="Torna al richiamo della nota 4" class="back-note" href="#richiamo-4">↩</a></li>
+<li id="nota-5">Pearl Cohen, «Anthropic Sues Department of Defense Over Supply Chain Risk Designation», marzo 2026; PBS NewsHour, «Anthropic sues in federal court to reverse Trump administration's 'supply chain risk' designation», 9 marzo 2026. <a aria-label="Torna al richiamo della nota 5" class="back-note" href="#richiamo-5">↩</a></li>
+<li id="nota-6">CNBC, «Anthropic loses appeals court bid to temporarily block Pentagon blacklisting», 8 aprile 2026. <a aria-label="Torna al richiamo della nota 6" class="back-note" href="#richiamo-6">↩</a></li>
+<li id="nota-7">National Defense Authorization Act per l'anno fiscale 2026, Sez. 1513. <a aria-label="Torna al richiamo della nota 7" class="back-note" href="#richiamo-7">↩</a></li>
+<li id="nota-8">National Security Presidential Memorandum, 5 giugno 2026 (riscrittura della Direttiva 3000.09). <a aria-label="Torna al richiamo della nota 8" class="back-note" href="#richiamo-8">↩</a></li>
+<li id="nota-9">Congress.gov, S.Rept. 119-127, National Defense Authorization Act for Fiscal Year 2027; CRS IN12704, «FY2027 NDAA: Status of Legislative Activity». <a aria-label="Torna al richiamo della nota 9" class="back-note" href="#richiamo-9">↩</a></li>
+<li id="nota-10">Digital Watch Observatory, «GGE on lethal autonomous weapons systems», aggiornato ad agosto 2026; United Nations Office for Disarmament Affairs, calendario delle sessioni GGE 2026. <a aria-label="Torna al richiamo della nota 10" class="back-note" href="#richiamo-10">↩</a></li>
+<li id="nota-11">Rappresentanza Permanente d'Italia presso la Conferenza del Disarmo, Ginevra, «Italy's Participation in the Second 2025 Session of the GGE LAWS». <a aria-label="Torna al richiamo della nota 11" class="back-note" href="#richiamo-11">↩</a></li>
+<li id="nota-12">Regolamento (UE) 2024/1689, art. 2, par. 3, e considerando 24; Gazzetta Ufficiale dell'Unione Europea, L 2024/1689, 12 luglio 2024, in vigore dal 1° agosto 2024. <a aria-label="Torna al richiamo della nota 12" class="back-note" href="#richiamo-12">↩</a></li>
+<li id="nota-13">Geopolitical Monitor, «Europe's Military AI Gap Begins at Fielding», agosto 2026 (Fondo Europeo per la Difesa, EDIRPA, regolamento SAFE, posizione del Belgio in Consiglio). <a aria-label="Torna al richiamo della nota 13" class="back-note" href="#richiamo-13">↩</a></li>
+<li id="nota-14">South China Morning Post, «1 soldier, 200 drones: China showcases rapid launch and agility in swarm warfare tactics», 23 gennaio 2026. <a aria-label="Torna al richiamo della nota 14" class="back-note" href="#richiamo-14">↩</a></li>
+<li id="nota-15">China Aerospace Studies Institute, dati ripresi da drone-warfare.com, «PLA Drone Swarms: Demonstration vs. Fielding Reality», giugno 2026 (sistema CETC «Atlas»). <a aria-label="Torna al richiamo della nota 15" class="back-note" href="#richiamo-15">↩</a></li>
+<li id="nota-16">Ukraine Defense Intelligence (HUR); Kyiv Post, «First AI Lancet Drone Attack Rocks Kyiv?», 16 marzo 2026; The New Voice of Ukraine, «Lancet Drone with Artificial Intelligence — Updates, Western Details, and Risks», 23 marzo 2026. <a aria-label="Torna al richiamo della nota 16" class="back-note" href="#richiamo-16">↩</a></li>
+<li id="nota-17">Robert Sparrow, «Killer Robots», Journal of Applied Philosophy, 2007. <a aria-label="Torna al richiamo della nota 17" class="back-note" href="#richiamo-17">↩</a></li>
+</ol></section>
+<section class="paper-section bibliography" id="bibliografia">
+<span class="small-label">Fonti</span>
+<h2 class="serif-heading">Riferimenti bibliografici</h2>
+<ol class="references">
+<li><strong>Schmitt, Michael N. / Thurnher, Jeffrey S.</strong>, <em>"Out of the Loop": Autonomous Weapon Systems and the Law of Armed Conflict</em>, in 4 Harvard National Security Journal 231 (2013) — il contributo dottrinale di riferimento sulla tesi opposta a quella "abolizionista": il diritto dei conflitti armati esistente è già in grado di disciplinare le AWS. Utile per dare conto anche della posizione che dissente dal filone Sparrow/Chengeta che hai già citato. <a href="https://journals.law.harvard.edu/nsj/2013/05/out-of-the-loop-autonomous-weapon-systems-and-the-law-of-armed-conflict" rel="noopener noreferrer" target="_blank">https://journals.law.harvard.edu/nsj/2013/05/out-of-the-loop-autonomous-weapon-systems-and-the-law-of-armed-conflict</a></li>
+<li><strong>Stop Killer Robots</strong>, <em>Policy Brief: Autonomous Weapons Systems — Key Issues &amp; the Path to a Treaty</em>, 2025 — utile perché riassume in modo aggiornato lo stato del negoziato GGE con apparato di note proprio. <a href="https://www.stopkillerrobots.org/wp-content/uploads/2025/05/WEB-Policy-Brief_Autonomous-Weapons-Systems_Key-issues-and-path-to-a-treaty_Stop-Killer-Robots.pdf" rel="noopener noreferrer" target="_blank">https://www.stopkillerrobots.org/wp-content/uploads/2025/05/WEB-Policy-Brief_Autonomous-Weapons-Systems_Key-issues-and-path-to-a-treaty_Stop-Killer-Robots.pdf</a></li>
+</ol></section>
+<section class="paper-section bibliography" id="sitografia">
+<span class="small-label">Fonti</span>
+<h2 class="serif-heading">Riferimenti sitografici</h2>
+<ol class="references">
+<li>CBS News — <a href="https://www.cbsnews.com/news/anthropic-claude-ai-iran-war-u-s/" rel="noopener noreferrer" target="_blank">https://www.cbsnews.com/news/anthropic-claude-ai-iran-war-u-s/</a>;</li>
+<li>Bloomberg Opinion — <a href="https://www.bloomberg.com/opinion/articles/2026-03-04/iran-strikes-anthropic-claude-ai-helped-us-attack-but-how-exactly" rel="noopener noreferrer" target="_blank">https://www.bloomberg.com/opinion/articles/2026-03-04/iran-strikes-anthropic-claude-ai-helped-us-attack-but-how-exactly</a>;</li>
+<li>The Times of Israel — <a href="https://www.timesofisrael.com/hours-after-trump-announced-ban-on-claude-ai-us-military-used-it-in-iran-strikes-reports/" rel="noopener noreferrer" target="_blank">https://www.timesofisrael.com/hours-after-trump-announced-ban-on-claude-ai-us-military-used-it-in-iran-strikes-reports/</a>;</li>
+<li>NBC News (ruolo di Palantir/Maven) — <a href="https://www.nbcnews.com/tech/tech-news/us-military-using-ai-help-plan-iran-air-attacks-sources-say-lawmakers-rcna262150" rel="noopener noreferrer" target="_blank">https://www.nbcnews.com/tech/tech-news/us-military-using-ai-help-plan-iran-air-attacks-sources-say-lawmakers-rcna262150</a>;</li>
+<li>JURIST — <a href="https://www.jurist.org/commentary/2026/07/autonomous-weapons-are-outrunning-the-law-that-governs-them/" rel="noopener noreferrer" target="_blank">https://www.jurist.org/commentary/2026/07/autonomous-weapons-are-outrunning-the-law-that-governs-them/</a>;</li>
+<li>CRS, IN12669 (Congress.gov) — <a href="https://www.congress.gov/crs-product/IN12669" rel="noopener noreferrer" target="_blank">https://www.congress.gov/crs-product/IN12669</a></li>
+<li>Barchart (ricorso, 9 marzo) — <a href="https://www.barchart.com/story/news/653503/anthropic-sues-pentagon-over-supply-chain-risk-designation-that-blocks-federal-contracts" rel="noopener noreferrer" target="_blank">https://www.barchart.com/story/news/653503/anthropic-sues-pentagon-over-supply-chain-risk-designation-that-blocks-federal-contracts</a>;</li>
+<li>Pearl Cohen (analisi legale) — <a href="https://www.pearlcohen.com/anthropic-sues-department-of-defense-over-supply-chain-risk-designation/" rel="noopener noreferrer" target="_blank">https://www.pearlcohen.com/anthropic-sues-department-of-defense-over-supply-chain-risk-designation/</a>;</li>
+<li>NPR (ricorso) — <a href="https://www.npr.org/2026/03/09/nx-s1-5742548" rel="noopener noreferrer" target="_blank">https://www.npr.org/2026/03/09/nx-s1-5742548</a>;</li>
+<li>CNN (ordinanza cautelare, 26 marzo) — <a href="https://www.cnn.com/2026/03/26/business/anthropic-pentagon-injunction-supply-chain-risk" rel="noopener noreferrer" target="_blank">https://www.cnn.com/2026/03/26/business/anthropic-pentagon-injunction-supply-chain-risk</a>;</li>
+<li>The Hill (27 marzo) — <a href="https://thehill.com/policy/technology/5803486-anthropic-lawsuit-pentagon-claude" rel="noopener noreferrer" target="_blank">https://thehill.com/policy/technology/5803486-anthropic-lawsuit-pentagon-claude</a>;</li>
+<li>CNBC (diniego sospensione, 8 aprile) — <a href="https://www.cnbc.com/2026/04/08/anthropic-pentagon-court-ruling-supply-chain-risk.html" rel="noopener noreferrer" target="_blank">https://www.cnbc.com/2026/04/08/anthropic-pentagon-court-ruling-supply-chain-risk.html</a>;</li>
+<li>SecurityWeek (Emil Michael, Golden Dome) — <a href="https://www.securityweek.com/pentagons-chief-tech-officer-says-he-clashed-with-ai-company-anthropic-over-autonomous-warfare/" rel="noopener noreferrer" target="_blank">https://www.securityweek.com/pentagons-chief-tech-officer-says-he-clashed-with-ai-company-anthropic-over-autonomous-warfare/</a>;</li>
+<li>Breaking Defense (Camera, 216-212) — <a href="https://breakingdefense.com/2026/07/house-passes-2027-ndaa-while-measure-remains-stalled-in-the-senate/" rel="noopener noreferrer" target="_blank">https://breakingdefense.com/2026/07/house-passes-2027-ndaa-while-measure-remains-stalled-in-the-senate/</a>;</li>
+<li>Breaking Defense (Senato blocca, 50-46) — <a href="https://breakingdefense.com/2026/07/senate-democrats-block-ndaa-amid-concerns-on-iran-war-budget-topline/" rel="noopener noreferrer" target="_blank">https://breakingdefense.com/2026/07/senate-democrats-block-ndaa-amid-concerns-on-iran-war-budget-topline/</a>.</li>
+</ol></section>
+<section class="author-card" id="autore">
+<img alt="Miriam Foti" onerror="this.style.display='none'" src="../assets/Junior-Fellows/miriam-foti.jpg"/>
+<div>
+<span class="small-label">L’autrice</span>
+<h2 class="serif-heading">Miriam Foti</h2>
+<div class="author-role">Diritto e Legittimità</div>
+<p>Laureata magistrale in Giurisprudenza con votazione di 110/110 e lode, ha conseguito un Master di II livello in Diritto Internazionale Umanitario e Diritto delle Operazioni Militari presso il Centro Alti Studi per la Difesa (CASD/SSU), anch'esso con 110/110 e lode, discutendo una tesi sui sistemi di armi autonome letali nei conflitti armati. Durante il Master ha ricoperto il ruolo di Legal Advisor nella simulazione militare internazionale CJEX, occupandosi della redazione delle Rules of Engagement. È autrice di numerose pubblicazioni scientifiche, analista geopolitica presso IARI, con un focus sull'area asiatica e un interesse specifico per il diritto coreano. Ha arricchito, inoltre, il proprio percorso con numerose esperienze di formazione accademica internazionale.</p>
+<p><a href="../chi-siamo.html#miriam-foti">Profilo completo su DYNAMES</a></p>
+</div>
+</section>
+</div>
+</article>
+</main>
+<footer>
+<div class="container">
+<h3>DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p>© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
