@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<!-- Categoria editoriale verificata: Governance Pubblica -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="max-image-preview:large" name="robots"/>
+<title>DYNAMES | L’Albo nazionale delle botteghe storiche: dai registri comunali alla conoscenza del territorio</title>
+<meta content="Il nuovo censimento nazionale può diventare una base conoscitiva per leggere commercio, prossimità e trasformazioni urbane" name="description"/>
+<meta content="Michele Punzi" name="author"/>
+<link href="https://www.dynames.it/articles/2026.08.16-albo-nazionale-botteghe.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="L’Albo nazionale delle botteghe storiche: dai registri comunali alla conoscenza del territorio" property="og:title"/>
+<meta content="Il nuovo censimento nazionale può diventare una base conoscitiva per leggere commercio, prossimità e trasformazioni urbane" property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.08.16-albo-nazionale-botteghe.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.16-albo-nazionale-botteghe-light.jpg" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.16-albo-nazionale-botteghe-light.jpg" property="og:image:secure_url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.16-albo-nazionale-botteghe-light.jpg" property="og:image:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.16-albo-nazionale-botteghe-light.jpg" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.16-albo-nazionale-botteghe-light.jpg" name="image" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.16-albo-nazionale-botteghe-light.jpg" itemprop="image"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="Una sindaca con fascia tricolore, un commerciante artigiano e due censitori davanti a una bottega storica" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="L’Albo nazionale delle botteghe storiche: dai registri comunali alla conoscenza del territorio" name="twitter:title"/>
+<meta content="Il nuovo censimento nazionale può diventare una base conoscitiva per leggere commercio, prossimità e trasformazioni urbane" name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.16-albo-nazionale-botteghe-light.jpg" name="twitter:image"/>
+<meta content="2026-08-16T21:00:00+02:00" property="article:published_time"/>
+<meta content="Michele Punzi" property="article:author"/>
+<meta content="Governance Pubblica" property="article:section"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+            text-decoration: none;
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(30, 58, 138, 0.25);
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .article-body a:hover {
+            color: var(--gold-accent);
+            border-color: rgba(184, 147, 90, 0.5);
+        }
+
+        .article-body p.source-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: -1.4rem;
+            margin-bottom: 1.8rem;
+            line-height: 1.5;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    
+    
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article>
+<div class="article-container article-header">
+<span class="article-category">Governance Pubblica</span>
+<h1 class="serif-heading article-title">L’Albo nazionale delle botteghe storiche: dai registri comunali alla conoscenza del territorio</h1>
+<p class="article-abstract">Il nuovo censimento nazionale può diventare una base conoscitiva per leggere commercio, prossimità e trasformazioni urbane</p>
+<div class="article-meta">
+<a class="meta-author" href="../chi-siamo.html#punzi">Michele Punzi</a>
+<span>16 Agosto 2026</span>
+<span>Tempo di lettura: 9 min</span>
+</div>
+</div>
+<img alt="Una sindaca con fascia tricolore, un commerciante artigiano e due censitori davanti a una bottega storica" class="article-hero" onerror="this.style.display='none'" src="Immagini/2026.08.16-albo-nazionale-botteghe.png"/>
+<div class="article-container article-body">
+<h2>Dal censimento alla conoscenza del territorio</h2>
+<p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">N</span>el giugno 2026 è diventato operativo l’Albo nazionale delle attività commerciali, delle botteghe artigiane e degli esercizi pubblici storici. La sua istituzione deriva dal D.Lgs. 27 dicembre 2024, n. 219, «Costituzione dell’Albo nazionale delle attività commerciali, delle botteghe artigiane e degli esercizi pubblici, tipizzati sotto il profilo storico-culturale o commerciale, ai fini della valorizzazione turistica e commerciale di dette attività, in attuazione dell’articolo 27, comma 1, lettera l-bis della legge 5 agosto 2022, n. 118», mentre il decreto interministeriale 7 maggio 2026 ne ha disciplinato le modalità operative di istituzione, gestione, aggiornamento e pubblicazione.</p>
+<p>La finalità è anzitutto quella di tutelare e valorizzare attività che conservano una particolare rilevanza storica, culturale e commerciale. Ma il funzionamento dell’Albo introduce anche un elemento meno evidente. Le informazioni non vengono prodotte esclusivamente al centro: partono dai territori, attraversano diversi livelli amministrativi e confluiscono in una raccolta nazionale periodicamente aggiornata. Il risultato è un patrimonio di dati distribuito nello spazio, capace di descrivere non soltanto le singole attività, ma almeno in parte anche il contesto nel quale esse continuano a operare.</p>
+<p>È qui che la questione supera la sola conservazione delle botteghe storiche. Un elenco può indicare quali esercizi possiedono determinati requisiti. Se le stesse informazioni vengono localizzate, aggiornate e messe in relazione con altri dati, possono contribuire a comprendere come cambia una città: dove si concentrano le attività, quali quartieri perdono servizi, quali funzioni commerciali resistono e dove, invece, il tessuto economico si trasforma rapidamente. L’Albo non nasce come sistema di analisi urbana, né la disciplina vigente gli attribuisce questa funzione. Può però offrire una base dalla quale interrogarsi su un problema più generale: come trasformare i dati amministrativi già disponibili in conoscenza utile per governare il territorio?</p>
+<h2>L’Albo nazionale e il ruolo informativo degli enti territoriali</h2>
+<p>La struttura prevista dal legislatore è significativa: Comuni, Unioni di comuni, Città metropolitane, Province, Regioni e Province autonome possono costituire propri albi delle attività commerciali, delle botteghe artigiane e, ove previsto, degli esercizi pubblici storici presenti sul territorio. In via generale, la disciplina considera le attività esistenti da almeno cinquant’anni e caratterizzate da un particolare interesse merceologico, culturale, storico, artistico, turistico o legato alle tradizioni locali. La relazione con il luogo non è marginale: lo stesso decreto considera espressamente anche la connessione con le aree nelle quali le attività sono insediate.</p>
+<p>Il flusso informativo segue una logica multilivello. Gli enti territoriali trasmettono periodicamente, e comunque almeno ogni anno, i propri albi aggiornati alla Regione o alla Provincia autonoma competente; queste ultime provvedono alla redazione e all’aggiornamento degli elenchi regionali e alla successiva trasmissione delle informazioni al Ministero delle Imprese e del Made in Italy. L’Albo nazionale è quindi costituito dagli albi territoriali ed è gestito e alimentato dal MIMIT, mentre la disciplina attuativa regola anche lo scambio delle informazioni necessario al suo aggiornamento. Il Comune assume, in questa prospettiva, una funzione che va oltre la gestione del procedimento di iscrizione. È il livello amministrativo più vicino all’attività, al quartiere e alle trasformazioni che ne modificano progressivamente il contesto. La conoscenza prodotta localmente può quindi acquisire un valore ulteriore quando viene sistematizzata.</p>
+<p>L’esperienza di Firenze aiuta a comprendere questa possibilità. Il lavoro sviluppato da Stefano Bertocci e Federico Cioli sul commercio storico del centro UNESCO ha censito oltre quattrocento attività, integrando documentazione, rapporto con gli esercenti e rilievo digitale. I successivi tre volumi dell’<em>Atlante del commercio storico e tradizionale di Firenze</em> organizzano le attività per categorie e le accompagnano con schede, ricostruzioni storiche e apparati cartografici, collegando così l’offerta commerciale contemporanea alla struttura e all’evoluzione della città.</p>
+<p>Il passaggio è semplice ma rilevante. Censire un’attività significa identificarla; rappresentarla nel territorio consente di iniziare a comprenderne le relazioni. Il dato amministrativo, da solo, rimane descrittivo. Acquista maggiore capacità esplicativa quando permette di osservare la distribuzione delle attività, seguirne l’evoluzione e confrontarla con quella dello spazio urbano nel quale esse operano.</p>
+<p class="source-note"><em>Fonti:</em> D.Lgs. 27 dicembre 2024, n. 219; decreto interministeriale 7 maggio 2026; Ministero delle Imprese e del Made in Italy; S. Bertocci, F. Cioli, <em>Firenze, the historical shops of the UNESCO centre</em>, 2024; S. Bertocci, F. Cioli, <em>Atlante del commercio storico e tradizionale di Firenze</em>, 2024.</p>
+<h2>Dati commerciali, desertificazione e trasformazioni urbane</h2>
+<p>La questione diventa più evidente osservando l’andamento della rete commerciale italiana. Secondo l’Ufficio Studi Confcommercio, negli ultimi dodici anni più di 140 mila attività al dettaglio, considerando negozi e ambulanti, hanno cessato l’attività. Per il 2025 viene inoltre stimata la presenza di circa 105 mila negozi sfitti. Quest’ultimo valore deve essere letto correttamente: non deriva da un censimento puntuale dei locali vuoti, ma da una stima costruita sull’andamento della contrazione della rete commerciale negli anni precedenti. Anche le previsioni al 2035 pubblicate nello stesso rapporto hanno natura proiettiva e presuppongono la prosecuzione delle variazioni medie osservate tra il 2012 e il 2024. I numeri descrivono la dimensione del fenomeno, ma non sono sufficienti a spiegarne gli effetti. Una bottega che chiude in un centro storico interessato da una forte presenza turistica può inserirsi in un processo di sostituzione dell’offerta commerciale, con la progressiva riduzione delle attività rivolte ai residenti. La stessa chiusura, in un quartiere che ha già perso negozi e servizi, può invece aumentare la distanza necessaria per soddisfare bisogni quotidiani e contribuire all’indebolimento dell’economia di prossimità. Il dato di partenza è simile. Il suo significato territoriale è diverso.</p>
+<p>La letteratura sulla prossimità mostra che questa differenza può essere almeno in parte misurata. Beatrice Olivari, Piergiorgio Cipriano, Maurizio Napolitano e Luca Giovannini hanno sviluppato nel 2023 il NEXI - NExt proXimity Index, uno strumento basato su open data che misura l’accessibilità pedonale ai servizi secondo il paradigma della città dei quindici minuti. L’indice è disponibile per l’intero territorio italiano e può essere integrato con ulteriori informazioni locali, come quelle sulla distribuzione della popolazione. Un lavoro analogo applicato a Roma da Francesco Chiaradia, Keti Lelo, Salvatore Monni e Federico Tomassi utilizza tecniche GIS – Geographic Information System per osservare, a livello di quartiere, l’intensità dei servizi raggiungibili a piedi o in bicicletta. Anche in questo caso non si studiano le botteghe storiche. Il contributo è metodologico: dimostra che la presenza e la localizzazione dei servizi possono essere trasformate in informazioni utili a evidenziare differenze interne alla città.</p>
+<p>Sul versante opposto, lo studio di Jiarui Zhu e altri pubblicato su <em>Cities</em> nel 2026 mostra, con riferimento a distretti storici cinesi, come la trasformazione commerciale possa assumere anche la forma della sostituzione delle attività tradizionali con boutique di fascia alta e grandi catene. Il caso non è automaticamente trasferibile alle città italiane, ma consente di distinguere due fenomeni: la perdita delle attività commerciali e il cambiamento della loro composizione non coincidono necessariamente. È proprio per cogliere queste differenze che il dato amministrativo deve essere contestualizzato. L’OCSE definisce <em>data-driven public sector</em> un settore pubblico nel quale i dati vengono considerati una risorsa per la formulazione delle politiche, l’erogazione dei servizi, la gestione e l’innovazione. Il rapporto <em>Smart City Data Governance</em> del 2023 aggiunge che la disponibilità di grandi quantità di informazioni non garantisce, da sola, una migliore capacità decisionale: servono qualità, condivisione, competenze e regole capaci di renderle effettivamente utilizzabili.</p>
+<p>Per i Comuni il problema, quindi, non consiste soltanto nell’avere più dati: consiste nel mettere in relazione quelli già ampiamente disponibili.</p>
+<p class="source-note"><em>Fonti:</em> Ufficio Studi Confcommercio, <em>Demografia d’impresa e desertificazione commerciale</em>, 2025; C. van Ooijen, B. Ubaldi, B. Welby, <em>A data-driven public sector</em>, OECD, 2019; OECD, <em>Smart City Data Governance</em>, 2023; B. Olivari et al., <em>Are Italian cities already 15-minute?</em>, 2023; F. Chiaradia et al., <em>The 15-Minute City</em>, 2024; J. Zhu et al., <em>Exploring the interactive effects of internal and external factors on residents’ daily lives</em>, 2026.</p>
+<h2>Dall’Albo ai sistemi informativi per le politiche territoriali</h2>
+<p>La prospettiva cambia se l’Albo viene considerato non come punto di arrivo, ma come uno dei possibili livelli di una conoscenza territoriale più ampia. Non si tratta di attribuirgli compiti che oggi non possiede. La questione è verificare quale utilità potrebbero assumere le informazioni raccolte se fossero georeferenziate, aggiornate e, dove tecnicamente e giuridicamente possibile, messe in relazione con altri dati pubblici.</p>
+<p>Una mappa delle attività storiche potrebbe, ad esempio, essere letta insieme alle aperture e cessazioni delle imprese, alla presenza di locali sfitti, alla distribuzione e all’età della popolazione residente, alla raggiungibilità dei servizi, ai flussi turistici o alle trasformazioni urbanistiche. Non per stabilire automaticamente quali attività debbano essere sostenute, ma per riconoscere meglio le aree nelle quali alcune funzioni commerciali stanno diventando più fragili. È un’impostazione coerente con una trasformazione già in corso nella Pubblica Amministrazione. Il Piano Triennale per l’Informatica nella Pubblica Amministrazione 2024-2026, nell’aggiornamento 2026, attribuisce all’interoperabilità la funzione di facilitare lo scambio delle informazioni tra amministrazioni e di valorizzarne il capitale informativo. La Piattaforma Digitale Nazionale Dati (PDND) è costruita precisamente per favorire questo scambio e la sua evoluzione contempla anche la condivisione di grandi quantità di dati e il loro impiego nell’elaborazione di politiche <em>data-driven</em>.</p>
+<p>Ciò non significa che l’Albo sia oggi integrato nella PDND; indica, piuttosto, che la possibilità di far dialogare basi informative diverse appartiene già alla direzione intrapresa dall’amministrazione digitale italiana. La stessa logica emerge dagli Urban Observatories promossi da UN-Habitat: strutture nelle quali raccolta, analisi e interpretazione delle informazioni vengono organizzate per comprendere le traiettorie dello sviluppo urbano e sostenere decisioni e investimenti. Il valore non risiede nell’accumulazione dei dati, ma nella possibilità di tradurli in informazioni comprensibili e utilizzabili. In questa prospettiva può essere utile parlare, con una definizione circoscritta, di <em>intelligence territoriale pubblica</em>: la capacità dell’amministrazione di collegare informazioni provenienti da fonti differenti per riconoscere trasformazioni, individuare vulnerabilità e orientare le proprie scelte. L’espressione non appartiene alla disciplina dell’Albo e non indica una nuova funzione amministrativa, serve piuttosto a descrivere il passaggio da un patrimonio di dati separati a una conoscenza organizzata del territorio.</p>
+<p>L’Albo nazionale offre un caso concreto per sperimentare questo cambio di prospettiva. La domanda iniziale - quante attività storiche esistono e dove sono localizzate? - potrebbe essere affiancata da altre: in quali aree stanno diminuendo le attività di prossimità? Quali servizi scompaiono insieme ad esse? Dove il commercio storico convive con una rete economica ancora diversificata e dove, invece, rimane isolato? Quali trasformazioni sono associate alla perdita della popolazione residente o alla crescita della pressione turistica?</p>
+<p>Non ogni attività longeva rappresenta, per il solo trascorrere del tempo, una funzione indispensabile. Né un Albo può arrestare trasformazioni economiche che dipendono da consumi, demografia, tecnologia e mercato. Può però contribuire a renderle più leggibili. È questa la possibile evoluzione più interessante. Dal censimento di ciò che merita di essere ricordato alla capacità di comprendere, con maggiore anticipo, ciò che un territorio sta cambiando o rischia di perdere. In questo passaggio l’informazione amministrativa smette di chiudersi nel registro e torna a svolgere la sua funzione più utile: sostenere una decisione pubblica consapevole.</p>
+<p class="source-note"><em>Fonti:</em> OECD, <em>Smart City Data Governance</em>, 2023; UN-Habitat, <em>A Guide to Setting up an Urban Observatory</em>, 2020; Piano Triennale per l’Informatica nella Pubblica Amministrazione 2024-2026, aggiornamento 2026.</p>
+<div class="pull-quote" style="margin-top: 4rem; margin-bottom: 2rem;">
+    “Dal censimento di ciò che merita di essere ricordato alla capacità di comprendere, con maggiore anticipo, ciò che un territorio sta cambiando o rischia di perdere.”
+</div>
+<div class="author-box">
+<img alt="Michele Punzi" onerror="this.style.display='none';" src="../assets/michele-punzi.jpg"/>
+<div class="author-info">
+<h4><a href="../chi-siamo.html#punzi">Michele Punzi</a></h4>
+<p>Consulente editoriale di DYNAMES. Laureato in Giurisprudenza e in Scienze Giuridiche della Sicurezza, si occupa di governance pubblica, sicurezza nazionale, diritto delle istituzioni e analisi strategica, con particolare attenzione al rapporto tra amministrazioni, territorio, resilienza istituzionale e trasformazioni geopolitiche. Contribuisce alla definizione dell’indirizzo editoriale della piattaforma.</p>
+</div>
+</div>
+</div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>

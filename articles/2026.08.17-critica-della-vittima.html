@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' ||
+                           name === '_gid' ||
+                           name === '_gat' ||
+                           name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Il paradigma vittimario</title>
+<meta content="Alessio Postiglione analizza il paradigma vittimario come chiave di lettura delle guerre culturali contemporanee, tra populismo, identità, media e politica." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #cfd8e3, #8ca0bb);
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article>
+<div class="article-container article-header">
+<span class="article-category">Società e formazione</span>
+<h1 class="serif-heading article-title">Il paradigma vittimario</h1>
+<p class="article-abstract">Cosa hanno in comune Jason Arday, Sigfrido Ranucci e Donald Trump?</p>
+<div class="article-meta">
+<span class="meta-author">Alessio Postiglione</span>
+<span>17 Agosto 2026</span>
+<span>Tempo di lettura: 7 min</span>
+</div>
+</div>
+ Immagine hero prevista in /assets: 2026.08.17-critica-della-vittima.png 
+<img alt="Hero editoriale sul paradigma vittimario, tra pressione mediatica, conflitto politico e competizione identitaria" class="article-hero" onerror="this.style.display='none'" src="../assets/2026.08.17-critica-della-vittima.png"/>
+<div class="article-container article-body">
+<div class="pull-quote" style="margin-top: 2rem;">
+    “La vittima è diventata l’eroe del nostro tempo.”
+    <br/>
+<span style="font-size: 1.2rem; color: var(--text-secondary);">— Daniele Giglioli, <em>Critica della vittima</em></span>
+</div>
+<p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">I</span>l suicidio di Jason Arday, l’accademico britannico che nel 2023 era diventato il più giovane professore nero nella storia dell’Università di Cambridge, non è solo una tragedia umana; è il sintomo terminale di un ecosistema culturale collassato sotto il peso delle sue stesse ossessioni. Finire al centro di un tritacarne mediatico per accuse di plagio e incongruenze nel curriculum, rassegnare le dimissioni e infine togliersi la vita a 41 anni, svela la spietata logica della <em>Victimhood Culture</em> (la cultura del vittimismo) applicata ai meccanismi accademici e sociali contemporanei.</p>
+<p>Per comprendere questa dinamica, la bussola filosofica più lucida ci viene offerta da Daniele Giglioli e dal suo saggio <em>Critica della vittima</em>. Giglioli spiega come la vittima sia diventata "l'eroe del nostro tempo", un'identità che non si definisce più per ciò che fa (l'azione), ma per il danno che ha subìto (la passione). Lo status di vittima genera una forma di rendita di posizione e di immunità morale. Tuttavia, quando la società abdica alla complessità per abbracciare questa logica, si instaura una perversa gara a chi è più vittima, un'arena in cui il dolore non è più un trauma da elaborare, ma un'arma di legittimazione politica e l'anticamera del risentimento più feroce.</p>
+<h2>Il laboratorio Italia: dalle vittime di mafia al populismo transizionale</h2>
+<p>In questo scenario globale, l'Italia ha fatto da vero e proprio "laboratorio avanzato". Come evidenziato dagli studi sul paradigma vittimario nella storia repubblicana, il nostro Paese ha progressivamente sostituito i vecchi miti politici fondanti (come l'antifascismo o le lotte ideologiche) con la memoria sacralizzata delle vittime: le vittime della mafia, delle stragi e del terrorismo.</p>
+<p>Se l'intento iniziale era nobile e riparativo, la degenerazione nello spazio pubblico è stata immediata. La politica ha capito che appropriarsi del dolore della vittima garantiva un'immunità totale. Da questo laboratorio transizionale è gemmato il populismo moderno. Oggi assistiamo a un ribaltamento totale: non sono più le minoranze o gli oppressi a chiedere giustizia, ma sono i detentori del potere a travestirsi da vittime per blindare il proprio consenso e sottrarsi a ogni responsabilità etica.</p>
+<h2>La competizione vittimaria</h2>
+<p>La competizione vittimaria cannibalizza ogni dibattito contemporaneo, riducendo la complessità della storia a una rissa per la supremazia morale:</p>
+<ul>
+<li><strong>Shoah contro Nakba:</strong> I drammi storici più laceranti vengono strumentalizzati e gettati nell'arena per stabilire quale sofferenza abbia un peso specifico maggiore, azzerando ogni spazio di dialogo o di mutuo riconoscimento.</li>
+<li><strong>Donald Trump contro lo "Stato Profondo":</strong> L'uomo più potente del pianeta, un miliardario ex presidente, costruisce la sua intera narrazione politica presentandosi come il perseguitato numero uno di un sistema corrotto.</li>
+<li><strong>Giorgia Meloni contro la "Sinistra ZTL":</strong> La Presidente del Consiglio italiana che, pur governando il Paese, continua a rivendicare con orgoglio lo status di <em>underdog</em>, dipingendosi come l'eterna emarginata aggredita dalle élite culturali progressiste.</li>
+<li><strong>Il fenomeno Vannacci, che si definisce "feccia":</strong> Personaggi che costruiscono intere carriere editoriali e politiche spacciandosi per vittime della dittatura del politicamente corretto, capitalizzando il risentimento della presunta "maggioranza silenziosa".</li>
+<li><strong>Guerre identitarie permanenti:</strong> I colonizzati contro i colonizzatori, le donne contro i maschi, i neri contro i bianchi. Ogni gruppo si trincera dietro il proprio danno storico per muovere guerra all'altro, in un gioco a somma zero dove nessuno può permettersi di guarire dal proprio trauma, perché guarire significherebbe perdere il proprio potere contrattuale.</li>
+</ul>
+<p>Ecco come il paradigma vittimario, diventato pilastro della cultura woke, funzioni in realtà a destra e sinistra, proponendosi come architrave del populismo, di una politica che abdica alla ragione politica e che diventa il terreno di scontro di passioni.</p>
+<h2>Il caso del professore di Cambridge</h2>
+<p>Il caso del professore di Cambridge si inserisce esattamente all'incrocio di queste forze opposte. Da un lato, il sistema dell'attivismo woke e delle politiche di <em>Diversity, Equity and Inclusion</em> (DEI) lo aveva parzialmente eletto a simbolo, usando la sua parabola di riscatto (dall'analfabetismo funzionale giovanile alla cattedra) come feticcio di una giustizia riparativa di facciata. Dall'altro lato, i critici di quel sistema lo hanno puntato e vivisezionato con una ferocia raddoppiata, vedendo in lui l'incarnazione di un presunto "privilegio al contrario".</p>
+<p>Quando la pressione è diventata insostenibile, l'intellettuale è scivolato dal piedistallo della vittima celebrata allo scranno del capro espiatorio, teorizzato da René Girard.</p>
+<h2>Dal paradigma vittimario al capro espiatorio</h2>
+<p>Nella tesi girardiana, quando una comunità è lacerata da una crisi interna e da una violenza strisciante (in questo caso, la guerra culturale identitaria tra fazioni), essa ritrova la propria coesione interna solo identificando un soggetto sacrificabile su cui proiettare tutte le colpe collettive. Il professore di Cambridge, stritolato tra chi voleva usarlo come bandiera identitaria e chi voleva demolirlo per colpire quell'ideologia, è diventato il perfetto meccanismo di scarico del risentimento generale.</p>
+<div class="pull-quote">
+    “La società vittimaria non produce giustizia, produce solo una fabbrica di carnefici intermittenti che si alternano nel ruolo di vittime.”
+</div>
+<p>La società vittimaria non produce giustizia, produce solo una fabbrica di carnefici intermittenti che si alternano nel ruolo di vittime. E quando il gioco si fa troppo scoperto, ha ancora bisogno, barbaramente, di un corpo da sacrificare sull'altare del proprio risentimento puramente populista.</p>
+<div class="author-box">
+<img alt="Alessio Postiglione" onerror="this.style.display='none';" src="../assets/Alessiopostiglione.jpeg"/>
+<div class="author-info">
+<h4>Alessio Postiglione</h4>
+<p>Direttore scientifico di DYNAMES. Si occupa di analisi e riflessione sui temi della politica, della comunicazione e delle dinamiche strategiche contemporanee.</p>
+</div>
+</div></div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI
+                ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>

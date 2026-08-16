@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | La prova del fuoco del Cusma: le tensioni tra Washington, Ottawa e Città del Messico e il nodo della stabilità economica nordamericana</title>
+<meta content="La revisione congiunta del CUSMA/USMCA/T-MEC mette alla prova l’integrazione economica nordamericana tra pressioni protezionistiche statunitensi, interessi di Canada e Messico e crescente incertezza per investimenti e catene del valore." name="description"/>
+<link href="https://www.dynames.it/articles/2026.08.17-prova-del-fuoco.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="La prova del fuoco del Cusma: le tensioni tra Washington, Ottawa e Città del Messico e il nodo della stabilità economica nordamericana" property="og:title"/>
+<meta content="La revisione congiunta del CUSMA/USMCA/T-MEC mette alla prova l’integrazione economica nordamericana tra pressioni protezionistiche statunitensi, interessi di Canada e Messico e crescente incertezza per investimenti e catene del valore." property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.08.17-prova-del-fuoco.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.17-prova-del-fuoco-share.jpg" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.17-prova-del-fuoco-share.jpg" property="og:image:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.17-prova-del-fuoco-share.jpg" property="og:image:secure_url"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="Tavolo negoziale con i fascicoli di Stati Uniti, Canada e Messico sul CUSMA, con catene logistiche e industria nordamericana sullo sfondo" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="La prova del fuoco del Cusma: le tensioni tra Washington, Ottawa e Città del Messico e il nodo della stabilità economica nordamericana" name="twitter:title"/>
+<meta content="La revisione congiunta del CUSMA/USMCA/T-MEC mette alla prova l’integrazione economica nordamericana tra pressioni protezionistiche statunitensi, interessi di Canada e Messico e crescente incertezza per investimenti e catene del valore." name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.17-prova-del-fuoco-share.jpg" name="twitter:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.17-prova-del-fuoco-share.jpg" name="twitter:image:src"/>
+<meta content="2026-08-17T09:00:00+02:00" property="article:published_time"/>
+<meta content="Economia e Finanza" property="article:section"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .article-figure {
+            margin: 0 0 4rem 0;
+        }
+
+        .article-figure .article-hero {
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .article-image-caption {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .author-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+<link href="https://www.dynames.it/articles/Immagini/2026.08.17-prova-del-fuoco-share.jpg" rel="image_src"/>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article>
+<div class="article-container article-header">
+<span class="article-category">Economia e Finanza</span>
+<h1 class="serif-heading article-title">La prova del fuoco del Cusma: le tensioni tra Washington, Ottawa e Città del Messico e il nodo della stabilità economica nordamericana</h1>
+<p class="article-abstract">La revisione congiunta del CUSMA/USMCA/T-MEC mette alla prova l’integrazione economica nordamericana tra pressioni protezionistiche statunitensi, interessi di Canada e Messico e crescente incertezza per investimenti e catene del valore.</p>
+<div class="article-meta">
+<span class="meta-author">Domenico Letizia</span>
+<span>17 Agosto 2026</span>
+<span>Tempo di lettura: 4 min</span>
+</div>
+</div>
+<figure class="article-figure">
+<img alt="Tavolo negoziale con i fascicoli di Stati Uniti, Canada e Messico sul CUSMA, con catene logistiche e industria nordamericana sullo sfondo" class="article-hero" onerror="this.closest('figure').style.display='none'" src="Immagini/2026.08.17-prova-del-fuoco.png"/>
+</figure>
+<div class="article-container article-body"><p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">L</span>’accordo commerciale tra Canada, Stati Uniti e Messico, noto come CUSMA a Ottawa, USMCA a Washington e T-MEC nella capitale messicana, sta attraversando la fase più delicata e complessa dalla sua entrata in vigore nel luglio 2020. L’apertura formale della prima “revisione congiunta obbligatoria” (joint review) prevista dall’Articolo 34.7 del trattato per la metà del 2026 ha trasformato quello che doveva essere un ordinario tagliando burocratico in un vero e proprio negoziato ad alta tensione geopolitica ed economica, destinato a ridefinire le catene del valore integrato del Nord America per i prossimi sedici anni.</p><p>Le analisi pubblicate dalle principali testate finanziarie nordamericane e dai più autorevoli think tank internazionali concordano sul fatto che l’incertezza legata all’estensione del patto stia già producendo effetti tangibili sui mercati, frenando gli investimenti transfrontalieri in settori chiave come l’automotive, la manifattura avanzata, l’energia e il comparto agroalimentare. Il nodo centrale del contendere risiede nelle profonde divergenze strategiche tra i tre Paesi firmatari, amplificate dall’inasprimento delle politiche protezionistiche statunitensi e dalla minaccia di nuove tariffe doganali che rischiano di incrinare un blocco commerciale che muove circa due mila miliardi di dollari di scambi annui.</p><p>Per gli Stati Uniti, la revisione del CUSMA rappresenta la leva geopolitica fondamentale per raggiungere tre obiettivi prioritari: il rafforzamento delle regole di origine (rules of origin) per ridurre la presenza di componenti cinesi nelle merci assemblate in Messico e Canada, l’inasprimento dei meccanismi di applicazione delle norme sul lavoro per contrastare il social dumping, e la risoluzione dei contenziosi storici sulle barriere tariffarie imponibili al settore lattiero-caseario canadese. Da Washington giunge inoltre una forte pressione affinché l’accordo diventi uno strumento esplicito di contenzione strategica contro Pechino, vincolando Messico e Canada ad adottare una tariffa esterna comune, restrizioni sugli investimenti diretti esteri da Paesi terzi e controlli più severi sull’export tecnologico e la governance dei dati digitali.</p><p>Sul fronte messicano, il governo guidato dalla presidente Claudia Sheinbaum deve bilanciare la difesa della sovranità nazionale, in particolare a seguito delle riforme costituzionali che hanno consolidato il monopolio statale nei settori strategici dell'energia e del litio, con l’esigenza vitale di preservare il fenomeno del nearshoring, che negli ultimi anni ha attirato centinaia di miliardi di dollari di investimenti industriali destinati a servire il mercato americano. L’amministrazione messicana si trova sotto tiro a causa dei contenziosi aperti dagli Stati Uniti e dal Canada per presunte discriminazioni ai danni degli investitori esteri nei mercati dell’elettricità e degli idrocarburi, oltre che per le controversie relative al divieto di importazione di mais geneticamente modificato per consumo umano. Dal canto suo, la stampa canadese sta dedicando un’attenzione senza precedenti al riesame del trattato, descrivendo il clima di crescente inquietudine che si respira tra gli industriali e gli economisti di Ottawa.</p><p>Come evidenziato dalle analisi del Canadian Centre for Policy Alternatives e dai report pubblicati da primarie istituzioni finanziarie come la Bank of Canada e Canada Life, il vero pericolo per il Paese non è soltanto l’ipotesi estemporanea di un collasso completo dell’accordo, quanto piuttosto il venire meno della certezza normativa. La prospettiva che i negoziati negoziali non si concludano con un rinnovo immediato, facendo scivolare il trattato in un regime di revisioni annuali fino al 2036, sta spingendo gli analisti a richiedere un premio di rischio più elevato per gli asset canadesi, scoraggiando la pianificazione industriale a lungo termine.</p><div class="pull-quote">Il vero pericolo per il Paese non è soltanto l’ipotesi estemporanea di un collasso completo dell’accordo, quanto piuttosto il venire meno della certezza normativa.</div><p>Il dibattito pubblico in Canada si è concentrato sulle forti pressioni statunitensi contrarie alla Digital Services Tax introdotta da Ottawa sulle grandi multinazionali tecnologiche americane, sulle regole del commercio digitale e sulla tutela della politica culturale nazionale. Inoltre, le associazioni industriali del settore manifatturiero ed elettrico, tra cui l’Electrical Federation of Canada, hanno espresso forte preoccupazione per le possibili restrizioni sul commercio di alluminio, acciaio e componentistica automotive, invitando il ministro responsabile per il commercio con gli Stati Uniti, Dominic LeBlanc, a mantenere una posizione di assoluta fermezza per garantire che l’integrazione produttiva transfrontaliera non venga ridimensionata.</p><p>Un recente studio di Oxford Economics ha stimato che uno stallo prolungato o un peggioramento delle barriere tariffarie potrebbe costare al Canada oltre centomila posti di lavoro entro il 2027, data l’enorme dipendenza del Paese dalle esportazioni verso il partner meridionale, che assorbe oltre il 75% dei beni prodotti a nord del quarantanovesimo parallelo. Dal punto di vista procedurale, la clausola di revisione stabilisce che se i tre governi confermeranno l’intesa, il CUSMA verrà esteso fino al 2042; in caso contrario, la prosecuzione dei colloqui su base annuale lascerà il quadro normativo esposto a costanti oscillazioni politiche. Questo scenario di incertezza è esattamente ciò che le multinazionali della regione intendono scongiurare per evitare la paralisi delle catene di montaggio continentali.</p><p>L’esito di questo confronto transfrontaliero non stabilirà soltanto il futuro commerciale del blocco economico nordamericano, ma rappresenterà il test definitivo sulla capacità delle tre nazioni di preservare la propria competitività e coesione strategica di fronte alle grandi scosse geopolitiche del XXI secolo.</p><div class="author-box"><img alt="Domenico Letizia" onerror="this.style.display='none';" src="../assets/sme-contributors/domenico-letizia.jfif"/><div class="author-info"><h4>Domenico Letizia</h4><p>Giornalista pubblicista, saggista e analista che collabora attivamente con prestigiose testate nazionali, tra cui La Ragione, L’Opinione delle Libertà e Il Riformista, distinguendosi per un’attività di reportage e analisi che intreccia geopolitica, diritti umani e innovazione ambientale.</p></div></div></div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
