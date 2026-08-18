@@ -1,0 +1,88 @@
+name: Migrate paradigma vittimario URL
+
+on:
+  push:
+    paths:
+      - '.github/workflows/migrate-paradigma-vittimario.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Migrate article URL and references
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          old_name = '2026.08.17-critica-della-vittima.html'
+          new_name = '2026.08.17-paradigma-vittimario.html'
+          old_url = f'https://www.dynames.it/articles/{old_name}'
+          new_url = f'https://www.dynames.it/articles/{new_name}'
+
+          old_path = Path('articles') / old_name
+          new_path = Path('articles') / new_name
+
+          if not old_path.exists():
+              raise SystemExit(f'Missing source article: {old_path}')
+
+          article = old_path.read_text(encoding='utf-8')
+          article = article.replace(old_url, new_url)
+          new_path.write_text(article, encoding='utf-8')
+
+          redirect = f'''<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il paradigma vittimario | DYNAMES</title>
+<link rel="canonical" href="{new_url}">
+<meta http-equiv="refresh" content="0; url={new_url}">
+<meta name="robots" content="noindex,follow">
+</head>
+<body>
+<p>L'articolo è stato spostato. <a href="{new_url}">Apri “Il paradigma vittimario”</a>.</p>
+<script>window.location.replace({new_url!r});</script>
+</body>
+</html>
+'''
+          old_path.write_text(redirect, encoding='utf-8')
+
+          # Update all homepage/hub references to the permanent new URL.
+          for rel in ('index.html', 'hub.html'):
+              p = Path(rel)
+              if not p.exists():
+                  raise SystemExit(f'Missing expected file: {rel}')
+              text = p.read_text(encoding='utf-8')
+              text = text.replace(
+                  f'articles/{old_name}',
+                  f'articles/{new_name}'
+              )
+              text = text.replace(old_url, new_url)
+              p.write_text(text, encoding='utf-8')
+
+          # Remove the temporary diagnostic page now that the cause is known.
+          diagnostic = Path('articles/whatsapp-test-paradigma-20260818.html')
+          if diagnostic.exists():
+              diagnostic.unlink()
+          PY
+
+      - name: Commit migration and remove temporary workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/migrate-paradigma-vittimario.yml
+          git config user.name "DynamesIT Automation"
+          git config user.email "redazione@dynames.it"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Migrate Il paradigma vittimario to permanent URL"
+            git push origin main
+          fi
