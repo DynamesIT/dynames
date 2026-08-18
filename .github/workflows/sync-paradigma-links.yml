@@ -1,0 +1,45 @@
+name: Sync paradigma vittimario links
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sync:
+    if: github.event.issue.title == 'dynames-sync-paradigma-links'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update index and hub links
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          old = 'articles/2026.08.17-critica-della-vittima.html'
+          new = 'articles/2026.08.17-il-paradigma-vittimario.html'
+          for rel in ('index.html', 'hub.html'):
+              p = Path(rel)
+              text = p.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{rel}: expected exactly one old link, found {count}')
+              p.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+
+      - name: Commit changes and remove temporary workflow
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -f .github/workflows/sync-paradigma-links.yml
+          git config user.name "DynamesIT Automation"
+          git config user.email "redazione@dynames.it"
+          git add index.html hub.html .github/workflows/sync-paradigma-links.yml
+          git commit -m "Point index and hub to permanent paradigma vittimario URL"
+          git push origin main
+          gh issue close "${{ github.event.issue.number }}" --comment "Link synchronization completed."
