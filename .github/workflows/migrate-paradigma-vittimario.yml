@@ -56,20 +56,15 @@ jobs:
 '''
           old_path.write_text(redirect, encoding='utf-8')
 
-          # Update all homepage/hub references to the permanent new URL.
           for rel in ('index.html', 'hub.html'):
               p = Path(rel)
               if not p.exists():
                   raise SystemExit(f'Missing expected file: {rel}')
               text = p.read_text(encoding='utf-8')
-              text = text.replace(
-                  f'articles/{old_name}',
-                  f'articles/{new_name}'
-              )
+              text = text.replace(f'articles/{old_name}', f'articles/{new_name}')
               text = text.replace(old_url, new_url)
               p.write_text(text, encoding='utf-8')
 
-          # Remove the temporary diagnostic page now that the cause is known.
           diagnostic = Path('articles/whatsapp-test-paradigma-20260818.html')
           if diagnostic.exists():
               diagnostic.unlink()
@@ -86,3 +81,5 @@ jobs:
             git commit -m "Migrate Il paradigma vittimario to permanent URL"
             git push origin main
           fi
+
+# trigger 2026-08-18
