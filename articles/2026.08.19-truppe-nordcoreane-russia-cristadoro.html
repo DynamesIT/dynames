@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Truppe nordcoreane in Russia: cobelligeranza, coercizione e ambiguità degli Stati Uniti</title>
+<meta content="Le truppe nordcoreane in Russia, la cooperazione Mosca-Pyongyang, il nodo della cobelligeranza e la postura americana nell’analisi del generale Cristadoro." name="description"/>
+<link href="https://www.dynames.it/articles/2026.08.19-truppe-nordcoreane-russia-cristadoro.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Truppe nordcoreane in Russia: cobelligeranza, coercizione e ambiguità degli Stati Uniti" property="og:title"/>
+<meta content="Le truppe nordcoreane in Russia, la cooperazione Mosca-Pyongyang, il nodo della cobelligeranza e la postura americana nell’analisi del generale Cristadoro." property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.08.19-truppe-nordcoreane-russia-cristadoro.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.19-truppe-nordcoreane-russia-cristadoro-light.jpg" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.19-truppe-nordcoreane-russia-cristadoro-light.jpg" property="og:image:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.19-truppe-nordcoreane-russia-cristadoro-light.jpg" property="og:image:secure_url"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="675" property="og:image:height"/>
+<meta content="Militari nordcoreani in transito verso il dispositivo russo, con la postura statunitense sullo sfondo" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Truppe nordcoreane in Russia: cobelligeranza, coercizione e ambiguità degli Stati Uniti" name="twitter:title"/>
+<meta content="L’analisi del generale Nicola Cristadoro sull’asse Mosca-Pyongyang e sulla postura americana." name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.19-truppe-nordcoreane-russia-cristadoro-light.jpg" name="twitter:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.08.19-truppe-nordcoreane-russia-cristadoro-light.jpg" name="twitter:image:src"/>
+<meta content="2026-08-19T09:00:00+02:00" property="article:published_time"/>
+<meta content="Difesa e Sicurezza" property="article:section"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.dynames.it/articles/Immagini/2026.08.19-truppe-nordcoreane-russia-cristadoro-light.jpg" rel="image_src"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .article-hero {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .article-figure {
+            margin: 0 0 4rem 0;
+        }
+
+        .article-figure .article-hero {
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .article-image-caption {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .profile-note {
+            margin: 3rem 0;
+            padding: 2rem 2.25rem;
+            background: var(--optical-white);
+            border-top: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+        }
+
+        .profile-note h3 {
+            margin: 0 0 0.8rem 0;
+            font-size: 1.25rem;
+            color: var(--night-blue);
+        }
+
+        .profile-note p {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.65;
+            text-align: left;
+        }
+
+        .source-note {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .source-note p {
+            margin-bottom: 0.8rem;
+            text-align: left;
+        }
+
+        .footnote-ref {
+            margin-left: 0.12rem;
+            font-size: 0.72em;
+            line-height: 0;
+            vertical-align: super;
+        }
+
+        .footnote-ref a {
+            color: var(--accent);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .footnote-ref a:hover,
+        .footnote-ref a:focus {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+
+        .notes-section {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .notes-section h2 {
+            margin: 0 0 1.5rem;
+            font-size: 1.7rem;
+            color: var(--night-blue);
+        }
+
+        .notes-list {
+            padding-left: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.55;
+            color: var(--text-secondary);
+        }
+
+        .notes-list li {
+            margin-bottom: 0.9rem;
+            padding-left: 0.3rem;
+        }
+
+        .notes-list a {
+            overflow-wrap: anywhere;
+        }
+
+        .footnote-back {
+            margin-left: 0.35rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .author-box {
+            margin-top: 4rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: contain;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .author-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+
+            .profile-note {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<article>
+<div class="article-container article-header">
+<span class="article-category">Difesa e Sicurezza</span>
+<h1 class="serif-heading article-title">Truppe nordcoreane in Russia: cobelligeranza, coercizione e ambiguità degli Stati Uniti</h1>
+<p class="article-abstract">Dalla cooperazione militare tra Mosca e Pyongyang allo status giuridico dei combattenti nordcoreani, fino alla postura intermittente di Washington: l’analisi del generale Nicola Cristadoro ricostruisce un asse che intreccia guerra, coercizione e zone grigie.</p>
+<div class="article-meta">
+<span>19 Agosto 2026</span>
+<span>Tempo di lettura: 12 min</span>
+</div>
+</div>
+<figure class="article-figure">
+<img alt="Militari nordcoreani in transito verso il dispositivo russo, con la postura statunitense sullo sfondo" class="article-hero" onerror="this.parentElement.style.display='none'" src="Immagini/2026.08.19-truppe-nordcoreane-russia-cristadoro.png"/>
+<figcaption class="article-image-caption">Elaborazione grafica DYNAMES: militari nordcoreani in transito verso il dispositivo russo, mentre la postura statunitense resta sullo sfondo.</figcaption>
+</figure>
+<div class="article-container article-body">
+<p><span style="font-size: 3rem; float: left; line-height: 1; padding-right: 0.8rem; font-family: 'Playfair Display', serif; color: var(--night-blue);">I</span>l dispiegamento di truppe nordcoreane a sostegno della Federazione Russa apre un capitolo distinto rispetto al reclutamento di cittadini stranieri destinati al fronte ucraino. È da questa differenza che muove l’analisi pubblicata su <a href="https://www.difesaonline.it/2026/08/19/gli-stati-simpatiche-canaglie-le-truppe-nordcoreane-in-russia-e-lambiguita-degli-stati-uniti/" rel="noopener noreferrer" target="_blank">Difesa Online</a> dal generale di brigata (aus.) <strong>Nicola Cristadoro</strong>. Il punto di partenza è il research paper <em>Carne da cannone. La trappola dell’arruolamento di personale straniero nell’esercito russo per l’impiego sul fronte ucraino</em>, pubblicato dall’Istituto Gino Germani nel 2026: in quel lavoro l’autore esaminava volontari, reclutamenti ingannevoli e forme di ricatto utilizzate per compensare le perdite russe. Il contingente dell’Esercito Popolare Coreano appartiene invece a una categoria diversa, perché inviato per decisione statale, inserito in un accordo strategico tra governi e impiegato nell’ambito di una cooperazione militare formalizzata.<sup class="footnote-ref"><a aria-label="Nota 1" href="#nota-1" id="richiamo-1">1</a></sup></p>
+
+<h2>Dalla manodopera esportata alla cooperazione militare</h2>
+<p>La cornice politica è il Trattato di partenariato strategico globale firmato da Russia e Corea del Nord nel giugno 2024 ed entrato in vigore nel dicembre dello stesso anno. Cristadoro colloca il dispiegamento militare dentro una relazione più ampia, costruita nel tempo attraverso l’esportazione di lavoratori nordcoreani, l’elusione delle sanzioni internazionali e una rete di controllo che continua a sottoporre il personale all’autorità degli apparati di Pyongyang anche quando opera sul territorio russo.</p>
+
+<p>Secondo questa lettura, Mosca ha contribuito alla formazione di una zona grigia giuridica e amministrativa: visti irregolari, permanenze oltre i termini stabiliti dalle Nazioni Unite e cooperazione nel rimpatrio dei disertori hanno consentito alla Corea del Nord di mantenere all’estero un sistema di sorveglianza e prelievo delle retribuzioni. Il passaggio dai lavoratori civili ai reparti militari conserva la stessa infrastruttura, ma ne amplia la funzione. Alla produzione di valuta estera si aggiungono il sostegno allo sforzo bellico russo, l’accesso a tecnologie e procedure operative e l’acquisizione di esperienza in un conflitto ad alta intensità.<sup class="footnote-ref"><a aria-label="Nota 2" href="#nota-2" id="richiamo-2">2</a></sup></p>
+
+<h2>Combattenti, genieri e unità per la ricostruzione</h2>
+<p>Le stime richiamate nell’analisi indicano circa <strong>14.000 soldati combattenti</strong> inviati tra la fine del 2024 e i primi mesi del 2025. A questi si affiancano migliaia di operai militari e genieri destinati allo sminamento, alla fortificazione e alla ricostruzione della regione di Kursk. La presenza di unità specializzate, compresa una brigata edile, mostra come la collaborazione non sia circoscritta al combattimento: Pyongyang mette a disposizione forza lavoro organizzata e militarmente disciplinata, ricevendo compensi utili a sostenere l’economia nazionale e ad attenuare l’impatto dell’isolamento internazionale.<sup class="footnote-ref"><a aria-label="Nota 3" href="#nota-3" id="richiamo-3">3</a></sup></p>
+
+<p>Il trattamento economico dei militari riproduce il modello già applicato ai lavoratori all’estero. Le somme corrisposte dalla Russia, stimate attorno all’equivalente di 1.700 euro mensili per soldato, verrebbero in larga parte incamerate dallo Stato nordcoreano. La partecipazione alla guerra diventa così una fonte di entrate e, contemporaneamente, un investimento militare. Per Kim Jong-un, l’esperienza maturata contro droni, artiglieria, sistemi di guerra elettronica e catene logistiche moderne accresce la preparazione del KPA in vista di eventuali crisi nella penisola coreana.<sup class="footnote-ref"><a aria-label="Nota 4" href="#nota-4" id="richiamo-4">4</a></sup></p>
+
+<h2>Dal segreto all’integrazione operativa</h2>
+<p>I primi rapporti sul dispiegamento emersero nell’autunno 2024, mentre Mosca e Pyongyang cercavano ancora di mantenerne riservata l’entità. Le informazioni raccolte indicavano soldati nordcoreani addestrati in basi russe, dotati di uniformi e documenti destinati a confonderne l’identità e accompagnati da ufficiali, generali e interpreti incaricati di preservare disciplina e coesione. Il riconoscimento ufficiale arrivò nell’aprile 2025;<sup class="footnote-ref"><a aria-label="Nota 5" href="#nota-5" id="richiamo-5">5</a></sup> nei mesi successivi il regime trasformò le perdite in una narrazione pubblica di sacrificio nazionale, celebrando i caduti come protagonisti delle operazioni oltremare.<sup class="footnote-ref"><a aria-label="Nota 6" href="#nota-6" id="richiamo-6">6</a></sup></p>
+
+<p>L’integrazione ha incontrato difficoltà legate alla lingua, alle diverse strutture di comando e al peso dell’ufficiale politico nel sistema nordcoreano. Tuttavia, il contingente è stato progressivamente assorbito nel dispositivo russo. Le unità, inizialmente presentate come forze speciali autonome, hanno operato sotto comando operativo russo e svolto compiti analoghi a quelli delle formazioni di Mosca. All’inizio del 2026 le attività segnalate comprendevano artiglieria, ricognizione e impiego di sistemi lanciarazzi multipli contro aree di confine ucraine, segno di un’evoluzione verso funzioni più specializzate.<sup class="footnote-ref"><a aria-label="Nota 7" href="#nota-7" id="richiamo-7">7</a></sup></p>
+
+<h2>Coercizione, perdite e apprendimento bellico</h2>
+<p>Per i singoli soldati, la partecipazione non deriva da una scelta volontaria. La selezione avviene attraverso il Ministero della Difesa e la Commissione militare centrale, entro un sistema che non riconosce margini di consenso o rifiuto. Alcuni militari catturati hanno riferito che la missione era stata descritta come un periodo di addestramento all’estero, senza indicazioni trasparenti sulla possibilità di un impiego immediato in prima linea. Al rientro, il personale resta inoltre sottoposto a controlli ideologici, necessari al regime per neutralizzare gli effetti dell’esposizione a società e informazioni esterne.<sup class="footnote-ref"><a aria-label="Nota 8" href="#nota-8" id="richiamo-8">8</a></sup></p>
+
+<p>Le perdite elevate riflettono l’impatto di un ambiente operativo molto diverso da quello per cui le forze nordcoreane erano state preparate. La guerra dei droni, il terreno aperto di Kursk, l’isolamento linguistico e le carenze logistiche hanno prodotto disorientamento e una curva di apprendimento particolarmente onerosa. Le testimonianze dei prigionieri descrivono scarsità di cibo e acqua, preparazione insufficiente e difficoltà a comprendere ordini e situazione tattica. Per Pyongyang, tuttavia, il costo umano viene assorbito dentro una logica di regime che combina disciplina coercitiva, ritorno economico e acquisizione di competenze.<sup class="footnote-ref"><a aria-label="Nota 9" href="#nota-9" id="richiamo-9">9</a></sup></p>
+
+<div class="pull-quote">Il contingente nordcoreano è lo strumento militare di uno Stato che partecipa al conflitto al fianco della Russia, non un corpo mercenario.</div>
+
+<h2>Il nodo giuridico della cobelligeranza</h2>
+<p>La qualificazione giuridica costituisce uno dei passaggi centrali dell’analisi. Poiché i militari nordcoreani restano membri in servizio attivo delle forze armate regolari, non soddisfano i criteri previsti per la definizione di mercenario. Il loro impiego rende invece applicabile alla Corea del Nord il diritto internazionale umanitario quale parte coinvolta nel conflitto armato internazionale. In caso di cattura, essi devono essere trattati come combattenti e beneficiare dello status di prigionieri di guerra previsto dalla III Convenzione di Ginevra.<sup class="footnote-ref"><a aria-label="Nota 10" href="#nota-10" id="richiamo-10">10</a></sup></p>
+
+<p>La questione del rimpatrio resta delicata. La restituzione alla parte da cui dipendono potrebbe esporre i prigionieri a gravi violazioni dei diritti umani per essersi arresi; da qui l’ipotesi di accordi con la Corea del Sud o con un altro Paese terzo sicuro.<sup class="footnote-ref"><a aria-label="Nota 11" href="#nota-11" id="richiamo-11">11</a></sup> Ancora più complessa è l’attribuzione delle eventuali condotte illecite. Nelle fasi iniziali, quando Pyongyang conservava un controllo disciplinare più marcato, la responsabilità potrebbe coinvolgere entrambi gli Stati. Con la piena integrazione sotto il comando operativo russo, l’analisi prospetta invece un peso crescente della responsabilità di Mosca.<sup class="footnote-ref"><a aria-label="Nota 12" href="#nota-12" id="richiamo-12">12</a></sup></p>
+
+<p>Cristadoro estende la valutazione al ricorso alla forza: l’invio di una formazione militare professionale di dimensioni comparabili a una divisione configurerebbe una partecipazione nordcoreana all’aggressione contro l’Ucraina. Anche qualora le singole condotte non fossero direttamente attribuibili a Pyongyang, il sostegno militare potrebbe essere letto come assistenza a un atto internazionalmente illecito, con conseguenze sul piano della responsabilità statale e della neutralità.<sup class="footnote-ref"><a aria-label="Nota 13" href="#nota-13" id="richiamo-13">13</a></sup></p>
+
+<h2>La zona grigia nordcoreana</h2>
+<p>Il contingente in Russia è soltanto una componente della capacità coercitiva nordcoreana. Operazioni informatiche e pressione politica<sup class="footnote-ref"><a aria-label="Nota 14" href="#nota-14" id="richiamo-14">14</a></sup>, disturbo dei segnali satellitari<sup class="footnote-ref"><a aria-label="Nota 15" href="#nota-15" id="richiamo-15">15</a></sup> e provocazioni missilistiche permettono al regime di agire al di sotto della soglia della guerra aperta, mettendo alla prova la coesione tra Stati Uniti, Corea del Sud e Giappone. L’impiego della minaccia nucleare e dei test balistici produce effetti che superano la dimensione militare: influenza l’agenda diplomatica, condiziona le economie regionali e crea divergenze tra alleati sulla combinazione di deterrenza, sanzioni e dialogo.<sup class="footnote-ref"><a aria-label="Nota 16" href="#nota-16" id="richiamo-16">16</a></sup></p>
+
+<p>La relazione con Russia e Cina offre a Kim Jong-un ulteriori spazi di manovra. Pechino rimane il principale attore economico e politico di riferimento, mentre Mosca garantisce opportunità militari, infrastrutturali e finanziarie. La convergenza riduce il valore di un accordo con Washington e consente a Pyongyang di sfruttare ogni incertezza sugli impegni statunitensi nella regione.<sup class="footnote-ref"><a aria-label="Nota 17" href="#nota-17" id="richiamo-17">17</a></sup></p>
+
+<h2>L’ambiguità degli Stati Uniti</h2>
+<p>Nell’interpretazione di Cristadoro, la postura americana conserva la diplomazia personale e transazionale che aveva caratterizzato il primo mandato di Donald Trump. Restano la disponibilità a un incontro con Kim Jong-un e la ricerca di risultati politici ad alta visibilità.<sup class="footnote-ref"><a aria-label="Nota 18" href="#nota-18" id="richiamo-18">18</a></sup> Il contesto, però, è cambiato: nel 2025 e nel 2026 la penisola coreana ha perso centralità rispetto ai dossier mediorientali, mentre i documenti strategici statunitensi assegnano alla minaccia nordcoreana uno spazio più limitato.<sup class="footnote-ref"><a aria-label="Nota 19" href="#nota-19" id="richiamo-19">19</a></sup></p>
+
+<p>Washington tende inoltre a trasferire su Seul una quota maggiore della responsabilità per la deterrenza convenzionale, mantenendo per le proprie forze un ruolo di supporto. Anche l’obiettivo della completa denuclearizzazione appare meno realistico davanti alla crescita dell’arsenale di Pyongyang. Da qui l’ipotesi di accordi più circoscritti — limiti alle testate, controllo degli armamenti o dichiarazioni di pace in cambio di un alleggerimento parziale delle sanzioni — che segnalano pragmatismo, ma possono generare ambiguità sulla solidità dell’impegno americano.<sup class="footnote-ref"><a aria-label="Nota 20" href="#nota-20" id="richiamo-20">20</a></sup></p>
+
+<p>Il risultato è un equilibrio nel quale la Corea del Nord trae vantaggio dalla guerra europea, la Russia riceve uomini e capacità aggiuntive e la Cina osserva una progressiva erosione della coesione occidentale nell’Asia nordorientale. L’analisi consegna così una questione che va oltre la presenza nordcoreana a Kursk: la cooperazione tra regimi autoritari sta saldando lavoro coercitivo, apprendimento militare, aggiramento delle sanzioni e pressione ibrida, mentre la risposta statunitense oscilla tra disimpegno selettivo e diplomazia personale.</p>
+
+<section class="notes-section" aria-labelledby="note-riferimenti">
+<h2 id="note-riferimenti">Note e riferimenti</h2>
+<ol class="notes-list">
+<li id="nota-1">Trattato di Partenariato Strategico Globale tra la Federazione Russa e la Repubblica Popolare Democratica di Corea, firmato il 19 giugno 2024, ratificato dalla Legge federale russa n. 374-FZ del 9 novembre 2024 ed entrato in vigore il 4 dicembre 2024: <a href="http://publication.pravo.gov.ru/document/0001202412050001" rel="noopener noreferrer" target="_blank">testo sul portale ufficiale russo</a>. <a class="footnote-back" href="#richiamo-1" aria-label="Torna al richiamo della nota 1">↩</a></li>
+<li id="nota-2">L. Yoon, <a href="https://www.hrw.org/news/2022/02/17/north-koreans-face-repatriation-russia" rel="noopener noreferrer" target="_blank"><em>North Koreans Face Repatriation from Russia</em></a>, Human Rights Watch, 22 febbraio 2022; M. Carlough e J. Kennedy, <a href="https://www.cfr.org/articles/how-north-korea-has-bolstered-russias-war-ukraine" rel="noopener noreferrer" target="_blank"><em>How North Korea has Bolstered Russia’s War in Ukraine</em></a>, Council on Foreign Relations, 25 novembre 2025; C. Hong Park, <a href="https://en.nkdb.org/researchreport/?bmode=view&amp;idx=13253383" rel="noopener noreferrer" target="_blank"><em>North Korean Overseas Laborers in Russia</em></a>, Database Center for North Korean Human Rights, 2016; R. Minyoung Lee, <a href="https://www.38north.org/2025/04/north-koreas-acknowledgement-of-war-participation/" rel="noopener noreferrer" target="_blank"><em>North Korea’s Acknowledgement of War Participation</em></a>, 38 North, 29 aprile 2025; Y. Dam-rin, <em>The Impact of Strengthened Russia–North Korea Relations on International Politics</em>, International Journal of Korean Unification Studies, vol. 34(1), 2025, pp. 29–68. <a class="footnote-back" href="#richiamo-2" aria-label="Torna al richiamo della nota 2">↩</a></li>
+<li id="nota-3">J. Tae Joo, <a href="https://www.dailynk.com/english/north-korea-deploys-specialized-military-construction-unit-to-rebuild-war-torn-russia/" rel="noopener noreferrer" target="_blank"><em>North Korea deploys specialized military construction unit to rebuild war-torn Russia</em></a>, Daily NK, 30 ottobre 2025; L. Yu-Jung, <a href="https://www.koreajoongangdaily.com/korea/north-korea-russia-hail-invincible-alliance-on-anniversary-of-strategic-partnership-treaty/11946097" rel="noopener noreferrer" target="_blank"><em>North Korea, Russia hail “invincible” alliance on anniversary of strategic partnership treaty</em></a>, Korea JoongAng Daily, 20 giugno 2025; <a href="https://tass.com/politics/1974469" rel="noopener noreferrer" target="_blank"><em>North Korea to send 1,000 combat engineers, 5,000 workers to rebuild Kursk Region – Shoigu</em></a>, TASS, 17 giugno 2025. <a class="footnote-back" href="#richiamo-3" aria-label="Torna al richiamo della nota 3">↩</a></li>
+<li id="nota-4">T. Kang, <a href="https://www.rfa.org/english/korea/2024/10/23/north-korea-troop-kursk/" rel="noopener noreferrer" target="_blank"><em>Russia pays North Korean soldiers about $2,000 a month: South’s spy agency</em></a>, Radio Free Asia, 23 ottobre 2024; M. F. Cancian e C. H. Park, <a href="https://www.csis.org/analysis/north-korean-troops-deploy-russia-whats-military-effect" rel="noopener noreferrer" target="_blank"><em>North Korean Troops Deploy to Russia: What’s the Military Effect?</em></a>, CSIS, 25 ottobre 2024; C. Zwirko, K. Talman e S.-Y. Chung, <a href="https://www.nknews.org/2025/08/north-korea-confirms-over-100-dead-troops-from-ukraine-war-at-pyongyang-ceremony/" rel="noopener noreferrer" target="_blank"><em>North Korea honors over 100 dead troops from Ukraine war at Pyongyang ceremony</em></a>, NK News, 22 agosto 2025. <a class="footnote-back" href="#richiamo-4" aria-label="Torna al richiamo della nota 4">↩</a></li>
+<li id="nota-5">C. Dong-woo, <a href="https://www.koreatimes.co.kr/foreignaffairs/northkorea/20241018/north-korea-decides-to-send-around-10000-soldiers-to-support-russia-in-ukraine-war-seoul" rel="noopener noreferrer" target="_blank"><em>N. Korea decides to send around 10,000 soldiers to support Russia in Ukraine war: Seoul</em></a>, Yonhap News Agency/Korea Times, 18 ottobre 2024; NATO, <a href="https://www.nato.int/en/news-and-events/events/transcripts/2024/10/28/doorstep-statement" rel="noopener noreferrer" target="_blank"><em>Doorstep statement by the NATO Secretary General following the North Atlantic Council briefing on the DPRK’s troop deployment to Russia</em></a>, 28 ottobre 2024; E. Cook, <a href="https://www.newsweek.com/north-korea-soldiers-disguised-russia-troops-1981096" rel="noopener noreferrer" target="_blank"><em>North Korean Soldiers Being “Disguised” As Russian Troops on Front Lines</em></a>, Newsweek, 6 novembre 2024; J. Kim, <a href="https://www.reuters.com/world/north-korea-confirms-troop-deployment-russia-first-time-kcna-report-2025-04-27/" rel="noopener noreferrer" target="_blank"><em>North Korea confirms troop deployment to Russia as Putin hails “heroes”</em></a>, Reuters, 28 aprile 2025. <a class="footnote-back" href="#richiamo-5" aria-label="Torna al richiamo della nota 5">↩</a></li>
+<li id="nota-6">C. Zwirko, K. Talman e S.-Y. Chung, <a href="https://www.nknews.org/2025/08/north-korea-confirms-over-100-dead-troops-from-ukraine-war-at-pyongyang-ceremony/" rel="noopener noreferrer" target="_blank"><em>North Korea honors over 100 dead troops from Ukraine war at Pyongyang ceremony</em></a>, NK News, 22 agosto 2025. <a class="footnote-back" href="#richiamo-6" aria-label="Torna al richiamo della nota 6">↩</a></li>
+<li id="nota-7"><a href="https://www.reuters.com/world/europe/ukraine-intelligence-agency-says-north-korean-units-already-kursk-region-2024-10-24/" rel="noopener noreferrer" target="_blank"><em>Ukraine intelligence agency says North Korean units already in Kursk region</em></a>, Reuters, 24 ottobre 2024; V. Neifakh, <a href="https://themedialine.org/by-region/south-korea-alleges-more-north-korean-troops-sent-to-ukraine-as-moscow-and-pyongyang-keep-mum/" rel="noopener noreferrer" target="_blank"><em>South Korea Alleges More North Korean Troops Sent to Ukraine, as Moscow and Pyongyang Keep Mum</em></a>, The Media Line, 4 marzo 2025; M. Trevelyan, <a href="https://www.reuters.com/business/aerospace-defense/russia-says-north-korean-troops-play-key-role-de-mining-its-kursk-region-2025-11-14/" rel="noopener noreferrer" target="_blank"><em>Russia says North Korean troops play key role in de-mining its Kursk region</em></a>, Reuters, 15 novembre 2025; Y. Taradiuk, <a href="https://kyivindependent.com/north-korean-troops-carry-out-attacks-on-ukraines-border-area-ukraines-military-intelligence-says/" rel="noopener noreferrer" target="_blank"><em>North Korean troops in Russia attack Ukrainian border communities, HUR says</em></a>, Kyiv Independent, 4 febbraio 2026. <a class="footnote-back" href="#richiamo-7" aria-label="Torna al richiamo della nota 7">↩</a></li>
+<li id="nota-8">L. Sang-yong, <a href="https://www.dailynk.com/english/years-of-indoctrination-preceded-nk-troops-russia-deployment/" rel="noopener noreferrer" target="_blank"><em>Years of indoctrination preceded NK troops’ Russia deployment</em></a>, Daily NK, 20 novembre 2024; A. Cordesman, <em>The Conventional Military Balance in the Koreas and Northeast Asia</em>, CSIS, 2 agosto 2016, p. 63; C. Yun-hwan, <a href="https://en.yna.co.kr/view/AEN20250112000600315" rel="noopener noreferrer" target="_blank"><em>N.K. soldier captured by Ukraine says he thought was going to training, not war</em></a>, Yonhap News Agency, 12 gennaio 2025; J. Seo-yeong, <a href="https://www.dailynk.com/english/north-korea-national-police-agency-orders-intensified-surveillance-returnees-abroad/" rel="noopener noreferrer" target="_blank"><em>N. Korea’s national police agency orders intensified surveillance over returnees from abroad</em></a>, Daily NK, 25 settembre 2023. <a class="footnote-back" href="#richiamo-8" aria-label="Torna al richiamo della nota 8">↩</a></li>
+<li id="nota-9">S. Ramani, <a href="https://www.38north.org/2025/02/north-koreas-military-intervention-in-kursk-a-high-casualty-learning-curve/" rel="noopener noreferrer" target="_blank"><em>North Korea’s Military Intervention in Kursk: A High Casualty Learning Curve</em></a>, 38 North, 19 febbraio 2025; A. Sokolin, <a href="https://www.nknews.org/2025/01/ukraine-releases-first-testimony-from-captured-north-korean-soldiers/" rel="noopener noreferrer" target="_blank"><em>Ukraine releases first testimony from captured North Korean soldiers</em></a>, NK News, 11 gennaio 2025; <a href="https://www.reuters.com/world/europe/ukraine-reports-north-korean-losses-russias-kursk-front-2024-12-16/" rel="noopener noreferrer" target="_blank"><em>Ukraine reports North Korean losses on Russia’s Kursk front</em></a>, Reuters, 17 dicembre 2024. <a class="footnote-back" href="#richiamo-9" aria-label="Torna al richiamo della nota 9">↩</a></li>
+<li id="nota-10">S. Szymanski e J.C.T. Keruski, <a href="https://lieber.westpoint.edu/north-koreas-entry-international-armed-conflict/" rel="noopener noreferrer" target="_blank"><em>Ukraine Symposium – North Korea’s Entry into International Armed Conflict</em></a>, Articles of War, Lieber Institute at West Point, 10 dicembre 2024. <a class="footnote-back" href="#richiamo-10" aria-label="Torna al richiamo della nota 10">↩</a></li>
+<li id="nota-11">L. Yoon, <a href="https://www.hrw.org/news/2026/02/26/a-year-on-two-north-korean-pows-in-ukraine-fear-forced-return" rel="noopener noreferrer" target="_blank"><em>A Year On, Two North Korean POWs in Ukraine Fear Forced Return</em></a>, Human Rights Watch, 26 febbraio 2026. <a class="footnote-back" href="#richiamo-11" aria-label="Torna al richiamo della nota 11">↩</a></li>
+<li id="nota-12">M. Milanovic, <a href="https://www.ejiltalk.org/north-koreas-troop-deployment-in-the-russian-war-of-aggression-against-ukraine-the-dprk-as-a-principal-or-as-an-accomplice/" rel="noopener noreferrer" target="_blank"><em>North Korea’s Troop Deployment in the Russian War of Aggression against Ukraine: The DPRK as a Principal or as an Accomplice?</em></a>, EJIL:Talk!, 4 novembre 2024. <a class="footnote-back" href="#richiamo-12" aria-label="Torna al richiamo della nota 12">↩</a></li>
+<li id="nota-13">Assemblea generale delle Nazioni Unite, Risoluzione 3314 (XXIX), <em>Definition of Aggression</em>, 1974, art. 3(d) e (g); M. Milanovic, <a href="https://www.ejiltalk.org/north-koreas-troop-deployment-in-the-russian-war-of-aggression-against-ukraine-the-dprk-as-a-principal-or-as-an-accomplice/" rel="noopener noreferrer" target="_blank"><em>North Korea’s Troop Deployment in the Russian War of Aggression against Ukraine</em></a>, cit. <a class="footnote-back" href="#richiamo-13" aria-label="Torna al richiamo della nota 13">↩</a></li>
+<li id="nota-14">E. Chanlett-Avery et al., <em>North Korean Cyber Capabilities: In Brief</em>, Congressional Research Service, 3 agosto 2017; J. Pak, <a href="https://www.brookings.edu/blog/order-from-chaos/2018/06/21/kim-jong-uns-tools-of-coercion/" rel="noopener noreferrer" target="_blank"><em>Kim Jong-un’s tools of coercion</em></a>, Brookings Institution, 21 giugno 2018. <a class="footnote-back" href="#richiamo-14" aria-label="Torna al richiamo della nota 14">↩</a></li>
+<li id="nota-15">T. Harrison, K. Johnson e T.G. Roberts, <em>Space Threat Assessment 2019</em>, Center for Strategic and International Studies, aprile 2019. <a class="footnote-back" href="#richiamo-15" aria-label="Torna al richiamo della nota 15">↩</a></li>
+<li id="nota-16"><a href="https://www.ansa.it/sito/notizie/topnews/2022/07/28/corea-del-nord-kim-deterrenza-nucleare-contro-seul-e-gli-usa_baa60dd8-3b9d-4e52-8709-52f94e6b1a7a.html" rel="noopener noreferrer" target="_blank"><em>Corea del Nord, Kim: deterrenza nucleare contro Seul e gli Usa</em></a>, ANSA, 28 luglio 2022. <a class="footnote-back" href="#richiamo-16" aria-label="Torna al richiamo della nota 16">↩</a></li>
+<li id="nota-17">L. Min-hyung, <a href="http://www.koreatimes.co.kr/www/nation/2019/04/356_267718.html" rel="noopener noreferrer" target="_blank"><em>Kim Jong-un arrives in Vladivostok for summit with Putin</em></a>, Korea Times, 24 aprile 2019; J. Herskovitz e D. Li, <a href="https://www.bloomberg.com/news/articles/2019-04-08/china-north-korea-open-new-border-crossing-despite-sanctions" rel="noopener noreferrer" target="_blank"><em>China, North Korea Open New Border Crossing Despite Sanctions</em></a>, Bloomberg, 8 aprile 2019; V. Isachenkov, <a href="http://time.com/5577801/vladimir-putin-kim-jong-un-meeting-russia/" rel="noopener noreferrer" target="_blank"><em>Russian President Putin Hosts Kim Jong Un for Talks on North Korea’s Nuclear Standoff</em></a>, Time, 25 aprile 2019. <a class="footnote-back" href="#richiamo-17" aria-label="Torna al richiamo della nota 17">↩</a></li>
+<li id="nota-18">V. Cha, <a href="https://www.csis.org/analysis/after-iran-scenario-renewed-trump-kim-summitry" rel="noopener noreferrer" target="_blank"><em>After Iran: A Scenario for Renewed Trump-Kim Summitry</em></a>, CSIS, 13 agosto 2026. <a class="footnote-back" href="#richiamo-18" aria-label="Torna al richiamo della nota 18">↩</a></li>
+<li id="nota-19">A. Yeo, <a href="https://www.brookings.edu/articles/rethinking-north-korea-diplomacy/" rel="noopener noreferrer" target="_blank"><em>Rethinking North Korea diplomacy</em></a>, Brookings Institution, 30 aprile 2026. <a class="footnote-back" href="#richiamo-19" aria-label="Torna al richiamo della nota 19">↩</a></li>
+<li id="nota-20"><a href="https://www.aljazeera.com/news/2026/6/19/trump-hints-at-new-approach-to-north-koreas-nuclear-programme" rel="noopener noreferrer" target="_blank"><em>Trump hints at new approach to North Korea’s nuclear programme</em></a>, Al Jazeera, 19 giugno 2026. <a class="footnote-back" href="#richiamo-20" aria-label="Torna al richiamo della nota 20">↩</a></li>
+</ol>
+</section>
+
+<div class="source-note">
+<p><strong>Fonte:</strong> Nicola Cristadoro, <a href="https://www.difesaonline.it/2026/08/19/gli-stati-simpatiche-canaglie-le-truppe-nordcoreane-in-russia-e-lambiguita-degli-stati-uniti/" rel="noopener noreferrer" target="_blank">“Gli Stati ‘simpatiche canaglie’: le truppe nordcoreane in Russia e l’ambiguità degli Stati Uniti”</a>, <em>Difesa Online</em>, 19 agosto 2026.</p>
+<p>Il presente articolo rielabora in forma giornalistica i principali contenuti dell’analisi e propone una selezione delle fonti pertinenti ai passaggi ripresi. All’articolo originale si rinvia per la lettura integrale e per l’apparato completo delle note.</p>
+</div>
+
+<aside class="profile-note">
+<h3>Nicola Cristadoro, intelligence e formazione</h3>
+<p>Generale di brigata della riserva e ufficiale dei Bersaglieri, <strong>Nicola Cristadoro è un esperto di intelligence, Information Operations e PsyOps</strong>. Per molti anni ha affiancato all’attività operativa e di studio l’insegnamento, contribuendo alla formazione di un’intera generazione di ufficiali dell’Esercito. È autore di numerosi volumi dedicati all’intelligence, alla guerra ibrida e alle realtà politico-militari di Russia e Cina, tra i quali <em>Intelligence e intelligence warfare</em>, <em>La dottrina Gerasimov</em>, <em>La mossa del drago</em> e <em>Wagner &amp; Co.</em> Una selezione delle sue pubblicazioni è disponibile nella <a href="https://www.amazon.it/stores/Nicola-Cristadoro/author/B0GVVNS4SG?ref=sr_ntt_srch_lnk_5&amp;qid=1784536324&amp;sr=1-5&amp;shoppingPortalEnabled=true" rel="noopener noreferrer" target="_blank">pagina autore su Amazon</a>.</p>
+</aside>
+
+<div class="author-box"><img alt="Redazione DYNAMES" onerror="this.style.display='none';" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/><div class="author-info"><h4>Redazione DYNAMES</h4><p>La Redazione cura l’approfondimento e la divulgazione dei temi legati a difesa, sicurezza, geopolitica, resilienza e governance dei sistemi complessi.</p></div></div>
+</div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
