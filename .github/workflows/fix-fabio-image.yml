@@ -1,0 +1,45 @@
+name: Fix Fabio Marotta image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-fabio-image.yml'
+      - 'assets/sme-contributors/fabio-marotta-fixed.b64'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild valid JPEG and clean obsolete files
+        shell: bash
+        run: |
+          base64 -d assets/sme-contributors/fabio-marotta-fixed.b64 > assets/sme-contributors/fabio-marotta.jpg
+          file assets/sme-contributors/fabio-marotta.jpg | grep -qi 'JPEG image data'
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('assets/sme-contributors/fabio-marotta.jpg')
+          b = p.read_bytes()
+          assert b[:2] == b'\xff\xd8' and b[-2:] == b'\xff\xd9', 'Invalid JPEG markers'
+          print('Valid JPEG:', len(b), 'bytes')
+          PY
+          rm -f assets/sme-contributors/fabio-marotta-fixed.b64
+          rm -f assets/sme-contributors/fabio-marotta-420.jpg
+          rm -f assets/sme-contributors/fabio-marotta.png
+          rm -f assets/sme-contributors/fabio-marotta.svg
+          rm -f assets/sme-contributors/sme-contributors.docx
+          rm -rf .deploy/fabio-marotta
+          rm -f .github/workflows/publish-fabio-marotta.yml
+          rm -f .github/workflows/fix-fabio-image.yml
+      - name: Commit fix
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Fix Fabio Marotta JPEG and remove obsolete assets'
+          git push
