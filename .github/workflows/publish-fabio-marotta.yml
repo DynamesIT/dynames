@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/publish-fabio-marotta.yml'
       - '.deploy/fabio-marotta/**'
+  schedule:
+    - cron: '*/5 * * * *'
 
 permissions:
   contents: write
