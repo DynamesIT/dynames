@@ -22,6 +22,7 @@
     const r = await fetch('/chi-siamo-base.html?v=20260822-5', {cache:'no-store'});
     if(!r.ok) throw new Error('HTTP '+r.status);
     let html = await r.text();
+    html = html.replace('<h3 class="profile-title">Contributors</h3>', '<h3 class="profile-title">Subject Matter Expert &amp; Contributors</h3>');
     const marker = '<!-- Filippo Martini -->';
     const markerPos = html.indexOf(marker);
     if(markerPos < 0) throw new Error('Profilo di riferimento non trovato');
