@@ -33,9 +33,7 @@ jobs:
               "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" \
               "https://drive.google.com/uc?export=download&id=${id}"; do
               if curl -A 'Mozilla/5.0' -fL --retry 2 --connect-timeout 15 --max-time 90 "$url" -o "$out"; then
-                if [ -s "$out" ]; then
-                  return 0
-                fi
+                if [ -s "$out" ]; then return 0; fi
               fi
             done
             rm -f "$out"
@@ -55,12 +53,7 @@ jobs:
           hero_path = img_dir / '2026.08.26-simulare-senza-delegare.jpg'
           light_path = img_dir / '2026.08.26-simulare-senza-delegare-light.jpg'
 
-          candidates = [
-              Path('/tmp/mitrangolo-hero-drive'),
-              Path('/tmp/mitrangolo-light-drive'),
-              hero_path,
-              light_path,
-          ]
+          candidates = [Path('/tmp/mitrangolo-hero-drive'), Path('/tmp/mitrangolo-light-drive'), hero_path, light_path]
           valid = []
           for p in candidates:
               if not p.exists() or p.stat().st_size < 1000:
@@ -72,19 +65,15 @@ jobs:
                       valid.append((im.width * im.height, im.width, im.height, p))
               except Exception:
                   pass
-
           if not valid:
               raise SystemExit('No valid source image available')
 
           valid.sort(reverse=True)
           _, sw, sh, source_path = valid[0]
           print(f'Using source image: {source_path} ({sw}x{sh})')
-
           with Image.open(source_path) as im:
               src = im.convert('RGB')
 
-          # If only the previously compressed web asset is available, enlarge gently
-          # and apply restrained sharpening. If Drive provides the original, preserve it.
           if src.width < 1500:
               new_w = 1600
               new_h = round(src.height * new_w / src.width)
@@ -95,7 +84,6 @@ jobs:
           src.save(hero_path, 'JPEG', quality=95, optimize=True, progressive=True)
           hw, hh = src.size
 
-          # High-resolution 40:21 crop for Index/Hub/social previews.
           target_ratio = 40 / 21
           current_ratio = src.width / src.height
           if current_ratio < target_ratio:
@@ -117,20 +105,20 @@ jobs:
           light_url = 'https://www.dynames.it/articles/Immagini/2026.08.26-simulare-senza-delegare-light.jpg?v=3'
           hero_url = 'https://www.dynames.it/articles/Immagini/2026.08.26-simulare-senza-delegare.jpg?v=3'
 
-          text = re.sub(r'(<meta property="og:image" content=")[^"]+("[^>]*>)', rf'\1{light_url}\2', text)
-          text = re.sub(r'(<meta property="og:image:secure_url" content=")[^"]+("[^>]*>)', rf'\1{light_url}\2', text)
-          text = re.sub(r'(<meta name="twitter:image" content=")[^"]+("[^>]*>)', rf'\1{light_url}\2', text)
-          text = re.sub(r'(<meta name="twitter:image:src" content=")[^"]+("[^>]*>)', rf'\1{light_url}\2', text)
-          text = re.sub(r'(<meta property="og:image:width" content=")[^"]+("[^>]*>)', rf'\g<1>{lw}\2', text)
-          text = re.sub(r'(<meta property="og:image:height" content=")[^"]+("[^>]*>)', rf'\g<1>{lh}\2', text)
+          text = re.sub(r'(<meta property="og:image" content=")[^"]+("[^>]*>)', lambda m: m.group(1) + light_url + m.group(2), text)
+          text = re.sub(r'(<meta property="og:image:secure_url" content=")[^"]+("[^>]*>)', lambda m: m.group(1) + light_url + m.group(2), text)
+          text = re.sub(r'(<meta name="twitter:image" content=")[^"]+("[^>]*>)', lambda m: m.group(1) + light_url + m.group(2), text)
+          text = re.sub(r'(<meta name="twitter:image:src" content=")[^"]+("[^>]*>)', lambda m: m.group(1) + light_url + m.group(2), text)
+          text = re.sub(r'(<meta property="og:image:width" content=")[^"]+("[^>]*>)', lambda m: m.group(1) + str(lw) + m.group(2), text)
+          text = re.sub(r'(<meta property="og:image:height" content=")[^"]+("[^>]*>)', lambda m: m.group(1) + str(lh) + m.group(2), text)
           text = re.sub(
               r'("image"\s*:\s*\[\s*\n\s*")[^"]+("\s*,\s*\n\s*")[^"]+("\s*\])',
-              rf'\1{light_url}\2{hero_url}\3',
+              lambda m: m.group(1) + light_url + m.group(2) + hero_url + m.group(3),
               text,
           )
           text = re.sub(
               r'(<img class="article-hero" src=")[^"]+(" width=")[^"]+(" height=")[^"]+("[^>]*>)',
-              rf'\1Immagini/2026.08.26-simulare-senza-delegare.jpg?v=3\2{hw}\3{hh}\4',
+              lambda m: m.group(1) + 'Immagini/2026.08.26-simulare-senza-delegare.jpg?v=3' + m.group(2) + str(hw) + m.group(3) + str(hh) + m.group(4),
               text,
           )
           text = text.replace('"dateModified": "2026-08-26T09:00:00+02:00"', '"dateModified": "2026-08-26T10:45:00+02:00"')
@@ -149,7 +137,6 @@ jobs:
               )
               page.write_text(body, encoding='utf-8')
 
-          # Hard checks: article must no longer depend on Drive for its hero/share images.
           repaired = article.read_text(encoding='utf-8')
           if 'drive.google.com/uc?export=view&id=1kucH4kR_Ogi_7jF60u5FhtTfUp57gxyx' in repaired:
               raise SystemExit('Hero Drive reference still present')
