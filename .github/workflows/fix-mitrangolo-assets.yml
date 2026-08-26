@@ -1,0 +1,177 @@
+name: Fix Mitrangolo article assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-mitrangolo-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Prepare images and repair links
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pillow
+
+          download_drive() {
+            local id="$1"
+            local out="$2"
+            rm -f "$out"
+            for url in \
+              "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" \
+              "https://drive.google.com/uc?export=download&id=${id}"; do
+              if curl -A 'Mozilla/5.0' -fL --retry 2 --connect-timeout 15 --max-time 90 "$url" -o "$out"; then
+                if [ -s "$out" ]; then
+                  return 0
+                fi
+              fi
+            done
+            rm -f "$out"
+            return 1
+          }
+
+          download_drive '1kucH4kR_Ogi_7jF60u5FhtTfUp57gxyx' /tmp/mitrangolo-hero-drive || true
+          download_drive '1gnLLgIgpUNZx_7TUO7LQNuerfirI82Jh' /tmp/mitrangolo-light-drive || true
+
+          python <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageFilter
+          import re
+
+          repo = Path('.')
+          img_dir = repo / 'articles' / 'Immagini'
+          hero_path = img_dir / '2026.08.26-simulare-senza-delegare.jpg'
+          light_path = img_dir / '2026.08.26-simulare-senza-delegare-light.jpg'
+
+          candidates = [
+              Path('/tmp/mitrangolo-hero-drive'),
+              Path('/tmp/mitrangolo-light-drive'),
+              hero_path,
+              light_path,
+          ]
+          valid = []
+          for p in candidates:
+              if not p.exists() or p.stat().st_size < 1000:
+                  continue
+              try:
+                  with Image.open(p) as im:
+                      im.verify()
+                  with Image.open(p) as im:
+                      valid.append((im.width * im.height, im.width, im.height, p))
+              except Exception:
+                  pass
+
+          if not valid:
+              raise SystemExit('No valid source image available')
+
+          valid.sort(reverse=True)
+          _, sw, sh, source_path = valid[0]
+          print(f'Using source image: {source_path} ({sw}x{sh})')
+
+          with Image.open(source_path) as im:
+              src = im.convert('RGB')
+
+          # If only the previously compressed web asset is available, enlarge gently
+          # and apply restrained sharpening. If Drive provides the original, preserve it.
+          if src.width < 1500:
+              new_w = 1600
+              new_h = round(src.height * new_w / src.width)
+              src = src.resize((new_w, new_h), Image.Resampling.LANCZOS)
+              src = src.filter(ImageFilter.UnsharpMask(radius=1.2, percent=115, threshold=3))
+
+          hero_path.parent.mkdir(parents=True, exist_ok=True)
+          src.save(hero_path, 'JPEG', quality=95, optimize=True, progressive=True)
+          hw, hh = src.size
+
+          # High-resolution 40:21 crop for Index/Hub/social previews.
+          target_ratio = 40 / 21
+          current_ratio = src.width / src.height
+          if current_ratio < target_ratio:
+              crop_h = round(src.width / target_ratio)
+              top = max(0, (src.height - crop_h) // 2)
+              light = src.crop((0, top, src.width, top + crop_h))
+          elif current_ratio > target_ratio:
+              crop_w = round(src.height * target_ratio)
+              left = max(0, (src.width - crop_w) // 2)
+              light = src.crop((left, 0, left + crop_w, src.height))
+          else:
+              light = src.copy()
+          light = light.filter(ImageFilter.UnsharpMask(radius=0.8, percent=105, threshold=2))
+          light.save(light_path, 'JPEG', quality=95, optimize=True, progressive=True)
+          lw, lh = light.size
+
+          article = repo / 'articles' / '2026.08.26-simulare-senza-delegare.html'
+          text = article.read_text(encoding='utf-8')
+          light_url = 'https://www.dynames.it/articles/Immagini/2026.08.26-simulare-senza-delegare-light.jpg?v=3'
+          hero_url = 'https://www.dynames.it/articles/Immagini/2026.08.26-simulare-senza-delegare.jpg?v=3'
+
+          text = re.sub(r'(<meta property="og:image" content=")[^"]+("[^>]*>)', rf'\1{light_url}\2', text)
+          text = re.sub(r'(<meta property="og:image:secure_url" content=")[^"]+("[^>]*>)', rf'\1{light_url}\2', text)
+          text = re.sub(r'(<meta name="twitter:image" content=")[^"]+("[^>]*>)', rf'\1{light_url}\2', text)
+          text = re.sub(r'(<meta name="twitter:image:src" content=")[^"]+("[^>]*>)', rf'\1{light_url}\2', text)
+          text = re.sub(r'(<meta property="og:image:width" content=")[^"]+("[^>]*>)', rf'\g<1>{lw}\2', text)
+          text = re.sub(r'(<meta property="og:image:height" content=")[^"]+("[^>]*>)', rf'\g<1>{lh}\2', text)
+          text = re.sub(
+              r'("image"\s*:\s*\[\s*\n\s*")[^"]+("\s*,\s*\n\s*")[^"]+("\s*\])',
+              rf'\1{light_url}\2{hero_url}\3',
+              text,
+          )
+          text = re.sub(
+              r'(<img class="article-hero" src=")[^"]+(" width=")[^"]+(" height=")[^"]+("[^>]*>)',
+              rf'\1Immagini/2026.08.26-simulare-senza-delegare.jpg?v=3\2{hw}\3{hh}\4',
+              text,
+          )
+          text = text.replace('"dateModified": "2026-08-26T09:00:00+02:00"', '"dateModified": "2026-08-26T10:45:00+02:00"')
+          text = text.replace('"dateModified": "2026-08-26T10:30:00+02:00"', '"dateModified": "2026-08-26T10:45:00+02:00"')
+          article.write_text(text, encoding='utf-8')
+
+          for page_name in ('index.html', 'hub.html'):
+              page = repo / page_name
+              if not page.exists():
+                  continue
+              body = page.read_text(encoding='utf-8')
+              body = re.sub(
+                  r'articles/Immagini/2026\.08\.26-simulare-senza-delegare-light\.jpg(?:\?v=\d+)?',
+                  'articles/Immagini/2026.08.26-simulare-senza-delegare-light.jpg?v=3',
+                  body,
+              )
+              page.write_text(body, encoding='utf-8')
+
+          # Hard checks: article must no longer depend on Drive for its hero/share images.
+          repaired = article.read_text(encoding='utf-8')
+          if 'drive.google.com/uc?export=view&id=1kucH4kR_Ogi_7jF60u5FhtTfUp57gxyx' in repaired:
+              raise SystemExit('Hero Drive reference still present')
+          if 'drive.google.com/uc?export=view&id=1gnLLgIgpUNZx_7TUO7LQNuerfirI82Jh' in repaired:
+              raise SystemExit('Share-image Drive reference still present')
+          if 'Immagini/2026.08.26-simulare-senza-delegare.jpg?v=3' not in repaired:
+              raise SystemExit('Local hero reference missing')
+
+          print(f'Hero written: {hw}x{hh}, {hero_path.stat().st_size} bytes')
+          print(f'Light written: {lw}x{lh}, {light_path.stat().st_size} bytes')
+          PY
+
+      - name: Commit repaired package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DynamesIT'
+          git config user.email 'redazione@dynames.it'
+          git rm .github/workflows/fix-mitrangolo-assets.yml
+          git add articles/2026.08.26-simulare-senza-delegare.html \
+                  articles/Immagini/2026.08.26-simulare-senza-delegare.jpg \
+                  articles/Immagini/2026.08.26-simulare-senza-delegare-light.jpg \
+                  index.html hub.html
+          git commit -m 'Fix Mitrangolo hero quality and article links'
+          git push origin main
