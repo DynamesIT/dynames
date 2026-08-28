@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+                deleteAnalyticsCookies();
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Trasformare tecnologie avanzate, dati e innovazione in superiorità operativa</title>
+<meta content="White paper di Francesco Scordo sulle tecnologie quantistiche, la programmazione della Difesa 2028-2029 e le priorità per formazione, comunicazioni, sensoristica e calcolo." name="description"/>
+<link href="https://www.dynames.it/pubblicazioni/2026.08.27-white-paper-trasformare-tecnologie-avanzate.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Trasformare tecnologie avanzate, dati e innovazione in superiorità operativa" property="og:title"/>
+<meta content="Il white paper di Francesco Scordo analizza le tecnologie quantistiche come capacità abilitante per la Difesa, con priorità su formazione, comunicazioni, sensoristica e preparazione dei dati." property="og:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/2026.08.27-white-paper-trasformare-tecnologie-avanzate.html" property="og:url"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.08.27-white-paper-trasformare-tecnologie-avanzate-hero-light.jpg" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="675" property="og:image:height"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="Processore quantistico con due analisti, hero del white paper DYNAMES" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Trasformare tecnologie avanzate, dati e innovazione in superiorità operativa" name="twitter:title"/>
+<meta content="White paper di Francesco Scordo su Quantum Computing, Difesa e superiorità operativa." name="twitter:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.08.27-white-paper-trasformare-tecnologie-avanzate-hero-light.jpg" name="twitter:image"/>
+<meta content="2026-08-27T09:00:00+02:00" property="article:published_time"/>
+<meta content="Francesco Scordo" name="author"/>
+<link as="image" href="Archivio/2026.08.27-white-paper-trasformare-tecnologie-avanzate-hero.png" rel="preload"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+        --night-blue: #0b1120;
+        --deep-blue: #294967;
+        --slate-grey: #334155;
+        --light-grey: #f8fafc;
+        --optical-white: #ffffff;
+        --accent: #1e3a8a;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-light: #cbd5e1;
+        --paper-bg: #fdfbf7;
+        --gold-accent: #b8935a;
+        --border: #e2e8f0;
+        --dynames-blue: #0b1c2d;
+        --dynames-grey: #ededed;
+        --dynames-electric: #27a8ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: var(--paper-bg);
+        color: var(--text-primary);
+        line-height: 1.8;
+        font-size: 1.08rem;
+    }
+    h1, h2, h3, .brand, .button, .small-label, .cover-kicker, .cover-series {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .serif-heading { font-family: 'Playfair Display', serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .article-container { max-width: 920px; margin: 0 auto; padding: 0 2rem; }
+
+    header {
+        background: var(--optical-white);
+        border-bottom: 2px solid var(--night-blue);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+    .brand a { text-decoration: none; }
+    .brand h1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--night-blue);
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+    .brand-logo { width: auto; height: 40px; }
+    .brand p {
+        margin-top: 2px;
+        color: var(--slate-grey);
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .desktop-nav { display: flex; align-items: center; gap: 2rem; }
+    .desktop-nav a {
+        color: var(--night-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color .25s;
+    }
+    .desktop-nav a:hover, .desktop-nav a.active { color: var(--gold-accent); }
+    .back-nav { padding: 2rem 0; }
+    .back-nav a {
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+    .back-nav a:hover { color: var(--gold-accent); }
+
+    .hero {
+        display: block;
+        margin-bottom: 4rem;
+    }
+    .hero-copy {
+        max-width: 850px;
+        margin-bottom: 2.2rem;
+    }
+    .hero-media {
+        position: relative;
+        overflow: hidden;
+        margin: 0;
+        border: 1px solid rgba(39, 168, 255, .28);
+        background: var(--night-blue);
+        box-shadow: 0 24px 48px rgba(11, 28, 45, .22);
+    }
+    .hero-media::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+    }
+    .hero-media img {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1672 / 941;
+        object-fit: cover;
+    }
+    .article-category {
+        display: block;
+        margin-bottom: 1.2rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .article-title {
+        margin-bottom: 1.5rem;
+        color: var(--night-blue);
+        font-size: clamp(2.45rem, 5.5vw, 4.2rem);
+        line-height: 1.04;
+    }
+    .article-subtitle {
+        margin-bottom: 2rem;
+        color: var(--slate-grey);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.28rem;
+        font-style: italic;
+        line-height: 1.5;
+    }
+    .article-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem 1.2rem;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .8rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .meta-author { color: var(--night-blue); font-weight: 700; }
+
+    .cover-card {
+        min-height: 468px;
+        padding: .65rem;
+        border: 1px solid #d8dde3;
+        background: var(--dynames-grey);
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .2);
+        transform: rotate(.6deg);
+    }
+    .publication-cover {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        min-height: 445px;
+        height: 100%;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 76% 31%, rgba(39, 168, 255, .12), transparent 31%),
+            linear-gradient(145deg, #102946 0%, var(--dynames-blue) 58%, #071321 100%);
+        color: white;
+    }
+    .publication-cover::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        right: -12%;
+        bottom: -16%;
+        left: -12%;
+        height: 47%;
+        background: var(--dynames-grey);
+        transform: rotate(-8deg);
+    }
+    .publication-cover::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        right: -56px;
+        bottom: 12px;
+        width: 155px;
+        height: 155px;
+        border: 1px solid rgba(39, 168, 255, .28);
+        border-radius: 50%;
+    }
+    .cover-brand {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: 1.25rem 1.35rem 0;
+    }
+    .cover-brand-mark {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0) invert(1);
+    }
+    .cover-brand-copy { display: flex; flex-direction: column; line-height: 1.1; }
+    .cover-brand-copy strong {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: .15em;
+    }
+    .cover-brand-copy span {
+        margin-top: .3rem;
+        color: #c6d1dc;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .46rem;
+        letter-spacing: .08em;
+    }
+    .cover-copy {
+        position: relative;
+        z-index: 3;
+        width: 89%;
+        margin: 2.5rem 1.7rem 7.4rem;
+    }
+    .cover-series {
+        margin-bottom: .65rem;
+        color: #8fd3ff;
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+    .cover-kicker {
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: .34rem .65rem;
+        border: 1px solid rgba(255,255,255,.35);
+        color: white;
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .cover-title {
+        max-width: 300px;
+        color: white;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 1.08;
+    }
+    .cover-network {
+        position: absolute;
+        z-index: 2;
+        top: 85px;
+        right: -48px;
+        width: 270px;
+        height: 270px;
+        opacity: .34;
+        fill: var(--dynames-electric);
+        stroke: var(--dynames-electric);
+        stroke-width: 1.15;
+    }
+    .cover-footer {
+        position: absolute;
+        z-index: 3;
+        right: 1.35rem;
+        bottom: 1.15rem;
+        left: 1.35rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        color: var(--dynames-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+    .cover-year { color: #507493; font-size: .62rem; }
+
+    .article-body { padding-bottom: 5rem; }
+    .download-box, .contents-panel, .author-card {
+        display: grid;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        border: 1px solid var(--border);
+        background: var(--optical-white);
+    }
+    .download-box { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+    .download-box h2, .contents-panel h2 { margin: .2rem 0 .65rem; color: var(--night-blue); font-size: 1.9rem; }
+    .download-box p { color: var(--text-secondary); }
+    .small-label {
+        color: var(--gold-accent);
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .button {
+        display: inline-block;
+        padding: .95rem 1.35rem;
+        background: var(--night-blue);
+        color: white;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: background .2s, transform .2s;
+    }
+    .button:hover { background: var(--accent); transform: translateY(-2px); }
+    .contents-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .7rem 2rem;
+        margin: .7rem 0 0 1.3rem;
+    }
+    .contents-list a { color: var(--accent); text-decoration: none; }
+    .contents-list a:hover { text-decoration: underline; }
+    .paper-section { margin: 4rem 0; }
+    .paper-section h2 { margin: .35rem 0 1.35rem; color: var(--night-blue); font-size: 2.35rem; line-height: 1.15; }
+    .paper-section p { margin-bottom: 1.15rem; text-align: justify; }
+    .paper-section h3 {
+        margin: 2.2rem 0 .85rem;
+        color: var(--deep-blue);
+        font-size: 1.5rem;
+        line-height: 1.3;
+    }
+    .paper-section h4 {
+        margin: 1.4rem 0 .55rem;
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.08rem;
+        line-height: 1.35;
+    }
+    .paper-list {
+        margin: 1rem 0 1.3rem 1.5rem;
+    }
+    .paper-list li {
+        margin-bottom: .7rem;
+        padding-left: .25rem;
+    }
+    .abstract-section {
+        padding: 2rem;
+        border-left: 4px solid var(--gold-accent);
+        background: var(--optical-white);
+    }
+    .pull-quote {
+        margin: 4rem 0;
+        padding-left: 2rem;
+        border-left: 3px solid var(--dynames-electric);
+        color: var(--deep-blue);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.55rem;
+        font-style: italic;
+        line-height: 1.45;
+    }
+    .paper-figure {
+        margin: 2.2rem 0;
+        padding: 1rem;
+        border: 1px solid #d8e4ec;
+        background: var(--optical-white);
+        box-shadow: 0 12px 28px rgba(11, 28, 45, .08);
+    }
+    .paper-figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+    }
+    .paper-figure--portrait img { max-width: 620px; }
+    .paper-figure figcaption {
+        margin-top: .9rem;
+        color: var(--text-secondary);
+        font-size: .86rem;
+        line-height: 1.55;
+    }
+    .paper-figure figcaption strong {
+        display: block;
+        margin-bottom: .15rem;
+        color: var(--night-blue);
+    }
+    .paper-figure a, .references a { color: var(--accent); word-break: break-word; }
+    .bibliography { padding-top: 1rem; border-top: 1px solid var(--border); }
+    .references { margin-left: 1.4rem; }
+    .references li { margin-bottom: 1rem; padding-left: .35rem; }
+    .author-card { grid-template-columns: 150px minmax(0, 1fr); align-items: start; margin-top: 4rem; }
+    .author-card img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: grayscale(.1);
+    }
+    .author-card h2 { margin: .15rem 0 .2rem; color: var(--night-blue); font-size: 2rem; }
+    .author-role {
+        margin-bottom: .75rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .author-card p { color: var(--text-secondary); line-height: 1.65; }
+    .author-card a { color: var(--accent); }
+    footer { padding: 3rem 0; background: var(--night-blue); color: var(--text-light); text-align: center; }
+    footer h3 { margin-bottom: .6rem; color: white; letter-spacing: .12em; }
+    footer p { font-size: .82rem; }
+
+    @media (max-width: 980px) {
+        .desktop-nav { display: none; }
+        .hero-copy { max-width: none; }
+    }
+    @media (max-width: 660px) {
+        body { font-size: 1rem; }
+        .container, .article-container { padding-right: 1.25rem; padding-left: 1.25rem; }
+        .article-title { font-size: 2.45rem; }
+        .hero-copy { margin-bottom: 1.5rem; }
+        .hero-media { margin-right: -1.25rem; margin-left: -1.25rem; border-right: 0; border-left: 0; }
+        .download-box, .contents-list, .author-card { grid-template-columns: 1fr; }
+        .download-box, .contents-panel, .author-card, .abstract-section { padding: 1.45rem; }
+        .button { width: 100%; }
+        .paper-section p { text-align: left; }
+        .paper-section h2 { font-size: 2rem; }
+        .author-card img { width: 120px; height: 120px; }
+    }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "Trasformare tecnologie avanzate, dati e innovazione in superiorità operativa",
+  "author": {"@type": "Person", "name": "Francesco Scordo"},
+  "publisher": {"@type": "Organization", "name": "DYNAMES", "url": "https://www.dynames.it/"},
+  "datePublished": "2026-08-27",
+  "inLanguage": "it-IT",
+  "articleSection": "White Paper",
+  "url": "https://www.dynames.it/pubblicazioni/2026.08.27-white-paper-trasformare-tecnologie-avanzate.html"
+}
+</script>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html">
+<h1><img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>DYNAMES</h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a class="active" href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+
+<div class="container back-nav">
+<a href="../pubblicazioni.html">← Torna alle Pubblicazioni</a>
+</div>
+
+<main>
+<article class="article-container">
+<section class="hero">
+<div class="hero-copy">
+<span class="article-category">Paper</span>
+<h1 class="serif-heading article-title">Trasformare tecnologie avanzate, dati e innovazione in superiorità operativa</h1>
+<p class="article-subtitle">La programmazione 2028-2029 del Ministero della Difesa e le tecnologie quantistiche.</p>
+<div class="article-meta">
+<span class="meta-author">A cura di Francesco Scordo</span>
+<span>White Paper</span>
+<span>Agosto 2026</span>
+</div>
+</div>
+<figure class="hero-media">
+<img alt="Un processore quantistico illuminato, osservato da un uomo e una donna, attraversato da un arco luminoso di dati" decoding="async" fetchpriority="high" height="941" src="Archivio/2026.08.27-white-paper-trasformare-tecnologie-avanzate-hero.png" width="1672"/>
+</figure>
+</section>
+
+<div class="article-body">
+<section class="download-box">
+<div>
+<span class="small-label">Pubblicazione DYNAMES</span>
+<h2 class="serif-heading">Leggi online o scarica il white paper</h2>
+<p>La pagina propone il testo integrale del white paper in versione web. L’impaginazione editoriale, gli apparati e la versione destinata alla consultazione offline sono disponibili anche nel documento PDF.</p>
+</div>
+<a class="button" download href="Archivio/2026.08.27-white-paper-trasformare-tecnologie-avanzate.pdf">Scarica il PDF</a>
+</section>
+
+<section class="contents-panel" aria-labelledby="indice-title">
+<span class="small-label">Indice</span>
+<h2 class="serif-heading" id="indice-title">I contenuti del white paper</h2>
+<ol class="contents-list">
+<li><a href="#sintesi">In sintesi</a></li>
+<li><a href="#introduzione">Introduzione</a></li>
+<li><a href="#computer-quantistico">Che cos’è un computer quantistico</a></li>
+<li><a href="#ambiti-operativi">Ambiti operativi</a></li>
+<li><a href="#infrastruttura-quantistica">Sviluppo dell’infrastruttura quantistica</a></li>
+<li><a href="#quantum-difesa">Quantum nella Difesa</a></li>
+<li><a href="#quantum-italia">Quantum in Italia</a></li>
+<li><a href="#conclusioni">Conclusioni</a></li>
+<li><a href="#bibliografia">Bibliografia essenziale</a></li>
+</ol>
+</section>
+
+<section class="paper-section abstract-section" id="sintesi">
+<span class="small-label">Sintesi</span>
+<h2 class="serif-heading">In sintesi</h2>
+<p>L’Atto di Indirizzo del Ministero della Difesa colloca, nella programmazione 2028-2029, High Performance Computing, Quantum Computing e intelligenza artificiale tra le capacità da integrare nello strumento militare, nei processi decisionali, nell’addestramento, nella logistica e nell’impiego operativo. Il nodo strategico consiste nel collegare ricerca, infrastrutture, investimenti e capacità industriali, evitando che la disponibilità tecnologica resti separata dalle esigenze della Difesa.</p>
+<p>Il White Paper offre una lettura introduttiva delle tecnologie quantistiche e dei principi che ne determinano il funzionamento. Distingue calcolo, sensoristica, simulazione e comunicazioni, chiarendo che il computer quantistico non sostituirà le infrastrutture classiche, ma si integrerà progressivamente con esse attraverso sistemi ibridi, reti dedicate e nuovi standard di sicurezza.</p>
+<p>L’analisi individua quattro priorità per la Difesa. La prima è la formazione di personale qualificato; seguono l’adeguamento delle comunicazioni e della crittografia, lo sviluppo della sensoristica e, in una fase successiva, il calcolo e la simulazione. L’impostazione suggerita è quindi selettiva: preparare fin d’ora competenze, dati e infrastrutture quantum-ready e quantum-resistant, senza anticipare investimenti in capacità di calcolo non ancora mature per l’impiego operativo.</p>
+<p>Per l’Italia, le opportunità maggiori riguardano fotonica, comunicazione quantistica e sensoristica, mentre restano criticità nella filiera hardware, nella standardizzazione e nella certificazione. Trasformare l’innovazione in superiorità operativa richiede una sequenza coerente di interventi: capitale umano, interoperabilità delle reti, sicurezza post-quantistica, valorizzazione industriale e predisposizione di basi dati strutturate per i futuri processi computazionali.</p>
+</section>
+
+<div class="pull-quote">Formazione e addestramento; comunicazioni e crittografia; sensoristica; preparazione dei dati e delle infrastrutture al futuro impiego del calcolo quantistico.</div>
+
+<section class="paper-section" id="introduzione">
+<span class="small-label">White Paper</span>
+<h2 class="serif-heading">Introduzione</h2>
+<p>L’Atto di Indirizzo del Ministero della Difesa definisce per il triennio 2028-2029 le priorità politico-strategiche della Difesa in tutti i domini operativi (terrestre, marittimo, aereo, spaziale, cyber). L’obiettivo è trasformare tecnologie avanzate, dati e innovazione in superiorità operativa.</p>
+<p>HPC (<em>High Performance Computing</em>), Quantum Computing e A.I. devono essere integrati nello strumento militare, nei processi decisionali, nell’addestramento, nella logistica, nella pianificazione e nell’impiego operativo.</p>
+<p>Occorre quindi sviluppare una visione integrata, capace di collegare ricerca, infrastrutture HPC, investimenti e capacità industriali per accrescere l’autonomia tecnologica e la qualità delle decisioni.</p>
+<p>Considerata l’ampiezza delle tecnologie citate nell’atto di indirizzo, DYNAMES propone un approfondimento sul Quantum Computing per definire caratteristiche e funzionamento delle infrastrutture quantistiche.</p>
+<p>Per semplificare la trattazione verranno richiamati in formula semplificata i principi che regolano la meccanica quantistica: l’obiettivo è avere una comprensione generale della tecnologia quantistica per cogliere le sue potenzialità operative.</p>
+<p>Dunque, dopo aver delineato l’infrastruttura quantistica, sarà possibile individuare gli impieghi in ambito militare e le strategie di medio e lungo periodo per implementare le tecnologie quantistiche nel sistema Difesa.</p>
+</section>
+
+<section class="paper-section" id="computer-quantistico">
+<span class="small-label">Capitolo 1</span>
+<h2 class="serif-heading">Che cos’è un computer quantistico (QC)?</h2>
+<p>Il QC è un computer che funziona secondo i principi della fisica quantistica garantendo prestazioni migliori, in tempi computazionali più brevi e con un minor consumo energetico.</p>
+<p>Il computer “classico” utilizza transistor fisici e ragiona in termini di bit, la quantità minima di informazione che un calcolatore è in grado di elaborare. Il bit può rappresentare solamente due stati distinti: zero (0) e uno (1).</p>
+<p>Dunque, per conservare un’informazione si deve sempre ricorrere al codice binario. Il singolo bit non è molto utile, contiene pochissime informazioni e per questo motivo i bit vengono raggruppati in “elementi più grandi” costituiti da 8 bit (1 byte) che conservano una quantità di informazione maggiore.</p>
+<p>Il QC abbandona i transistor e, al posto dei bit, come strumento per rappresentare i dati utilizza i qubit che agiscono secondo i principi della meccanica quantistica.</p>
+
+<h3>1.1 Principi</h3>
+<h4>Sovrapposizione (<em>superposition</em>)</h4>
+<p>La “sovrapposizione” è la capacità del qubit di trovarsi in una combinazione di più stati (0 e 1) contemporaneamente, fino a quando non viene misurato.</p>
+<p>In sostanza, il qubit può assumere più valori in uno stesso istante. Dunque, la sovrapposizione consente il calcolo in parallelo, moltiplicando esponenzialmente potenza e velocità operativa.</p>
+<p>In termini numerici, elaborare <em>n</em> qubit significa elaborare 2<sup>n</sup> bit simultaneamente: 1 qubit elabora 2 bit; 2 qubit elaborano 4 bit, 3 qubit elaborano 8 bit e così via. Per questa ragione, anche un QC di soli 10 qubit (pari a 1024 bit) ha una potenza di calcolo di gran lunga superiore ad un computer classico.</p>
+
+<h4>Entanglement</h4>
+<p>Due o più qubit riescono a comunicare anche se non sono vicini. I qubit <em>entangled</em> formano un unico sistema globale: la misura o la modifica di un qubit influenza il qubit correlato in modo istantaneo, indipendentemente dallo spazio fisico che li separa. Questa proprietà consente ai qubit di cooperare per eseguire calcoli complessi a velocità impossibili per i computer classici. Inoltre garantisce canali di comunicazione sicuri, poiché ogni tentativo di intercettazione altera lo stato del sistema e viene immediatamente rilevato.</p>
+
+<h4>Teorema di non clonazione (<em>no-cloning theorem</em>)</h4>
+<p>È impossibile creare una copia identica di un qubit sconosciuto.</p>
+<p>Nell’informatica classica è possibile copiare delle informazioni senza alterare i dati originali. Diversamente, nel campo della meccanica quantistica, a causa dei principi di sovrapposizione ed entanglement, è impossibile creare una copia identica di uno stato quantistico arbitrario e sconosciuto. Ciò significa che non esiste una macchina di clonazione quantistica universale in grado di replicare perfettamente uno stato quantistico arbitrario.</p>
+<p>Il teorema di non clonazione ha profonde implicazioni nella crittografia: la sicurezza dei protocolli di distribuzione delle chiavi quantistiche si basa sull’incapacità di clonare gli stati quantistici. Infatti, è impossibile per un soggetto terzo intercettare e copiare la chiave crittografica quantistica senza essere scoperto, compromettendo la sicurezza della comunicazione.</p>
+
+<h3>1.2 Funzionamento</h3>
+<h4>Quantum Processing Unit (QPU)</h4>
+<p>La Quantum Processing Unit (QPU) è l’unità fondamentale che regola il funzionamento del QC e sono quattro le tecnologie in fase di sviluppo: ioni, atomi, fotoni e superconduttori.</p>
+<p>I qubit superconduttori sono tra i più avanzati, offrendo flessibilità, scalabilità ed elevata velocità nell’esecuzione dei calcoli, ma richiedendo condizioni particolari per mantenere la loro efficienza.</p>
+<p>Gli ioni intrappolati e gli atomi neutri garantiscono alta precisione e lunghi tempi di funzionamento. I fotoni sono ideali per comunicazioni a lungo raggio, mentre i qubit realizzati con centri di colore offrono potenziale per operazioni a temperatura ambiente. I sistemi ibridi, che combinano diverse tecnologie, offrono maggiore flessibilità ma sono più complessi da gestire.</p>
+
+<h4>Quantum Day e supremazia quantistica</h4>
+<p>Nonostante gli incoraggianti sviluppi tecnologici, siamo ancora lontani dal realizzare un QC perfettamente funzionante. La comunità scientifica non è unanime nelle stime di sviluppo e, considerate tutte le previsioni, dalle più scettiche alle ottimiste, si ritiene che il primo QC operativo e senza correzione di errori sarà realizzato in una forbice che va dai 5 ai 15 anni.</p>
+<p>Il problema degli oggetti quantistici è che sono estremamente sensibili: è sufficiente un piccolo campo magnetico per interferire con il loro stato.</p>
+<p>La sfida è mantenere la qualità dei qubit, potenti ma delicati: perdono rapidamente le loro qualità quantiche a causa di vibrazioni, variazioni di temperatura e onde elettromagnetiche.</p>
+<p>La decoerenza quantistica è il “nemico da combattere”, poiché distrugge lo stato di sovrapposizione coerente di stati e lo stato <em>entangled</em> dei qubit.</p>
+<p>Per chiarire con un esempio, immaginiamo un qubit come una moneta. Una volta lanciata, nella fisica quantistica, la moneta inizia a ruotare su stessa su un tavolo (sovrapposizione coerente di stati). A questo punto, se lanciassimo 100 monete, la capacità di combinazioni testa-croce aumenterebbe esponenzialmente (2<sup>100</sup>), ma basterebbe una piccola interferenza (spostare di 1 mm il tavolo) per far collassare le monete nello stato testa o croce. L’obiettivo dell’informatica quantistica è far ruotare perennemente queste monete durante la fase computazionale.</p>
+<p>A livello globale sono diversi i QC che lavorano nell’ordine delle centinaia di qubit, un margine troppo basso per garantire elevate capacità di calcolo.</p>
+<p>Con 30.000 qubit avremmo un QC perfetto e operativo, ma basterebbero 10.000 qubit per sviluppare operatività informatiche capaci di compromettere in maniera definitiva i sistemi crittografici contemporanei.</p>
+</section>
+
+<section class="paper-section" id="ambiti-operativi">
+<span class="small-label">Capitolo 2</span>
+<h2 class="serif-heading">Ambiti operativi</h2>
+<p>Sono quattro gli ambiti operativi del QC.</p>
+
+<h3>2.1 Calcolo</h3>
+<p>Processo e risoluzione di programmi complessi impensabili per un PC classico.</p>
+<p>Il Quantum Computing sviluppa dispositivi e protocolli capaci di superare i computer classici offrendo la risoluzione più rapida per alcune classi di problemi, un consumo energetico ridotto e una maggiore precisione e costi inferiori. Le applicazioni spaziano dagli impieghi civili a quelli militari, dalla logistica alla distribuzione dell’energia, dalla diagnostica alle previsioni complesse, con il potenziale sviluppo di tecniche di machine learning per A.I.</p>
+
+<h3>2.2 Sensoristica</h3>
+<p>Analisi e rilevamento di precisione di fenomeni fisici altrimenti impercettibili.</p>
+<p>Il QC sfrutta le proprietà della materia e della radiazione quantistica per raggiungere maggiore sensibilità e precisione. I sensori quantistici trovano applicazioni in tutti i domini operativi, sia in ambito civile che militare. A titolo esemplificativo, ecco alcune possibili applicazioni: orologi atomici quantistici per il posizionamento; gravimetri per identificare strutture sotterranee; magnetometri a pompaggio ottico per identificare oggetti nascosti, depositi minerari, oppure misurare e fornire immagini dei campi biomagnetici generati da cervello, cuore e muscoli.</p>
+<p>I sensori quantistici non solo sono più sensibili, ma forniscono anche nuove capacità, migliorano le condizioni operative e, se basati su costanti fisiche della natura, possono ridurre fino ad eliminare il bisogno di tarature regolari.</p>
+
+<h3>2.3 Simulazione</h3>
+<p>Elaborazione di modelli complessi costituiti da un grande numero di variabili.</p>
+<p>Le applicazioni sono numerose, sia civili che militari, e si dividono in due aree: la simulazione di sistemi quantistici complessi e l’ottimizzazione.</p>
+<p>I simulatori quantistici possono modellare molecole e materiali difficili da analizzare con i computer classici, favorendo innovazioni nei settori automobilistico, chimico, petrolifero, fotovoltaico e farmaceutico.</p>
+<p>Riguardo l’ottimizzazione, la simulazione quantistica può risolvere problemi complessi come la gestione del traffico veicolare, il commercio energetico e l’ottimizzazione delle catene di approvvigionamento, generando benefici per settori come finanza, trasporti, logistica, cybersecurity e sanità.</p>
+
+<h3>2.4 Comunicazioni</h3>
+<p>Modelli più sicuri e più veloci per la trasmissione dei dati digitali.</p>
+<p>Consente elevati livelli di confidenzialità nelle comunicazioni, sia per uso civile che militare. La comunicazione quantistica sviluppa nuovi protocolli con caratteristiche totalmente nuove che spaziano dalla sicurezza fisica alla capacità di rete. La sicurezza nelle comunicazioni quantistiche è garantita dal teorema del <em>no-cloning</em>. Qualsiasi tentativo di intercettare, leggere e inoltrare una comunicazione basata su qubit è rintracciabile confrontando gli stati dei qubit ricevuti con gli stati dei qubit inviati. La comunicazione quantistica è immune da interferenze esterne, a condizione che mittente e ricevente possano identificarsi reciprocamente in modo affidabile.</p>
+</section>
+
+<section class="paper-section" id="infrastruttura-quantistica">
+<span class="small-label">Capitolo 3</span>
+<h2 class="serif-heading">Sviluppo dell’infrastruttura quantistica</h2>
+<p>Il QC non andrà a sostituirsi ai computer classici, ma diventerà un nuovo elemento di calcolo che si aggiunge alle infrastrutture IT.</p>
+<p>Lo scenario del prossimo futuro prevede l’integrazione capillare dei sistemi quantistici nelle reti oggi esistenti sia con finalità di calcolo che di comunicazione.</p>
+
+<h3>3.1 Quantum Computing</h3>
+<p>Le applicazioni del calcolo quantistico includono la crittografia, la simulazione, l’ottimizzazione e l’A.I. I computer quantistici potrebbero rendere meno sicuri i metodi di protezione attuali, spingendo a sviluppare nuovi protocolli di sicurezza. Nella simulazione, questi computer possono modellare materiali e molecole complessi, accelerando la scoperta di farmaci e nuovi materiali. Per l’ottimizzazione, gli algoritmi quantistici permettono di risolvere in modo più efficiente problemi complessi in settori come la scienza di base, la logistica e la finanza, anche in sinergia con l’utilizzo di software che sfruttano risorse computazionali classiche. In materia di A.I., il calcolo quantistico può velocizzare l’addestramento dei modelli, migliorando applicazioni avanzate come veicoli autonomi e diagnostica medica.</p>
+<p>L’apprendimento automatico (<em>Machine Learning</em> - ML) può beneficiare notevolmente dal calcolo quantistico. L’integrazione di algoritmi quantistici con metodi tradizionali di ML permette di migliorare tecniche come le macchine a vettori di supporto per la classificazione dei dati, l’apprendimento per rinforzo quantistico e le macchine di Boltzmann quantistiche. Queste applicazioni avanzate trovano impiego in settori come la scienza di base, la diagnosi medica basata su immagini, la previsione dei cambiamenti climatici e le previsioni idrologiche, offrendo risultati più accurati ed efficienti.</p>
+
+<h3>3.2 Quantum Internet</h3>
+<p>Oggi internet funziona attraverso una infrastruttura complessa e distribuita che utilizza fibre ottiche, server, reti wireless, satelliti. Tutti i sistemi oggi operativi si collegheranno e sfrutteranno le tecnologie quantistiche per migliorare le proprie capacità di comunicazione.</p>
+<p>In effetti, internet è una rete fatta da reti, un sistema complesso che si è ingrandito a dismisura nel tempo, diventando un servizio essenziale a livello globale e che troverà nelle reti quantistiche una nuova fase di evoluzione tecnologica.</p>
+<p>Nel modello Quantum Internet l’infrastruttura quantistica opera come una sorgente che genera entanglement e che viene distribuita da una serie di nodi. In sostanza, se nelle reti classiche si scambiano informazioni, nella rete quantistica si distribuisce entanglement.</p>
+<p>Questa distribuzione sull’intera rete garantisce maggiore velocità, sicurezza e confidenzialità delle comunicazioni.</p>
+</section>
+
+<section class="paper-section" id="quantum-difesa">
+<span class="small-label">Capitolo 4</span>
+<h2 class="serif-heading">Quantum nella Difesa</h2>
+<p>L’integrazione delle tecnologie quantistiche rappresenta un obiettivo primario nel sistema Difesa.</p>
+<p>Le applicazioni operative sono diverse e sono diretta emanazione dei quattro ambiti operativi tipici del Quantum Computing: calcolo, sensori, simulazione e comunicazione.</p>
+<p>Considerato l’attuale stato tecnologico e le prospettive future è necessario individuare la migliore strategia per ottimizzare tempo e risorse al fine di integrare e sviluppare sistemi quantistici specializzati per le Forze Armate.</p>
+<p>Con l’obiettivo di orientare i processi decisionali, DYNAMES propone un’analisi delle criticità emergenti rispetto all’integrazione delle tecnologie quantistiche nel sistema Difesa.</p>
+<p>Sono state individuate quattro aree tematiche, organizzate secondo priorità di intervento, dalla più urgente alla meno impattante: Quantum Training, Comunicazione, Sensoristica, Calcolo e Simulazione.</p>
+
+<h3>4.1 Quantum Training</h3>
+<p>L’aspetto più problematico interessa il reclutamento e la formazione di personale qualificato e specializzato nelle tecnologie quantistiche.</p>
+<p>È rilevante il rischio di non disporre di personale formato per l’installazione, l’utilizzo, la manutenzione e il monitoraggio delle infrastrutture quantistiche.</p>
+<p>Difficoltà che già persistono nel mondo civile e che si ripropongono anche in ambito militare.</p>
+<p>È fondamentale iniziare a programmare la formazione e l’addestramento di risorse militari qualificate per l’utilizzo delle tecnologie quantistiche applicate alla Difesa.</p>
+<p>Occorre investire fortemente nella formazione all’interno delle università e dei centri di ricerca militari per anticipare le necessità operative del prossimo futuro.</p>
+<p>Per sfruttare il potenziale delle tecnologie quantistiche, è necessaria una comunità scientifica ed operativa capace di lavorare in contesti multidisciplinari, tra cui fisica, chimica, matematica, informatica e ingegneria.</p>
+<p>Le lauree di I livello possono offrire una solida introduzione ai concetti fondamentali delle scienze quantistiche, ma non sono sufficienti a fornire le competenze specifiche e di alto livello richieste.</p>
+<p>Attualmente, i fondamenti della fisica quantistica sono insegnati in modo completo solo all’interno della classe di laurea L-30 (Scienze e Tecnologie Fisiche), con alcuni corsi introduttivi di base offerti anche in altri programmi STEM, come ad esempio in Chimica (L-27) e Ingegneria (L-8 Fisica/Elettronica/Energia/Informazione).</p>
+<p>Rispetto alle lauree magistrali, la grande maggioranza dei programmi magistrali di Fisica (LM-17) è organizzata in indirizzi e curricula strettamente legati alle discipline tradizionali della fisica e dovrebbero aumentare i corsi di laurea che includono il curriculum in Scienze e Tecnologie Quantistiche.</p>
+<p>Esistono inoltre diversi programmi STEM che offrono corsi specifici su questi temi. Tuttavia, in Italia i programmi interamente strutturati in questo ambito restano un’eccezione, mentre in Europa sono già attivi o in fase di sviluppo più di 40 master specializzati in “Tecnologie Quantistiche” e “Ingegneria Quantistica”.</p>
+<p>Considerato il panorama accademico italiano ed europeo, è necessario aggiornare i percorsi formativi e di addestramento di accademie e scuole delle Forze Armate per integrare le competenze in materia di tecnologie quantistiche.</p>
+
+<h3>4.2 Comunicazioni</h3>
+<p>L’utilizzo nelle comunicazioni è il secondo settore da considerare.</p>
+<p>Le tecnologie quantistiche offrono vantaggi in termini di velocità e confidenzialità alle telecomunicazioni in ambito militare.</p>
+<p>In una strategia attiva/offensiva, l’investimento in infrastrutture fisiche (QC, nodi e ripetitori di entanglement) rappresenta il primo asset per garantire autonomia ai comparti militari che devono dotarsi di canali, linee e attrezzature dedicate e indipendenti dalle risorse civili.</p>
+<p>Inoltre, le dotazioni quantistiche dovranno essere integrate con i sistemi di telecomunicazione già in uso alle Forze Armate. Appare, quindi, indispensabile un’analisi completa delle infrastrutture militari ICT attualmente operative per progettare la compatibilità con le tecnologie quantistiche. Compatibilità Quantum-Ready che deve diventare un parametro di valutazione anche per gli investimenti futuri in tecnologie e servizi nel settore Difesa.</p>
+<p>In sostanza, non solo ciò che è operativo, ma anche ciò che sarà acquistato dovrà risultare Quantum-Ready.</p>
+<p>In una strategia difensiva, è fondamentale investire in tecnologie Quantum-Resistant, ossia in misure tecnologiche che, pur operando su infrastrutture classiche, saranno in grado di resistere ad attacchi quantistici.</p>
+<p>A livello globale è aumentata l’offerta di soluzioni hardware e software Quantum-Resistant che, oltre ad essere validate dalla comunità scientifica, dovranno essere attentamente valutate dagli utilizzatori finali.</p>
+<p>In uno scenario futuro, per resistere agli attacchi portati dai computer quantistici, si dovranno considerare due approcci: uno logico-algoritmico, basato su protocolli post-quantistici e hardware classico; l’altro fisico-infrastrutturale, basato su sistemi di Distribuzione Quantistica delle Chiavi (QKD).</p>
+<p>La creazione di nuove reti di trasmissione ad hardware quantistico potrà poi evolvere verso una rete in grado di scambiare risorse quantistiche fra dispositivi consentendo applicazioni come la sensoristica ed il calcolo distribuito.</p>
+
+<h4>4.2.1 Crittografia</h4>
+<p>Sempre in tema di comunicazioni è necessario garantire l’integrità dei sistemi crittografici.</p>
+<p>La sicurezza delle comunicazioni è un aspetto cruciale in ambito operativo.</p>
+<p>Il QC minaccia la solidità dei protocolli crittografici tradizionali, spingendo verso la ricerca di nuove soluzioni. Da un lato, la crittografia post-quantum, implementata su hardware convenzionali, si basa su algoritmi progettati per resistere agli attacchi di computer quantistici. Questi algoritmi garantiscono la sicurezza dei dati sensibili e preservano la privacy degli utenti anche in un contesto tecnologico in evoluzione. Dall’altro, la comunicazione quantistica, già disponibile sul mercato, sfrutta i principi della meccanica quantistica per garantire una sicurezza intrinseca nelle trasmissioni. Tecnologie come la QKD (<em>Quantum Key Distribution</em>) offrono protezione contro intercettazioni e sabotaggi, rafforzando l’integrità delle infrastrutture di rete. L’integrazione di queste soluzioni nelle strategie di cybersecurity permette di contrastare le minacce emergenti e di rafforzare la sicurezza delle infrastrutture digitali.</p>
+<p>Inoltre, investire in tecnologie di comunicazione quantistica e crittografia avanzata contribuisce a rafforzare l’indipendenza tecnologica militare, migliorando le catene di approvvigionamento e promuovendo l’innovazione nel settore della sicurezza delle comunicazioni.</p>
+
+<h3>4.3 Sensoristica</h3>
+<p>Terzo settore di riferimento è la sensoristica di precisione che migliora performance e affidabilità delle misurazioni in ambito militare.</p>
+<p>È importante conoscere le reali potenzialità delle tecnologie quantistiche, evidenziando i vantaggi operativi e limiti oggettivi. Per esempio, atomi e ioni ultrafreddi offrono grande sensibilità per applicazioni come gravimetria e orologi atomici, ma richiedono complessi sistemi di raffreddamento. Una soluzione più pratica è attualmente fornita da vapori di atomi caldi, confinati in celle miniaturizzate.</p>
+<p>Oscillatori nano-meccanici e sistemi opto-meccanici possono misurare forza e massa con alta precisione, ma sono sensibili al rumore termico. I circuiti superconduttori permettono di creare magnetometri avanzati e radar quantistici, ma necessitano di temperature molto basse. I centri azoto-vacanza (<em>Nitrogen-Vacancy</em>, NV) nel diamante funzionano a temperatura ambiente e sono ideali per l’imaging biologico come sensori di campo magnetico, elettrico e di temperatura, ma la produzione dei materiali è complessa. A questo scopo anche altri centri di colore in diamante, in altre matrici cristalline o in materiali 2D, e i quantum dots vengono studiati per le loro potenziali applicazioni nell’imaging e nella sensoristica.</p>
+<p>Altri sensori, come i quantum dot e gli stati non classici della luce, offrono applicazioni innovative in rilevamento e imaging, ed in alcuni casi sono già ampiamente utilizzati, ad esempio nell’interferometria per la rivelazione di onde gravitazionali, ma devono migliorare la loro efficienza e affidabilità.</p>
+<p>Dunque, la scelta della tecnologia da adottare segue un doppio livello di valutazione: in prima battuta bisogna identificare l’obiettivo tattico/strategico che si intende perseguire. In seconda analisi, si dovrà scegliere la tecnologia che offre il maggior rendimento in funzione delle condizioni operative in cui dovrà operare.</p>
+<p>Inoltre, è fondamentale integrare e miniaturizzare questi sensori per applicazioni pratiche, supportati da tecnologie abilitanti come fotonica avanzata, laser e sistemi criogenici efficienti.</p>
+
+<h3>4.4 Calcolo e simulazione</h3>
+<p>Attualmente i settori del calcolo e della simulazione rivestono un ruolo marginale nel settore Difesa.</p>
+<p>Gli attuali QC non hanno ancora le capacità computazionali per elaborare informazioni e output utili in ambito militare.</p>
+<p>Certamente non bisogna trascurare le innovazioni che nei prossimi anni segneranno l’evoluzione del Quantum Computing, ma in questa fase sembra prematuro investire nell’acquisto di QC per calcolo e simulazione per il comparto militare.</p>
+<p>È comunque possibile programmare alcune attività di preparazione all’impiego di QC militari.</p>
+
+<h4>4.4.1 Quantum-ready database</h4>
+<p>La potenza di calcolo del QC consentirà l’elaborazione di enormi quantità di dati digitali.</p>
+<p>Appare, quindi, utile iniziare a compilare database strutturati, diffusi e voluminosi per beneficiare dei vantaggi computazionali quantistici.</p>
+<p>Elementi informativi oggi complessi e di difficile interpretazione risulteranno, invece, utili quando potranno essere elaborati da tecnologie quantistiche perfettamente operative.</p>
+<p>A titolo di esempio si richiama la strategia HNDL (<em>harvest now, decrypt later</em>) sempre più diffusa nelle comunità di cyber-intelligence.</p>
+<p>Comunicazioni criptate intercettate oggi e non decifrabili allo stato attuale saranno accessibili con l’utilizzo di QC perfettamente operativi.</p>
+<p>Parimenti, le analisi strategiche di scenari complessi, caratterizzati da variabili numerose ed eterogenee, risulteranno di più semplice interpretazione.</p>
+<p>In entrambi i contesti è indispensabile digitalizzare, conservare, catalogare e aggiornare periodicamente le informazioni strategiche di cui si dispone per poterle impiegare utilmente nei processi computazionali quantistici.</p>
+</section>
+
+<section class="paper-section" id="quantum-italia">
+<span class="small-label">Capitolo 5</span>
+<h2 class="serif-heading">Quantum in Italia</h2>
+<p>Il mercato italiano del calcolo quantistico è ancora in una fase embrionale. L’Italia si distingue per l’eccellenza nella componentistica, in particolare nella fotonica, ma registra un ritardo nello sviluppo di startup di rilievo internazionale. Attualmente sono poche le aziende che offrono una soluzione interamente italiana.</p>
+<p>Ad oggi, la maggior parte delle imprese e delle startup italiane si concentra principalmente su software e applicazioni, con un ampio potenziale di sviluppo di servizi a valore aggiunto per l’industria.</p>
+<p>Questa scarsità potrebbe rappresentare un limite per la realizzazione di prodotti finali interamente nazionali nel lungo termine.</p>
+<p>La comunicazione quantistica è un settore in cui l’Italia eccelle per presenza di startup e sperimentazioni riconosciute a livello internazionale.</p>
+<p>La produzione delle tecnologie di comunicazione quantistica in Italia fa leva su componenti elettroniche assemblate all’estero poiché non esistono una filiera nazionale e strutture di produzione europee.</p>
+<p>A livello di dispositivi hardware quantistici per la comunicazione quantistica, l’Italia presenta startup, riconosciute a livello internazionale, che producono sistemi di QKD, già commercializzabili e integrabili in reti esistenti. Tuttavia, dal punto di vista tecnico, viene segnalato che le tecnologie attuali hanno ancora problematiche sul lungo raggio e costano significativamente di più rispetto alle tecnologie tradizionali. A livello software, sono già disponibili degli algoritmi provati per essere Quantum-Resistant e anche in Italia esistono attori che si stanno attivando per offrire servizi di Post-Quantum Cryptography.</p>
+<p>QKD e Post-Quantum Cryptography possono essere tecnologie complementari e integrate in un unico prodotto. La complessità maggiore risiede nell’aggiornamento degli attuali sistemi di crittografia e delle attuali infrastrutture di rete.</p>
+<p>L’ostacolo principale allo sviluppo del settore è oggi rappresentato dalla limitata presenza di standardizzazione e certificazione delle tecnologie, che rallenta la loro diffusione capillare in una generale mancanza di consapevolezza da parte delle aziende della domanda.</p>
+<p>Nella sensoristica quantistica, l’Italia vanta una significativa filiera di sensoristica tradizionale che potrebbe essere valorizzata in ottica quantistica e agevolare la futura industrializzazione del settore.</p>
+<p>Dal punto di vista dell’hardware, l’ecosistema italiano sta lavorando da un lato con nuove iniziative imprenditoriali, dall’altro con aziende della filiera tradizionale, che si stanno attivando per la realizzazione di sensori quantistici. Nell’ambito del software, alcune aziende stanno lavorando con l’obiettivo di integrare i sensori quantistici in contesti reali e interconnetterli con le tecnologie spaziali.</p>
+</section>
+
+<section class="paper-section" id="conclusioni">
+<span class="small-label">Capitolo 6</span>
+<h2 class="serif-heading">Conclusioni</h2>
+<p>Con la programmazione del Ministero della Difesa per il triennio 2028-2029 inizia la fase di adattamento e integrazione delle tecnologie quantistiche alle Forze Armate.</p>
+<p>Per riuscire a trasformare tecnologie avanzate, dati e innovazione in superiorità operativa sono necessari interventi eterogenei e coordinati in diversi settori.</p>
+<p>Considerate le condizioni attuali della ricerca in materia di Quantum Computing e le esigenze operative del prossimo futuro, DYNAMES individua i seguenti interventi:</p>
+<ul class="paper-list">
+<li>Formazione e addestramento rappresentano l’obiettivo primario.</li>
+<li>I primi investimenti utili si concentrano su sistemi di comunicazione e sensoristica.</li>
+<li>Marginale risulta al momento il settore del calcolo, ma in fase preparatoria è necessario organizzare database strutturati per essere processati da QC nel prossimo futuro.</li>
+</ul>
+</section>
+
+<section class="paper-section bibliography" id="bibliografia">
+<span class="small-label">Fonti</span>
+<h2 class="serif-heading">Bibliografia essenziale</h2>
+<ol class="references">
+<li>Menssen, A. J. e Wang, T. (2026), <em>Strategic Plan for Neutral Atom Quantum Computation</em>, luglio.</li>
+<li>Pasquinucci, A. (2004), <em>Aspetti di crittografia moderna. Da DES alla crittografia quantistica</em>.</li>
+<li>Jaschke, D. e Montangero, S. (2023), <em>Is quantum computing green? An estimate for an energy-efficiency quantum advantage</em>.</li>
+<li>IFAB (2025), <em>New digital technologies for human development</em>.</li>
+<li>Ministero della Difesa (2025), <em>Atto di Indirizzo per l’avvio del ciclo integrato della performance e di formazione del bilancio di previsione per l’E.F. 2027 e la programmazione pluriennale 2028-2029</em>.</li>
+<li>Ministero dell’Università e della Ricerca (2025), <em>Strategia italiana per le tecnologie quantistiche</em>.</li>
+<li>Marino, R., Buffoni, L. e Zavalnij, B. (2026), <em>A short review on the maximum clique problem algorithms with classical, AI, and quantum methods</em>.</li>
+<li>Stato Maggiore della Difesa (2022), <em>Approccio della Difesa alle Operazioni Multidominio</em>.</li>
+</ol>
+</section>
+
+<section class="author-card" id="autore">
+<img alt="Francesco Scordo" onerror="this.style.display='none'" src="../assets/Junior-Fellows/francesco-scordo.jpeg"/>
+<div>
+<span class="small-label">L’autore</span>
+<h2 class="serif-heading">Francesco Scordo</h2>
+<div class="author-role">Tecnologie e Sistemi Complessi</div>
+<p>Giurista specializzato in A.I. e Cybersecurity, ex allievo della Scuola Militare Nunziatella. Studia e investe in Bitcoin dal 2012, con competenze legali, informatiche ed economiche su criptovalute, blockchain, ICT, modelli di A.I. e sistemi quantistici. Socio CLUSIT, è docente, pubblicista e consulente per istituzioni italiane ed europee.</p>
+<p><a href="../chi-siamo.html#francesco-scordo">Profilo completo su DYNAMES</a></p>
+</div>
+</section>
+</div>
+</article>
+</main>
+
+<footer>
+<div class="container">
+<h3>DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p>© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
