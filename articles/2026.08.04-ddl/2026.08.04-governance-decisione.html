@@ -853,6 +853,111 @@
         .article-body ol li { padding-left: 0.35rem; }
         .article-body ol li p { margin-bottom: 1.15rem; }
 </style>
+
+<style id="dynames-dossier-ux">
+.dossier-quick-nav {
+    margin: 1.15rem 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+.dossier-quick-label {
+    flex: 0 0 auto;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-grey);
+}
+.dossier-quick-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.dossier-quick-scroll a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0.48rem 0.7rem;
+    border: 1px solid #dbe3ec;
+    border-radius: 999px;
+    background: var(--optical-white);
+    color: var(--night-blue);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-decoration: none;
+}
+.dossier-quick-scroll a:hover,
+.dossier-quick-scroll a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.dossier-return-cta,
+.dossier-continue {
+    margin: 2.5rem 0 1.5rem;
+    padding: 1.05rem 1.15rem;
+    border: 1px solid #dbe3ec;
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    background: var(--light-grey);
+}
+.dossier-return-cta strong,
+.dossier-continue span {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-grey);
+}
+.dossier-return-cta a,
+.dossier-continue a {
+    color: var(--accent);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration: none;
+}
+.dossier-return-cta a:hover,
+.dossier-return-cta a:focus-visible,
+.dossier-continue a:hover,
+.dossier-continue a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+@media (max-width: 900px) {
+    .dossier-quick-nav {
+        display: block;
+        margin-top: 1rem;
+    }
+    .dossier-quick-scroll {
+        flex-wrap: nowrap;
+        gap: 0.45rem;
+        margin-top: 0.55rem;
+        padding-bottom: 0.35rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    .dossier-quick-scroll::-webkit-scrollbar { display: none; }
+    .dossier-quick-scroll a {
+        flex: 0 0 auto;
+        min-height: 40px;
+        padding: 0.55rem 0.75rem;
+    }
+    .dossier-return-cta,
+    .dossier-continue {
+        margin-top: 2rem;
+        padding: 0.95rem 1rem;
+    }
+}
+</style>
 </head>
 <body>
 <header>
@@ -877,7 +982,7 @@
 </div>
 </header>
 <div class="container back-nav">
-<a href="../../hub.html">← Torna all'Hub</a>
+<a href="../2026.08.04-ddl-difesa.html">← Torna al dossier DDL Difesa</a>
 </div>
 <article>
 <div class="article-container article-header">
@@ -890,8 +995,8 @@
 <span>Tempo di lettura: 4 min</span>
 </div>
 </div>
-<img alt="Governance interforze e interministeriale della decisione in scenari di crisi complessi" class="article-hero" onerror="this.style.display='none'" src="2026.08.04-governance-decisione.png"/>
-<div class="article-container article-body"><p class="drop-cap">Il disegno di legge sulla capacità di difesa nazionale non si limita a potenziare strumenti e reparti: prova a ridisegnare il modo in cui la Repubblica decide, coordina e agisce quando sicurezza, tecnologia, energia, ambiente e infrastrutture si sovrappongono. La sua posta in gioco è istituzionale prima ancora che operativa: costruire una governance più rapida, interforze e interministeriale, capace di leggere crisi diverse come parti di uno stesso spazio decisionale.</p><h2>Il centro della riforma</h2><p>Il primo asse è il rafforzamento del vertice militare, con una riorganizzazione dello Stato Maggiore della Difesa e del Comitato dei Capi, pensata per rendere più lineare la catena delle responsabilità e più coerente il raccordo tra indirizzo politico e impiego dello strumento militare. Accanto a questo, il testo valorizza il ruolo del Capo di stato maggiore della difesa come fulcro di una architettura che non coordina solo forze e comandi, ma anche competenze specialistiche e domini emergenti. È un passaggio importante perché sposta il baricentro dalla mera somma delle componenti alla loro integrazione funzionale.</p><h2>Decisione interforze</h2><p>Il disegno di legge rafforza il coordinamento interforze con strumenti nuovi: il Comitato dei Capi viene ripensato come sede di proposta e sintesi, mentre il Centro interforze di addestramento per il combattimento e per il contrasto alla minaccia ibrida assume un ruolo di regia dottrinale ed esercitativa. La sua funzione non è solo addestrare, ma sviluppare scenari, testare concetti operativi e migliorare i processi decisionali, anche in raccordo con amministrazioni e agenzie interessate. In questa impostazione, la difesa diventa anche un laboratorio di governo delle crisi complesse, dove l’interforze è prima di tutto un metodo di decisione.</p><h2>Cyber, dati e innovazione</h2><p>Il capitolo cyber è quello che più chiaramente esprime la logica di una governance integrata. Il testo introduce lo “spazio cibernetico di interesse nazionale per la difesa dello Stato”, definisce il Capo di stato maggiore della difesa come autorità cyber e gli attribuisce poteri di indirizzo, coordinamento e vigilanza su dati, infrastrutture, sicurezza e architetture tecnico-logistiche. Non si tratta solo di protezione tecnica: il provvedimento costruisce una vera filiera decisionale su personale, formazione, impiego operativo, uso dei dati e innovazione, con il nuovo brevetto di Specialista Cyber Militare e con incentivi mirati a trattenere competenze rare.</p><h2>Raccordo istituzionale</h2><p>Un elemento centrale, spesso sottovalutato, è il raccordo tra Difesa, ministeri, agenzie e strutture tecniche. La riforma non pensa la difesa come sistema chiuso: lo si vede nella Commissione tecnica per le valutazioni ambientali per le esigenze della difesa e della sicurezza energetica nazionale, nella collaborazione con il Ministero dell’ambiente e della sicurezza energetica, nel ricorso a soggetti tecnici come CNR, ENEA, ISPRA e INGV, e nella possibilità di coinvolgere Difesa servizi S.p.A. nei procedimenti e nella copertura dei costi. È un modello di governance che riconosce come la resilienza statale passi dalla capacità di far convergere competenze amministrative, scientifiche e operative dentro un’unica cornice decisionale.</p><h2>Crisi come sistema</h2><p>Il punto politico della riforma è qui: crisi energetiche, ambientali, cibernetiche, logistiche e militari non vengono più trattate come compartimenti stagni, ma come fenomeni che richiedono una regia unica e una capacità di risposta scalabile. Anche la disciplina dei sistemi senza equipaggio, delle procedure negoziali e dei programmi di investimento punta nella stessa direzione: accorciare il tempo tra bisogno operativo, valutazione tecnica e decisione amministrativa. In termini di governance pubblica, la riforma prova a trasformare la Difesa in una piattaforma di coordinamento nazionale, non soltanto in un apparato armato.</p><h2>Una lettura politica</h2><p>L’innovazione più rilevante non è nella singola norma, ma nell’idea che la sovranità contemporanea si eserciti attraverso capacità di integrazione. Vertice militare più forte, interforze più coeso, cyber più strutturato, dati più governati e relazioni istituzionali più dense sono tutti tasselli di una stessa architettura: fare della Difesa un nodo ordinatore della sicurezza nazionale, capace di dialogare con il resto dell’amministrazione senza perdere velocità e autorevolezza. È una riforma che parla il linguaggio della prontezza, ma soprattutto quello della decisione pubblica in tempi complessi.</p><div class="pull-quote" style="margin-top: 4rem; margin-bottom: 2rem;">La sovranità contemporanea si esercita attraverso capacità di integrazione.</div><div class="author-box"><img alt="Antonino Brigandì" onerror="this.style.display='none';" src="../../assets/immagini-chi-siamo/antonio-brigandi.JPG"/><div class="author-info"><h4><a href="../../chi-siamo.html#brigandi">Antonino Brigandì</a></h4><p>Laureato magistrale in Relazioni internazionali e sicurezza globale presso La Sapienza, ha conseguito un master in Public Affairs e Lobbying alla Luiss Business School. Consulente di relazioni istituzionali, lavora con clienti nei settori difesa, cybersicurezza ed energia e scrive di geopolitica e politica italiana.</p></div></div></div>
+<img fetchpriority="high" decoding="async" alt="Governance interforze e interministeriale della decisione in scenari di crisi complessi" class="article-hero" onerror="this.style.display='none'" src="2026.08.04-governance-decisione.png"/>
+<div class="article-container article-body"><p class="drop-cap">Il disegno di legge sulla capacità di difesa nazionale non si limita a potenziare strumenti e reparti: prova a ridisegnare il modo in cui la Repubblica decide, coordina e agisce quando sicurezza, tecnologia, energia, ambiente e infrastrutture si sovrappongono. La sua posta in gioco è istituzionale prima ancora che operativa: costruire una governance più rapida, interforze e interministeriale, capace di leggere crisi diverse come parti di uno stesso spazio decisionale.</p><h2>Il centro della riforma</h2><p>Il primo asse è il rafforzamento del vertice militare, con una riorganizzazione dello Stato Maggiore della Difesa e del Comitato dei Capi, pensata per rendere più lineare la catena delle responsabilità e più coerente il raccordo tra indirizzo politico e impiego dello strumento militare. Accanto a questo, il testo valorizza il ruolo del Capo di stato maggiore della difesa come fulcro di una architettura che non coordina solo forze e comandi, ma anche competenze specialistiche e domini emergenti. È un passaggio importante perché sposta il baricentro dalla mera somma delle componenti alla loro integrazione funzionale.</p><h2>Decisione interforze</h2><p>Il disegno di legge rafforza il coordinamento interforze con strumenti nuovi: il Comitato dei Capi viene ripensato come sede di proposta e sintesi, mentre il Centro interforze di addestramento per il combattimento e per il contrasto alla minaccia ibrida assume un ruolo di regia dottrinale ed esercitativa. La sua funzione non è solo addestrare, ma sviluppare scenari, testare concetti operativi e migliorare i processi decisionali, anche in raccordo con amministrazioni e agenzie interessate. In questa impostazione, la difesa diventa anche un laboratorio di governo delle crisi complesse, dove l’interforze è prima di tutto un metodo di decisione.</p><h2>Cyber, dati e innovazione</h2><p>Il capitolo cyber è quello che più chiaramente esprime la logica di una governance integrata. Il testo introduce lo “spazio cibernetico di interesse nazionale per la difesa dello Stato”, definisce il Capo di stato maggiore della difesa come autorità cyber e gli attribuisce poteri di indirizzo, coordinamento e vigilanza su dati, infrastrutture, sicurezza e architetture tecnico-logistiche. Non si tratta solo di protezione tecnica: il provvedimento costruisce una vera filiera decisionale su personale, formazione, impiego operativo, uso dei dati e innovazione, con il nuovo brevetto di Specialista Cyber Militare e con incentivi mirati a trattenere competenze rare.</p><h2>Raccordo istituzionale</h2><p>Un elemento centrale, spesso sottovalutato, è il raccordo tra Difesa, ministeri, agenzie e strutture tecniche. La riforma non pensa la difesa come sistema chiuso: lo si vede nella Commissione tecnica per le valutazioni ambientali per le esigenze della difesa e della sicurezza energetica nazionale, nella collaborazione con il Ministero dell’ambiente e della sicurezza energetica, nel ricorso a soggetti tecnici come CNR, ENEA, ISPRA e INGV, e nella possibilità di coinvolgere Difesa servizi S.p.A. nei procedimenti e nella copertura dei costi. È un modello di governance che riconosce come la resilienza statale passi dalla capacità di far convergere competenze amministrative, scientifiche e operative dentro un’unica cornice decisionale.</p><h2>Crisi come sistema</h2><p>Il punto politico della riforma è qui: crisi energetiche, ambientali, cibernetiche, logistiche e militari non vengono più trattate come compartimenti stagni, ma come fenomeni che richiedono una regia unica e una capacità di risposta scalabile. Anche la disciplina dei sistemi senza equipaggio, delle procedure negoziali e dei programmi di investimento punta nella stessa direzione: accorciare il tempo tra bisogno operativo, valutazione tecnica e decisione amministrativa. In termini di governance pubblica, la riforma prova a trasformare la Difesa in una piattaforma di coordinamento nazionale, non soltanto in un apparato armato.</p><h2>Una lettura politica</h2><p>L’innovazione più rilevante non è nella singola norma, ma nell’idea che la sovranità contemporanea si eserciti attraverso capacità di integrazione. Vertice militare più forte, interforze più coeso, cyber più strutturato, dati più governati e relazioni istituzionali più dense sono tutti tasselli di una stessa architettura: fare della Difesa un nodo ordinatore della sicurezza nazionale, capace di dialogare con il resto dell’amministrazione senza perdere velocità e autorevolezza. È una riforma che parla il linguaggio della prontezza, ma soprattutto quello della decisione pubblica in tempi complessi.</p><div class="pull-quote" style="margin-top: 4rem; margin-bottom: 2rem;">La sovranità contemporanea si esercita attraverso capacità di integrazione.</div><div class="dossier-continue"><span>Dossier DDL Difesa 2026</span><a href="../2026.08.04-ddl-difesa.html#analisi-dossier">Continua nel dossier: esplora le altre analisi →</a></div><div class="author-box"><img alt="Antonino Brigandì" onerror="this.style.display='none';" src="../../assets/Junior-Fellows/antonio-brigandi.JPG" loading="lazy" decoding="async"/><div class="author-info"><h4><a href="../../chi-siamo.html#brigandi">Antonino Brigandì</a></h4><p>Laureato magistrale in Relazioni internazionali e sicurezza globale presso La Sapienza, ha conseguito un master in Public Affairs e Lobbying alla Luiss Business School. Consulente di relazioni istituzionali, lavora con clienti nei settori difesa, cybersicurezza ed energia e scrive di geopolitica e politica italiana.</p></div></div></div>
 </article>
 <footer>
 <div class="container">

@@ -1076,7 +1076,112 @@
   "publisher": {"@type": "Organization", "name": "DYNAMES"},
   "mainEntityOfPage": "https://www.dynames.it/articles/2026.08.04-ddl-difesa.html",
   "image": "https://www.dynames.it/articles/Immagini/2026.08.04-ddl-difesa-share.jpg"
-}</script></head>
+}</script>
+<style id="dynames-dossier-ux">
+.dossier-quick-nav {
+    margin: 1.15rem 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+.dossier-quick-label {
+    flex: 0 0 auto;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-grey);
+}
+.dossier-quick-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.dossier-quick-scroll a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0.48rem 0.7rem;
+    border: 1px solid #dbe3ec;
+    border-radius: 999px;
+    background: var(--optical-white);
+    color: var(--night-blue);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-decoration: none;
+}
+.dossier-quick-scroll a:hover,
+.dossier-quick-scroll a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.dossier-return-cta,
+.dossier-continue {
+    margin: 2.5rem 0 1.5rem;
+    padding: 1.05rem 1.15rem;
+    border: 1px solid #dbe3ec;
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    background: var(--light-grey);
+}
+.dossier-return-cta strong,
+.dossier-continue span {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-grey);
+}
+.dossier-return-cta a,
+.dossier-continue a {
+    color: var(--accent);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration: none;
+}
+.dossier-return-cta a:hover,
+.dossier-return-cta a:focus-visible,
+.dossier-continue a:hover,
+.dossier-continue a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+@media (max-width: 900px) {
+    .dossier-quick-nav {
+        display: block;
+        margin-top: 1rem;
+    }
+    .dossier-quick-scroll {
+        flex-wrap: nowrap;
+        gap: 0.45rem;
+        margin-top: 0.55rem;
+        padding-bottom: 0.35rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    .dossier-quick-scroll::-webkit-scrollbar { display: none; }
+    .dossier-quick-scroll a {
+        flex: 0 0 auto;
+        min-height: 40px;
+        padding: 0.55rem 0.75rem;
+    }
+    .dossier-return-cta,
+    .dossier-continue {
+        margin-top: 2rem;
+        padding: 0.95rem 1rem;
+    }
+}
+</style>
+</head>
 <body>
 <header>
 <div class="container header-inner">
@@ -1112,10 +1217,23 @@
 <span>4 Agosto 2026</span>
 <span>Tempo di lettura: 9 min</span>
 </div>
+<nav aria-label="In questo dossier" class="dossier-quick-nav">
+<span class="dossier-quick-label">In questo dossier</span>
+<div class="dossier-quick-scroll">
+<a href="2026.08.04-ddl/2026.08.04-guerra-ibrida.html">Guerra ibrida</a>
+<a href="2026.08.04-ddl/2026.08.04-personale-militare.html">Personale</a>
+<a href="2026.08.04-ddl/2026.08.04-cyber-autonomia-competenze.html">Cyber</a>
+<a href="2026.08.04-ddl/2026.08.04-governance-decisione.html">Governance</a>
+<a href="2026.08.04-ddl/2026.08.04-infrastrutture-difesa.html">Infrastrutture</a>
+<a href="2026.08.04-ddl/2026.08.04-sovranita-multidominio.html">Sovranità multidominio</a>
+<a href="2026.08.04-ddl/2026.08.06-difesa-politica-industriale-nuovo-ddl.html">Industria</a>
+</div>
+</nav>
+
 </div>
 <div class="carousel-wrap hero-carousel-wrap">
 <figure class="single-hero">
-<img alt="Riunione al Ministero della Difesa per la presentazione del nuovo modello di riorganizzazione delle Forze armate" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="Immagini/2026.08.04-ddl-difesa.jpg"/>
+<img decoding="async" fetchpriority="high" alt="Riunione al Ministero della Difesa per la presentazione del nuovo modello di riorganizzazione delle Forze armate" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="Immagini/2026.08.04-ddl-difesa.jpg"/>
 <div aria-hidden="true" class="hero-placeholder">
 <strong>DDL Difesa 2026<br/>governance, prontezza e sovranità multidominio</strong>
 <small>Immagine prevista: Immagini/2026.08.04-ddl-difesa.jpg</small>
@@ -1132,7 +1250,7 @@
 </div>
 <p>Il disegno di legge mantiene un impianto organico che collega organizzazione, capacità operative e strumenti amministrativi. La logica complessiva è chiara: la prontezza non dipende esclusivamente dai mezzi disponibili, ma dalla capacità dello Stato di decidere, integrare competenze, trattenere professionalità, proteggere infrastrutture e trasformare rapidamente risorse e innovazione in effetti operativi.</p>
 <div class="pull-quote">La questione centrale del DDL è il tempo strategico: ridurre la distanza tra minaccia, decisione e capacità effettiva.</div>
-<div class="toc-box">
+<div class="toc-box" id="analisi-dossier">
 <h2>Le sette analisi del dossier</h2>
 <ol>
 <li><a aria-label="Apri l’articolo: Difendere lo Stato nell’era della guerra ibrida: cultura della difesa, nuovi teatri operativi e competizione informativa" class="toc-thumb-link" href="2026.08.04-ddl/2026.08.04-guerra-ibrida.html"><img alt="Miniatura della hero: Difendere lo Stato nell’era della guerra ibrida: cultura della difesa, nuovi teatri operativi e competizione informativa" class="toc-thumb" data-fallbacks="2026.08.04-ddl/2026.08.04-guerra-ibrida.png|2026.08.04-ddl/2026.08.04-guerra-ibrida-light.jpg|2026.08.04-ddl/2026.08.04-guerra-ibrida-light.png|2026.08.04-ddl/Immagini/2026.08.04-guerra-ibrida.jpg|2026.08.04-ddl/Immagini/2026.08.04-guerra-ibrida.png|2026.08.04-ddl/Immagini/2026.08.04-guerra-ibrida-light.jpg|2026.08.04-ddl/Immagini/2026.08.04-guerra-ibrida-light.png" decoding="async" loading="lazy" onerror="var a=(this.dataset.fallbacks||'').split('|').filter(Boolean),i=Number(this.dataset.fallbackIndex||0);if(i&lt;a.length){this.dataset.fallbackIndex=i+1;this.src=a[i];}else{var li=this.closest('li');if(li)li.classList.add('no-thumb');var l=this.closest('.toc-thumb-link');if(l)l.remove();}" src="2026.08.04-ddl/2026.08.04-guerra-ibrida.jpg"/></a>
@@ -1224,6 +1342,11 @@
 <div class="closing-item"><strong>4. La velocità richiede governo.</strong><br/>Semplificazioni, ricerca e procurement devono accorciare i tempi senza sottrarre le scelte strategiche a controllo e valutazione.</div>
 </div>
 <p>Con l’approvazione del Consiglio dei ministri si apre la fase parlamentare. Saranno determinanti le eventuali modifiche apportate dalle Camere, i successivi atti attuativi e la capacità amministrativa di rendere operative le nuove disposizioni. Le sette analisi raccolte in questo dossier osservano la stessa trasformazione da prospettive differenti e complementari: cultura e informazione, capitale umano, cyber, governance, infrastrutture, sovranità multidominio e politica industriale della Difesa.</p>
+
+<div class="dossier-return-cta">
+<strong>Continua nel dossier</strong>
+<a href="#analisi-dossier">Torna alle sette analisi e scegli il prossimo approfondimento →</a>
+</div>
 <div class="author-box">
 <img alt="DYNAMES" onerror="this.style.display='none';" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
 <div class="author-info">
