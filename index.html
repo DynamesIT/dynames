@@ -1114,51 +1114,6 @@
             }
         }
 
-        /* Initial Loader Animation */
-        @keyframes loaderFade {
-            0% {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            30% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            70% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(1.05);
-            }
-        }
-
-        #initial-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: var(--night-blue);
-            z-index: 99999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
-        }
-
-        #initial-loader img {
-            width: 350px;
-            /* Ingrandito */
-            max-width: 80%;
-            /* Sicurezza mobile */
-            opacity: 0;
-            animation: loaderFade 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
 
 
         .footer-brochure-link,
@@ -1195,6 +1150,8 @@
     </style>
 <!-- Favicon and SEO -->
 <link href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" rel="icon" type="image/png"/>
+<link href="https://www.dynames.it/" rel="canonical"/>
+<link as="image" href="assets/chess.png" rel="preload"/>
 <meta content="DYNAMES | Governance di Forze e Sistemi" property="og:title"/>
 <meta content="https://dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" property="og:image"/>
 <meta content="website" property="og:type"/>
@@ -1209,10 +1166,6 @@
     </script>
 </head>
 <body>
-<!-- Initial Loader -->
-<div id="initial-loader">
-<img alt="DYNAMES Logo" onerror="this.style.display='none'" src="assets/logo%20dynames%20negativo.png"/>
-</div>
 <header>
 <div class="container header-inner">
 <div class="brand">
@@ -1229,7 +1182,7 @@
 <span></span>
 </div>
 <nav class="desktop-nav" id="desktopNav">
-<a href="index.html">HOME</a>
+<a href="/">HOME</a>
 <a href="hub.html">ANALISI &amp; ARTICOLI</a>
 <a href="pubblicazioni.html">PUBBLICAZIONI</a>
 
@@ -1275,6 +1228,14 @@
 <button aria-label="Vai alla slide 4" class="hero-dot" type="button"></button>
 </div>
 </section>
+<!-- Mobile-first accesso rapido ai contenuti principali -->
+<nav aria-label="Accesso rapido ai contenuti principali" class="mobile-priority-nav">
+<a href="#hub"><span>Ultime analisi</span><strong>Novità</strong></a>
+<a href="articles/2026.08.04-ddl-difesa.html"><span>Dossier</span><strong>DDL Difesa</strong></a>
+<a href="pubblicazioni.html"><span>Ricerca</span><strong>Pubblicazioni</strong></a>
+<a href="chi-siamo.html"><span>DYNAMES</span><strong>Chi siamo</strong></a>
+</nav>
+
 <style>
         .dynames-grid {
             display: grid;
@@ -1625,10 +1586,52 @@
             }
         }
 </style>
+<style id="dynames-mobile-ux-home">
+.mobile-priority-nav, .mobile-feed-actions { display: none; }
+@media (max-width: 900px) {
+    .hero-carousel { min-height: 420px; }
+    .hero-slide .container { padding-top: 3.6rem; padding-bottom: 3.6rem; }
+    .hero-slide h2 { font-size: clamp(1.65rem, 7vw, 2.05rem); }
+    .hero-slide p { font-size: 0.98rem; line-height: 1.5; max-width: 34rem; }
+    .hero-arrow { top: 48%; }
+    .mobile-priority-nav {
+        display: flex; gap: 0.65rem; overflow-x: auto; padding: 0.85rem 1rem;
+        background: #ffffff; border-bottom: 1px solid #e2e8f0; scrollbar-width: none;
+        -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity;
+    }
+    .mobile-priority-nav::-webkit-scrollbar { display: none; }
+    .mobile-priority-nav a {
+        flex: 0 0 auto; min-width: 138px; padding: 0.75rem 0.85rem; border: 1px solid #dbe3ec;
+        border-radius: 10px; text-decoration: none; color: #0b1120; background: #f8fafc;
+        scroll-snap-align: start; font-family: 'Montserrat', sans-serif;
+    }
+    .mobile-priority-nav span { display: block; color: #64748b; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+    .mobile-priority-nav strong { display: block; margin-top: 0.12rem; font-size: 0.83rem; line-height: 1.25; }
+    #hub { padding-top: 2.6rem !important; padding-bottom: 3rem !important; }
+    #hub .section-title { font-size: 1.65rem; line-height: 1.2; margin-bottom: 0; }
+    #hub .dynames-grid { margin-top: 1.6rem; }
+    #homeLatestGrid:not(.mobile-expanded) .dynames-card:nth-child(n+5) { display: none; }
+    .mobile-feed-actions { display: grid; gap: 0.65rem; margin-top: 1.2rem; }
+    .mobile-feed-actions button, .mobile-feed-actions a {
+        width: 100%; padding: 0.82rem 1rem; border-radius: 8px; font-family: 'Montserrat', sans-serif;
+        font-size: 0.78rem; font-weight: 700; text-align: center; text-decoration: none; cursor: pointer;
+    }
+    .mobile-feed-actions button { border: 1px solid #1e3a8a; background: #1e3a8a; color: #fff; }
+    .mobile-feed-actions a { border: 1px solid #dbe3ec; background: #fff; color: #0b1120; }
+}
+@media (max-width: 600px) {
+    #dynames-consent-banner { max-height: calc(100dvh - 1.2rem); overflow-y: auto; }
+    #dynames-consent-banner .dynames-consent-text { font-size: 0.82rem; line-height: 1.42; }
+    #dynames-consent-banner .dynames-consent-title { font-size: 0.98rem; }
+    #dynames-consent-banner .dynames-consent-actions { margin-top: 0.75rem; gap: 0.5rem; }
+    #dynames-consent-banner .dynames-consent-btn { padding: 0.62rem 0.75rem; }
+}
+</style>
+
 <section id="hub" style="background: var(--optical-white); padding-bottom: 5rem;">
 <div class="container">
 <h2 class="section-title">Le ultime novità del mondo DYNAMES</h2>
-<div class="dynames-grid"><a class="dynames-card dynames-card--latest" href="articles/2026.08.31-salite-a-bordo.html"><img alt="Trump e JD Vance in una scena satirica a bordo di un'astronave, con Washington e una creatura mostruosa sullo sfondo" loading="lazy" src="articles/Immagini/2026.08.31-salite-a-bordo-light.png"/><span class="dynames-card-label">IN EVIDENZA · Articolo · Informazione e Dominio Cognitivo</span><div class="dynames-card-content"><span class="dynames-card-date">31 Agosto 2026</span><h3>Salite a bordo</h3><span class="dynames-card-author">di Laura Laportella</span></div></a>
+<div class="dynames-grid" id="homeLatestGrid"><a class="dynames-card dynames-card--latest" href="articles/2026.08.31-salite-a-bordo.html"><img alt="Trump e JD Vance in una scena satirica a bordo di un'astronave, con Washington e una creatura mostruosa sullo sfondo" loading="lazy" src="articles/Immagini/2026.08.31-salite-a-bordo-light.png"/><span class="dynames-card-label">IN EVIDENZA · Articolo · Informazione e Dominio Cognitivo</span><div class="dynames-card-content"><span class="dynames-card-date">31 Agosto 2026</span><h3>Salite a bordo</h3><span class="dynames-card-author">di Laura Laportella</span></div></a>
 <a class="dynames-card" href="articles/2026.09.03-bio-estrazione-oro.html"><img alt="Ricercatrice osserva un processo di bio-estrazione dell’oro mediante filamenti fungini, con lingotti sullo sfondo" loading="lazy" src="articles/Immagini/2026.09.03-bio-estrazione-oro-light.jpg"/><span class="dynames-card-label">Articolo</span><div class="dynames-card-content"><span class="dynames-card-date">3 Settembre 2026</span><h3>La Bio-estrazione dell’oro e la svolta per la sostenibilità mineraria</h3><span class="dynames-card-author">di Domenico Letizia</span></div></a>
 <a class="dynames-card" href="pubblicazioni/2026.08.27-white-paper-trasformare-tecnologie-avanzate.html"><img alt="Processore quantistico illuminato osservato da due analisti e attraversato da un arco luminoso di dati" loading="lazy" src="pubblicazioni/Archivio/2026.08.27-white-paper-trasformare-tecnologie-avanzate-hero-light.jpg"/><span class="dynames-card-label">White Paper · Tecnologia e Difesa</span><div class="dynames-card-content"><span class="dynames-card-date">27 Agosto 2026</span><h3>Trasformare tecnologie avanzate, dati e innovazione in superiorità operativa</h3><span class="dynames-card-author">a cura di Francesco Scordo</span></div></a>
 <a class="dynames-card" href="articles/2026.08.27-considerazione-umanoidi.html"><img alt="Un uomo e una donna supervisionano un robot umanoide impegnato nel montaggio di una scocca automobilistica" loading="lazy" src="articles/Immagini/2026.08.27-considerazione-umanoidi-light.jpg?v=1"/><span class="dynames-card-label">Articolo · Governance Pubblica</span><div class="dynames-card-content"><span class="dynames-card-date">27 Agosto 2026</span><h3>La transizione post-umanista</h3><span class="dynames-card-author">di Silvia Volpe</span></div></a>
@@ -1642,6 +1645,12 @@
 
 
 </div>
+<div class="mobile-feed-actions">
+<button aria-controls="homeLatestGrid" aria-expanded="false" id="mobileShowMore" type="button">Mostra altre analisi</button>
+<a href="hub.html">Tutte le analisi →</a>
+<a href="pubblicazioni.html">Vai alle pubblicazioni →</a>
+</div>
+
 </div>
 </section>
 <section class="container" id="eventi" style="padding-top: 10rem; margin-bottom: 6rem;">
@@ -2109,18 +2118,18 @@
             startAutoplay();
         })();
 
-
-        // Hide loader after animation
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('initial-loader');
-            if (loader) {
-                setTimeout(() => {
-                    loader.style.opacity = '0';
-                    loader.style.visibility = 'hidden';
-                    setTimeout(() => loader.remove(), 800);
-                }, 2500);
-            }
-        });
-    </script>
+    
+        // Mobile: progressive disclosure delle analisi in homepage
+        (function () {
+            const grid = document.getElementById('homeLatestGrid');
+            const button = document.getElementById('mobileShowMore');
+            if (!grid || !button) return;
+            button.addEventListener('click', function () {
+                const expanded = grid.classList.toggle('mobile-expanded');
+                button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                button.textContent = expanded ? 'Mostra meno' : 'Mostra altre analisi';
+            });
+        }());
+</script>
 </body>
 </html>
