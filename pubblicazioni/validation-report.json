@@ -1,0 +1,164 @@
+[
+  {
+    "source": "2026.07.20-difesa-e-liberta(1).html",
+    "output": "2026.07.20-difesa-e-liberta.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 25289,
+    "size_after": 37682,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  },
+  {
+    "source": "2026.07.20-generazione-z-e-conflitto-cognitivo.html(1).html",
+    "output": "2026.07.20-generazione-z-e-conflitto-cognitivo.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 24870,
+    "size_after": 37263,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  },
+  {
+    "source": "2026.07.28-mente-obiettivo-strategico.html",
+    "output": "2026.07.28-mente-obiettivo-strategico.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 60323,
+    "size_after": 72713,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  },
+  {
+    "source": "2026-report(7).html",
+    "output": "2026-report.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 31901,
+    "size_after": 44271,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  },
+  {
+    "source": "Prima_del_tavolo_contesto_forza_negoziale_IT(6).html",
+    "output": "Prima_del_tavolo_contesto_forza_negoziale_IT.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 56638,
+    "size_after": 69031,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  },
+  {
+    "source": "2026.07.15-white-paper-minaccia-russa-democrazie-europee(7).html",
+    "output": "2026.07.15-white-paper-minaccia-russa-democrazie-europee.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 40499,
+    "size_after": 52892,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  },
+  {
+    "source": "2026.07.15-white-paper-sovranita-tecnologica-democrazia-europea(5).html",
+    "output": "2026.07.15-white-paper-sovranita-tecnologica-democrazia-europea.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 33138,
+    "size_after": 45531,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  },
+  {
+    "source": "2026.07.18-conflitti-e-confini-immateriali(4).html",
+    "output": "2026.07.18-conflitti-e-confini-immateriali.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 82749,
+    "size_after": 95142,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  },
+  {
+    "source": "2026.07.20-calcio-e-potere(2).html",
+    "output": "2026.07.20-calcio-e-potere.html",
+    "action": "replaced_legacy_ga_block",
+    "size_before": 25557,
+    "size_after": 37950,
+    "checks": {
+      "old_id_absent": true,
+      "new_id_present": true,
+      "consent_marker_once": true,
+      "no_static_ga_loader": true,
+      "consent_default_denied": true,
+      "accept_and_reject": true,
+      "settings_control": true,
+      "privacy_link": true,
+      "body_and_post_head_unchanged": true
+    }
+  }
+]
