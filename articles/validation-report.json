@@ -1,0 +1,382 @@
+[
+  {
+    "source": "2026.06.02-2-giugno-comunicazione-strategica(1).html",
+    "output": "2026.06.02-2-giugno-comunicazione-strategica.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.05.30-potenza-artificiale(9).html",
+    "output": "2026.05.30-potenza-artificiale.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.05.28-repubblica-tecnologica(6).html",
+    "output": "2026.05.28-repubblica-tecnologica.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "20260525-myhos(2).html",
+    "output": "20260525-myhos.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.04.13-quando-un-post-diventa-geopolitica(2).html",
+    "output": "2026.04.13-quando-un-post-diventa-geopolitica.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.05.02-instant-marketing(2).html",
+    "output": "2026.05.02-instant-marketing.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.05.12-asse-cipro-libano(2).html",
+    "output": "2026.05.12-asse-cipro-libano.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.05.15-difesa-portatori-interesse(1).html",
+    "output": "2026.05.15-difesa-portatori-interesse.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.05.18-farmaco-potere(2).html",
+    "output": "2026.05.18-farmaco-potere.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "cinema-guerra-cognitiva(1).html",
+    "output": "cinema-guerra-cognitiva.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "guerra-cognitiva-aldo-torchiaro(1).html",
+    "output": "guerra-cognitiva-aldo-torchiaro.html",
+    "old_ga_blocks_removed": 0,
+    "had_old_ga_id": false,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "leadership(1).html",
+    "output": "leadership.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "perche-dynames(1).html",
+    "output": "perche-dynames.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "per-non-portare-clausewitz-all-estremo(1).html",
+    "output": "per-non-portare-clausewitz-all-estremo.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "tecnologia-hybrid-warfare(1).html",
+    "output": "tecnologia-hybrid-warfare.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.06.18-high-north(1).html",
+    "output": "2026.06.18-high-north.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.06.18-dominio-e-difesa-aerea(1).html",
+    "output": "2026.06.18-dominio-e-difesa-aerea.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.06.18-forum-machiavelli-procurement-europeo(1).html",
+    "output": "2026.06.18-forum-machiavelli-procurement-europeo.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.06.14-canada-difesa-navale(5).html",
+    "output": "2026.06.14-canada-difesa-navale.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  },
+  {
+    "source": "2026.06.06-vietnam-spacex(5).html",
+    "output": "2026.06.06-vietnam-spacex.html",
+    "old_ga_blocks_removed": 1,
+    "had_old_ga_id": true,
+    "checks": {
+      "old_id_removed": true,
+      "new_id_present_once": true,
+      "consent_marker_once": true,
+      "no_static_ga_script_before_consent": true,
+      "accept_button_present": true,
+      "reject_button_present": true,
+      "settings_button_present": true,
+      "privacy_link_present": true,
+      "html_closes": true,
+      "body_closes": true
+    },
+    "all_checks_passed": true
+  }
+]
