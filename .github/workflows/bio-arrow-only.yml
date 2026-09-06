@@ -1,0 +1,82 @@
+name: Bio arrow-only toggle
+
+on:
+  push:
+    branches:
+      - bio-arrow-only-20260906
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Replace bio labels with arrow-only controls
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('chi-siamo.html')
+          s = p.read_text(encoding='utf-8')
+
+          s, n = re.subn(
+              r'<button aria-controls="([^"]+)" aria-expanded="false" class="bio-expand-btn" type="button">Leggi la bio</button>',
+              r'<button aria-controls="\1" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button>',
+              s
+          )
+          if n != 45:
+              raise SystemExit(f'Expected 45 bio buttons, changed {n}')
+
+          old_btn = '''        .bio-expand-btn {
+              display: none;
+              margin: 0.85rem auto 0;
+              padding: 0.5rem 0.85rem;'''
+          new_btn = '''        .bio-expand-btn {
+              display: none;
+              width: 2.25rem;
+              height: 2.25rem;
+              margin: 0.85rem auto 0;
+              padding: 0;'''
+          if old_btn not in s:
+              raise SystemExit('Button CSS block not found')
+          s = s.replace(old_btn, new_btn, 1)
+
+          old_arrow = '''        .bio-expand-btn::after {
+              content: "↓";
+              margin-left: 0.45rem;
+              color: var(--gold-accent);'''
+          new_arrow = '''        .bio-expand-btn::after {
+              content: "↓";
+              margin-left: 0;
+              color: var(--gold-accent);
+              font-size: 1.05rem;
+              line-height: 1;'''
+          if old_arrow not in s:
+              raise SystemExit('Arrow CSS block not found')
+          s = s.replace(old_arrow, new_arrow, 1)
+
+          old_js = "button.firstChild.nodeValue = expanded ? 'Chiudi la bio' : 'Leggi la bio';"
+          new_js = "button.setAttribute('aria-label', expanded ? 'Comprimi la biografia' : 'Espandi la biografia');"
+          if old_js not in s:
+              raise SystemExit('Toggle JS line not found')
+          s = s.replace(old_js, new_js, 1)
+
+          if 'Leggi la bio' in s or 'Chiudi la bio' in s:
+              raise SystemExit('Visible bio labels still present')
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+          git config user.name "DynamesIT"
+          git config user.email "redazione@dynames.it"
+          git add chi-siamo.html
+          git commit -m "Use arrow-only bio toggles"
+          git push origin HEAD:main
