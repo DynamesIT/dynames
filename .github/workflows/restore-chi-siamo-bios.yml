@@ -1,0 +1,87 @@
+name: Restore Chi Siamo bios
+
+on:
+  push:
+    branches:
+      - restore-bios-20260906
+
+permissions:
+  contents: write
+
+jobs:
+  restore-bios:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Restore visible bios
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('chi-siamo.html')
+          html = path.read_text(encoding='utf-8')
+
+          pattern = re.compile(
+              r'<details class="bio-toggle"><summary[^>]*>(?P<summary>.*?)</summary><div class="bio-content">(?P<bio>.*?)</div></details>',
+              re.S,
+          )
+          matches = list(pattern.finditer(html))
+          if len(matches) != 45:
+              raise SystemExit(f'Expected 45 bio toggles, found {len(matches)}')
+
+          before_bios = [m.group('bio') for m in matches]
+
+          def repl(m):
+              return f'<div class="bio-static">{m.group("summary")}<div class="bio-content">{m.group("bio")}</div></div>'
+
+          fixed = pattern.sub(repl, html)
+
+          static_css = '''
+                  .bio-static {
+                      width: 100%;
+                      text-align: left;
+                  }
+
+                  .bio-static .bio-summary-copy {
+                      width: 100%;
+                  }
+
+          '''
+          anchor = '        .bio-toggle {\n            width: 100%;\n'
+          if '.bio-static {' not in fixed:
+              if anchor not in fixed:
+                  raise SystemExit('CSS insertion anchor not found')
+              fixed = fixed.replace(anchor, static_css + anchor, 1)
+
+          if fixed.count('<div class="bio-static">') != 45:
+              raise SystemExit('Static bio count mismatch')
+          if '<details class="bio-toggle">' in fixed:
+              raise SystemExit('Bio toggle markup remains')
+
+          after_bios = re.findall(r'<div class="bio-content">(.*?)</div>', fixed, re.S)
+          if before_bios != after_bios:
+              raise SystemExit('Biography text changed unexpectedly')
+
+          path.write_text(fixed, encoding='utf-8')
+          print('Restored 45 biographies as permanently visible content.')
+          PY
+
+      - name: Commit to main
+        shell: bash
+        run: |
+          git config user.name "DynamesIT"
+          git config user.email "redazione@dynames.it"
+          git add chi-siamo.html
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git commit -m "Restore visible bios on Chi Siamo"
+          git push origin HEAD:main
