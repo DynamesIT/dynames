@@ -1,0 +1,57 @@
+name: Update Chi Siamo expandable bios
+
+on:
+  push:
+    branches:
+      - expandable-bios-20260906
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ github.token }}
+
+      - name: Rebuild validated Chi Siamo
+        shell: bash
+        run: |
+          git fetch origin expandable-bios-20260906
+          : > /tmp/bio.b64
+          for n in 00 01 02 03 04 05 06; do
+            git show origin/expandable-bios-20260906:.sync/bio-$n >> /tmp/bio.b64
+          done
+          python - <<'PY'
+          import base64, lzma, pathlib, hashlib
+          payload = pathlib.Path('/tmp/bio.b64').read_text().strip()
+          data = lzma.decompress(base64.b64decode(payload))
+          expected = '2f1588ecbb3e32e2387f3beab34cfee9f69b1de3e3c405d46d979cc4079f1ab4'
+          actual = hashlib.sha256(data).hexdigest()
+          if actual != expected:
+              raise SystemExit(f'SHA mismatch: {actual} != {expected}')
+          pathlib.Path('chi-siamo.html').write_bytes(data)
+          PY
+
+      - name: Verify bios
+        shell: bash
+        run: |
+          test "$(grep -o 'class="bio-expand-btn"' chi-siamo.html | wc -l)" -eq 45
+          test "$(grep -o 'class="bio-static"' chi-siamo.html | wc -l)" -eq 45
+          ! grep -q '<details class="bio-toggle"' chi-siamo.html
+          grep -q 'Leggi la bio' chi-siamo.html
+
+      - name: Commit and push main
+        shell: bash
+        run: |
+          git config user.name 'DynamesIT'
+          git config user.email 'redazione@dynames.it'
+          git add chi-siamo.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Make Chi Siamo bios expandable on all devices'
+          git push origin HEAD:main
