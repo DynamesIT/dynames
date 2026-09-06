@@ -35,33 +35,23 @@ jobs:
           if n != 45:
               raise SystemExit(f'Expected 45 bio buttons, changed {n}')
 
-          old_btn = '''        .bio-expand-btn {
-              display: none;
-              margin: 0.85rem auto 0;
-              padding: 0.5rem 0.85rem;'''
-          new_btn = '''        .bio-expand-btn {
-              display: none;
-              width: 2.25rem;
-              height: 2.25rem;
-              margin: 0.85rem auto 0;
-              padding: 0;'''
-          if old_btn not in s:
-              raise SystemExit('Button CSS block not found')
-          s = s.replace(old_btn, new_btn, 1)
+          s, n_css = re.subn(
+              r'\.bio-expand-btn \{\s*display: none;\s*margin: 0\.85rem auto 0;\s*padding: 0\.5rem 0\.85rem;',
+              '.bio-expand-btn {\n            display: none;\n            width: 2.25rem;\n            height: 2.25rem;\n            margin: 0.85rem auto 0;\n            padding: 0;',
+              s,
+              count=1
+          )
+          if n_css != 1:
+              raise SystemExit(f'Expected one button CSS block, changed {n_css}')
 
-          old_arrow = '''        .bio-expand-btn::after {
-              content: "↓";
-              margin-left: 0.45rem;
-              color: var(--gold-accent);'''
-          new_arrow = '''        .bio-expand-btn::after {
-              content: "↓";
-              margin-left: 0;
-              color: var(--gold-accent);
-              font-size: 1.05rem;
-              line-height: 1;'''
-          if old_arrow not in s:
-              raise SystemExit('Arrow CSS block not found')
-          s = s.replace(old_arrow, new_arrow, 1)
+          s, n_arrow = re.subn(
+              r'\.bio-expand-btn::after \{\s*content: "↓";\s*margin-left: 0\.45rem;\s*color: var\(--gold-accent\);',
+              '.bio-expand-btn::after {\n            content: "↓";\n            margin-left: 0;\n            color: var(--gold-accent);\n            font-size: 1.05rem;\n            line-height: 1;',
+              s,
+              count=1
+          )
+          if n_arrow != 1:
+              raise SystemExit(f'Expected one arrow CSS block, changed {n_arrow}')
 
           old_js = "button.firstChild.nodeValue = expanded ? 'Chiudi la bio' : 'Leggi la bio';"
           new_js = "button.setAttribute('aria-label', expanded ? 'Comprimi la biografia' : 'Espandi la biografia');"
