@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src='https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DYNAMES | L’eredità dell’11 settembre</title>
+  <meta name="description" content="A venticinque anni dagli attentati alle Torri Gemelle, come sono cambiati il rapporto con la sicurezza, la memoria collettiva e le forme della minaccia.">
+  <meta name="author" content="Michele Punzi">
+  <link rel="canonical" href="https://www.dynames.it/articles/2026.09.11-eredita-11-settembre.html">
+
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DYNAMES">
+  <meta property="og:title" content="L’eredità dell’11 settembre">
+  <meta property="og:description" content="A venticinque anni dagli attentati alle Torri Gemelle, come sono cambiati il rapporto con la sicurezza, la memoria collettiva e le forme della minaccia.">
+  <meta property="og:url" content="https://www.dynames.it/articles/2026.09.11-eredita-11-settembre.html">
+  <meta property="og:image" content="https://www.dynames.it/articles/Immagini/2026.09.11-eredita-11-settembre-light.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Un passeggero ai controlli aeroportuali davanti a una fotografia di New York con il Tribute in Light">
+  <meta property="article:author" content="Michele Punzi">
+  <meta property="article:published_time" content="2026-09-11T09:00:00+02:00">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="L’eredità dell’11 settembre">
+  <meta name="twitter:description" content="A venticinque anni dagli attentati alle Torri Gemelle, come sono cambiati il rapporto con la sicurezza, la memoria collettiva e le forme della minaccia.">
+  <meta name="twitter:image" content="https://www.dynames.it/articles/Immagini/2026.09.11-eredita-11-settembre-light.jpg">
+  <meta name="twitter:image:alt" content="Un passeggero ai controlli aeroportuali davanti a una fotografia di New York con il Tribute in Light">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": "L’eredità dell’11 settembre",
+    "description": "A venticinque anni dagli attentati alle Torri Gemelle, come sono cambiati il rapporto con la sicurezza, la memoria collettiva e le forme della minaccia.",
+    "datePublished": "2026-09-11T09:00:00+02:00",
+    "dateModified": "2026-09-11T09:00:00+02:00",
+    "inLanguage": "it-IT",
+    "mainEntityOfPage": "https://www.dynames.it/articles/2026.09.11-eredita-11-settembre.html",
+    "image": "https://www.dynames.it/articles/Immagini/2026.09.11-eredita-11-settembre-light.jpg",
+    "author": {"@type": "Person", "name": "Michele Punzi"},
+    "publisher": {"@type": "Organization", "name": "DYNAMES", "url": "https://www.dynames.it/"}
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{--night-blue:#0b1120;--slate-grey:#334155;--optical-white:#fff;--text-primary:#1e293b;--text-secondary:#475569;--text-light:#cbd5e1;--paper-bg:#fdfbf7;--gold-accent:#b8935a;--data-accent:#50b9d8}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--paper-bg);color:var(--text-primary);font:1.15rem/1.8 'Roboto',sans-serif}
+    h1,h2,h3,h4,.brand{font-family:'Montserrat',sans-serif}.serif-heading{font-family:'Playfair Display',serif}
+    .container{max-width:1200px;margin:0 auto;padding:0 2rem}.article-container{max-width:800px;margin:0 auto;padding:0 2rem}
+    header{position:sticky;top:0;z-index:1000;padding:1rem 0;background:var(--optical-white);border-bottom:2px solid var(--night-blue)}
+    .header-inner{display:flex;align-items:center;justify-content:space-between}.brand a{text-decoration:none}.brand h1{display:flex;align-items:center;gap:10px;color:var(--night-blue);font-size:1.8rem;font-weight:800;letter-spacing:1px}.brand-logo{width:auto;height:40px}.brand p{margin-top:2px;color:var(--slate-grey);font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase}
+    .desktop-nav{display:flex;align-items:center;gap:2rem}.desktop-nav a{color:var(--night-blue);font:600 .9rem 'Montserrat',sans-serif;letter-spacing:1px;text-decoration:none;text-transform:uppercase}.desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)}
+    .back-nav{padding:2rem 0}.back-nav a{display:inline-flex;color:var(--slate-grey);font:600 .9rem 'Montserrat',sans-serif;letter-spacing:1px;text-decoration:none;text-transform:uppercase}.back-nav a:hover{color:var(--gold-accent)}
+    .article-header{margin-bottom:4rem;text-align:center}.article-category{display:block;margin-bottom:1.25rem;color:var(--gold-accent);font:700 .9rem 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase}.article-title{margin-bottom:1rem;color:var(--night-blue);font-size:3.5rem;line-height:1.1}.article-subtitle{margin-bottom:1.5rem;color:var(--night-blue);font:600 1.25rem/1.45 'Montserrat',sans-serif}.article-abstract{max-width:94%;margin:0 auto 3rem;color:var(--slate-grey);font:italic 1.42rem/1.5 'Playfair Display',serif}.article-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem 1.5rem;color:var(--text-secondary);font:600 .85rem 'Montserrat',sans-serif;text-transform:uppercase}.meta-author{color:var(--night-blue)}
+    .article-figure{max-width:1200px;margin:0 auto 4rem;padding:0 2rem}.article-hero{display:block;width:100%;height:62vh;min-height:430px;max-height:720px;object-fit:cover;box-shadow:0 18px 40px rgba(15,23,42,.14)}.article-image-caption{margin-top:.75rem;color:var(--text-secondary);font-size:.82rem;line-height:1.45;text-align:center}
+    .article-body p{margin-bottom:1.7rem;text-align:justify}.article-body h2{margin:3.5rem 0 1.25rem;color:var(--night-blue);font-size:1.8rem;line-height:1.3}.drop-cap{float:left;padding-right:.8rem;color:var(--night-blue);font:3rem/1 'Playfair Display',serif}.pull-quote{margin:3.2rem 0;padding:1.7rem 2rem;border-left:4px solid var(--gold-accent);background:#fff;color:var(--night-blue);font:600 1.55rem/1.45 'Playfair Display',serif}.epigraph{position:relative;margin:0 0 4rem;padding:2rem 2.2rem 1.7rem;border-left:4px solid var(--gold-accent);background:linear-gradient(90deg,#fff 0%,rgba(80,185,216,.08) 100%);color:var(--night-blue);font:italic 1.45rem/1.5 'Playfair Display',serif}.epigraph cite{display:block;margin-top:.8rem;color:var(--text-secondary);font:600 .78rem 'Montserrat',sans-serif;letter-spacing:.05em;text-align:right;text-transform:uppercase}.section-sources{margin:2rem 0 3.2rem;padding:1.1rem 1.3rem;border-left:3px solid #d7c4a3;background:#fff;color:var(--text-secondary);font-size:.86rem;line-height:1.55}.section-sources p{margin:0;text-align:left}.author-box{display:flex;align-items:center;gap:2rem;margin-top:4rem;padding:3rem;background:var(--optical-white);border:1px solid #e2e8f0;border-left:4px solid var(--gold-accent)}.author-box img{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#e2e8f0}.author-info h4{margin-bottom:.5rem;color:var(--night-blue);font-size:1.2rem}.author-info p{margin:0;color:var(--text-secondary);font-size:.95rem;line-height:1.5;text-align:left}
+    footer{margin-top:6rem;padding:3rem 0;background:var(--night-blue);color:var(--text-light);font-size:.9rem;text-align:center}
+    @media(max-width:900px){body{overflow-x:hidden;font-size:1.05rem}.container,.article-container,.article-figure{padding-left:1.5rem;padding-right:1.5rem}.desktop-nav{display:none}.article-title{font-size:2.5rem}.article-subtitle{font-size:1.05rem}.article-abstract{font-size:1.2rem}.article-hero{height:40vh;min-height:280px}.article-body p{text-align:left}.author-box{flex-direction:column;padding:2rem;text-align:center}.author-info p{text-align:center}.pull-quote,.epigraph{font-size:1.3rem}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand"><a href="../index.html"><h1><img class="brand-logo" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" onerror="this.style.display='none'">DYNAMES</h1><p>Governance di Forze e Sistemi</p></a></div>
+      <nav class="desktop-nav" aria-label="Navigazione principale"><a href="../index.html">Home</a><a class="active" href="../hub.html">Analisi &amp; Articoli</a><a href="../pubblicazioni.html">Pubblicazioni</a><a href="../eventi.html">Eventi</a><a href="../chi-siamo.html">Chi siamo</a><a href="../temi-e-collaborazioni.html">Temi e collaborazioni</a></nav>
+    </div>
+  </header>
+  <div class="container back-nav"><a href="../hub.html">← Torna all'Hub</a></div>
+  <main>
+    <article>
+      <div class="article-container article-header">
+        <h1 class="serif-heading article-title">L’eredità dell’11 settembre</h1>
+        <p class="article-abstract">A venticinque anni dagli attentati alle Torri Gemelle, come sono cambiati il rapporto con la sicurezza, la memoria collettiva e le forme della minaccia</p>
+        <div class="article-meta"><span class="meta-author">Michele Punzi</span><time datetime="2026-09-11">11 Settembre 2026</time><span>Tempo di lettura: 11 min</span></div>
+      </div>
+
+      <figure class="article-figure">
+        <picture>
+          <source media="(max-width: 900px)" srcset="Immagini/2026.09.11-eredita-11-settembre-light.jpg">
+          <img class="article-hero" src="Immagini/2026.09.11-eredita-11-settembre.png" width="1672" height="941" fetchpriority="high" decoding="async" alt="Un passeggero deposita passaporto e telefono ai controlli aeroportuali; sullo sfondo un addetto al metal detector e una fotografia di New York con il Tribute in Light">
+        </picture>
+      </figure>
+
+      <div class="article-container article-body">
+        <blockquote class="epigraph">«Can we know the risks we face, now or in the future? No, we cannot; but yes, we must act as if we do.»<cite>M. Douglas e A. Wildavsky, <em>Risk and Culture</em>, 1982</cite></blockquote>
+
+        <h2>Dal trauma alla prevenzione: l’architettura della sicurezza dopo l’11 settembre</h2>
+        <p><span class="drop-cap">U</span>n ragazzo nato dopo il 2001 può attraversare oggi un aeroporto senza aver mai conosciuto un mondo nel quale molte delle procedure che considera ordinarie non esistevano o avevano un peso diverso. Presenta un documento, deposita gli oggetti personali, attraversa un controllo, accetta che bagaglio, identità e viaggio siano sottoposti a verifiche successive. Non interpreta necessariamente tutto questo come una risposta al terrorismo. È semplicemente il modo in cui si viaggia. È forse qui, venticinque anni dopo, che l’11 settembre continua a essere presente in una forma meno visibile delle guerre, dei memoriali e degli apparati antiterrorismo: nel modo in cui le società contemporanee hanno progressivamente imparato ad abitare la sicurezza.</p>
+        <p>L’11 settembre non ha inventato la sorveglianza, il controllo delle frontiere o la prevenzione del rischio: attribuirgli questa origine sarebbe storicamente e scientificamente improprio. Ha tuttavia accelerato e legittimato trasformazioni già in corso, imponendo alle istituzioni una domanda destinata a diventare permanente: come intercettare il prossimo evento prima che accada? Il <em>9/11 Commission Report</em> del 2004 offre una rappresentazione quasi programmatica di questo passaggio. La Commissione indicava l’integrazione delle <em>watchlist</em>, la condivisione delle informazioni, l’impiego della biometria e una rete di punti di <em>screening</em> nella quale passaporti, visti, aeroporti, frontiere e accessi alle infrastrutture sensibili diventavano parti di un’unica architettura preventiva. Lo stesso rapporto riconosceva, però, i rischi dei falsi positivi, i costi dell’eccesso di reazione e la necessità di conciliare sicurezza, efficienza e libertà civili.</p>
+        <p>La letteratura scientifica avrebbe descritto la medesima trasformazione da prospettive differenti. David Lyon ha osservato l’aumento, dopo il 2001, della sorveglianza ordinaria soprattutto nei confronti dei viaggiatori e la diffusione di sistemi automatizzati di identificazione e <em>social sorting</em>. Mark Salter ha studiato l’aeroporto come spazio nel quale pratiche, istituzioni e tecnologie governano popolazioni mobili attraverso la categoria del rischio. Lucia Zedner ha individuato una trasformazione ancora più profonda nel rapporto con il tempo: nella società del <em>pre-crime</em> il pericolo tende a essere pensato come possibilità futura da anticipare, non soltanto come fatto già verificatosi al quale reagire. Il danno lascia progressivamente spazio al rischio; la reazione alla prevenzione.</p>
+        <div class="section-sources"><p><strong>Fonti:</strong> <em>National Commission on Terrorist Attacks Upon the United States, The 9/11 Commission Report, 2004; D. Lyon, “Surveillance, Security and Social Sorting: Emerging Research Priorities”, International Criminal Justice Review, vol. 17, n. 3, 2007; M. B. Salter, “Imagining Numbers: Risk, Quantification, and Aviation Security”, Security Dialogue, vol. 39, nn. 2-3, 2008; L. Zedner, “Pre-crime and Post-criminology?”, Theoretical Criminology, vol. 11, n. 2, 2007.</em></p></div>
+        <h2>Rischio, controllo e normalità: una lettura antropologica della sicurezza</h2>
+        <p>La sola analisi degli apparati non basta però a spiegare ciò che è accaduto. L’antropologia permette di spostare lo sguardo dalle istituzioni alle società che quelle istituzioni abitano. Mary Douglas e Aaron Wildavsky avevano mostrato già nei primi anni Ottanta che nessuna collettività può prestare la stessa attenzione a tutti i pericoli: il rischio viene selezionato, classificato e ordinato anche attraverso valori, istituzioni e rappresentazioni culturali. Ciò non significa negarne la dimensione oggettiva, ma riconoscere che, tra gli innumerevoli pericoli possibili, una comunità deve decidere quali rendere prioritari, quali tollerare e quali risorse impiegare per prevenirli. Una società racconta quindi qualcosa di sé non soltanto attraverso ciò che teme, ma anche attraverso il modo in cui sceglie di proteggersi.</p>
+        <p>Su questo terreno Daniel Goldstein ha proposto nel 2010 una prospettiva di <em>critical anthropology of security</em>. La sua riflessione contiene una cautela particolarmente utile per leggere l’11 settembre: la sicurezza come principio capace di organizzare la vita sociale non nasce dall’attacco alle Torri Gemelle, ma affonda le proprie radici in trasformazioni politiche, economiche e sociali precedenti. Il 2001 assume piuttosto il valore di una potente accelerazione storica; la sicurezza diventa così non soltanto una funzione esercitata dalle Forze di polizia, dall’intelligence o dalle Forze armate, ma una cornice entro la quale prendono forma i rapporti tra libertà e controllo, identità e sospetto, mobilità e accesso.</p>
+        <p>In questa prospettiva si può utilizzare, in senso descrittivo e non come categoria scientifica consolidata, l’espressione <strong>sicurezza incorporata</strong>. La prevenzione diventa socialmente più profonda quando smette di apparire eccezionale: si iscrive negli spazi, nei documenti, nei sistemi di accesso, nelle telecamere, nei dispositivi biometrici e infine nelle abitudini. Il controllo non deve essere ogni volta spiegato o imposto perché viene progressivamente riconosciuto come componente ordinaria dell’esperienza. La sicurezza, allora, non modifica soltanto ciò che lo Stato può fare. Contribuisce a modificare ciò che una società considera normale.</p>
+        <div class="section-sources"><p><strong>Fonti:</strong> <em>M. Douglas, A. Wildavsky, Risk and Culture: An Essay on the Selection of Technological and Environmental Dangers, University of California Press, 1982; D.M. Goldstein, “Toward a Critical Anthropology of Security”, Current Anthropology, vol. 51, n. 4, 2010, pp. 487-517.</em></p></div>
+        <h2>Dalla memoria vissuta alla memoria trasmessa: l’11 settembre tra generazioni e rituali</h2>
+        <p>Mentre le pratiche restano, la memoria cambia. Nel settembre 2026 il Pew Research Center ha rilevato che l’83% degli adulti statunitensi nati prima del 2001 ricorda dove si trovasse o che cosa stesse facendo quando apprese degli attentati. Tra coloro che allora avevano almeno dieci anni la percentuale raggiunge il 93%. Ma il 10% degli adulti americani è ormai nato dopo il 2001. Per loro le Torri Gemelle non appartengono alla memoria autobiografica: sono un fatto storico appreso da altri. Tra i giovani di età compresa tra i 18 e i 24 anni, il 60% dichiara di avere conosciuto per la prima volta l’11 settembre a scuola o attraverso attività scolastiche. Il passaggio generazionale, quindi, è già iniziato.</p>
+        <p>La psicologia della memoria aiuta a capire che cosa si perda e che cosa rimanga. William Hirst e altri ricercatori seguirono per quasi tre anni più di tremila persone in sette città statunitensi, distinguendo la memoria dell’evento dalle cosiddette <em>flashbulb memories</em>: il ricordo delle circostanze nelle quali una persona apprende una notizia eccezionale. Lo studio mostrò che, dopo il primo anno, il tasso di oblio rallenta e il contenuto dei ricordi tende a stabilizzarsi, senza per questo trasformarli in riproduzioni immutabili del passato. Gli autori richiamano inoltre il ruolo delle pratiche della comunità nella conservazione del ricordo. La memoria individuale, in altri termini, non vive isolata dalla società che continua a raccontarla.</p>
+        <p>Paul Connerton aveva affrontato il problema su un piano antropologico più generale. Le società conservano il passato non soltanto attraverso testi e archivi, ma anche mediante cerimonie commemorative, rituali e pratiche corporee che lo riportano periodicamente nel presente. L’anniversario dell’11 settembre rende visibile questa dinamica: monumenti, lettura dei nomi delle vittime, minuti di silenzio e il <em>Tribute in Light</em> contribuiscono alla costruzione di una memoria pubblica dell’evento. Nel venticinquesimo anniversario la funzione di questi rituali cambia gradualmente. Non servono più soltanto a commemorare un’esperienza condivisa; servono sempre più a trasmettere un significato a chi quell’esperienza non l’ha vissuta. La domanda «dove eri?» perde così progressivamente universalità e lascia spazio a un’altra: come hai imparato che cosa è stato l’11 settembre?</p>
+        <div class="section-sources"><p><strong>Fonti:</strong> <em>Pew Research Center, “9/11 memories remain vivid in the U.S. 25 years later”, 3 settembre 2026; W. Hirst et al., “Long-term Memory for the Terrorist Attack of September 11: Flashbulb Memories, Event Memories, and the Factors that Influence Their Retention”, Journal of Experimental Psychology: General, vol. 138, n. 2, 2009, pp. 161-176; P. Connerton, How Societies Remember, Cambridge University Press, 1989; National September 11 Memorial &amp; Museum, Tribute in Light.</em></p></div>
+        <h2>Sicurezza, classificazione e sospetto: l’eredità sociale del post-11 settembre</h2>
+        <p>La memoria di un trauma collettivo, tuttavia, non produce necessariamente una sola esperienza sociale. Lo mostra il modo in cui l’11 settembre ha inciso sulla popolazione musulmana statunitense. I dati raccolti dal Pew Research Center nel 2026 ricostruiscono una storia nella quale sostegno e discriminazione coesistono. Gli incidenti classificati dall’FBI come motivati da pregiudizio anti-islamico passarono dai 28 registrati nel 2000 ai 481 del 2001; negli anni successivi il dato è oscillato, senza tornare stabilmente ai livelli precedenti agli attentati. Nel 2026 il 59% dei musulmani statunitensi intervistati afferma inoltre che nel Paese vi sia molta discriminazione nei loro confronti.</p>
+        <p>Il dato non dimostra, da solo, un rapporto causale lineare tra politiche di sicurezza e discriminazione. Mostra però perché il concetto di <em>social sorting</em> elaborato da Lyon rimanga rilevante. Ogni sistema preventivo deve distinguere: tra accesso consentito e negato, rischio ordinario ed elevato, soggetto conosciuto e identità da verificare. Il problema istituzionale nasce quando le categorie utilizzate per prevenire un pericolo tendono a sovrapporsi a categorie sociali più ampie, trasformando la classificazione del rischio in attribuzione generalizzata del sospetto.</p>
+        <p>La questione non oppone quindi, in astratto, sicurezza e libertà. Interroga piuttosto la qualità dei criteri attraverso i quali la sicurezza distingue. Una capacità preventiva efficace deve necessariamente selezionare informazioni e comportamenti rilevanti; proprio per questo deve poter spiegare, controllare e correggere i criteri della selezione. È una questione di efficacia prima ancora che di garanzia: un sistema incapace di distinguere adeguatamente moltiplica il rumore, disperde risorse e rischia di perdere proprio i segnali che dovrebbe riconoscere.</p>
+        <div class="section-sources"><p><strong>Fonti:</strong> <em>Pew Research Center, “25 Years After 9/11, a Portrait of Muslim Americans”, 3 settembre 2026; D. Lyon, “Surveillance, Security and Social Sorting: Emerging Research Priorities”, International Criminal Justice Review, vol. 17, n. 3, 2007.</em></p></div>
+        <h2>Dal terrorismo organizzato agli ecosistemi digitali della violenza</h2>
+        <p>Anche la minaccia, nel frattempo, ha assunto forme più articolate. L’<em>European Union Terrorism Situation and Trend Report 2026</em> di Europol registra per il 2025 45 attacchi terroristici in dieci Stati membri e 486 arresti per reati connessi al terrorismo. Il 71% degli arresti riguardava il jihadismo, al quale erano riconducibili 24 dei 45 attacchi. È un punto da mantenere fermo: il terrorismo ideologicamente strutturato non è scomparso e il jihadismo continua a rappresentare la forma più diffusa del terrorismo nell’Unione europea. Anche la NATO continua a considerare il terrorismo la più diretta minaccia asimmetrica alla sicurezza dei cittadini degli Stati membri.</p>
+        <p>La trasformazione riguarda piuttosto l’ambiente nel quale una parte della minaccia emerge. Europol osserva che gli ecosistemi online favoriscono reti disperse, <em>lone actors</em> e cellule auto-attivate, mentre in alcuni percorsi la motivazione ideologica si combina con risentimenti personali, fascinazione per la violenza, ricerca di riconoscimento e bisogno di appartenenza. Per alcuni soggetti, la violenza può diventare essa stessa strumento di costruzione dell’identità. È un cambiamento significativo: non perché l’ideologia abbia cessato di contare, ma perché non sempre costituisce una struttura coerente e precedente all’ingresso nell’ambiente estremistico.</p>
+        <p>Il caso di <em>The Com</em> rende visibile questa trasformazione. Tra giugno e luglio 2026 un’azione sostenuta da Europol con investigatori di nove Paesi ha portato alla segnalazione alle piattaforme di circa 4.340 URL riferiti a contenuti riconducibili all’estremismo violento nichilistico. Europol descrive <em>The Com</em> come una rete informale di gruppi online, priva di un’ideologia unitaria e di una struttura centralizzata, nella quale la violenza è spesso un fine in sé e può diventare strumento di status e riconoscimento. Non si tratta quindi di sovrapporre automaticamente <em>The Com</em> alle organizzazioni terroristiche tradizionali, ma di osservare come la socializzazione alla violenza possa svilupparsi anche dentro contesti nei quali ideologia, appartenenza e gerarchia risultano meno definite.</p>
+        <p>La Commissione europea, attraverso l’EU Knowledge Hub on Prevention of Radicalisation, ha richiamato il ruolo delle sottoculture digitali, delle vulnerabilità dei minori e dei bisogni psicosociali insoddisfatti. La questione ha anche una dimensione antropologica: comprendere come comunità, simboli, linguaggi, riconoscimento reciproco e appartenenza possano costruire ambienti nei quali determinati comportamenti acquistano significati differenti da quelli che avrebbero fuori dal gruppo. Le categorie operative costruite intorno a organizzazione, comando e adesione ideologica incontrano così fenomeni più fluidi, nei quali può essere lo stesso ambiente relazionale a contribuire progressivamente alla costruzione dell’identità violenta.</p>
+        <div class="section-sources"><p><strong>Fonti:</strong> <em>Europol, European Union Terrorism Situation and Trend Report 2026 - EU TE-SAT, Publications Office of the European Union, 2026; Europol, “When violence shapes identities in a larger pool of perpetrators”, 13 luglio 2026; Europol, “Europol-led action against nihilistic violent extremist network ‘The Com’”, 24 luglio 2026; European Commission - EU Knowledge Hub on Prevention of Radicalisation, “Preventing Radicalisation among Minors”, 11 dicembre 2025; European Commission - EU Knowledge Hub on Prevention of Radicalisation, “Nihilistic Extremism in the Digital Age”, 2026; NATO, Countering terrorism, aggiornato al 1° giugno 2026.</em></p></div>
+        <h2>Prevenire la minaccia nel 2026: ambiente digitale e limiti dell’anticipazione</h2>
+        <p>Tra il 2001 e il 2026 emerge così una continuità, ma anche una discontinuità. Dopo l’11 settembre la risposta istituzionale cercò di moltiplicare i punti nei quali una minaccia potesse essere riconosciuta prima di manifestarsi: frontiere, aeroporti, documenti, database, comunicazioni. Il principio era intercettare il soggetto e i suoi segnali lungo una sequenza almeno in parte osservabile. Nell’ambiente digitale contemporaneo una parte di quella sequenza diventa meno lineare. Una comunità può attraversare Stati senza attraversare una frontiera; l’appartenenza può non richiedere adesione formale; frammenti ideologici, vulnerabilità individuali, dinamiche di gruppo e ricerca di status possono combinarsi senza seguire un percorso uniforme.</p>
+        <p>Il passaggio dal 2001 al 2026 può essere letto, in questo senso, come un passaggio dall’evento all’ambiente. Nel primo caso, l’obiettivo era soprattutto riconoscere e interrompere una sequenza capace di condurre a un attacco. Nel secondo, diventa necessario comprendere anche gli ambienti nei quali determinate traiettorie possono formarsi. L’<em>Alliance Digital Strategy</em> adottata dalla NATO nel gennaio 2026 definisce la trasformazione digitale non come semplice aggiornamento tecnologico, ma come cambiamento di cultura, postura e agilità operativa. La questione riguarda la capacità delle istituzioni di operare in un contesto nel quale dati, intelligenza artificiale, piattaforme e velocità delle interazioni modificano contemporaneamente minacce e strumenti di prevenzione.</p>
+        <p>Qui riemerge il paradosso già percepibile nel <em>9/11 Commission Report</em>. Una sicurezza orientata ad anticipare il futuro può essere indotta a raccogliere sempre più informazioni e ad allargare continuamente il perimetro di ciò che considera rilevante. Quanto più una minaccia diventa distribuita e difficile da classificare, tanto maggiore è la tentazione di ampliare la sorveglianza. Ma una capacità preventiva non migliora necessariamente aumentando senza limite la quantità dei dati disponibili. Il problema diventa selezionare, contestualizzare e interpretare.</p>
+        <p>La risposta non può consistere nel rinunciare alla prevenzione, ma nel renderla più capace di comprendere, oltre che di classificare. Gli ambienti nei quali oggi possono maturare radicalizzazione ed estremismo richiedono intelligence, investigazione e tecnologia, ma anche psicologia, sociologia, antropologia, educazione e conoscenza delle comunità. Una sicurezza che conosce soltanto il comportamento rischia di confondere anomalia e minaccia; una sicurezza che comprende anche il contesto dispone di strumenti migliori per distinguerle.</p>
+        <p>Venticinque anni dopo, questa potrebbe essere l’eredità più utile dell’11 settembre. Le società hanno imparato a costruire sistemi capaci di cercare il pericolo prima che diventasse evento. Il passaggio successivo è più difficile: anticiparlo senza trasformare ogni possibilità in sospetto e ogni ambiente in un checkpoint. La sicurezza, infatti, non è più soltanto ciò che le istituzioni fanno davanti a una minaccia. È ormai uno degli ambienti nei quali viviamo. La qualità delle istituzioni di domani dipenderà anche dalla capacità di decidere quanto di quell’ambiente debba diventare permanente.</p>
+        <div class="section-sources"><p><strong>Fonti:</strong> <em>National Commission on Terrorist Attacks Upon the United States, The 9/11 Commission Report, 2004; NATO, Alliance Digital Strategy, 13 gennaio 2026; NATO, Countering terrorism, aggiornato al 1° giugno 2026; D.M. Goldstein, “Toward a Critical Anthropology of Security”, Current Anthropology, vol. 51, n. 4, 2010.</em></p></div>
+
+        <div class="author-box">
+          <img src="../assets/immagini-chi-siamo/michele-punzi.jpg" width="80" height="80" loading="lazy" decoding="async" alt="Michele Punzi" onerror="this.style.display='none'">
+          <div class="author-info"><h4>Michele Punzi</h4><p>Consulente editoriale di DYNAMES. Laureato in Giurisprudenza e in Scienze Giuridiche della Sicurezza, si occupa di governance pubblica, sicurezza nazionale, diritto delle istituzioni e analisi strategica, con particolare attenzione al rapporto tra amministrazioni, territorio, resilienza istituzionale e trasformazioni geopolitiche. Contribuisce alla definizione dell’indirizzo editoriale della piattaforma.</p></div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer><div class="container"><h3 style="font-size:1.5rem;margin-bottom:1rem;letter-spacing:1px">DYNAMES</h3><p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p><p style="margin-top:1rem;color:var(--slate-grey)">© 2026 DYNAMES. Tutti i diritti riservati.</p></div></footer>
+</body>
+</html>
