@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src='https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DYNAMES | Il contrabbando cambia pelle: le sigarette illegali ora si producono in Italia</title>
+  <meta name="description" content="Dai carichi provenienti dall’estero alle fabbriche clandestine nel cuore del Paese: il mercato illecito delle sigarette cambia modello e diventa industria.">
+  <meta name="author" content="Fabio Boscacci">
+  <link rel="canonical" href="https://www.dynames.it/articles/2026.09-11-contrabbando-produzione-sigarette-italia.html">
+
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DYNAMES">
+  <meta property="og:title" content="Il contrabbando cambia pelle: le sigarette illegali ora si producono in Italia">
+  <meta property="og:description" content="Dai carichi provenienti dall’estero alle fabbriche clandestine nel cuore del Paese: il mercato illecito delle sigarette cambia modello e diventa industria.">
+  <meta property="og:url" content="https://www.dynames.it/articles/2026.09-11-contrabbando-produzione-sigarette-italia.html">
+  <meta property="og:image" content="https://www.dynames.it/articles/Immagini/2026.09-11-contrabbando-produzione-sigarette-italia-light.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Guardia di Finanza in uno stabilimento clandestino per la produzione di sigarette, con reti logistiche e criminali sullo sfondo">
+  <meta property="article:author" content="Fabio Boscacci">
+  <meta property="article:published_time" content="2026-09-11T09:00:00+02:00">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Il contrabbando cambia pelle: le sigarette illegali ora si producono in Italia">
+  <meta name="twitter:description" content="Dai carichi provenienti dall’estero alle fabbriche clandestine nel cuore del Paese: il mercato illecito delle sigarette cambia modello e diventa industria.">
+  <meta name="twitter:image" content="https://www.dynames.it/articles/Immagini/2026.09-11-contrabbando-produzione-sigarette-italia-light.jpg">
+  <meta name="twitter:image:alt" content="Guardia di Finanza in uno stabilimento clandestino per la produzione di sigarette, con reti logistiche e criminali sullo sfondo">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": "Il contrabbando cambia pelle: le sigarette illegali ora si producono in Italia",
+    "description": "Dai carichi provenienti dall’estero alle fabbriche clandestine nel cuore del Paese: il mercato illecito delle sigarette cambia modello e diventa industria.",
+    "datePublished": "2026-09-11T09:00:00+02:00",
+    "dateModified": "2026-09-11T09:00:00+02:00",
+    "inLanguage": "it-IT",
+    "mainEntityOfPage": "https://www.dynames.it/articles/2026.09-11-contrabbando-produzione-sigarette-italia.html",
+    "image": "https://www.dynames.it/articles/Immagini/2026.09-11-contrabbando-produzione-sigarette-italia-light.jpg",
+    "author": {"@type": "Person", "name": "Fabio Boscacci"},
+    "publisher": {"@type": "Organization", "name": "DYNAMES", "url": "https://www.dynames.it/"}
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{--night-blue:#0b1120;--slate-grey:#334155;--optical-white:#fff;--text-primary:#1e293b;--text-secondary:#475569;--text-light:#cbd5e1;--paper-bg:#fdfbf7;--gold-accent:#b8935a;--data-accent:#50b9d8}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--paper-bg);color:var(--text-primary);font:1.15rem/1.8 'Roboto',sans-serif}
+    h1,h2,h3,h4,.brand{font-family:'Montserrat',sans-serif}.serif-heading{font-family:'Playfair Display',serif}
+    .container{max-width:1200px;margin:0 auto;padding:0 2rem}.article-container{max-width:800px;margin:0 auto;padding:0 2rem}
+    header{position:sticky;top:0;z-index:1000;padding:1rem 0;background:var(--optical-white);border-bottom:2px solid var(--night-blue)}
+    .header-inner{display:flex;align-items:center;justify-content:space-between}.brand a{text-decoration:none}.brand h1{display:flex;align-items:center;gap:10px;color:var(--night-blue);font-size:1.8rem;font-weight:800;letter-spacing:1px}.brand-logo{width:auto;height:40px}.brand p{margin-top:2px;color:var(--slate-grey);font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase}
+    .desktop-nav{display:flex;align-items:center;gap:2rem}.desktop-nav a{color:var(--night-blue);font:600 .9rem 'Montserrat',sans-serif;letter-spacing:1px;text-decoration:none;text-transform:uppercase}.desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)}
+    .back-nav{padding:2rem 0}.back-nav a{display:inline-flex;color:var(--slate-grey);font:600 .9rem 'Montserrat',sans-serif;letter-spacing:1px;text-decoration:none;text-transform:uppercase}.back-nav a:hover{color:var(--gold-accent)}
+    .article-header{margin-bottom:4rem;text-align:center}.article-category{display:block;margin-bottom:1.25rem;color:var(--gold-accent);font:700 .9rem 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase}.article-title{margin-bottom:1rem;color:var(--night-blue);font-size:3.5rem;line-height:1.1}.article-subtitle{margin-bottom:1.5rem;color:var(--night-blue);font:600 1.25rem/1.45 'Montserrat',sans-serif}.article-abstract{max-width:94%;margin:0 auto 3rem;color:var(--slate-grey);font:italic 1.42rem/1.5 'Playfair Display',serif}.article-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem 1.5rem;color:var(--text-secondary);font:600 .85rem 'Montserrat',sans-serif;text-transform:uppercase}.meta-author{color:var(--night-blue)}
+    .article-figure{max-width:1200px;margin:0 auto 4rem;padding:0 2rem}.article-hero{display:block;width:100%;height:62vh;min-height:430px;max-height:720px;object-fit:cover;box-shadow:0 18px 40px rgba(15,23,42,.14)}.article-image-caption{margin-top:.75rem;color:var(--text-secondary);font-size:.82rem;line-height:1.45;text-align:center}
+    .article-body p{margin-bottom:1.7rem;text-align:justify}.article-body h2{margin:3.5rem 0 1.25rem;color:var(--night-blue);font-size:1.8rem;line-height:1.3}.drop-cap{float:left;padding-right:.8rem;color:var(--night-blue);font:3rem/1 'Playfair Display',serif}.pull-quote{margin:3.2rem 0;padding:1.7rem 2rem;border-left:4px solid var(--gold-accent);background:#fff;color:var(--night-blue);font:600 1.55rem/1.45 'Playfair Display',serif}.epigraph{position:relative;margin:0 0 4rem;padding:2rem 2.2rem 1.7rem;border-left:4px solid var(--gold-accent);background:linear-gradient(90deg,#fff 0%,rgba(80,185,216,.08) 100%);color:var(--night-blue);font:italic 1.45rem/1.5 'Playfair Display',serif}.epigraph cite{display:block;margin-top:.8rem;color:var(--text-secondary);font:600 .78rem 'Montserrat',sans-serif;letter-spacing:.05em;text-align:right;text-transform:uppercase}.section-sources{margin:2rem 0 3.2rem;padding:1.1rem 1.3rem;border-left:3px solid #d7c4a3;background:#fff;color:var(--text-secondary);font-size:.86rem;line-height:1.55}.section-sources p{margin:0;text-align:left}.author-box{display:flex;align-items:center;gap:2rem;margin-top:4rem;padding:3rem;background:var(--optical-white);border:1px solid #e2e8f0;border-left:4px solid var(--gold-accent)}.author-box img{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#e2e8f0}.author-info h4{margin-bottom:.5rem;color:var(--night-blue);font-size:1.2rem}.author-info p{margin:0;color:var(--text-secondary);font-size:.95rem;line-height:1.5;text-align:left}
+    footer{margin-top:6rem;padding:3rem 0;background:var(--night-blue);color:var(--text-light);font-size:.9rem;text-align:center}
+    @media(max-width:900px){body{overflow-x:hidden;font-size:1.05rem}.container,.article-container,.article-figure{padding-left:1.5rem;padding-right:1.5rem}.desktop-nav{display:none}.article-title{font-size:2.5rem}.article-subtitle{font-size:1.05rem}.article-abstract{font-size:1.2rem}.article-hero{height:40vh;min-height:280px}.article-body p{text-align:left}.author-box{flex-direction:column;padding:2rem;text-align:center}.author-info p{text-align:center}.pull-quote,.epigraph{font-size:1.3rem}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand"><a href="../index.html"><h1><img class="brand-logo" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" onerror="this.style.display='none'">DYNAMES</h1><p>Governance di Forze e Sistemi</p></a></div>
+      <nav class="desktop-nav" aria-label="Navigazione principale"><a href="../index.html">Home</a><a class="active" href="../hub.html">Analisi &amp; Articoli</a><a href="../pubblicazioni.html">Pubblicazioni</a><a href="../eventi.html">Eventi</a><a href="../chi-siamo.html">Chi siamo</a><a href="../temi-e-collaborazioni.html">Temi e collaborazioni</a></nav>
+    </div>
+  </header>
+  <div class="container back-nav"><a href="../hub.html">← Torna all'Hub</a></div>
+  <main>
+    <article>
+      <div class="article-container article-header">
+        <h1 class="serif-heading article-title">Il contrabbando cambia pelle: le sigarette illegali ora si producono in Italia</h1>
+        <p class="article-abstract">Dai carichi provenienti dall’estero alle fabbriche clandestine nel cuore del Paese: il mercato illecito delle sigarette cambia modello e diventa industria.</p>
+        <div class="article-meta"><a class="meta-author" href="../chi-siamo.html#boscacci">Fabio Boscacci</a><time datetime="2026-09-11">11 Settembre 2026</time><span>Tempo di lettura: 11 min</span></div>
+      </div>
+
+      <figure class="article-figure">
+        <picture>
+          <source media="(max-width: 900px)" srcset="Immagini/2026.09-11-contrabbando-produzione-sigarette-italia-light.jpg">
+          <img class="article-hero" src="Immagini/2026.09-11-contrabbando-produzione-sigarette-italia.png" width="1536" height="1024" fetchpriority="high" decoding="async" alt="Guardia di Finanza in uno stabilimento clandestino per la produzione di sigarette, con una mappa dell’Italia e una rete logistica e criminale sullo sfondo">
+        </picture>
+      </figure>
+
+      <div class="article-container article-body">
+        <p class="article-lead">Per molti italiani il contrabbando di sigarette appartiene quasi a un'altra epoca.</p>
+        <p>Le immagini sono quelle degli anni Ottanta e Novanta: motoscafi, carichi provenienti dai Balcani, casse nascoste nei camion, sigarette prodotte all'estero e introdotte clandestinamente nel Paese evitando accise, IVA e controlli.</p>
+        <p>Quel contrabbando non è scomparso.</p>
+        <p>Ma accanto al modello tradizionale ne sta emergendo un altro, probabilmente più sofisticato e sotto alcuni aspetti più preoccupante.</p>
+        <p><strong>Le sigarette illegali non vengono pi</strong><strong>ù </strong><strong>soltanto importate. Sempre pi</strong><strong>ù </strong><strong>spesso vengono prodotte direttamente in Italia.</strong></p>
+        <p>È un cambiamento sostanziale.</p>
+        <p>La frontiera non deve necessariamente essere attraversata da milioni di pacchetti di prodotto finito. Possono viaggiare separatamente tabacco, filtri, cartine, materiali per il confezionamento, macchinari, tecnici e manodopera.</p>
+        <p>Una volta assemblati questi elementi, la fabbrica nasce direttamente all'interno dell'Unione europea.</p>
+        <p>Una sorta di <strong>delocalizzazione al contrario dell'economia criminale</strong>.</p>
+        <h2>Il contrabbando diventa industria</h2>
+        <p>I numeri delle operazioni condotte negli ultimi anni raccontano una trasformazione che difficilmente può essere considerata episodica.</p>
+        <p>Nel bilancio operativo presentato dalla Guardia di Finanza nel 2026 risultano <strong>17 opifici clandestini individuati sul territorio nazionale</strong>, insieme a 1.426 tonnellate di tabacchi lavorati sequestrate e 2.415 persone denunciate nell'ambito delle attività di contrasto al contrabbando.</p>
+        <p>Ma sono soprattutto le caratteristiche degli stabilimenti scoperti a impressionare.</p>
+        <p>A Castagnaro, in provincia di Verona, nel marzo 2026 è stata individuata una fabbrica clandestina di oltre <strong>5.000 metri quadrati</strong>, dotata di impianti tecnologicamente avanzati.</p>
+        <p>Secondo la Guardia di Finanza poteva produrre circa <strong>quattro milioni di sigarette al giorno</strong>.</p>
+        <p>Il valore dell'impianto superava i due milioni di euro e la capacità produttiva avrebbe potuto generare profitti illeciti stimati dagli investigatori in circa <strong>700 mila euro al giorno</strong>, oltre 240 milioni su base annua.</p>
+        <p>Pochi mesi dopo, a Spilimbergo, in Friuli-Venezia Giulia, è emersa una struttura ancora più grande: circa <strong>9.000 metri quadrati</strong>, almeno due linee produttive complete, decine di tonnellate di tabacco e milioni di confezioni destinate alla produzione.</p>
+        <p>La capacità potenziale delle linee arrivava fino a <strong>cinque milioni di sigarette al giorno</strong>.</p>
+        <p>Nel luglio 2026 un'altra operazione ha portato a Campospinoso Albaredo, in provincia di Pavia.</p>
+        <p>Dentro un capannone di circa <strong>5.000 metri quadrati</strong> gli investigatori hanno trovato una vera catena industriale clandestina: lavorazione del tabacco, produzione delle sigarette, confezionamento dei pacchetti e preparazione delle casse per la distribuzione.</p>
+        <p>Non laboratori artigianali.</p>
+        <h2>Un sistema industriale nascosto</h2>
+        <p>Anche il modo in cui questi stabilimenti vengono organizzati mostra il livello raggiunto dalle organizzazioni che li gestiscono.</p>
+        <p>Le fabbriche tendono a essere collocate all'interno di grandi capannoni industriali o logistici, spesso in aree nelle quali il movimento di camion e mezzi pesanti non rappresenta di per sé un'anomalia.</p>
+        <p>All'interno vengono adottate precauzioni specifiche per rendere invisibile la produzione.</p>
+        <p>Nel Pavese, per esempio, le pareti erano state rivestite con materiale fonoassorbente. L'elettricità necessaria ai macchinari veniva prodotta attraverso gruppi elettrogeni.</p>
+        <p>Una scelta tutt'altro che casuale: ridurre il rumore e contemporaneamente evitare consumi elettrici anomali che avrebbero potuto rivelare un'attività industriale dove ufficialmente non avrebbe dovuto essercene una.</p>
+        <p>In altri stabilimenti sono state trovate soluzioni analoghe.</p>
+        <p>Ma c'è un altro particolare.</p>
+        <p>Dentro le fabbriche clandestine non ci sono soltanto macchinari.</p>
+        <p><strong>Ci sono letti, cucine e dormitori.</strong></p>
+        <p>Nel caso pavese sono stati trovati cittadini ucraini e moldavi e spazi organizzati per consentire ai lavoratori di vivere direttamente all'interno dello stabilimento, con cucina, refettorio, lavanderia e scorte alimentari.</p>
+        <p>A Castagnaro erano presenti lavoratori bulgari e ucraini sistemati in stanze ricavate nella struttura.</p>
+        <p>Il vantaggio criminale è evidente: ridurre al minimo gli spostamenti delle persone significa diminuire anche la possibilità che qualcuno noti un'anomala attività attorno a un capannone apparentemente inutilizzato.</p>
+        <p>La fabbrica diventa così un ecosistema clandestino autosufficiente.</p>
+        <h2>Perché produrre proprio in Italia?</h2>
+        <p>È forse la domanda più interessante. Perché sostenere il costo e il rischio di costruire una fabbrica illegale in Italia quando per decenni è stato possibile produrre altrove e contrabbandare successivamente il prodotto?</p>
+        <p>La risposta sta probabilmente nell'economia della nuova filiera.</p>
+        <p>Produrre all'interno dell'Unione europea significa <strong>avvicinare la produzione ai mercati di consumo</strong>.</p>
+        <p>Significa inoltre evitare di dover far attraversare le frontiere esterne dell'Unione a enormi quantità di prodotto finito e sfruttare, una volta prodotte le sigarette, la straordinaria rete logistica europea.</p>
+        <p>Autostrade, camion, magazzini e piattaforme distributive possono trasformarsi in infrastrutture inconsapevoli del mercato clandestino.</p>
+        <p>Il caso di Pavia è emblematico.</p>
+        <p>L'indagine è partita molto lontano dalla fabbrica, dal controllo di un furgone sull'autostrada A1 nei pressi di Cassino. A bordo sono stati trovati oltre 50 mila pacchetti contraffatti.</p>
+        <p>Seguendo a ritroso la filiera gli investigatori sono arrivati prima a un deposito nel Cremonese e successivamente allo stabilimento produttivo del Pavese.</p>
+        <p>La merce prodotta al Nord era quindi già inserita in una rete distributiva capace di raggiungere altre aree del Paese.</p>
+        <p>È l'immagine rovesciata del vecchio contrabbando.</p>
+        <p><strong>Non soltanto sigarette che entrano clandestinamente in Italia, ma sigarette che nascono clandestinamente in Italia e da qui vengono distribuite.</strong></p>
+        <h2>La fabbrica clandestina può anche spostarsi</h2>
+        <p>La nuova industria illegale presenta inoltre una caratteristica particolarmente insidiosa: la mobilità.</p>
+        <p>Nel caso di Spilimbergo, quando è scattata l'operazione delle autorità, una parte dei macchinari era già in fase di smontaggio e alcune attrezzature stavano per essere trasferite verso l'Austria.</p>
+        <p>Una moderna linea per la produzione di sigarette può quindi essere acquistata, trasportata, installata all'interno di un capannone, utilizzata per un determinato periodo e successivamente smontata.</p>
+        <p>La fabbrica clandestina non deve necessariamente rimanere nello stesso luogo per anni.</p>
+        <p>Può diventare una sorta di <strong>unit</strong><strong>à </strong><strong>produttiva criminale mobile</strong>.</p>
+        <p>Quando il rischio cresce, la produzione si sposta.</p>
+        <h2>Contrabbando e contraffazione diventano la stessa filiera</h2>
+        <p>C’è poi un'altra trasformazione.</p>
+        <p>Una parte delle sigarette prodotte illegalmente viene confezionata riproducendo marchi conosciuti.</p>
+        <p>Nel Pavese sono stati sequestrati circa <strong>300 mila pacchetti riconducibili ai marchi Marlboro e Winston</strong>, insieme a milioni di filtri e materiali destinati al confezionamento.</p>
+        <p>Il confine tra contrabbando e contraffazione diventa quindi sempre più sottile.</p>
+        <p>Il consumatore può acquistare un pacchetto apparentemente identico a quello disponibile in tabaccheria senza conoscere realmente la provenienza del tabacco, la composizione del prodotto o le condizioni nelle quali è stato fabbricato.</p>
+        <p>Ed è qui che il problema criminale incontra quello sanitario.</p>
+        <p>Un prodotto del tabacco commercializzato legalmente è inserito in un sistema regolatorio che prevede requisiti, notifiche, etichettatura e controlli.</p>
+        <p>La produzione clandestina vive completamente fuori da questo sistema.</p>
+        <p>Nessuna tracciabilità. Nessuna certezza sull'origine delle materie prime. Nessuna garanzia sul processo produttivo.</p>
+        <h2>Il vero prodotto della fabbrica è il denaro</h2>
+        <p>Ma concentrarsi soltanto sulle sigarette rischia di far perdere di vista la dimensione più importante del fenomeno.</p>
+        <p class="pull-quote"><strong>Il vero prodotto di queste fabbriche </strong><strong>è </strong><strong>il denaro.</strong></p>
+        <p>Una linea capace di produrre quattro o cinque milioni di sigarette ogni ventiquattro ore può generare un'economia illegale enorme.</p>
+        <p>Nel caso della fabbrica sotterranea individuata vicino a Cassino nel 2025, gli investigatori hanno stimato <strong>oltre 130 milioni di euro di proventi illeciti</strong>.</p>
+        <p>L'operazione “Chain Smoking”, sviluppatasi tra il 2025 e il 2026 contro una struttura transnazionale dedita alla produzione clandestina e al contrabbando, ha portato successivamente all'esecuzione di <strong>23 misure cautelari e sequestri preventivi per quasi 140 milioni di euro</strong>.</p>
+        <p>Cifre che cambiano completamente la prospettiva.</p>
+        <p>Non siamo più davanti soltanto a qualcuno che vende pacchetti senza pagare le accise.</p>
+        <p>Siamo davanti a organizzazioni potenzialmente capaci di produrre <strong>decine o centinaia di milioni di euro di capitale criminale</strong>.</p>
+        <p>E allora la domanda diventa inevitabile.</p>
+        <p><strong>Dove finiscono quei soldi?</strong></p>
+        <h2>Dal contrabbando alla criminalità organizzata</h2>
+        <p>Per costruire uno stabilimento clandestino da migliaia di metri quadrati servono capitali iniziali.</p>
+        <p>Bisogna trovare il capannone, acquistare e trasportare linee produttive industriali, reperire tonnellate di tabacco, filtri, cartine e materiali per il packaging.</p>
+        <p>Servono tecnici capaci di installare e mantenere i macchinari, lavoratori, autisti, depositi intermedi e reti distributive.</p>
+        <p>Occorre infine raccogliere e movimentare il denaro generato dalle vendite.</p>
+        <p>Non è quindi soltanto un'attività di contrabbando.</p>
+        <p>È <strong>criminalit</strong><strong>à </strong><strong>organizzata con una struttura industriale, logistica e finanziaria</strong>.</p>
+        <p>E proprio la dimensione finanziaria apre un capitolo ancora più delicato.</p>
+        <p>Il collegamento tra traffico illecito di tabacco e finanziamento del terrorismo non è soltanto un'ipotesi.</p>
+        <p>È un rischio riconosciuto dalle principali istituzioni internazionali impegnate nel contrasto al riciclaggio e alla criminalità finanziaria.</p>
+        <p>La <strong>FATF-GAFI</strong>, organismo intergovernativo che stabilisce gli standard internazionali contro il riciclaggio e il finanziamento del terrorismo, ha dedicato uno specifico rapporto al commercio illecito di tabacco, evidenziandone le vulnerabilità.</p>
+        <p>E soprattutto esistono precedenti concreti.</p>
+        <p>In uno dei casi analizzati dalla FATF, una rete attiva negli Stati Uniti contrabbandò sigarette per oltre <strong>otto milioni di dollari</strong> sfruttando le differenze fiscali tra diversi Stati.</p>
+        <p>Parte dei profitti venne trasferita a <strong>Hezbollah in Libano</strong>. L'indagine portò anche a una condanna per sostegno materiale a un'organizzazione terroristica.</p>
+        <p>In un altro caso riportato dalla FATF, un'indagine relativa al contrabbando di circa <strong>20 mila cartoni di sigarette</strong> fece emergere collegamenti ancora più inquietanti: attività di reclutamento per <strong>Al-Qaeda</strong> e conversazioni riguardanti la pianificazione di un attentato.</p>
+        <p>Anche le istituzioni europee hanno riconosciuto il problema.</p>
+        <p>La Commissione europea ha indicato il contrabbando di sigarette come un'importante fonte di reddito per la criminalità organizzata internazionale, ricordando che <strong>in alcuni casi il fenomeno </strong><strong>è </strong><strong>stato collegato al finanziamento del terrorismo</strong>.</p>
+        <p>Europol ha analogamente evidenziato come i profitti derivanti dalla produzione clandestina di tabacco possano essere utilizzati per finanziare altre forme di criminalità grave e terrorismo.</p>
+        <p>Più recentemente anche l'OLAF, l'Ufficio europeo per la lotta antifrode, ha richiamato il rischio che i profitti generati dalle frodi e dal contrabbando alimentino ulteriori attività criminali.</p>
+        <p>Su questo punto occorre essere estremamente chiari.</p>
+        <p><strong>Non esistono, sulla base delle informazioni pubblicamente disponibili, elementi che consentano di affermare che i proventi delle specifiche fabbriche clandestine recentemente scoperte in Italia siano stati destinati a organizzazioni terroristiche.</strong></p>
+        <p>Sostenerlo sarebbe scorretto.</p>
+        <p>Ma sarebbe altrettanto sbagliato ignorare ciò che l'esperienza internazionale ha già dimostrato.</p>
+        <p>Il commercio illecito di tabacco possiede caratteristiche particolarmente interessanti per le economie criminali: domanda elevata, prodotto facilmente trasportabile, enorme differenziale tra costo di produzione e prezzo finale, possibilità di generare rapidamente liquidità e reti distributive transnazionali.</p>
+        <p>Il rischio, quindi, non riguarda necessariamente il singolo pacchetto.</p>
+        <p>Riguarda <strong>la destinazione del capitale generato dal sistema</strong>.</p>
+        <p>È per questo che sequestrare una fabbrica non può rappresentare la conclusione dell'indagine.</p>
+        <p>Deve esserne, sotto il profilo finanziario, quasi l'inizio.</p>
+        <p>Chi ha finanziato l'acquisto dei macchinari?</p>
+        <p>Chi paga il tabacco?</p>
+        <p>Chi controlla le società proprietarie o affittuarie dei capannoni?</p>
+        <p>Chi organizza la manodopera?</p>
+        <p>Chi incassa il denaro della distribuzione?</p>
+        <p>Come vengono trasferiti all'estero i profitti?</p>
+        <p>Dove vengono riciclati?</p>
+        <p>E soprattutto: <strong>in quali altre attivit</strong><strong>à </strong><strong>vengono reinvestiti?</strong></p>
+        <p>Seguire queste domande significa passare dal contrasto al contrabbando al contrasto dell'economia criminale che lo rende possibile.</p>
+        <p>Perché l'esperienza internazionale dimostra che i diversi mercati illegali non necessariamente vivono separati.</p>
+        <p>Le stesse reti finanziarie e logistiche possono essere utilizzate per movimentare merci, persone e denaro.</p>
+        <p>Resta infine una questione politicamente delicata.</p>
+        <p>Il mercato illecito prospera grazie alla differenza tra il costo di produzione di una sigaretta e il prezzo pagato dal consumatore sul mercato legale, sul quale incidono pesantemente accise e imposizione fiscale.</p>
+        <p>La tassazione del tabacco risponde naturalmente a precise finalità sanitarie oltre che fiscali.</p>
+        <p>Ma proprio per questo le politiche pubbliche devono tenere contemporaneamente sotto osservazione <strong>salute, gettito e mercato illecito</strong>.</p>
+        <p>Quando aumenta il differenziale di prezzo tra prodotto legale e prodotto clandestino, cresce anche il potenziale incentivo economico per il mercato nero.</p>
+        <p>Non significa rinunciare alla leva fiscale.</p>
+        <p>Significa valutarne gli effetti complessivi e accompagnarla con strumenti adeguati di controllo della filiera, intelligence, cooperazione internazionale e contrasto alla produzione clandestina.</p>
+        <p>Perché se una quota significativa della domanda dovesse spostarsi dal mercato regolamentato a quello illegale, lo Stato perderebbe contemporaneamente su tre fronti: <strong>gettito fiscale, controllo sanitario e sicurezza</strong>.</p>
+        <h2>L’Italia sta diventando una piattaforma produttiva?</h2>
+        <p>Alla fine resta una domanda alla quale le istituzioni dovranno probabilmente iniziare a rispondere.</p>
+        <p>È ancora corretto considerare l'Italia soltanto un Paese di destinazione o transito delle sigarette di contrabbando?</p>
+        <p>La scoperta ripetuta di stabilimenti da migliaia di metri quadrati, linee capaci di produrre milioni di sigarette al giorno, dormitori per i lavoratori, depositi separati e reti distributive interregionali suggerisce uno scenario diverso.</p>
+        <p><strong>L'Italia potrebbe essere diventata anche una piattaforma produttiva del mercato illecito europeo del tabacco.</strong></p>
+        <p>La concentrazione di diverse operazioni nel Nord del Paese non appare inoltre priva di logica.</p>
+        <p>Lombardia, Veneto, Friuli-Venezia Giulia ed Emilia-Romagna dispongono esattamente delle caratteristiche che un'organizzazione industriale clandestina può cercare: migliaia di capannoni, grandi infrastrutture logistiche, collegamenti autostradali, prossimità ai mercati dell'Europa centrale e possibilità di movimentare camion senza destare automaticamente sospetti.</p>
+        <p>È una geografia completamente diversa da quella del contrabbando italiano del passato.</p>
+        <p>Allora il problema principale era impedire alle sigarette di attraversare clandestinamente il confine.</p>
+        <p>Oggi il confine può essere attraversato dai macchinari, dalle materie prime e dalle persone necessarie a produrle.</p>
+        <p><strong>La fabbrica viene dopo. E pu</strong><strong>ò </strong><strong>essere a pochi chilometri da casa nostra.</strong></p>
+        <p>Una fabbrica clandestina di sigarette non rappresenta soltanto un danno per l'Erario.</p>
+        <p>Non è soltanto contraffazione.</p>
+        <p>Non è soltanto un problema sanitario.</p>
+        <p>È un'infrastruttura attraverso la quale un'organizzazione criminale può trasformare materie prime relativamente economiche in milioni di euro di liquidità illegale.</p>
+        <p>E quando il fenomeno raggiunge queste dimensioni, la questione riguarda inevitabilmente anche la <strong>sicurezza economica e nazionale</strong>.</p>
+        <p>Le fabbriche possono essere sequestrate.</p>
+        <p>I macchinari possono essere distrutti.</p>
+        <p>Le sigarette possono essere tolte dal mercato.</p>
+        <p>Ma per comprendere davvero il fenomeno bisogna seguire ciò che non si vede nelle fotografie dei sequestri: <strong>il denaro</strong>.</p>
+        <p>Capire chi investe, chi incassa, chi ricicla e chi beneficia dei profitti.</p>
+        <p>Perché i precedenti internazionali hanno già dimostrato che il confine tra economia illegale, criminalità organizzata e finanziamento di minacce molto più gravi può essere sorprendentemente sottile.</p>
+        <p>Il contrabbando italiano, dunque, non sta semplicemente tornando.</p>
+        <p><strong>Sta cambiando pelle.</strong></p>
+        <p>E soprattutto sta diventando industria.</p>
+
+        <aside class="author-box">
+          <img src="../assets/immagini-chi-siamo/Fabio%20Boscacci.jfif" width="88" height="88" loading="lazy" decoding="async" alt="Fabio Boscacci" onerror="this.style.display='none'">
+          <div class="author-info"><h4><a href="../chi-siamo.html#boscacci">Fabio Boscacci</a></h4><p>Cofondatore e Direttore Responsabile di DYNAMES, promuove l’indirizzo strategico, la supervisione editoriale e il coordinamento dei contenuti della piattaforma, con attenzione alla qualità dell’analisi e allo sviluppo della Fondazione Boscacci ETS.</p></div>
+        </aside>
+      </div>
+    </article>
+  </main>
+  <footer><div class="container"><h3 style="font-size:1.5rem;margin-bottom:1rem;letter-spacing:1px">DYNAMES</h3><p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p><p style="margin-top:1rem;color:var(--slate-grey)">© 2026 DYNAMES. Tutti i diritti riservati.</p></div></footer>
+</body>
+</html>
