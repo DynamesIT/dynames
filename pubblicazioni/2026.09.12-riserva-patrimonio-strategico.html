@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src='https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+                deleteAnalyticsCookies();
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | La Riserva, patrimonio strategico della resilienza</title>
+<meta content="White paper di Vincenzo D’Anna sulla Riserva come patrimonio strategico della resilienza: sintesi, DOI e accesso al documento integrale DYNAMES." name="description"/>
+<link href="https://www.dynames.it/pubblicazioni/2026.09.12-riserva-patrimonio-strategico.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="La Riserva, patrimonio strategico della resilienza" property="og:title"/>
+<meta content="Il white paper di Vincenzo D’Anna analizza il ruolo della Riserva nella resilienza nazionale e alleata, in una fase decisiva per la capacità di difesa della NATO." property="og:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/2026.09.12-riserva-patrimonio-strategico.html" property="og:url"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.09.12-riserva-patrimonio-strategico-light.jpg" property="og:image"/>
+<meta content="La Riserva, patrimonio strategico della resilienza — white paper DYNAMES" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="La Riserva, patrimonio strategico della resilienza" name="twitter:title"/>
+<meta content="White paper di Vincenzo D’Anna sulla Riserva come capacità strategica della resilienza nazionale e alleata." name="twitter:description"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.09.12-riserva-patrimonio-strategico-light.jpg" name="twitter:image"/>
+<meta content="2026-09-12T09:00:00+02:00" property="article:published_time"/>
+<meta content="2026-09-12T09:00:00+02:00" property="article:modified_time"/>
+<meta content="White Paper" property="article:section"/>
+<meta content="NATO" property="article:tag"/>
+<meta content="Reserve Forces" property="article:tag"/>
+<meta content="Strategic Depth" property="article:tag"/>
+<meta content="Resilience" property="article:tag"/>
+<meta content="Societal Resilience" property="article:tag"/>
+<meta content="Civil Preparedness" property="article:tag"/>
+<meta content="Whole-of-Society" property="article:tag"/>
+<meta content="Vincenzo D’Anna" name="author"/>
+<meta content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" name="robots"/>
+<meta content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" name="googlebot"/>
+<!-- Google Scholar / Highwire Press bibliographic metadata -->
+<meta content="La Riserva, patrimonio strategico della resilienza" name="citation_title"/>
+<meta content="Vincenzo D'Anna" name="citation_author"/>
+<meta content="2026/09/12" name="citation_publication_date"/>
+<meta content="it" name="citation_language"/>
+<meta content="10.5281/zenodo.22682260" name="citation_doi"/>
+<meta content="https://www.dynames.it/pubblicazioni/Archivio/2026.09.12-La-Riserva-patrimonio-strategico-della-resilienza_DYNAMES.pdf" name="citation_pdf_url"/>
+<meta content="DYNAMES – Fondazione Boscacci ETS" name="citation_technical_report_institution"/>
+<meta content="DYNAMES – Fondazione Boscacci ETS" name="citation_publisher"/>
+<meta content="NATO; NATO Committee on Reserves; Reserve Forces; Military Reserves; Strategic Depth; Resilience; Societal Resilience; Civil Preparedness; Whole-of-Government; Whole-of-Society; Total Defence; Civil-Military Cooperation; Defence Policy; Mobilisation; Italy" name="citation_keywords"/>
+<meta content="Il White Paper analizza il ruolo della Riserva come patrimonio strategico della resilienza nazionale e collettiva nel momento in cui l’Italia assume la presidenza biennale del NATO Committee on Reserves. Il contributo mette in relazione profondità strategica, civil preparedness, approcci Whole-of-Government e Whole-of-Society, base industriale, competenze specialistiche e societal resilience." name="citation_abstract"/>
+<!-- Dublin Core / generic scholarly interoperability -->
+<meta content="La Riserva, patrimonio strategico della resilienza" name="DC.title"/>
+<meta content="L’Italia alla guida del NATO Committee on Reserves in una fase decisiva per la capacità di difesa dell’Alleanza" name="DC.title.alternative"/>
+<meta content="D'Anna, Vincenzo" name="DC.creator"/>
+<meta content="2026-09-12" name="DC.date"/>
+<meta content="White Paper" name="DC.type"/>
+<meta content="it" name="DC.language"/>
+<meta content="DYNAMES – Fondazione Boscacci ETS" name="DC.publisher"/>
+<meta content="https://doi.org/10.5281/zenodo.22682260" name="DC.identifier"/>
+<meta content="https://www.dynames.it/pubblicazioni/2026.09.12-riserva-patrimonio-strategico.html" name="DC.relation"/>
+<meta content="Creative Commons Attribution 4.0 International (CC BY 4.0)" name="DC.rights"/>
+<meta content="NATO; Reserve Forces; Strategic Depth; Resilience; Societal Resilience; Civil Preparedness; Whole-of-Government; Whole-of-Society; Defence Policy; Italy" name="DC.subject"/>
+<meta content="White Paper sulla Riserva come patrimonio strategico della resilienza, tra profondità militare, competenze civili, civil preparedness e capacità di difesa dell’Alleanza." name="DC.description"/>
+<link href="https://www.dynames.it/pubblicazioni/Archivio/2026.09.12-La-Riserva-patrimonio-strategico-della-resilienza_DYNAMES.pdf" rel="alternate" title="PDF integrale — La Riserva, patrimonio strategico della resilienza" type="application/pdf"/>
+<link href="https://creativecommons.org/licenses/by/4.0/" rel="license"/>
+<link href="https://doi.org/10.5281/zenodo.22682260" rel="alternate" title="DOI — Zenodo"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+        --night-blue: #0b1120;
+        --deep-blue: #294967;
+        --slate-grey: #334155;
+        --light-grey: #f8fafc;
+        --optical-white: #ffffff;
+        --accent: #1e3a8a;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-light: #cbd5e1;
+        --paper-bg: #fdfbf7;
+        --gold-accent: #b8935a;
+        --border: #e2e8f0;
+        --dynames-blue: #0b1c2d;
+        --dynames-grey: #ededed;
+        --dynames-electric: #27a8ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: var(--paper-bg);
+        color: var(--text-primary);
+        line-height: 1.8;
+        font-size: 1.08rem;
+    }
+    h1, h2, h3, .brand, .button, .small-label, .cover-kicker, .cover-series {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .serif-heading { font-family: 'Playfair Display', serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .article-container { max-width: 920px; margin: 0 auto; padding: 0 2rem; }
+
+    header {
+        background: var(--optical-white);
+        border-bottom: 2px solid var(--night-blue);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+    .brand a { text-decoration: none; }
+    .brand .brand-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--night-blue);
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+    .brand-logo { width: auto; height: 40px; }
+    .brand p {
+        margin-top: 2px;
+        color: var(--slate-grey);
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .desktop-nav { display: flex; align-items: center; gap: 2rem; }
+    .desktop-nav a {
+        color: var(--night-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color .25s;
+    }
+    .desktop-nav a:hover, .desktop-nav a.active { color: var(--gold-accent); }
+    .back-nav { padding: 2rem 0; }
+    .back-nav a {
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+    .back-nav a:hover { color: var(--gold-accent); }
+
+    .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(270px, .75fr);
+        align-items: center;
+        gap: 4rem;
+        margin-bottom: 4rem;
+    }
+    .article-category {
+        display: block;
+        margin-bottom: 1.2rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .9rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .article-title {
+        margin-bottom: 1.5rem;
+        color: var(--night-blue);
+        font-size: clamp(2.45rem, 5.5vw, 4.2rem);
+        line-height: 1.04;
+    }
+    .article-subtitle {
+        margin-bottom: 2rem;
+        color: var(--slate-grey);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.28rem;
+        font-style: italic;
+        line-height: 1.5;
+    }
+    .article-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem 1.2rem;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        color: var(--slate-grey);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .8rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .meta-author { color: var(--night-blue); font-weight: 700; }
+
+    .cover-card {
+        min-height: 468px;
+        padding: .65rem;
+        border: 1px solid #d8dde3;
+        background: var(--dynames-grey);
+        box-shadow: 0 24px 44px rgba(11, 28, 45, .2);
+        transform: rotate(.6deg);
+    }
+    .publication-cover {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        min-height: 445px;
+        height: 100%;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 76% 31%, rgba(39, 168, 255, .12), transparent 31%),
+            linear-gradient(145deg, #102946 0%, var(--dynames-blue) 58%, #071321 100%);
+        color: white;
+    }
+    .publication-cover::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        right: -12%;
+        bottom: -16%;
+        left: -12%;
+        height: 47%;
+        background: var(--dynames-grey);
+        transform: rotate(-8deg);
+    }
+    .publication-cover::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        right: -56px;
+        bottom: 12px;
+        width: 155px;
+        height: 155px;
+        border: 1px solid rgba(39, 168, 255, .28);
+        border-radius: 50%;
+    }
+    .cover-brand {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: 1.25rem 1.35rem 0;
+    }
+    .cover-brand-mark {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0) invert(1);
+    }
+    .cover-brand-copy { display: flex; flex-direction: column; line-height: 1.1; }
+    .cover-brand-copy strong {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: .15em;
+    }
+    .cover-brand-copy span {
+        margin-top: .3rem;
+        color: #c6d1dc;
+        font-family: 'Montserrat', sans-serif;
+        font-size: .46rem;
+        letter-spacing: .08em;
+    }
+    .cover-copy {
+        position: relative;
+        z-index: 3;
+        width: 89%;
+        margin: 2.5rem 1.7rem 7.4rem;
+    }
+    .cover-series {
+        margin-bottom: .65rem;
+        color: #8fd3ff;
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+    .cover-kicker {
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: .34rem .65rem;
+        border: 1px solid rgba(255,255,255,.35);
+        color: white;
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .cover-title {
+        max-width: 300px;
+        color: white;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 1.08;
+    }
+    .cover-network {
+        position: absolute;
+        z-index: 2;
+        top: 85px;
+        right: -48px;
+        width: 270px;
+        height: 270px;
+        opacity: .34;
+        fill: var(--dynames-electric);
+        stroke: var(--dynames-electric);
+        stroke-width: 1.15;
+    }
+    .cover-footer {
+        position: absolute;
+        z-index: 3;
+        right: 1.35rem;
+        bottom: 1.15rem;
+        left: 1.35rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        color: var(--dynames-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+    .cover-year { color: #507493; font-size: .62rem; }
+
+    .article-body { padding-bottom: 5rem; }
+    .download-box, .contents-panel, .author-card {
+        display: grid;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        border: 1px solid var(--border);
+        background: var(--optical-white);
+    }
+    .download-box { grid-template-columns: minmax(0, 1fr) 210px; align-items: center; }
+    .download-box h2, .contents-panel h2 { margin: .2rem 0 .65rem; color: var(--night-blue); font-size: 1.9rem; }
+    .download-box p { color: var(--text-secondary); }
+    .download-action { display: flex; flex-direction: column; gap: 1rem; }
+    .download-cover {
+        display: block;
+        width: 100%;
+        max-width: 210px;
+        height: auto;
+        margin: 0 auto;
+        border: 1px solid #d8e4ec;
+        box-shadow: 0 10px 24px rgba(11, 28, 45, .16);
+    }
+    .download-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem 2rem;
+        margin-top: 1.35rem;
+        padding-top: 1.15rem;
+        border-top: 1px solid var(--border);
+    }
+    .download-meta div { min-width: 150px; }
+    .download-meta strong, .download-meta a {
+        display: block;
+        margin-top: .25rem;
+        color: var(--night-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .88rem;
+        font-weight: 700;
+        text-decoration: none;
+    }
+    .download-meta a:hover { color: var(--accent); text-decoration: underline; }
+    .small-label {
+        color: var(--gold-accent);
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .button {
+        display: inline-block;
+        padding: .95rem 1.35rem;
+        background: var(--night-blue);
+        color: white;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: background .2s, transform .2s;
+    }
+    .button:hover { background: var(--accent); transform: translateY(-2px); }
+    .contents-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .7rem 2rem;
+        margin: .7rem 0 0 1.3rem;
+    }
+    .contents-list a { color: var(--accent); text-decoration: none; }
+    .contents-list a:hover { text-decoration: underline; }
+    .paper-section { margin: 4rem 0; }
+    .paper-section h2 { margin: .35rem 0 1.35rem; color: var(--night-blue); font-size: 2.35rem; line-height: 1.15; }
+    .paper-section p { margin-bottom: 1.15rem; text-align: justify; }
+    .abstract-section {
+        padding: 2rem;
+        border-left: 4px solid var(--gold-accent);
+        background: var(--optical-white);
+    }
+    .pull-quote {
+        margin: 4rem 0;
+        padding-left: 2rem;
+        border-left: 3px solid var(--dynames-electric);
+        color: var(--deep-blue);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.55rem;
+        font-style: italic;
+        line-height: 1.45;
+    }
+    .paper-figure {
+        margin: 2.2rem 0;
+        padding: 1rem;
+        border: 1px solid #d8e4ec;
+        background: var(--optical-white);
+        box-shadow: 0 12px 28px rgba(11, 28, 45, .08);
+    }
+    .paper-figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+    }
+    .paper-figure--portrait img { max-width: 620px; }
+    .paper-figure figcaption {
+        margin-top: .9rem;
+        color: var(--text-secondary);
+        font-size: .86rem;
+        line-height: 1.55;
+    }
+    .paper-figure figcaption strong {
+        display: block;
+        margin-bottom: .15rem;
+        color: var(--night-blue);
+    }
+    .paper-figure a, .references a { color: var(--accent); word-break: break-word; }
+    .bibliography { padding-top: 1rem; border-top: 1px solid var(--border); }
+    .references { margin-left: 1.4rem; }
+    .references li { margin-bottom: 1rem; padding-left: .35rem; }
+    .author-card { grid-template-columns: 150px minmax(0, 1fr); align-items: start; margin-top: 4rem; }
+    .author-card img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: grayscale(.1);
+    }
+    .author-card h2 { margin: .15rem 0 .2rem; color: var(--night-blue); font-size: 2rem; }
+    .author-role {
+        margin-bottom: .75rem;
+        color: var(--gold-accent);
+        font-family: 'Montserrat', sans-serif;
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .author-card p { color: var(--text-secondary); line-height: 1.65; }
+    .author-card a { color: var(--accent); }
+    footer { padding: 3rem 0; background: var(--night-blue); color: var(--text-light); text-align: center; }
+    footer h3 { margin-bottom: .6rem; color: white; letter-spacing: .12em; }
+    footer p { font-size: .82rem; }
+
+    @media (max-width: 980px) {
+        .desktop-nav { display: none; }
+        .hero { grid-template-columns: 1fr; gap: 2.5rem; }
+        .cover-card { width: min(390px, 100%); margin: 0 auto; }
+    }
+    @media (max-width: 660px) {
+        body { font-size: 1rem; }
+        .container, .article-container { padding-right: 1.25rem; padding-left: 1.25rem; }
+        .article-title { font-size: 2.45rem; }
+        .download-box, .contents-list, .author-card { grid-template-columns: 1fr; }
+        .download-box, .contents-panel, .author-card, .abstract-section { padding: 1.45rem; }
+        .button { width: 100%; }
+        .paper-section p { text-align: left; }
+        .paper-section h2 { font-size: 2rem; }
+        .author-card img { width: 120px; height: 120px; }
+    }
+
+    .hero--publication { display: block; }
+    .publication-hero {
+        margin-top: 2.4rem;
+        overflow: hidden;
+        border: 1px solid #d8e4ec;
+        background: var(--optical-white);
+        box-shadow: 0 18px 38px rgba(11, 28, 45, .14);
+    }
+    .publication-hero img { display: block; width: 100%; height: auto; }
+    .section-summaries { display: grid; gap: 0; margin-top: 1rem; }
+    .section-summary {
+        display: grid;
+        grid-template-columns: minmax(210px, .7fr) minmax(0, 1.3fr);
+        gap: 1.5rem;
+        padding: 1.25rem 0;
+        border-top: 1px solid var(--border);
+    }
+    .section-summary:first-child { border-top: 0; }
+    .section-summary h3 {
+        color: var(--night-blue);
+        font-size: 1rem;
+        line-height: 1.35;
+    }
+    .section-summary p {
+        color: var(--text-secondary);
+        font-size: .98rem;
+        line-height: 1.55;
+    }
+    @media (max-width: 760px) {
+        .section-summary { grid-template-columns: 1fr; gap: .45rem; }
+    }
+    @media (max-width: 460px) {
+        .download-meta { display: grid; grid-template-columns: 1fr; gap: .85rem; }
+    }
+
+    .extended-abstract-intro {
+        margin: 3.5rem 0 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+    .extended-abstract-intro p,
+    .extended-paper-section p { margin-bottom: 1.15rem; text-align: justify; }
+    .extended-paper-section { margin: 3.3rem 0; }
+    .extended-paper-section h2 {
+        margin: .35rem 0 1.25rem;
+        color: var(--night-blue);
+        font-family: 'Playfair Display', serif;
+        font-size: 2.15rem;
+        line-height: 1.18;
+    }
+    .extended-paper-section h3 {
+        margin: 1.7rem 0 .75rem;
+        color: var(--deep-blue);
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.05rem;
+        line-height: 1.4;
+    }
+    .contents-links { margin: .8rem 0 0 1.35rem; }
+    .contents-links li { margin-bottom: .55rem; padding-left: .2rem; }
+    .contents-links a { color: var(--accent); text-decoration: none; }
+    .contents-links a:hover { text-decoration: underline; }
+    .citation-box {
+        margin: 4rem 0;
+        padding: 2rem;
+        border: 1px solid var(--border);
+        border-top: 4px solid var(--gold-accent);
+        background: var(--optical-white);
+    }
+    .citation-box h2 { margin: .25rem 0 1rem; color: var(--night-blue); font-size: 1.8rem; }
+    .citation-text {
+        padding: 1rem 1.1rem;
+        background: var(--light-grey);
+        border-left: 3px solid var(--dynames-electric);
+        color: var(--text-primary);
+        font-size: .96rem;
+        line-height: 1.65;
+    }
+    .citation-links { display: flex; flex-wrap: wrap; gap: .7rem 1.25rem; margin-top: 1rem; }
+    .citation-links a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .citation-links a:hover { text-decoration: underline; }
+    .license-note { margin-top: 1rem; color: var(--text-secondary); font-size: .9rem; }
+
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": [
+    "ScholarlyArticle",
+    "Report"
+  ],
+  "headline": "La Riserva, patrimonio strategico della resilienza",
+  "alternativeHeadline": "L’Italia alla guida del NATO Committee on Reserves in una fase decisiva per la capacità di difesa dell’Alleanza",
+  "description": "Il White Paper analizza il ruolo della Riserva come patrimonio strategico della resilienza nazionale e collettiva nel momento in cui l’Italia assume la presidenza biennale del NATO Committee on Reserves, collegando profondità strategica, civil preparedness, Whole-of-Government, Whole-of-Society, base industriale, competenze specialistiche e societal resilience.",
+  "abstract": "L’Italia assume la presidenza del Comitato NATO sulle riserve mentre profondità strategica, civil preparedness, Whole-of-Government e Whole-of-Society, base industriale e societal resilience convergono nella riflessione sulla capacità di sostenere la difesa nel tempo. Il valore della Riserva emerge dentro questa architettura: massa e competenze, quantità e qualità, diventano strategiche quando sono preparate e integrate prima della crisi.",
+  "author": {
+    "@type": "Person",
+    "name": "Vincenzo D’Anna",
+    "url": "https://www.dynames.it/chi-siamo.html",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "DYNAMES – Governance di Forze e Sistemi",
+      "url": "https://www.dynames.it/"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DYNAMES – Fondazione Boscacci ETS",
+    "url": "https://www.dynames.it/"
+  },
+  "datePublished": "2026-09-12",
+  "dateModified": "2026-09-12",
+  "inLanguage": "it-IT",
+  "articleSection": "White Paper",
+  "genre": [
+    "White Paper",
+    "Strategic Studies",
+    "Defence and Security"
+  ],
+  "version": "1.0",
+  "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "DOI",
+    "value": "10.5281/zenodo.22682260"
+  },
+  "sameAs": [
+    "https://doi.org/10.5281/zenodo.22682260"
+  ],
+  "isPartOf": {
+    "@type": "CreativeWorkSeries",
+    "name": "DYNAMES Paper & Dossier",
+    "url": "https://www.dynames.it/pubblicazioni.html"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "keywords": [
+    "NATO",
+    "NATO Committee on Reserves",
+    "Reserve Forces",
+    "Military Reserves",
+    "Strategic Depth",
+    "Resilience",
+    "Societal Resilience",
+    "Civil Preparedness",
+    "Whole-of-Government",
+    "Whole-of-Society",
+    "Total Defence",
+    "Civil-Military Cooperation",
+    "Defence Policy",
+    "Mobilisation",
+    "Italy"
+  ],
+  "image": "https://www.dynames.it/pubblicazioni/Archivio/2026.09.12-riserva-patrimonio-strategico-light.jpg",
+  "url": "https://www.dynames.it/pubblicazioni/2026.09.12-riserva-patrimonio-strategico.html",
+  "encoding": {
+    "@type": "MediaObject",
+    "encodingFormat": "application/pdf",
+    "contentUrl": "https://www.dynames.it/pubblicazioni/Archivio/2026.09.12-La-Riserva-patrimonio-strategico-della-resilienza_DYNAMES.pdf"
+  }
+}
+</script>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html">
+<div class="brand-heading"><img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>DYNAMES</div>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a class="active" href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../pubblicazioni.html">← Torna alle Pubblicazioni</a>
+</div>
+<main>
+<article class="article-container">
+<section class="hero hero--publication">
+<div>
+<span class="article-category">Paper</span>
+<h1 class="serif-heading article-title">La Riserva, patrimonio strategico della resilienza</h1>
+<p class="article-subtitle">L’Italia alla guida del NATO Committee on Reserves in una fase decisiva per la capacità di difesa dell’Alleanza.</p>
+<div class="article-meta">
+<span class="meta-author">Autore · Vincenzo D’Anna</span>
+<span>White Paper</span>
+<span>12 settembre 2026</span>
+</div>
+</div>
+<picture class="publication-hero">
+<source media="(max-width: 720px)" srcset="Archivio/2026.09.12-riserva-patrimonio-strategico-light.jpg"/>
+<img alt="La Riserva come rete di competenze militari, sanitarie, industriali, informative, digitali e logistiche" decoding="async" fetchpriority="high" height="941" src="Archivio/2026.09.12-riserva-patrimonio-strategico.png" width="1672"/>
+</picture>
+</section>
+<div class="article-body">
+<section class="download-box">
+<div>
+<span class="small-label">Pubblicazione DYNAMES</span>
+<h2 class="serif-heading">Scarica il white paper</h2>
+<p>Il contributo integrale, con apparato di note e riferimenti, è disponibile nel documento PDF.</p>
+<div aria-label="Dati della pubblicazione" class="download-meta">
+<div><span class="small-label">Autore</span><strong>Vincenzo D’Anna</strong></div>
+<div><span class="small-label">DOI</span><a href="https://doi.org/10.5281/zenodo.22682260" rel="noopener noreferrer" target="_blank">10.5281/zenodo.22682260</a></div>
+</div>
+</div>
+<div class="download-action">
+<img alt="Copertina del white paper La Riserva, patrimonio strategico della resilienza" class="download-cover" decoding="async" height="1491" loading="lazy" src="Archivio/2026.09.12-riserva-patrimonio-strategico-copertina.png" width="1055"/>
+<a class="button" download="" href="Archivio/2026.09.12-La-Riserva-patrimonio-strategico-della-resilienza_DYNAMES.pdf">Scarica il PDF</a>
+</div>
+</section>
+<section class="paper-section abstract-section" id="sintesi">
+<span class="small-label">Executive summary</span>
+<h2 class="serif-heading">La Riserva come capacità di sistema</h2><p>L’Italia assume la presidenza del NATO Committee on Reserves mentre profondità strategica, <em>civil preparedness</em>, approcci <em>Whole-of-Government</em> e <em>Whole-of-Society</em>, base industriale e <em>societal resilience</em> convergono nella riflessione sulla capacità di sostenere la difesa nel tempo. Il White Paper legge la Riserva come parte di una capacità di sistema: non solo personale aggiuntivo, ma anche competenze specialistiche, continuità operativa e connessione tra Forze Armate, istituzioni, industria, infrastrutture e società. La presidenza italiana del NCR apre quindi uno spazio utile per trasformare il confronto alleato in conoscenza applicabile alla costruzione di una Riserva nazionale pronta, scalabile e integrata.</p>
+</section>
+<section aria-labelledby="indice-title" class="contents-panel">
+<span class="small-label">Nel white paper</span>
+<h2 class="serif-heading" id="indice-title">Il paper in sintesi</h2>
+<ol class="contents-links">
+<li><a href="#profondita">Il ritorno della profondità strategica</a></li>
+<li><a href="#sistema">La capacità militare come capacità di sistema</a></li>
+<li><a href="#whole-of-society"><em>Total Defence</em> e approccio <em>Whole-of-Society</em></a></li>
+<li><a href="#societal-resilience">Il patrimonio meno visibile: la <em>societal resilience</em></a></li>
+<li><a href="#riserva-resilienza">La Riserva dentro la resilienza</a></li>
+<li><a href="#italia">L’Italia davanti a un’occasione rara</a></li>
+<li><a href="#conclusione">Conclusione</a></li>
+</ol>
+</section>
+<section aria-labelledby="estratto-title" class="extended-abstract-intro">
+<span class="small-label">Estratto esteso dal White Paper</span>
+<h2 class="serif-heading" id="estratto-title">Dalla massa alla resilienza: perché la Riserva torna strategica</h2><p>La presidenza italiana del NATO Committee on Reserves arriva in una fase in cui la guerra prolungata ha riportato al centro massa, mobilitazione e capacità di rigenerazione. La questione non riguarda soltanto quante persone possano essere richiamate, ma quale profondità uno Stato riesca a esprimere quando la crisi dura, le competenze diventano scarse e la continuità delle funzioni essenziali entra direttamente nella capacità di difesa.</p>
+</section>
+<section class="extended-paper-section" id="profondita">
+<span class="small-label">1 · Profondità strategica</span>
+<h2>Il ritorno della profondità</h2><p>La NATO Policy on Reserves riconosce che gli organici permanenti possono non bastare in scenari ad alta intensità e di lunga durata. Le riserve servono quindi ad ampliare le forze disponibili, rigenerare capacità e colmare rapidamente <em>capability gap</em>. La profondità strategica non è però solo quantità: significa anche accesso a competenze che sarebbe inefficiente mantenere stabilmente nello strumento attivo.</p>
+</section>
+<section class="extended-paper-section" id="sistema">
+<span class="small-label">2 · Capacità di sistema</span>
+<h2>La capacità militare è una capacità di sistema</h2><p>Energia, reti digitali, trasporti, sanità, logistica, industria e capitale umano condizionano direttamente l’efficacia militare. Molte di queste capacità appartengono alla sfera civile. La Riserva acquista quindi valore quando è inserita in un’architettura più ampia di resilienza, capace di collegare prontezza militare, <em>civil preparedness</em>, infrastrutture e continuità dei servizi essenziali.</p>
+</section>
+<section class="extended-paper-section" id="whole-of-society">
+<span class="small-label">3 · Stato, società e settore privato</span>
+<h2><em>Total Defence</em> e approccio <em>Whole-of-Society</em></h2><p>I modelli di <em>Total Defence</em> mostrano il valore dell’integrazione tra istituzioni, imprese e cittadini, ma non esiste un modello unico esportabile. Nel quadro NATO risultano più flessibili gli approcci <em>Whole-of-Government</em> e <em>Whole-of-Society</em>, che rendono visibili le dipendenze reciproche senza imporre una struttura uniforme. La resilienza nasce dalla capacità di governare queste interdipendenze prima della crisi.</p>
+
+
+</section>
+<section class="extended-paper-section" id="societal-resilience">
+<span class="small-label">4 · Societal resilience</span>
+<h2>Il patrimonio meno visibile</h2><p>La resilienza dipende anche da fiducia, comprensione del rischio, legittimità delle istituzioni e disponibilità a cooperare. La <em>societal resilience</em> rende attivabili le capacità materiali, ma il coinvolgimento della società non può trasformarsi in arretramento dello Stato. La cooperazione funziona quando amplia la capacità collettiva mantenendo chiare responsabilità pubbliche e doveri istituzionali.</p>
+</section>
+<section class="extended-paper-section" id="riserva-resilienza">
+<span class="small-label">5 · Competenze e prontezza</span>
+<h2>La Riserva dentro la resilienza</h2><p>La Riserva combina esperienza militare e competenze maturate nella vita civile: cyber, spazio, tecnologie emergenti, ingegneria, medicina, diritto, IT e logistica. Questa permeabilità richiede però pianificazione. Le stesse professionalità utili alla Difesa possono essere indispensabili nel settore civile; per questo il vero problema non è solo richiamare competenze, ma decidere dove esse producano il maggiore effetto sistemico.</p>
+</section>
+<section class="extended-paper-section" id="italia">
+<span class="small-label">6 · La prospettiva italiana</span>
+<h2>L’Italia davanti a un’occasione rara</h2><p>Nel 2026 il tema della Riserva ha assunto maggiore definizione anche in Italia, con l’ipotesi di una componente operativa, specialistica e territoriale e con l’indirizzo politico verso una Riserva pronta, scalabile e integrata. La presidenza del NCR può diventare un laboratorio utile per confrontare modelli alleati, modalità di richiamo, formazione, rapporto con i datori di lavoro e impiego degli specialisti.</p>
+</section>
+<section class="extended-paper-section" id="conclusione">
+<span class="small-label">Conclusione</span>
+<h2>Un patrimonio da preparare prima della crisi</h2><p>La Riserva diventa patrimonio strategico quando consente di trasformare, entro regole e tempi definiti, una parte del capitale umano della società in capacità di difesa. Può dare massa, conservare esperienza e riportare rapidamente nello strumento competenze sviluppate altrove. Perché ciò sia credibile, però, industria, infrastrutture, sanità, logistica, norme, datori di lavoro e società devono poter sostenere lo sforzo senza perdere le proprie funzioni essenziali.</p><p>Il White Paper completo approfondisce il quadro NATO, i modelli comparati, la <em>societal resilience</em> e le implicazioni per la futura Riserva italiana, con riferimenti dottrinali e bibliografici.</p><p><a class="button" href="Archivio/2026.09.12-La-Riserva-patrimonio-strategico-della-resilienza_DYNAMES.pdf">Leggi il White Paper completo</a></p>
+</section>
+<section aria-labelledby="citation-title" class="citation-box">
+<span class="small-label">Citazione e identificazione persistente</span>
+<h2 class="serif-heading" id="citation-title">Cita questo White Paper</h2>
+<p class="citation-text">D’Anna, V. (2026). <em>La Riserva, patrimonio strategico della resilienza. L’Italia alla guida del NATO Committee on Reserves in una fase decisiva per la capacità di difesa dell’Alleanza</em>. DYNAMES – Fondazione Boscacci ETS. Versione 1.0. DOI: 10.5281/zenodo.22682260.</p>
+<div class="citation-links">
+<a href="https://doi.org/10.5281/zenodo.22682260" rel="noopener noreferrer" target="_blank">DOI permanente</a>
+<a href="Archivio/2026.09.12-La-Riserva-patrimonio-strategico-della-resilienza_DYNAMES.pdf">PDF integrale</a>
+<a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener noreferrer" target="_blank">Licenza CC BY 4.0</a>
+</div>
+<p class="license-note">Il record bibliografico e il DOI consentono l’identificazione persistente della pubblicazione e l’allineamento dei metadata tra DYNAMES, Zenodo e le principali piattaforme di ricerca e networking scientifico.</p>
+</section>
+<section aria-labelledby="autore-title" class="author-card">
+<img alt="Vincenzo D’Anna" decoding="async" height="150" loading="lazy" onerror="this.style.display='none'" src="../assets/immagini-chi-siamo/Vinenzo%20D'ANNA.png" width="150"/>
+<div>
+<span class="small-label">Autore</span>
+<h2 class="serif-heading" id="autore-title">Vincenzo D’Anna</h2>
+<p class="author-role">Cofondatore · Consigliere editoriale e scientifico</p>
+<p>Ex allievo della Scuola Militare Nunziatella, si occupa di analisi geopolitica, comunicazione strategica, cultura della difesa e rapporto tra sicurezza, istituzioni e società civile, contribuendo all’indirizzo scientifico di DYNAMES.</p>
+<p><a href="../chi-siamo.html">Scopri il profilo dell’autore</a></p>
+</div>
+</section>
+</div>
+</article>
+</main>
+<footer>
+<div class="container">
+<h3>DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p>© 2026 DYNAMES. White Paper distribuito con licenza CC BY 4.0.</p>
+</div>
+</footer>
+</body>
+</html>
