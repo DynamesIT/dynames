@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src='https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Progettazione europea e Pubblica Amministrazione: Assoeuro chiede una sinergia virtuosa tra Stato e professionisti</title>
+<meta content="ASSOEURO propone una sinergia tra Stato ed europrogettisti per rafforzare la capacità delle Pubbliche Amministrazioni di accedere ai fondi europei." name="description"/>
+<link href="https://www.dynames.it/articles/2026.09.14-progettazione-europea-pubblica-amministrazione.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Progettazione europea e Pubblica Amministrazione: Assoeuro chiede una sinergia virtuosa tra Stato e professionisti" property="og:title"/>
+<meta content="ASSOEURO propone una sinergia tra Stato ed europrogettisti per rafforzare la capacità delle Pubbliche Amministrazioni di accedere ai fondi europei." property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.09.14-progettazione-europea-pubblica-amministrazione.html" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta property="og:image" content="https://www.dynames.it/articles/Immagini/2026.09.14-progettazione-europea-pubblica-amministrazione-light.jpg"/>
+<meta property="og:image:secure_url" content="https://www.dynames.it/articles/Immagini/2026.09.14-progettazione-europea-pubblica-amministrazione-light.jpg"/>
+<meta property="og:image:type" content="image/jpeg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="670"/>
+<meta property="og:image:alt" content="Progetto SITE: Sistema Italia in Europa, ASSOEURO e il ministro Tommaso Foti"/>
+<meta name="twitter:image" content="https://www.dynames.it/articles/Immagini/2026.09.14-progettazione-europea-pubblica-amministrazione-light.jpg"/>
+<meta name="twitter:image:alt" content="Progetto SITE: Sistema Italia in Europa, ASSOEURO e il ministro Tommaso Foti"/>
+
+<meta content="Progettazione europea e Pubblica Amministrazione: Assoeuro chiede una sinergia virtuosa tra Stato e professionisti" name="twitter:title"/>
+<meta content="ASSOEURO propone una sinergia tra Stato ed europrogettisti per rafforzare la capacità delle Pubbliche Amministrazioni di accedere ai fondi europei." name="twitter:description"/>
+<meta content="2026-09-14" property="article:published_time"/>
+<meta content="Domenico Letizia" name="author"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .hero-figure {
+            max-width: 1400px;
+            margin: 0 auto 4rem;
+        }
+
+        .article-hero {
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            margin-bottom: 0;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .hero-caption {
+            max-width: 1200px;
+            margin: 0.8rem auto 0;
+            padding: 0 1.5rem;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        .hero-caption a {
+            color: inherit;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(30, 58, 138, 0.25);
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .article-body a:hover {
+            color: var(--gold-accent);
+            border-color: rgba(184, 147, 90, 0.5);
+        }
+
+        .article-body p.source-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: -1.4rem;
+            margin-bottom: 1.8rem;
+            line-height: 1.5;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: auto;
+                min-height: 0;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Progettazione europea e Pubblica Amministrazione: Assoeuro chiede una sinergia virtuosa tra Stato e professionisti",
+  "description": "ASSOEURO propone una sinergia tra Stato ed europrogettisti per rafforzare la capacità delle Pubbliche Amministrazioni di accedere ai fondi europei.",
+  "datePublished": "2026-09-14",
+  "dateModified": "2026-09-14",
+  "inLanguage": "it-IT",
+  "articleSection": "Governance Pubblica",
+  "author": {
+    "@type": "Person",
+    "name": "Domenico Letizia"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DYNAMES"
+  },
+  "mainEntityOfPage": "https://www.dynames.it/articles/2026.09.14-progettazione-europea-pubblica-amministrazione.html",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://www.dynames.it/articles/Immagini/2026.09.14-progettazione-europea-pubblica-amministrazione-light.jpg",
+    "width": 1200,
+    "height": 670
+  }
+}</script><meta property="article:section" content="Governance Pubblica"/>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article>
+<div class="article-container article-header">
+<span class="article-category">Governance Pubblica</span>
+<h1 class="serif-heading article-title">Progettazione europea e Pubblica Amministrazione: Assoeuro chiede una sinergia virtuosa tra Stato e professionisti</h1>
+<p class="article-abstract">ASSOEURO propone una sinergia tra Stato ed europrogettisti per rafforzare la capacità delle Pubbliche Amministrazioni di accedere ai fondi europei.</p>
+<div class="article-meta">
+<span class="meta-author">Domenico Letizia</span>
+<span><time datetime="2026-09-14">14 Settembre 2026</time></span>
+<span>Tempo di lettura: 5 min</span>
+</div>
+</div>
+
+<figure class="hero-figure">
+<img class="article-hero" src="Immagini/2026.09.14-progettazione-europea-pubblica-amministrazione.png" alt="Progetto SITE: Sistema Italia in Europa, ASSOEURO e il ministro Tommaso Foti" width="1678" height="937" fetchpriority="high" decoding="async"/>
+</figure>
+<div class="article-container article-body">
+<p>L’avvio del progetto SITE (Sistema Italia in Europa), promosso dal Dipartimento per gli Affari Europei della Presidenza del Consiglio dei Ministri in collaborazione con Eutalia e finanziato nell&#x27;ambito del programma complementare al PON “Governance e capacità istituzionale 2014-2020” (ai sensi dell’art. 19 del D.L. 14 marzo 2025, n. 25, convertito dalla L. 9 maggio 2025, n. 69), ha riacceso il dibattito sulle strategie di rafforzamento della capacità progettuale delle Pubbliche Amministrazioni italiane rispetto ai fondi ad accesso diretto dell’Unione europea. L’iniziativa, presentata ufficialmente il 3 giugno 2026 nella Sala Polifunzionale della Presidenza del Consiglio dal Ministro Tommaso Foti per agevolare l’accesso di amministrazioni centrali, regionali, enti locali, università e centri di ricerca ai programmi comunitari, anche nella prospettiva del nuovo Fondo europeo per la competitività da 409 miliardi di euro previsto per il Quadro Finanziario Pluriennale 2028-2034, ha visto l’immediato e articolato intervento di ASSOEURO (Associazione Italiana Europrogettisti ed European Project Manager), prima realtà nazionale di tutela e valorizzazione della categoria iscritta nell’elenco del Ministero delle Imprese e del Made in Italy ai sensi della legge 4/2013 e presente nel Registro Trasparenza dell’Unione europea.</p>
+<p>Attraverso una nota istituzionale dettagliata, il Presidente Nazionale di ASSOEURO, Fabrizio Canetto, ha espresso una posizione chiaramente definita come “collaborativa ma fermamente ancorata ai principi istituzionali”: l’Associazione non intende infatti contestare la legittima funzione informativa, conoscitiva e organizzativa dello Stato, ma solleva perplessità sostanziali sulla componente di “supporto specialistico e mirato” diretto alla stesura delle proposte progettuali. Fabrizio Canetto ha ribadito con forza che l’intento di ASSOEURO non è quello di sollevare uno scontro corporativo o un ostacolo al percorso governativo, bensì quello di aprire un tavolo di confronto strutturato e permanente con il Dipartimento guidato dal Ministro Foti. Per Fabrizio Canetto e per l’intera dirigenza di ASSOEURO, il sostegno agli enti pubblici risulta davvero efficace soltanto se capace di valorizzare, integrare e mettere a sistema le competenze specialistiche già esistenti ed operative sul territorio, anziché creare strutture pubbliche parallele o centralizzate che rischiano di sovrapporsi all’operato degli Europrogettisti.</p>
+<p>Entrando nel merito delle criticità operative, il Presidente Fabrizio Canetto ha chiarito che gli Europrogettisti affiancano quotidianamente le Pubbliche Amministrazioni nella ricerca delle opportunità di finanziamento, nell’analisi tecnica dei bandi e nella redazione delle proposte, mettendo a disposizione un bagaglio multidisciplinare di competenze giuridiche, economiche e gestionali consolidate sul campo. Tali professionisti operano costantemente all’interno dell’ecosistema della programmazione comunitaria e non necessitano di strumenti centralizzati di mera mappatura o assistenza generalista, sapendo intercettare direttamente i canali ufficiali dell’Unione europea per valutarne tempistiche e condizioni d’accesso. Pertanto, l’affidamento di attività di assistenza tecnica e progettazione diretta a strutture pubbliche esterne rischia, secondo Fabrizio Canetto, di determinare un’indiretta svalutazione del ruolo e del riconoscimento professionale dell’Europrogettista, proprio in una fase storica nella quale ASSOEURO è fortemente impegnata nel consolidamento dell’identità della categoria, nella qualificazione degli standard e nell’ottenimento di una definitiva stabilizzazione normativa del settore.</p>
+<p>Sul piano quantitativo e dimensionale, il Presidente Fabrizio Canetto invita inoltre le istituzioni a un’attenta riflessione sulla sostenibilità e sull’effettivo impatto del progetto SITE. A fronte di un bacino potenziale sconfinato composto da circa 8.000 Comuni italiani, oltre a Città Metropolitane, Province, Unioni di Comuni, enti sanitari e agenzie territoriali, la manifestazione d’interesse curata da Eutalia limita il supporto specialistico a sole 25 progettualità complessive. Come sottolineato da Fabrizio Canetto, 25 progetti possono costituire un valido esperimento pilota, ma non rappresentano una risposta strutturale di fronte all’enorme fabbisogno delle autonomie locali. Senza un chiaro piano di replicabilità e una sinergia capillare con i professionisti attivi sul territorio, l’iniziativa rischia di rimanere un intervento prevalentemente dimostrativo, incapace di trasformarsi in una reale infrastruttura permanente di supporto per il Paese.</p>
+<p>Per illustrare in modo nitido la portata del problema, Fabrizio Canetto ricorre a due calzanti analogie di carattere istituzionale: sarebbe del tutto singolare se il Ministero della Salute offrisse direttamente visite cliniche o prestazioni mediche ai cittadini sostituendosi ai medici specialisti, così come apparirebbe paradossale se il Ministero delle Infrastrutture si proponesse di redigere in prima persona i progetti esecutivi delle opere pubbliche per conto degli enti territoriali superando il ruolo di ingegneri e architetti. Per il Presidente di ASSOEURO, la funzione dell’amministrazione centrale deve essere quella di pianificare, coordinare, fornire dati e creare contesti favorevoli affinché gli enti locali possano progettare al meglio, senza mai sostituirsi alle professioni regolate o riconosciute dall’ordinamento, la cui attività costituisce un patrimonio di competenze private e di mercato al servizio dell&#x27;interesse pubblico.</p>
+<p>L’analisi di Fabrizio Canetto si arricchisce inoltre dei richiami all’esperienza maturata durante la gestione del PNRR. In quella circostanza, le varie forme di assistenza tecnica e la semplice disponibilità di risorse non sono bastate ad evitare che molti enti locali, spesso sotto organico e privi di personale dedicato, incontrassero enormi difficoltà non solo nella fase di candidatura, ma soprattutto nei complessi processi di attuazione, monitoraggio, gestione finanziaria e rendicontazione finale, arrivando in diversi casi alla rinuncia o alla rimodulazione dei progetti ammessi a finanziamento. La lezione del PNRR dimostra che le amministrazioni locali non hanno bisogno di aiuti episodici o frammentati per partecipare a un bando, bensì di un accompagnamento professionale continuo e qualificato lungo l’intero ciclo di vita della proposta. Questo principio assume un rilievo ancora maggiore nei programmi europei a gestione diretta, caratterizzati da un livello di complessità tecnica, amministrativa e partenariale transnazionale significativamente superiore rispetto ai fondi strutturali a gestione concorrente.</p>
+<p>Di fronte a questo scenario, la proposta formulata da Fabrizio Canetto e da ASSOEURO si articola su direttrici precise e concrete. Erogare risorse e voucher direttamente agli enti locali per permettere loro di ingaggiare, con procedure trasparenti e concorrenziali, europrogettisti ed esperti qualificati presenti sul mercato; garantire un’assistenza specialistica stabile dall’analisi dei fabbisogni fino alla rendicontazione finale; istituire un tavolo permanente di coprogettazione e confronto istituzionale tra il Dipartimento per gli Affari Europei, le amministrazioni territoriali e le associazioni di categoria come ASSOEURO; e infine riconoscere pienamente l’Europrogettista come interlocutore strategico per lo sviluppo e la competitività del Paese nella prospettiva della programmazione UE 2028-2034.</p>
+<p>In conclusione, l’obiettivo comune degli esperti della progettazione europea deve essere la costruzione di un modello di collaborazione virtuoso e complementare in cui le istituzioni pubbliche e la rete dei professionisti lavorino insieme per trasformare i fondi europei in una leva duratura di crescita, innovazione e coesione sociale per tutti i territori d’Italia.</p>
+<div class="author-box">
+<img alt="Domenico Letizia" onerror="this.style.display='none';" src="../assets/immagini-chi-siamo/domenico-letizia.jfif"/>
+<div class="author-info">
+<h4>Domenico Letizia</h4>
+<p>Giornalista pubblicista, saggista e analista che collabora attivamente con prestigiose testate nazionali, tra cui La Ragione, L’Opinione delle Libertà e Il Riformista, distinguendosi per un’attività di reportage e analisi che intreccia geopolitica, diritti umani e innovazione ambientale.</p>
+</div>
+</div></div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
