@@ -1,0 +1,2 @@
+DYNAMES GitHub Pages refresh marker.
+Created 2026-09-14 to force a clean Pages rebuild after checking the Riserva white paper publication page.
