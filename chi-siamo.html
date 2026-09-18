@@ -1074,6 +1074,11 @@
             -webkit-box-orient: initial;
         }
 
+        /* Anteprima su una sola riga anche per le biografie con paragrafi. */
+        .js .bio-static:not(.is-expanded) .bio-content p br {
+            display: none;
+        }
+
         .js .bio-static.is-expanded .bio-content {
             align-items: flex-start;
         }
@@ -1092,96 +1097,6 @@
             .bio-static .bio-content .bio-expand-btn {
                 width: 1.8rem;
                 height: 1.8rem;
-            }
-        }
-
-        /* DYNAMES mobile overflow hotfix 2026-09-07 */
-        html, body {
-            width: 100%;
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
-        .container,
-        .team-grid,
-        .author-box,
-        .author-info,
-        .bio-static,
-        .bio-summary-copy,
-        .bio-content {
-            min-width: 0;
-        }
-
-        @media (max-width: 900px) {
-            .container {
-                width: 100%;
-                max-width: 100%;
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
-            }
-
-            .page-header {
-                width: 100%;
-                max-width: 100%;
-                overflow: hidden;
-            }
-
-            .team-jump-nav {
-                width: 100%;
-                max-width: 100%;
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-
-            .page-content.container {
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .page-content > .team-section {
-                width: 100%;
-                max-width: 100%;
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-            }
-
-            .team-grid {
-                width: 100%;
-                max-width: 100%;
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .author-box,
-            .author-info,
-            .bio-static,
-            .bio-summary-copy,
-            .bio-content {
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
-            }
-
-            .author-box {
-                overflow: hidden;
-            }
-
-            .profile-name,
-            .profile-role,
-            .strategic-theme,
-            .strategic-theme strong,
-            .author-info .bio-content p {
-                max-width: 100%;
-                overflow-wrap: anywhere;
-            }
-
-            .strategic-theme {
-                white-space: normal;
-            }
-
-            .js .bio-static:not(.is-expanded) .bio-content p {
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
             }
         }
 </style>
@@ -1377,9 +1292,9 @@
 </div>
 <!-- Ciro Niglio -->
 <div class="author-box" id="ciro-niglio">
-<img alt="Ciro Niglio" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/ciro%20niglio.jpg"/>
+<img alt="Gen.D. CC (ris.) Ciro Niglio" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/ciro%20niglio.jpg"/>
 <div class="author-info">
-<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Ciro Niglio</span><span class="profile-role">Senior Mentor</span></span><div class="bio-content" id="bio-ciro-niglio"><p>Dirigente esperto in sicurezza con oltre 35 anni di esperienza, maturata sia nel settore aziendale che in quello governativo. Ex allievo della Scuola Militare Nunziatella e Generale dí Divisione (ris) dell’Arma dei Carabinieri, il suo percorso include incarichi manageriali, anche in contesti internazionali caratterizzati da condizioni operative complesse o difficili. In possesso di una vasta esperienza nella direzione di articolati dipartimenti di sicurezza e nella gestione di programmi impegnativi all'interno di contesti dinamici e in rapida evoluzione. Ha condotto operazioni di sicurezza in tutta Europa e ha avuto l'opportunità di risiedere e lavorare all'estero — in Bosnia-Erzegovina, Kosovo e Albania — ricoprendo ruoli che comportavano responsabilità sia a livello regionale che globale.</p><button aria-controls="bio-ciro-niglio" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
+<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Gen.D. CC (ris.) Ciro Niglio</span><span class="profile-role">Senior Mentor</span></span><div class="bio-content" id="bio-ciro-niglio"><p>Dirigente esperto in sicurezza con oltre 35 anni di esperienza, maturata sia nel settore aziendale che in quello governativo. Ex allievo della Scuola Militare Nunziatella e Generale dí Divisione (ris) dell’Arma dei Carabinieri, il suo percorso include incarichi manageriali, anche in contesti internazionali caratterizzati da condizioni operative complesse o difficili. In possesso di una vasta esperienza nella direzione di articolati dipartimenti di sicurezza e nella gestione di programmi impegnativi all'interno di contesti dinamici e in rapida evoluzione. Ha condotto operazioni di sicurezza in tutta Europa e ha avuto l'opportunità di risiedere e lavorare all'estero — in Bosnia-Erzegovina, Kosovo e Albania — ricoprendo ruoli che comportavano responsabilità sia a livello regionale che globale.</p><button aria-controls="bio-ciro-niglio" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
 </div>
 </div>
 </section>
@@ -1559,6 +1474,12 @@
 <div class="author-info">
 <div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Piervito Tria</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Tecnologie e Sistemi Complessi</strong></span></span><div class="bio-content" id="bio-tria"><p>Subject matter expert in tecnologia, sistemi complessi, sicurezza e infrastrutture strategiche. Lavora su cybersecurity, governance del rischio e resilienza organizzativa in contesti internazionali. Ex allievo della Scuola Militare Nunziatella e laureato LUISS, ha esperienze tra Germania, Australia, Messico e Danimarca e collabora con Aliseo su cyber power e trasformazioni geopolitiche.</p><button aria-controls="bio-tria" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
 </div>
+<!-- Federico Bacchin -->
+<div class="author-box" id="federico-bacchin">
+<img alt="Federico Bacchin" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/federico-bacchin.jpg"/>
+<div class="author-info">
+<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Federico Bacchin</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Tecnologie e Sistemi Complessi</strong></span></span><div class="bio-content" id="bio-federico-bacchin"><p>Capitano di Fregata della Marina Militare Italiana con oltre vent'anni di esperienza nel settore della difesa e della sicurezza, maturata in incarichi operativi, di intelligence e presso strutture NATO. Ex allievo della Scuola Navale Militare "Francesco Morosini", nel corso della sua carriera ha prestato servizio a bordo di unità navali, partecipando a operazioni nazionali e NATO, e ha comandato il cacciamine ITS Milazzo. Dal 2018 al 2023 ha operato nel settore dell'intelligence presso il Comando Operativo di Vertice Interforze, occupandosi dell'analisi di scenari di sicurezza, minacce ibride e dinamiche geopolitiche in diverse aree di interesse strategico.<br/><br/>Attualmente presta servizio presso il Quartier Generale della NATO a Bruxelles, nell'ambito della Cyber and Digital Transformation Division, dove lavora nel Crypto Assurance Office e come Segretario del NATO Cryptographic Services Capability Team. Si occupa in particolare di modernizzazione delle capacità crittografiche dell'Alleanza, interoperabilità, resilienza crittografica e transizione verso soluzioni quantum-safe.<br/><br/>La sua attività professionale si concentra sull'intersezione tra tecnologia, sicurezza e decisione strategica, con particolare interesse per la trasformazione digitale della Difesa, la cyber security, le tecnologie quantistiche e l'impatto delle tecnologie emergenti sulla sicurezza e sulla resilienza delle organizzazioni.<br/><br/>È laureato in Scienze Marittime e Navali e ha conseguito un Master universitario di II livello in Relazioni Internazionali e Studi Strategici.</p><button aria-controls="bio-federico-bacchin" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
+</div>
 <!-- Filippo Martini -->
 <div class="author-box" id="filippo-martini">
 <img alt="Filippo Martini" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/filippo-martini.jpg"/>
@@ -1582,6 +1503,12 @@
 <img alt="Fabio Camillotti" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/fabio%20camillotti.jpg"/>
 <div class="author-info">
 <div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Fabio Camillotti</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Lawfare · Cooperazione Civile-Militare · Wargaming</strong></span></span><div class="bio-content" id="bio-fabio-camillotti"><p>Avvocato penalista, con formazione post-universitaria in studi strategici e sicurezza internazionale e un percorso formativo nella cooperazione civile-militare. Affianca all’attività professionale lo studio del lawfare e delle relazioni tra istituzioni civili e componente militare. Approfondisce l’interazione tra strumenti giuridici, coercizione e negoziazione nei contesti di crisi, con focus sugli effetti delle scelte strategiche sulla popolazione, sulla legittimità istituzionale e sui processi di stabilizzazione. Contribuisce all’implementazione di wargame per esplorare processi decisionali in scenari complessi, interazioni tra attori e conseguenze delle scelte operative.</p><button aria-controls="bio-fabio-camillotti" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
+</div>
+<!-- Noé Sturaro -->
+<div class="author-box" id="noe-sturaro">
+<img alt="Noé Sturaro" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/noe-sturaro.jpg"/>
+<div class="author-info">
+<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Noé Sturaro</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>WarGaming</strong></span></span><div class="bio-content" id="bio-noe-sturaro"><p>Consigliere DYNAMES per il War Game. Ex allievo della Scuola Navale Militare "Francesco Morosini" e laureato in Giurisprudenza, porta un approccio creativo all'innovazione della comunicazione e del marketing della Pubblica Amministrazione, alla digitalizzazione istituzionale e alla progettazione di wargame e serious game come strumenti di formazione e resilienza organizzativa.</p><button aria-controls="bio-noe-sturaro" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
 </div>
 </div>
 </section>
