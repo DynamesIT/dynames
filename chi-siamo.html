@@ -1099,6 +1099,163 @@
                 height: 1.8rem;
             }
         }
+
+        /* DYNAMES 2026-09-18: hardening responsive mobile layout */
+        @media (max-width: 900px) {
+            html, body {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: clip;
+            }
+
+            /* Evita il padding cumulativo introdotto dalla regola generica "section". */
+            section {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 100%;
+                padding-left: 1.15rem !important;
+                padding-right: 1.15rem !important;
+            }
+
+            .page-content {
+                width: 100%;
+                max-width: 100%;
+                padding: 2.5rem 1.15rem 3rem !important;
+            }
+
+            .page-content > .team-section,
+            .team-grid,
+            .collaboration-cards,
+            .author-box,
+            .author-info,
+            .bio-static,
+            .bio-summary-copy,
+            .bio-content,
+            .profile-card,
+            .profile-content {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+            }
+
+            .team-grid,
+            .collaboration-cards {
+                grid-template-columns: minmax(0, 1fr) !important;
+                gap: 1.15rem;
+            }
+
+            .author-box {
+                margin: 0;
+                padding: 1.25rem 1rem;
+                overflow: hidden;
+            }
+
+            .author-box img,
+            .author-initials {
+                display: block;
+                width: 104px;
+                height: 104px;
+                max-width: 104px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .profile-name,
+            .profile-role,
+            .strategic-theme,
+            .strategic-theme strong,
+            .bio-content p,
+            .team-section-header h2,
+            .team-section-header p,
+            .collaboration-intro,
+            .collaboration-highlight,
+            .profile-text,
+            .participation-note {
+                max-width: 100%;
+                overflow-wrap: anywhere;
+                word-break: normal;
+            }
+
+            .strategic-theme {
+                display: flex;
+                width: fit-content;
+                max-width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+                border-radius: 18px;
+            }
+
+            .team-jump-nav {
+                width: 100%;
+                max-width: 100vw;
+                margin: 0;
+                padding: 0.8rem 1rem 0;
+                overflow-x: auto;
+                overflow-y: hidden;
+                overscroll-behavior-inline: contain;
+                scrollbar-width: none;
+            }
+
+            .team-jump-nav a {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+
+            .bio-static .bio-content {
+                min-width: 0;
+            }
+
+            .bio-static .bio-content p {
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header {
+                padding: 2.6rem 0;
+            }
+
+            .page-header h1 {
+                font-size: clamp(1.8rem, 9vw, 2.15rem);
+                letter-spacing: 0.08em;
+            }
+
+            .page-header p {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                font-size: 0.95rem;
+            }
+
+            .page-content {
+                padding-left: 0.9rem !important;
+                padding-right: 0.9rem !important;
+            }
+
+            .team-section-header h2 {
+                font-size: 1.45rem;
+                line-height: 1.2;
+            }
+
+            .team-section-header p {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            .author-box {
+                padding: 1.15rem 0.9rem;
+            }
+
+            .author-info .bio-content p,
+            .bio-static .bio-content p {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+        }
+
 </style>
 <!-- Favicon and SEO -->
 <link href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" rel="icon" type="image/png"/>
