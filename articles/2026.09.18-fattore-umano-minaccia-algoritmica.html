@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src='https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DYNAMES | Il fattore umano e la minaccia algoritmica: cosa genera davvero il rischio cyber?</title>
+  <meta name="description" content="Rischio cyber, intelligenza artificiale e fattore umano: il ruolo di comportamenti, governance e formazione nella resilienza delle organizzazioni.">
+  <meta name="author" content="Silvia Volpe">
+  <link rel="canonical" href="https://www.dynames.it/articles/2026.09.18-fattore-umano-minaccia-algoritmica.html">
+
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DYNAMES">
+  <meta property="og:title" content="Il fattore umano e la minaccia algoritmica: cosa genera davvero il rischio cyber?">
+  <meta property="og:description" content="Rischio cyber, intelligenza artificiale e fattore umano: il ruolo di comportamenti, governance e formazione nella resilienza delle organizzazioni.">
+  <meta property="og:url" content="https://www.dynames.it/articles/2026.09.18-fattore-umano-minaccia-algoritmica.html">
+  <meta property="article:author" content="Silvia Volpe">
+  <meta property="article:published_time" content="2026-09-18T09:00:00+02:00">
+  <meta property="article:section" content="Tecnologie e Sistemi Complessi">
+
+  <meta property="og:image" content="https://www.dynames.it/articles/Immagini/2026.09.18-fattore-umano-minaccia-algoritmica-light.jpg">
+<meta property="og:image:secure_url" content="https://www.dynames.it/articles/Immagini/2026.09.18-fattore-umano-minaccia-algoritmica-light.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1672">
+<meta property="og:image:height" content="941">
+<meta property="og:image:alt" content="Una professionista al computer: dal mouse si dirama una rete digitale blu e rossa, simbolo della propagazione del rischio cyber.">
+<meta name="twitter:image" content="https://www.dynames.it/articles/Immagini/2026.09.18-fattore-umano-minaccia-algoritmica-light.jpg">
+<meta name="twitter:image:alt" content="Una professionista al computer: dal mouse si dirama una rete digitale blu e rossa, simbolo della propagazione del rischio cyber.">
+<meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Il fattore umano e la minaccia algoritmica: cosa genera davvero il rischio cyber?">
+  <meta name="twitter:description" content="Rischio cyber, intelligenza artificiale e fattore umano: il ruolo di comportamenti, governance e formazione nella resilienza delle organizzazioni.">
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "Il fattore umano e la minaccia algoritmica: cosa genera davvero il rischio cyber?",
+  "description": "Rischio cyber, intelligenza artificiale e fattore umano: il ruolo di comportamenti, governance e formazione nella resilienza delle organizzazioni.",
+  "datePublished": "2026-09-18",
+  "dateModified": "2026-09-18",
+  "articleSection": "Tecnologie e Sistemi Complessi",
+  "inLanguage": "it-IT",
+  "mainEntityOfPage": "https://www.dynames.it/articles/2026.09.18-fattore-umano-minaccia-algoritmica.html",
+  "author": {
+    "@type": "Person",
+    "name": "Silvia Volpe",
+    "url": "https://www.dynames.it/chi-siamo.html#silvia-volpe"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DYNAMES",
+    "url": "https://www.dynames.it/"
+  },
+  "image": [
+    "https://www.dynames.it/articles/Immagini/2026.09.18-fattore-umano-minaccia-algoritmica-light.jpg",
+    "https://www.dynames.it/articles/Immagini/2026.09.18-fattore-umano-minaccia-algoritmica.jpg"
+  ]
+}
+</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+
+  <style>
+    :root{--night-blue:#0b1120;--slate-grey:#334155;--optical-white:#fff;--text-primary:#1e293b;--text-secondary:#475569;--text-light:#cbd5e1;--paper-bg:#fdfbf7;--gold-accent:#b8935a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--paper-bg);color:var(--text-primary);font:1.15rem/1.8 'Roboto',sans-serif}
+    h1,h2,h3,h4,.brand{font-family:'Montserrat',sans-serif}.serif-heading{font-family:'Playfair Display',serif}
+    .container{max-width:1200px;margin:0 auto;padding:0 2rem}.article-container{max-width:800px;margin:0 auto;padding:0 2rem}
+    header{position:sticky;top:0;z-index:1000;padding:1rem 0;background:var(--optical-white);border-bottom:2px solid var(--night-blue)}
+    .header-inner{display:flex;align-items:center;justify-content:space-between}.brand a{text-decoration:none}.brand h1{display:flex;align-items:center;gap:10px;color:var(--night-blue);font-size:1.8rem;font-weight:800;letter-spacing:1px}.brand-logo{width:auto;height:40px}.brand p{margin-top:2px;color:var(--slate-grey);font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase}
+    .desktop-nav{display:flex;align-items:center;gap:2rem}.desktop-nav a{color:var(--night-blue);font:600 .9rem 'Montserrat',sans-serif;letter-spacing:1px;text-decoration:none;text-transform:uppercase}.desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)}
+    .back-nav{padding:2rem 0}.back-nav a{display:inline-flex;color:var(--slate-grey);font:600 .9rem 'Montserrat',sans-serif;letter-spacing:1px;text-decoration:none;text-transform:uppercase}.back-nav a:hover{color:var(--gold-accent)}
+    .article-header{margin-bottom:4rem;text-align:center}.article-category{display:block;margin-bottom:1.25rem;color:var(--gold-accent);font:700 .9rem 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase}.article-title{margin-bottom:1rem;color:var(--night-blue);font-size:3.5rem;line-height:1.1}.article-subtitle{margin-bottom:1.5rem;color:var(--night-blue);font:600 1.25rem/1.45 'Montserrat',sans-serif}.article-abstract{max-width:94%;margin:0 auto 3rem;color:var(--slate-grey);font:italic 1.42rem/1.5 'Playfair Display',serif}.article-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem 1.5rem;color:var(--text-secondary);font:600 .85rem 'Montserrat',sans-serif;text-transform:uppercase}.meta-author{color:var(--night-blue)}
+    .article-figure{max-width:1200px;margin:0 auto 4rem;padding:0 2rem}.article-hero{display:block;width:100%;height:62vh;min-height:430px;max-height:720px;object-fit:cover;box-shadow:0 18px 40px rgba(15,23,42,.14)}.article-image-caption{margin-top:.75rem;color:var(--text-secondary);font-size:.82rem;line-height:1.45;text-align:center}
+    .article-body p{margin-bottom:1.7rem;text-align:justify}.article-body h2{margin:3.5rem 0 1.25rem;color:var(--night-blue);font-size:1.8rem;line-height:1.3}.drop-cap{float:left;padding-right:.8rem;color:var(--night-blue);font:3rem/1 'Playfair Display',serif}.pull-quote{margin:3.2rem 0;padding:1.7rem 2rem;border-left:4px solid var(--gold-accent);background:#fff;color:var(--night-blue);font:600 1.55rem/1.45 'Playfair Display',serif}.author-box{display:flex;align-items:center;gap:2rem;margin-top:4rem;padding:3rem;background:var(--optical-white);border:1px solid #e2e8f0;border-left:4px solid var(--gold-accent)}.author-box img{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#e2e8f0}.author-info h4{margin-bottom:.5rem;color:var(--night-blue);font-size:1.2rem}.author-info p{margin:0;color:var(--text-secondary);font-size:.95rem;line-height:1.5;text-align:left}
+    footer{margin-top:6rem;padding:3rem 0;background:var(--night-blue);color:var(--text-light);font-size:.9rem;text-align:center}
+    @media(max-width:900px){body{overflow-x:hidden;font-size:1.05rem}.container,.article-container,.article-figure{padding-left:1.5rem;padding-right:1.5rem}.desktop-nav{display:none}.article-title{font-size:2.5rem}.article-subtitle{font-size:1.05rem}.article-abstract{font-size:1.2rem}.article-hero{height:40vh;min-height:280px}.article-body p{text-align:left}.author-box{flex-direction:column;padding:2rem;text-align:center}.author-info p{text-align:center}.pull-quote{font-size:1.35rem}}
+  
+.article-body ul,.article-body ol{padding-left:1.5rem;margin:1.5rem 0 2rem}.article-body li{margin-bottom:1rem}.article-body a,.author-info a{color:inherit;text-underline-offset:3px}.article-body sup a{color:#876532}.article-notes{border-top:1px solid #d9d0c2;margin-top:3rem;font-size:.9rem}.article-abstract{font-size:1.15rem;line-height:1.65;text-align:left}.article-title{font-size:3rem}.meta-author{text-decoration:none}sup{scroll-margin-top:100px}.article-notes li{scroll-margin-top:100px}@media(max-width:600px){.article-title{font-size:2.15rem}}
+
+.article-hero{height:auto;min-height:0;max-height:none;object-fit:contain}
+</style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <a href="../index.html">
+          <h1><img class="brand-logo" src="https://www.dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" onerror="this.style.display='none'">DYNAMES</h1>
+          <p>Governance di Forze e Sistemi</p>
+        </a>
+      </div>
+      <nav class="desktop-nav" aria-label="Navigazione principale">
+        <a href="../index.html">Home</a>
+        <a class="active" href="../hub.html">Analisi &amp; Articoli</a>
+        <a href="../pubblicazioni.html">Pubblicazioni</a>
+        <a href="../eventi.html">Eventi</a>
+        <a href="../chi-siamo.html">Chi siamo</a>
+        <a href="../temi-e-collaborazioni.html">Temi e collaborazioni</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container back-nav">
+    <a href="../hub.html">← Torna all'Hub</a>
+  </div>
+
+  <main>
+    <article>
+      <div class="article-container article-header">
+        <span class="article-category">Tecnologie e Sistemi Complessi</span>
+        <h1 class="serif-heading article-title">Il fattore umano e la minaccia algoritmica: cosa genera davvero il rischio cyber?</h1>
+        
+        <div class="article-abstract" aria-label="Abstract"><p>L&#x27;articolo analizza le origini del rischio informatico e l&#x27;impatto dell&#x27;intelligenza artificiale nei contesti aziendali, evidenziando come la sicurezza dei dati (86%) e la disruption digitale (52%) costituiscano le principali minacce percepite dai CAE. La genesi del rischio cyber risiede prevalentemente in fattori comportamentali e strutturali: dall&#x27;evoluzione delle tecniche di ingegneria sociale (phishing e attacchi ClickFix) all&#x27;uso informale di strumenti tecnologici (Shadow AI, che rappresenta il 34% dell&#x27;uso professionale dell&#x27;IA), fino alle dipendenze strategiche da provider esterni. L&#x27;intelligenza artificiale non rappresenta una minaccia autonoma, ma agisce da moltiplicatore di forza, aumentando velocità, scala e sofisticazione degli attacchi. La vera vulnerabilità deriva dall&#x27;intersezione tra le potenzialità dell&#x27;algoritmo e le carenze di governance, formazione e supervisione dell&#x27;intelligenza umana. In conclusione, per garantire la resilienza aziendale è indispensabile mantenere il presidio umano (human-in-the-loop), promuovere l&#x27;alfabetizzazione digitale e adottare modelli di governance dinamici e adattivi.</p></div>
+        <div class="article-meta">
+          <a class="meta-author" href="../chi-siamo.html#silvia-volpe">Silvia Volpe</a>
+          <time datetime="2026-09-18">18 Settembre 2026</time>
+          <span>Tempo di lettura: 5 min</span>
+        </div>
+      </div>
+
+      
+
+      <figure class="article-figure">
+<img class="article-hero" src="Immagini/2026.09.18-fattore-umano-minaccia-algoritmica.jpg" width="1672" height="941" fetchpriority="high" decoding="async" alt="Una professionista al computer: dal mouse si dirama una rete digitale blu e rossa, simbolo della propagazione del rischio cyber.">
+<figcaption class="article-image-caption">Il fattore umano al centro della sicurezza digitale: una decisione può propagare il rischio attraverso l’intera organizzazione. Immagine illustrativa generata con intelligenza artificiale per DYNAMES.</figcaption>
+</figure>
+
+<div class="article-container article-body">
+<p>Il panorama globale delle minacce aziendali ha raggiunto un punto di svolta, collocando la sicurezza dei dati e la cybersecurity al primo posto tra i rischi percepiti dai dirigenti: l&#x27;86% dei responsabili dell&#x27;internal audit (CAE) la considera una priorità assoluta<sup><a href="#nota-1" id="richiamo-1" aria-label="Nota 1">1</a></sup>. Subito dopo si posizionano la disruption digitale e l&#x27;intelligenza artificiale, indicate come rischioso fattore chiave dal 52% degli intervistati, parallelamente a un&#x27;adozione dell&#x27;AI nelle grandi imprese europee arrivata al 55%<sup><a href="#nota-2" id="richiamo-2" aria-label="Nota 2">2</a></sup>. Ma cosa genera concretamente questo rischio e quale ruolo gioca l&#x27;intelligenza artificiale rispetto all&#x27;intelligenza umana?</p>
+<h2>Le radici del rischio cyber: vettori di attacco e vulnerabilità</h2>
+<p>Il rischio informatico non nasce in modo isolato, ma è alimentato dall&#x27;estrema interconnessione aziendale e dalla rapidità con cui si evolvono le minacce.</p>
+<p>Tra i principali fattori generatori evidenziati dai dati emergono:</p>
+<ul>
+<li>l&#x27;evoluzione dell&#x27;ingegneria sociale: gli attacchi informatici non puntano solo a violare barriere tecnologiche, ma sfruttano sempre più la manipolazione psicologica delle persone. Tecniche come il phishing sofisticato o gli attacchi ClickFix ingannano gli utenti per far installare malware sui sistemi. Un esempio emblematico è rappresentato dal colosso britannico Marks&amp;Spencer, che ha subito perdite stimate in circa 300 milioni di sterline a causa di attacchi di phishing che imitavano figure chiave dell&#x27;azienda;</li>
+<li>comportamenti interni e l&#x27;uso non autorizzato (Shadow AI): l&#x27;introduzione spontanea di strumenti tecnologici genera pesanti punti ciechi. Circa il 34% dell&#x27;uso professionale dell&#x27;AI generativa avviene in modo non autorizzato tramite modelli usati dal personale a livello domestico<sup><a href="#nota-3" id="richiamo-3" aria-label="Nota 3">3</a></sup>. Inoltre, l&#x27;integrazione di chatbot aziendali ha saturato le richieste di approvazione di identità e accessi, ritardando i consueti aggiornamenti di sicurezza;</li>
+<li>dipendenze strategiche e terze parti: la concentrazione dei servizi cloud rappresenta una vulnerabilità geopolitica e strategica, dato che solo il 15% della capacità cloud risiede in Europa, costringendo a dipendere da provider esteri con limitata possibilità di audit diretto<sup><a href="#nota-4" id="richiamo-4" aria-label="Nota 4">4</a></sup>. A ciò si aggiungono rischi di infiltrazione criminale: ad esempio, lavoratori freelance nordcoreani hanno utilizzato programmi come Claude per creare false identità elaborate e farsi assumere da imprese europee.</li>
+</ul>
+<h2>Intelligenza Artificiale vs Intelligenza Umana: dov&#x27;è il vero pericolo?</h2>
+<p>Inquadrare l&#x27;intelligenza artificiale come un pericolo contrapposto a quella umana richiede di distinguere tra lo strumento e chi lo manovra.</p>
+<p>L&#x27;AI agisce come un potente moltiplicatore di forza per il cybercrimine, consentendo di automatizzare le minacce e di aumentarne frequenza, sofisticazione e velocità. La pericolosità dei modelli frontier è ormai concreta: nell&#x27;aprile 2026, il modello Claude Mythos 5 è stato trattenuto e non rilasciato sul mercato proprio per il timore che potesse essere impiegato per violare banche di rilevanza sistemica.</p>
+<p>Allo stesso modo, l&#x27;emergere di agenti IA autonomi capaci di eseguire mansioni complesse impone di ripensare da zero le autorizzazioni di accesso e i controlli interni.</p>
+<p>Tuttavia, l&#x27;AI non opera in un vuoto neutrale: l&#x27;innesco, la direzione e l&#x27;applicazione dipendono sempre dall&#x27;iniziativa e dall&#x27;uso umano. Il pericolo principale non risiede nell&#x27;algoritmo in sé, ma nell&#x27;intersezione tra la vulnerabilità dei comportamenti individuali e le carenze di governance.</p>
+<p>Quando le decisioni aziendali vengono delegate a modelli AI opachi o quando il personale non possiede adeguate competenze informatiche, si creano falle drammatiche.</p>
+<p>Le conseguenze reali di queste falle sono tangibili: l&#x27;incidente cyber da 2 miliardi di sterline subito dal produttore Jaguar Land Rover ha avuto un impatto diretto persino sul PIL del Regno Unito.</p>
+<h2>Considerazioni finali per le organizzazioni</h2>
+<p>L&#x27;intelligenza artificiale e la sicurezza informatica non possono essere gestite come semplici adempimenti tecnici. Per difendersi in modo efficace, le imprese devono seguire direttrici chiare:</p>
+<ol>
+<li>preservare il presidio umano (Human-in-the-loop): assicurare che la responsabilità finale, l&#x27;etica e la valutazione critica delle decisioni rimangano saldamente in mano alle persone;</li>
+<li>investire nell&#x27;alfabetizzazione digitale: promuovere una formazione mirata sull&#x27;AI e sui rischi comportamentali per evitare che il personale diventi involontariamente il punto d&#x27;ingresso degli attacchi;</li>
+<li>adottare una governance dinamica: superare le rigide revisioni annuali a favore di analisi di scenario e monitoraggi continui dei rischi interconnessi.</li>
+</ol>
+<p>In conclusione, se l&#x27;intelligenza artificiale fornisce ai cybercriminali armi sempre più veloci e affilate, è la capacità strategica, etica e difensiva dell&#x27;intelligenza umana a stabilire se la tecnologia si trasformerà in una minaccia ingestibile o in una leva di resilienza aziendale.</p>
+<section class="article-notes" aria-labelledby="note-title"><h2 id="note-title">Note</h2><ol><li id="nota-1">Dati assunti dal Report “Risk in Focus 2026-2027” di IIA – Institute of Internal Auditors. <a href="#richiamo-1" aria-label="Torna al richiamo 1">↩</a></li><li id="nota-2">Dati assunti dal Report “Risk in Focus 2026-2027” di IIA – Institute of Internal Auditors. <a href="#richiamo-2" aria-label="Torna al richiamo 2">↩</a></li><li id="nota-3">Dati assunti dal Report “Risk in Focus 2026-2027” di IIA – Institute of Internal Auditors. <a href="#richiamo-3" aria-label="Torna al richiamo 3">↩</a></li><li id="nota-4">Dati assunti dal Report “Risk in Focus 2026-2027” di IIA – Institute of Internal Auditors. <a href="#richiamo-4" aria-label="Torna al richiamo 4">↩</a></li></ol></section>
+<aside class="author-box" aria-label="Autrice">
+          <img src="https://www.dynames.it/assets/immagini-chi-siamo/silvia-volpe.jpg" alt="Silvia Volpe" onerror="this.style.display='none';">
+          <div class="author-info">
+            <h4><a href="../chi-siamo.html#silvia-volpe">Silvia Volpe</a></h4>
+            <p><em>Chief Audit Officer</em> presso Polo Strategico Nazionale S.p.A., ha una consolidata esperienza in <em>internal auditing</em>, <em>risk management</em> e <em>compliance</em> aziendale. Già ufficiale della Guardia di Finanza, si occupa anche di <em>whistleblowing</em>, prevenzione delle frodi, anticorruzione, antiriciclaggio e governance societaria. Svolge attività formativa e scientifica sui temi della <em>digital economy</em>, dei <em>big data</em> e del <em>Golden Power</em>.</p>
+          </div>
+        </aside>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+      <p>© 2026 DYNAMES. Tutti i diritti riservati.</p>
+    </div>
+  </footer>
+</body>
+</html>
