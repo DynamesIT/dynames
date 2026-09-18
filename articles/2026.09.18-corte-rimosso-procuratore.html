@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src='https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DYNAMES | La Corte che ha rimosso il proprio Procuratore</title>
+  <meta name="description" content="Sospensione, destituzione e la crisi di legittimità della Corte Penale Internazionale">
+  <meta name="author" content="Miriam Foti">
+  <link rel="canonical" href="https://www.dynames.it/articles/2026.09.18-corte-rimosso-procuratore.html">
+
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DYNAMES">
+  <meta property="og:title" content="La Corte che ha rimosso il proprio Procuratore">
+  <meta property="og:description" content="Sospensione, destituzione e la crisi di legittimità della Corte Penale Internazionale">
+  <meta property="og:url" content="https://www.dynames.it/articles/2026.09.18-corte-rimosso-procuratore.html">
+  <meta property="og:image" content="https://www.dynames.it/articles/Immagini/2026.09.18-corte-rimosso-procuratore-light.jpg">
+  <meta property="og:image:secure_url" content="https://www.dynames.it/articles/Immagini/2026.09.18-corte-rimosso-procuratore-light.jpg">
+  <meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="La sedia vuota del Procuratore, con la bilancia della giustizia e il simbolo della Corte Penale Internazionale sullo sfondo">
+  <meta property="article:author" content="Miriam Foti">
+  <meta property="article:published_time" content="2026-09-18T09:00:00+02:00">
+  <meta property="article:section" content="Diritto e Legittimità">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="La Corte che ha rimosso il proprio Procuratore">
+  <meta name="twitter:description" content="Sospensione, destituzione e la crisi di legittimità della Corte Penale Internazionale">
+  <meta name="twitter:image" content="https://www.dynames.it/articles/Immagini/2026.09.18-corte-rimosso-procuratore-light.jpg">
+  <meta name="twitter:image:alt" content="La sedia vuota del Procuratore, con la bilancia della giustizia e il simbolo della Corte Penale Internazionale sullo sfondo">
+  <meta name="twitter:image:src" content="https://www.dynames.it/articles/Immagini/2026.09.18-corte-rimosso-procuratore-light.jpg">
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "La Corte che ha rimosso il proprio Procuratore",
+  "alternativeHeadline": "Sospensione, destituzione e la crisi di legittimità della Corte Penale Internazionale",
+  "description": "Sospensione, destituzione e la crisi di legittimità della Corte Penale Internazionale",
+  "datePublished": "2026-09-18",
+  "dateModified": "2026-09-18",
+  "articleSection": "Diritto e Legittimità",
+  "inLanguage": "it-IT",
+  "mainEntityOfPage": "https://www.dynames.it/articles/2026.09.18-corte-rimosso-procuratore.html",
+  "author": {
+    "@type": "Person",
+    "name": "Miriam Foti",
+    "url": "https://www.dynames.it/chi-siamo.html#miriam-foti"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DYNAMES",
+    "url": "https://www.dynames.it/"
+  },
+  "image": [
+    "https://www.dynames.it/articles/Immagini/2026.09.18-corte-rimosso-procuratore-light.jpg",
+    "https://www.dynames.it/articles/Immagini/2026.09.18-corte-rimosso-procuratore.jpg"
+  ]
+}
+</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+
+  <style>
+    :root{--night-blue:#0b1120;--slate-grey:#334155;--optical-white:#fff;--text-primary:#1e293b;--text-secondary:#475569;--text-light:#cbd5e1;--paper-bg:#fdfbf7;--gold-accent:#b8935a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--paper-bg);color:var(--text-primary);font:1.15rem/1.8 'Roboto',sans-serif}
+    h1,h2,h3,h4,.brand{font-family:'Montserrat',sans-serif}.serif-heading{font-family:'Playfair Display',serif}
+    .container{max-width:1200px;margin:0 auto;padding:0 2rem}.article-container{max-width:800px;margin:0 auto;padding:0 2rem}
+    header{position:sticky;top:0;z-index:1000;padding:1rem 0;background:var(--optical-white);border-bottom:2px solid var(--night-blue)}
+    .header-inner{display:flex;align-items:center;justify-content:space-between}.brand a{text-decoration:none}.brand h1{display:flex;align-items:center;gap:10px;color:var(--night-blue);font-size:1.8rem;font-weight:800;letter-spacing:1px}.brand-logo{width:auto;height:40px}.brand p{margin-top:2px;color:var(--slate-grey);font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase}
+    .desktop-nav{display:flex;align-items:center;gap:2rem}.desktop-nav a{color:var(--night-blue);font:600 .9rem 'Montserrat',sans-serif;letter-spacing:1px;text-decoration:none;text-transform:uppercase}.desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)}
+    .back-nav{padding:2rem 0}.back-nav a{display:inline-flex;color:var(--slate-grey);font:600 .9rem 'Montserrat',sans-serif;letter-spacing:1px;text-decoration:none;text-transform:uppercase}.back-nav a:hover{color:var(--gold-accent)}
+    .article-header{margin-bottom:4rem;text-align:center}.article-category{display:block;margin-bottom:1.25rem;color:var(--gold-accent);font:700 .9rem 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase}.article-title{margin-bottom:1rem;color:var(--night-blue);font-size:3.5rem;line-height:1.1}.article-subtitle{margin-bottom:1.5rem;color:var(--night-blue);font:600 1.25rem/1.45 'Montserrat',sans-serif}.article-abstract{max-width:94%;margin:0 auto 3rem;color:var(--slate-grey);font:italic 1.42rem/1.5 'Playfair Display',serif}.article-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem 1.5rem;color:var(--text-secondary);font:600 .85rem 'Montserrat',sans-serif;text-transform:uppercase}.meta-author{color:var(--night-blue)}
+    .article-figure{max-width:1200px;margin:0 auto 4rem;padding:0 2rem}.article-hero{display:block;width:100%;height:62vh;min-height:430px;max-height:720px;object-fit:cover;box-shadow:0 18px 40px rgba(15,23,42,.14)}.article-image-caption{margin-top:.75rem;color:var(--text-secondary);font-size:.82rem;line-height:1.45;text-align:center}
+    .article-body p{margin-bottom:1.7rem;text-align:justify}.article-body h2{margin:3.5rem 0 1.25rem;color:var(--night-blue);font-size:1.8rem;line-height:1.3}.drop-cap{float:left;padding-right:.8rem;color:var(--night-blue);font:3rem/1 'Playfair Display',serif}.pull-quote{margin:3.2rem 0;padding:1.7rem 2rem;border-left:4px solid var(--gold-accent);background:#fff;color:var(--night-blue);font:600 1.55rem/1.45 'Playfair Display',serif}.author-box{display:flex;align-items:center;gap:2rem;margin-top:4rem;padding:3rem;background:var(--optical-white);border:1px solid #e2e8f0;border-left:4px solid var(--gold-accent)}.author-box img{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#e2e8f0}.author-info h4{margin-bottom:.5rem;color:var(--night-blue);font-size:1.2rem}.author-info p{margin:0;color:var(--text-secondary);font-size:.95rem;line-height:1.5;text-align:left}
+    footer{margin-top:6rem;padding:3rem 0;background:var(--night-blue);color:var(--text-light);font-size:.9rem;text-align:center}
+    @media(max-width:900px){body{overflow-x:hidden;font-size:1.05rem}.container,.article-container,.article-figure{padding-left:1.5rem;padding-right:1.5rem}.desktop-nav{display:none}.article-title{font-size:2.5rem}.article-subtitle{font-size:1.05rem}.article-abstract{font-size:1.2rem}.article-hero{height:40vh;min-height:280px}.article-body p{text-align:left}.author-box{flex-direction:column;padding:2rem;text-align:center}.author-info p{text-align:center}.pull-quote{font-size:1.35rem}}
+  .reference{font-size:.95rem;overflow-wrap:anywhere}.reference a,.author-info a{color:var(--night-blue)}
+.article-figure .article-hero{height:auto;min-height:0;max-height:none;object-fit:contain}
+</style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <a href="../index.html">
+          <h1><img class="brand-logo" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" onerror="this.style.display='none'">DYNAMES</h1>
+          <p>Governance di Forze e Sistemi</p>
+        </a>
+      </div>
+      <nav class="desktop-nav" aria-label="Navigazione principale">
+        <a href="../index.html">Home</a>
+        <a class="active" href="../hub.html">Analisi &amp; Articoli</a>
+        <a href="../pubblicazioni.html">Pubblicazioni</a>
+        <a href="../eventi.html">Eventi</a>
+        <a href="../chi-siamo.html">Chi siamo</a>
+        <a href="../temi-e-collaborazioni.html">Temi e collaborazioni</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container back-nav">
+    <a href="../hub.html">← Torna all'Hub</a>
+  </div>
+
+  <main>
+    <article>
+<div class="article-container article-header">
+<span class="article-category">Diritto e Legittimità</span>
+<h1 class="serif-heading article-title">La Corte che ha rimosso il proprio Procuratore</h1>
+<p class="article-subtitle">Sospensione, destituzione e la crisi di legittimità della Corte Penale Internazionale</p>
+<p class="article-abstract"><em>Un procedimento disciplinare durato quasi due anni, una sospensione disposta dal Bureau dell&#x27;Assemblea l&#x27;8 giugno 2026, una rimozione deliberata a scrutinio segreto il 24 luglio con 82 voti su 125 ai sensi dell&#x27;articolo 46 dello Statuto di Roma: nell&#x27;arco di quattro mesi, la vicenda di Karim Khan espone, per la prima volta in venticinque anni di storia della Corte Penale Internazionale, la divergenza tra le garanzie riconosciute ai giudici e quelle riservate al Procuratore. Vi si aggiunge, poi, un dato di contesto tutt&#x27;altro che neutro: undici tra giudici e funzionari della Corte risultano già colpiti da sanzioni statunitensi. </em></p>
+<div class="article-meta"><a class="meta-author" href="https://www.dynames.it/chi-siamo.html#miriam-foti">Miriam Foti</a><time datetime="2026-09-18">18 Settembre 2026</time><span>Tempo di lettura: 16 min</span></div>
+</div>
+<figure class="article-figure">
+<img class="article-hero" src="Immagini/2026.09.18-corte-rimosso-procuratore.jpg" srcset="Immagini/2026.09.18-corte-rimosso-procuratore-light.jpg 1200w, Immagini/2026.09.18-corte-rimosso-procuratore.jpg 1672w" sizes="(max-width: 1200px) 100vw, 1200px" width="1672" height="941" fetchpriority="high" decoding="async" alt="La sedia vuota del Procuratore, con la bilancia della giustizia e il simbolo della Corte Penale Internazionale sullo sfondo">
+<figcaption class="article-image-caption">La sedia vuota del Procuratore: giustizia, potere politico e legittimità istituzionale. Illustrazione editoriale generata con IA.</figcaption>
+</figure>
+<div class="article-container article-body">
+<p>La Corte Penale Internazionale (CPI) è l&#x27;unico tribunale penale permanente competente a giudicare individui per genocidio, crimini contro l&#x27;umanità, crimini di guerra e crimine di aggressione. Il Procuratore ne è il vertice inquirente, eletto per un mandato di nove anni; l&#x27;Assemblea degli Stati Parte (ASP) — l&#x27;insieme dei 125 Paesi che hanno ratificato lo Statuto di Roma istitutivo della Corte — ne costituisce l&#x27;organo di governance politica, distinto dai giudici e privo di funzioni giurisdizionali proprie. È a questo secondo organo, non ad un collegio giudicante, che lo Statuto affida la decisione sulla permanenza in carica del Procuratore.</p>
+<p>La rimozione di Karim Khan è stata pienamente legale, ma la sua legittimità — ossia il riconoscimento condiviso della sua correttezza sostanziale — resta contestata, sia per l&#x27;opacità della procedura seguita che per il contesto di pressioni esterne, sia americane sia israeliane, in cui è maturata.</p>
+<p>Il 24 luglio 2026, in una sessione straordinaria a porte chiuse presso la sede delle Nazioni Unite a New York, l&#x27;Assemblea degli Stati Parte (ASP) dello Statuto di Roma ha votato a scrutinio segreto la rimozione dall&#x27;incarico del Procuratore Capo della Corte Penale Internazionale, Karim Khan: ottantadue Stati su centoventicinque a favore, tredici contrari, quindici astenuti, ben oltre la soglia della maggioranza assoluta richiesta. È la prima volta, in venticinque anni di storia della Corte, che un Procuratore Capo viene rimosso dall&#x27;incarico.</p>
+<p>La Presidente dell&#x27;Assemblea, Päivi Kaukoranta, ha dichiarato che gli Stati Parte hanno accertato a carico di Khan &quot;grave condotta e grave violazione del dovere&quot;. Khan, che ha sempre respinto le accuse definendo il procedimento &quot;illegale&quot; ed &quot;ingiusto sul piano procedurale&quot;, ha fatto sapere tramite il proprio legale, Tayab Ali, di voler contestare la decisione con ogni mezzo disponibile.</p>
+<h2><strong>1.  </strong><strong>Un voto a porte chiuse: la cronologia di una crisi durata due anni</strong></h2>
+<p>Le accuse contro Khan risalgono al 2024, quando una collaboratrice del suo ufficio denuncia ripetute molestie sessuali; nel corso dell&#x27;anno emergono resoconti analoghi da parte di una seconda persona. Nel novembre 2024 l&#x27;Assemblea richiede un&#x27;indagine esterna ed indipendente all&#x27;OIOS — l&#x27;Ufficio delle Nazioni Unite per i Servizi di Sorveglianza Interna — proprio per sottrarre l&#x27;accertamento dei fatti alla catena gerarchica interna della Corte. Nel maggio 2025 Khan si colloca in congedo volontario in attesa dell&#x27;esito ed i due Vice Procuratori ne assumono la guida <em>ad interim</em>. L&#x27;indagine dell&#x27;OIOS — l&#x27;organismo ONU incaricato di accertare i fatti in autonomia dalla Corte — genera, secondo le fonti disponibili, migliaia di pagine di materiale probatorio. Nel luglio 2025 l&#x27;Assemblea istituisce un collegio <em>ad hoc </em>di giudici indipendenti con un mandato specifico e delimitato: non l&#x27;accertamento autonomo dei fatti, ma la qualificazione giuridica delle risultanze già raccolte dall&#x27;OIOS.</p>
+<p>Il panel trasmette le proprie conclusioni al Bureau dell&#x27;Assemblea il 9 marzo 2026. Sulla base di tali conclusioni, del rapporto OIOS e di ulteriori memorie scritte pervenute nel frattempo, l&#x27;8 giugno il Bureau delibera di sospendere Khan con effetto immediato e di deferire il caso alla decisione dell&#x27;Assemblea plenaria, che si pronuncia — come già anticipato — il 24 luglio.</p>
+<p>Nei giorni immediatamente successivi al deposito del rapporto, alcune testate — tra cui Middle East Eye, ripresa da Al Jazeera il 21 marzo 2026 — hanno riferito che i tre giudici avrebbero concluso all&#x27;unanimità che i fatti accertati dall&#x27;OIOS non integravano, secondo lo standard applicabile, né condotta scorretta né violazione del dovere. La notizia, ripresa ampiamente, ha alimentato l&#x27;impressione di una contraddizione insanabile: come può un funzionario prosciolto da un consesso di giudici a marzo essere rimosso dall&#x27;Assemblea a luglio, sulla base delle medesime risultanze fattuali?</p>
+<p>L&#x27;analisi giuridica pubblicata su EJIL: Talk! nei giorni successivi alla rimozione offre una possibile chiave di lettura per ridimensionare questa apparente contraddizione. Secondo questa ricostruzione, il panel non era un collegio giudicante nel senso tecnico del termine, bensì un organo consultivo il cui mandato — definito nel luglio 2025 — si limitava alla qualificazione giuridica dei fatti già accertati dall&#x27;OIOS, senza poteri istruttori propri.</p>
+<p>Il Bureau dell&#x27;Assemblea ha adottato una posizione interpretativa secondo cui tale mandato consultivo non vincolava la propria valutazione finale e che il diritto di Khan a essere ascoltato si era già esaurito nelle fasi precedenti — dinanzi all&#x27;OIOS, al panel e al Bureau stesso. Secondo questa lettura, non si tratterebbe propriamente di un&#x27;assoluzione seguita da una condanna sulle medesime prove, bensì di due valutazioni con oggetto giuridico diverso.</p>
+<p>A complicare il quadro concorre una circostanza rivelata dalla stessa testata: il 10 dicembre 2025 Khan avrebbe presentato alla Camera d&#x27;Appello della Corte una memoria, in risposta alla richiesta di ricusazione avanzata da Israele, nella quale menzionava per la prima volta un &quot;alto funzionario governativo britannico&quot; che lo avrebbe messo sotto pressione sul fascicolo israeliano — funzionario poi identificato nell&#x27;ex Primo Ministro David Cameron. Se confermata nei dettagli, la circostanza estenderebbe il novero delle pressioni esterne ben oltre Washington e Tel Aviv, fino a coinvolgere un alleato tradizionale della Corte all&#x27;interno del sistema europeo.</p>
+<p>Su un punto, in ogni caso, le diverse ricostruzioni concordano: Sergey Vasiliev, professore di diritto penale internazionale alla Open University dei Paesi Bassi e tra i commentatori che hanno seguito il caso con maggiore continuità sin dal 2024, osserva come l&#x27;intero procedimento sia stato segnato da &quot;quasi totale segretezza combinata con fughe di notizie selettive&quot; — un modello che, quale che sia la lettura corretta del ruolo del panel, alimenta esattamente il tipo di sospetto che una procedura trasparente dovrebbe prevenire.</p>
+<h2><strong>2.  </strong><strong>L&#x27;asimmetria dell&#x27;articolo 46: perché il Procuratore è meno tutelato dei giudici</strong></h2>
+<p>Lo Statuto di Roma disciplina la rimozione dei propri vertici all&#x27;articolo 46, ma lo fa in modo asimmetrico.</p>
+<p>Per i giudici della Corte, la rimozione richiede una raccomandazione preventiva adottata a maggioranza dei due terzi degli altri giudici: un vaglio di natura professionale e tecnica, condotto dai pari. Per il Procuratore, l&#x27;articolo 46, paragrafo 2, lettera b), non prevede alcun vaglio professionale preliminare analogo: la rimozione dipende esclusivamente dal voto di una maggioranza assoluta degli Stati Parte, organo politico e non tecnico.</p>
+<p>Questa asimmetria strutturale — la stessa individuata dall&#x27;analisi pubblicata su EJIL: Talk! — significa che il Procuratore gode, sul piano procedurale, di una tutela sensibilmente inferiore rispetto a quella riconosciuta ai giudici con cui è chiamato a interfacciarsi nella prassi quotidiana. Un contributo pubblicato su Just Security nei giorni immediatamente precedenti al voto finale osservava come questa &quot;sottigliezza della garanzia&quot; rischi di offrire, in astratto, un modello riproducibile per colpire qualsiasi futuro Procuratore sgradito a Stati potenti: una campagna di discredito pubblico, seguita da un voto politico privo di vaglio tecnico indipendente. Lo stesso contributo, però, precisa che questo rischio resta, nel caso concreto, meno fondato di quanto l&#x27;ipotesi astratta suggerirebbe: il caso Khan non è stato una &quot;destituzione politica sommaria&quot;, ma l&#x27;esito di un procedimento durato quasi due anni, sorretto da un&#x27;indagine ONU indipendente di migliaia di pagine e da un parere giuridico consultivo, per quanto non vincolante.</p>
+<p>L&#x27;assenza di un vaglio tecnico preliminare per la rimozione del Procuratore non è un&#x27;anomalia isolata della Corte Penale Internazionale, ma si inserisce in un pattern più ampio riscontrabile nei tribunali penali internazionali ad hoc che l&#x27;hanno preceduta. Anche per il Tribunale Penale Internazionale per l&#x27;ex Iugoslavia (ICTY) e per il Tribunale Penale Internazionale per il Ruanda (ICTR), la nomina del Procuratore — non solo la sua eventuale rimozione — era interamente affidata ad un organo politico, il Consiglio di Sicurezza delle Nazioni Unite, su proposta del Segretario Generale, senza alcun meccanismo di vaglio tecnico-professionale indipendente equivalente a quello riservato alla nomina dei giudici. Se anche l&#x27;ingresso in carica del vertice accusatorio di un tribunale penale internazionale è stato storicamente sottratto ad ogni controllo tecnico paritario, l&#x27;assenza di un vaglio analogo per la sua rimozione presso la CPI appare meno un&#x27;anomalia statutaria isolata che la persistenza di un tratto strutturale del diritto penale internazionale nel suo complesso: la selezione e la permanenza in carica dei Procuratori restano, in ultima istanza, materia di governance politica degli Stati, non di valutazione tra pari.</p>
+<h2><strong>3.  </strong><strong>Le sanzioni statunitensi e la campagna di delegittimazione esterna</strong></h2>
+<p>Il procedimento disciplinare non si è svolto in un vuoto geopolitico. Dal 2025 gli Stati Uniti hanno esteso, sulla base del Global Magnitsky Act, un regime sanzionatorio contro i funzionari della Corte coinvolti nelle indagini relative a cittadini statunitensi o a Israele: undici tra giudici e membri dell&#x27;Ufficio del Procuratore risultano, ad oggi, formalmente sanzionati, con congelamento dei beni e divieto di ingresso negli Stati Uniti esteso ai familiari. Nei giorni immediatamente precedenti al voto del 24 luglio, rappresentanti dell&#x27;amministrazione statunitense hanno riaffermato l&#x27;intenzione di smantellare la Corte &quot;mattone su mattone&quot;, promuovendo presso gli Stati Parte una campagna esplicita per il ritiro dallo Statuto di Roma.</p>
+<p>La sovrapposizione cronologica fra la campagna sanzionatoria statunitense e la fase conclusiva del procedimento a carico di Khan non dimostra, di per sé, un nesso causale diretto fra le due dinamiche.</p>
+<h2><strong>4.  </strong><strong>Il ruolo di Israele: accountability interna o interferenza esterna?</strong></h2>
+<p>Un elemento ulteriore riguarda il ruolo attribuito a Israele nella fase finale del procedimento, riportato da due fonti indipendenti fra loro: la ricostruzione di Andrea Innocenti attribuisce a Israele un ruolo &quot;cruciale&quot; nella raccolta dei voti a favore della rimozione di Khan, mentre ANSA, citando Axios, conferma che &quot;a muoversi per accrescere i voti a favore della rimozione del procuratore è stato soprattutto Israele&quot; nelle settimane immediatamente precedenti al voto del 24 luglio. Il Ministro degli Esteri israeliano Gideon Sa&#x27;ar ha commentato pubblicamente la rimozione parlando di &quot;bancarotta morale&quot; di un Procuratore che, a suo giudizio, aveva richiesto &quot;mandati di arresto scandalosi&quot; per distogliere l&#x27;attenzione dalle proprie condotte personali, chiedendo contestualmente la revoca dei mandati contro Netanyahu e Gallant. Ezequiel Jimenez Martinez, giurista specializzato in diritto penale internazionale citato da Anderson tra gli osservatori più attenti alle irregolarità procedurali del caso, ha segnalato in termini più cauti ma nella stessa direzione la necessità di chiarire se vi siano stati &quot;movimenti sospetti&quot; da parte di alcuni Stati nelle settimane precedenti al voto del Bureau, e se tali movimenti abbiano comportato scostamenti dalle procedure regolamentari.</p>
+<p>La convergenza di due fonti giornalistiche indipendenti rafforza la plausibilità della ricostruzione, senza però equivalere ad un accertamento istituzionale formale: nessun organo della Corte o dell&#x27;Assemblea ha, ad oggi, confermato o smentito ufficialmente il ruolo attribuito a Israele nella raccolta dei consensi. Resta comunque significativo che la questione di un&#x27;eventuale interferenza esterna sia stata sollevata, con toni di preoccupazione, non da commentatori di parte ma dagli stessi giuristi che a più riprese hanno difeso, nel merito, la fondatezza della decisione di rimozione — e che essa si intrecci direttamente con il fascicolo Palestina discusso più oltre, dato che il Ministro israeliano ha collegato esplicitamente la rimozione di Khan alla richiesta di revoca dei mandati d&#x27;arresto contro i propri vertici politici e militari.</p>
+<h2><strong>5.  </strong><strong>La posizione italiana ed europea: sostegno istituzionale, ambiguità nazionali</strong></h2>
+<p>Sul piano delle istituzioni dell&#x27;Unione, la posizione ufficiale è stata netta e più volte ribadita. Dopo l&#x27;annuncio di nuove sanzioni statunitensi contro la Presidente della Corte, la giudice giapponese Tomoko Akane, e il sostituto Procuratore, il magistrato senegalese Abdoulaye Seye, la Presidente della Commissione europea Ursula von der Leyen e il Presidente del Consiglio europeo António Costa hanno ribadito in un post congiunto il &quot;pieno sostegno&quot; dell&#x27;Unione alla Corte, sottolineando che i suoi magistrati devono poter operare &quot;in modo indipendente e senza pressioni esterne&quot;. È una linea coerente con quanto affermato dai due leader già nel febbraio 2025, quando settantanove Stati membri delle Nazioni Unite — fra cui Germania, Francia, Spagna e Regno Unito — sottoscrissero una dichiarazione congiunta di condanna delle prime sanzioni statunitensi contro la Corte, avvertendo del rischio di dover &quot;chiudere gli uffici sul campo&quot; e di un conseguente aumento dell&#x27;impunità per i crimini più gravi.</p>
+<p>La posizione italiana si è collocata, tuttavia, in una zona più ambigua rispetto a quella delle principali cancellerie europee. L&#x27;Italia non figura fra i firmatari della dichiarazione dei settantanove Stati del febbraio 2025, e ha scelto di non prendere posizione formale contro l&#x27;ordine esecutivo statunitense che dispone il congelamento dei beni e il divieto d&#x27;ingresso per i funzionari della Corte, esteso ai familiari. La distanza fra il sostegno dichiarato dalle istituzioni di Bruxelles e la prassi dei singoli Stati membri emerge con ancora maggiore nettezza nel caso — cronologicamente precedente ma sostanzialmente connesso — di Osama Najim, alias Al Masri, cittadino libico ricercato dalla Corte per crimini di tortura: arrestato in Italia nel gennaio 2025, non fu trasferito all&#x27;Aia ma rimpatriato in Libia con un volo di Stato, decisione che portò l&#x27;allora Ministro degli Esteri e oggi Vice Presidente del Consiglio, Antonio Tajani, a paventare pubblicamente un&#x27;&quot;inchiesta&quot; sull&#x27;operato della stessa Corte Penale Internazionale. Il caso Khan si inserisce dunque in un quadro nel quale il sostegno istituzionale europeo alla Corte convive con prassi nazionali — quella italiana non isolata — che ne condizionano, nei fatti, l&#x27;effettivo funzionamento.</p>
+<h2><strong>6.  </strong><strong>Il precedente kosovaro applicato all&#x27;istituzione</strong></h2>
+<p>Nell&#x27;articolo dedicato alla governance giuridica delle armi autonome si è richiamata la distinzione, elaborata nel 2000 dalla Commissione Indipendente Internazionale sul Kosovo presieduta dal giudice Richard Goldstone, fra legalità e legittimità: l&#x27;intervento NATO del 1999, privo di base giuridica nella Carta delle Nazioni Unite, fu giudicato &quot;illegale ma legittimo&quot;, perché rispondente a un&#x27;esigenza umanitaria condivisa, in assenza di alternative praticabili. Applicata al caso Khan, quella stessa distinzione si presenta in forma rovesciata: la rimozione del Procuratore è stata deliberata secondo le procedure previste dallo Statuto di Roma, e in questo senso è pienamente legale; ma la sua legittimità sostanziale — intesa come riconoscimento condiviso della correttezza del processo da parte della comunità giuridica internazionale — resta oggetto di un dibattito dottrinale tuttora aperto, proprio per l&#x27;opacità procedurale e il contesto di pressione esterna sopra descritti.</p>
+<p>La differenza rispetto al precedente kosovaro non è di poco conto. Nel 1999 la comunità internazionale si trovò dinanzi ad un&#x27;azione priva di base legale ma ampiamente percepita come legittima; nel caso Khan, specularmente, ci si trova dinanzi a una decisione pienamente legale la cui legittimità sostanziale resta, allo stato, contestata. Il rovesciamento conferma, semmai, che legalità e legittimità restano categorie autonome, la cui coincidenza non può mai darsi per presupposta — nemmeno quando l&#x27;organo che delibera è la più alta istanza di governance di un tribunale penale internazionale.</p>
+<p>Questo rovesciamento ha una conseguenza che eccede il singolo precedente kosovaro. Se la legittimità e la legalità possono divergere in entrambe le direzioni — un&#x27;azione illegale ma legittima, come nel 1999; una decisione legale ma di legittimità contestata, come nel caso Khan — ne discende che nessuna delle due categorie può mai essere assunta come garanzia sostitutiva dell&#x27;altra all&#x27;interno della governance delle istituzioni internazionali. Una procedura interamente conforme al proprio statuto non esaurisce, di per sé, l&#x27;onere di legittimazione sostanziale che grava su un&#x27;istituzione la cui autorità dipende, in ultima istanza, dal consenso continuato degli Stati che la finanziano e dei soggetti — vittime, testimoni, comunità colpite da crimini internazionali — nel cui interesse essa dichiara di agire. È precisamente questa dipendenza duplice, e non la sola conformità procedurale, a rendere il caso Khan un caso di scuola per la teoria della legittimità istituzionale nel diritto internazionale contemporaneo.</p>
+<h2><strong>7.  </strong><strong>&quot;L&#x27;orlo dell&#x27;universo politico&quot;: la lezione di Carla Del Ponte</strong></h2>
+<p>Nelle proprie memorie, Madame Prosecutor: Confrontations with Humanity&#x27;s Worst Criminals, l&#x27;ex Procuratore Capo del Tribunale Penale Internazionale per l&#x27;ex Iugoslavia (ICTY) Carla Del Ponte descrisse il proprio mandato con un&#x27;espressione divenuta, nella letteratura di settore, un punto di riferimento ricorrente: di aver compreso, nel corso della propria attività, di essersi scontrata con &quot;l&#x27;orlo dell&#x27;universo politico&quot; entro il quale a un tribunale internazionale è consentito operare. L&#x27;espressione coglie con precisione la condizione strutturale in cui si trova, per costruzione statutaria, ogni Procuratore di una giurisdizione penale internazionale: un&#x27;indipendenza funzionale formalmente garantita, ma esercitata entro un perimetro politico i cui confini sono definiti, in ultima istanza, dagli stessi Stati che quella giurisdizione hanno istituito e che ne finanziano il funzionamento.</p>
+<p>Il caso Khan attualizza quella stessa tensione in una forma ancora più diretta: non un Procuratore che urta contro il limite politico nel perseguire un&#x27;indagine sgradita a Stati potenti, ma un Procuratore la cui permanenza in carica viene decisa, in ultima istanza, da un voto politico — sia pure fondato su un&#x27;indagine tecnica indipendente.</p>
+<h2><strong>8.  </strong><strong>Il fascicolo Palestina come banco di prova per il successore</strong></h2>
+<p>La questione più delicata legata alla successione riguarda la gestione del fascicolo relativo alla situazione in Palestina. Sotto la guida di Khan, la Corte aveva richiesto — e ottenuto, previa approvazione di tre giudici della Camera Preliminare — i mandati di arresto nei confronti del Primo Ministro israeliano Benjamin Netanyahu e dell&#x27;ex Ministro della Difesa Yoav Gallant, per crimini contro l&#x27;umanità e crimini di guerra connessi al presunto assedio della popolazione di Gaza. La rimozione di Khan non incide, sul piano tecnico, sulla validità di quei mandati, che possono essere ritirati soltanto per decisione dei giudici della Corte, non del Procuratore in carica — un dato che ridimensiona, almeno nell&#x27;immediato, i timori di un ribaltamento automatico del fascicolo.</p>
+<p>Sul piano tecnico-procedurale, occorre precisare che il potere di modificare l&#x27;ambito di un mandato d&#x27;arresto già emesso, o di ritirare le cariche una volta confermate, non spetta in via esclusiva al Procuratore. L&#x27;articolo 58, paragrafo 6, dello Statuto di Roma prevede che il Procuratore possa richiedere alla Camera Preliminare di modificare un mandato d&#x27;arresto già emesso, ma è la Camera stessa a dover valutare se sussistano motivi ragionevoli per procedere in tal senso. Analogamente, l&#x27;articolo 61, paragrafo 9, subordina il ritiro delle cariche, una volta iniziato il processo, al previo consenso della Camera di Prima Istanza. Ne discende che un eventuale successore di Khan orientato a un ridimensionamento del fascicolo Palestina non potrebbe procedere per via meramente amministrativa: dovrebbe formalmente richiederlo alla Camera competente, esponendo le proprie ragioni a un vaglio giudiziale che potrebbe, in linea di principio, anche respingere l&#x27;istanza. Questo non esclude che un Procuratore possa in pratica orientare l&#x27;intera strategia processuale — attraverso il ritmo delle udienze, la richiesta di sospensioni, l&#x27;allocazione delle risorse investigative — in una direzione che ne indebolisca progressivamente la sostanza senza mai richiederne formalmente il ritiro; ma la garanzia procedurale, per quanto non assoluta, non è nemmeno pienamente aggirabile con un atto unilaterale.</p>
+<p>Resta, tuttavia, l&#x27;interrogativo di fondo, formulato da Vasiliev in termini particolarmente netti: che gli Stati Parte possano scegliere un successore disposto ad &quot;abbandonare l&#x27;indagine sulla Palestina e cercare di ritirare i mandati di arresto contro Netanyahu e Gallant&quot;, agendo sotto pressione o nel tentativo malinteso di &quot;salvare&quot; la Corte da ulteriori ritorsioni. Un simile esito, secondo lo stesso autore, rappresenterebbe &quot;un fiasco di proporzioni epocali&quot;, capace di segnare per anni la credibilità dell&#x27;idea stessa di giustizia penale internazionale — trasformando il precedente Khan, oggi presentato come prova di accountability istituzionale, nel primo passo di un&#x27;erosione sostanziale dell&#x27;indipendenza della Corte.</p>
+<h2><strong>9. Conclusione</strong></h2>
+<p>Il caso Khan non ammette, allo stato, una lettura univoca. Sul piano strettamente procedurale, la Corte ha applicato a se stessa — per la prima volta nella propria storia — un meccanismo di accountability nei confronti di uno dei propri funzionari più potenti, al termine di un processo durato quasi due anni e sorretto da un&#x27;indagine indipendente di ampiezza considerevole. Sul piano della legittimità sostanziale, tuttavia, l&#x27;asimmetria strutturale dell&#x27;articolo 46, l&#x27;opacità di parte del procedimento, il contesto di sanzioni economiche e pressioni diplomatiche esterne senza precedenti e le prime ricostruzioni giornalistiche su un possibile ruolo attivo di Stati direttamente interessati all&#x27;esito lasciano aperta una domanda che va oltre il singolo caso: se un&#x27;istituzione giudiziaria internazionale possa amministrare in modo credibile la responsabilità dei propri vertici, quando quello stesso processo si svolge sotto l&#x27;assedio degli Stati più potenti che quell&#x27;istituzione è chiamata, in teoria, a poter indagare.</p>
+<p>La scelta del successore, attesa entro la prossima Assemblea ordinaria di dicembre 2026, sarà il primo banco di prova osservabile di questa tensione. Nelle more, la questione giuridica di fondo resta quella già enunciata a proposito delle armi autonome: non se un&#x27;istituzione abbia rispettato le proprie regole interne, ma se, nel farlo, abbia anche preservato la fiducia di chi da quelle regole dipende. Vale, per chi non segua abitualmente le vicende dell&#x27;Aia, una precisazione finale: dall&#x27;esito di questo braccio di ferro dipende, in concreto, se le vittime di genocidio, crimini di guerra e crimini contro l&#x27;umanità continueranno a poter contare su un&#x27;istanza di giustizia capace di procedere anche contro i potenti — o se la CPI uscirà da questa crisi ridimensionata nella propria autonomia, indipendentemente da chi ne guiderà la Procura.</p>
+<h2><strong>Riferimenti bibliografici</strong></h2>
+<p>1) Del Ponte, Carla, Madame Prosecutor: Confrontations with Humanity&#x27;s Worst Criminals and the Culture of Impunity, Other Press, 2009, p. 60 — memoir dell&#x27;ex Procuratore Capo ICTY, fonte dell&#x27;espressione &quot;the edge of the political universe&quot; citata in EJIL: Talk!.</p>
+<h2><strong>Riferimenti sitografici</strong></h2>
+<p class="reference"><a href="https://www.justiceinfo.net/en/162412-icc-karim-khan-removed-what-next.html" target="_blank" rel="noopener noreferrer">1) JusticeInfo.net, «ICC: Karim Khan removed – what next?»</a></p>
+<p class="reference"><a href="https://news.un.org/en/story/2026/07/1168025" target="_blank" rel="noopener noreferrer">2) UN News</a></p>
+<p class="reference"><a href="https://www.aljazeera.com/news/2026/3/21/icc-chief-prosecutor-khan-cleared-of-sexual-misconduct-by-judges-report" target="_blank" rel="noopener noreferrer">3) Al Jazeera</a></p>
+<p class="reference"><a href="https://www.ejiltalk.org/the-removal-of-the-icc-prosecutor-and-the-edge-of-the-iccs-political-universe/" target="_blank" rel="noopener noreferrer">4) EJIL: Talk!, «The Removal of the ICC Prosecutor and the Edge of the ICC&#x27;s Political Universe»</a></p>
+<p class="reference"><a href="https://www.justsecurity.org/153766/icc-court-new-prosecutor/" target="_blank" rel="noopener noreferrer">5) Just Security, «The Court That Removed Its Own Prosecutor»</a></p>
+<p class="reference"><a href="https://www.justsecurity.org/148713/icc-prosecutor-removal-vote/" target="_blank" rel="noopener noreferrer">6) Just Security, «Before the Assembly: The Removal Vote and the Question of Fitness for Office»</a></p>
+<p class="reference"><a href="https://www.nbcnews.com/world/north-america/icc-chief-prosecutor-removed-post-sexual-misconduct-allegations-rcna589139" target="_blank" rel="noopener noreferrer">7) NBC News</a></p>
+<p class="reference"><a href="https://www.ilpost.it/2026/07/24/rimosso-procuratore-capo-corte-penale-internazionale-karim-khan/" target="_blank" rel="noopener noreferrer">8) Il Post</a></p>
+<p class="reference"><a href="https://www.ilgiornale.it/news/cronaca-internazionale/karim-khan-destituito-dalla-corte-penale-internazionale-la-crisi-che-scuote-laia/" target="_blank" rel="noopener noreferrer">9) Il Giornale</a></p>
+<p class="reference"><a href="https://www.notizie.it/corte-penale-internazionale-82-stati-votano-per-la-rimozione-di-karim-khan/" target="_blank" rel="noopener noreferrer">10) Notizie.it</a></p>
+<p class="reference"><a href="https://www.coalitionfortheicc.org/vetting-all-icc-and-asp-elections" target="_blank" rel="noopener noreferrer">11) Coalition for the International Criminal Court</a></p>
+<p class="reference"><a href="https://www.ansa.it/europa/notizie/rubriche/altrenews/2026/07/24/ansagli-stati-membri-della-cpi-cacciano-khan-fatali-le-accuse-di-molestie_7f3b367e-1707-4fe3-a40f-68535614685b.html" target="_blank" rel="noopener noreferrer">12) ANSA</a></p>
+<p class="reference"><a href="https://www.italpress.com/caso-cpi-unione-europea-ribadisce-sostegno-corte-internazionale-dopo-sanzioni-annunciate-dagli-usa/" target="_blank" rel="noopener noreferrer">13) Italpress</a></p>
+<p class="reference"><a href="https://www.ilfattoquotidiano.it/2025/02/07/sanzioni-usa-cpi-79-paesi-onu-contro-italia-non-firma-lettera/7869004/" target="_blank" rel="noopener noreferrer">14) Il Fatto Quotidiano</a></p>
+<p class="reference"><a href="https://www.eunews.it/2025/02/07/ue-sanzioni-trump-corte-cpi-al-masri/" target="_blank" rel="noopener noreferrer">15) Eunews</a></p>
+<p class="reference"><a href="https://www.middleeasteye.net/news/icc-karim-khan-saga-timeline" target="_blank" rel="noopener noreferrer">16) Middle East Eye, «The Karim Khan saga: a timeline»</a></p>
+<p class="reference"><a href="https://www.middleeasteye.net/news/icc-member-states-remove-prosecutor-karim-khan-majority-vote" target="_blank" rel="noopener noreferrer">17) Middle East Eye, «ICC member states remove prosecutor Karim Khan by majority vote»</a></p>
+<aside class="author-box" aria-label="Autrice">
+<img src="../assets/immagini-chi-siamo/miriam-foti.jpg" alt="Miriam Foti" loading="lazy" onerror="this.style.display='none';">
+<div class="author-info"><h4><a href="https://www.dynames.it/chi-siamo.html#miriam-foti">Miriam Foti</a></h4><p>Junior Fellow DYNAMES, area Diritto e Legittimità. Laureata magistrale in Giurisprudenza, ha conseguito un Master di II livello in Diritto Internazionale Umanitario e Diritto delle Operazioni Militari presso il CASD/SSU. Autrice di pubblicazioni scientifiche e analista geopolitica presso IARI, approfondisce il diritto internazionale e l’area asiatica.</p></div>
+</aside>
+</div>
+</article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+      <p>© 2026 DYNAMES. Tutti i diritti riservati.</p>
+    </div>
+  </footer>
+</body>
+</html>
