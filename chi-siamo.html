@@ -1100,159 +1100,173 @@
             }
         }
 
-        /* DYNAMES 2026-09-18: hardening responsive mobile layout */
+
+        /* DYNAMES: mobile readability refinement 2026-09-20 */
         @media (max-width: 900px) {
-            html, body {
-                width: 100%;
-                max-width: 100%;
-                overflow-x: clip;
+            .container {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
             }
 
-            /* Evita il padding cumulativo introdotto dalla regola generica "section". */
+            /* Evita il doppio padding sui section annidati */
             section {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
             }
 
-            .container {
-                width: 100%;
-                max-width: 100%;
-                padding-left: 1.15rem !important;
-                padding-right: 1.15rem !important;
+            .page-header .container {
+                padding-left: 1.25rem !important;
+                padding-right: 1.25rem !important;
             }
 
             .page-content {
-                width: 100%;
-                max-width: 100%;
-                padding: 2.5rem 1.15rem 3rem !important;
+                padding-top: 2.4rem !important;
+                padding-bottom: 2.5rem !important;
             }
 
-            .page-content > .team-section,
-            .team-grid,
-            .collaboration-cards,
-            .author-box,
-            .author-info,
-            .bio-static,
-            .bio-summary-copy,
-            .bio-content,
-            .profile-card,
-            .profile-content {
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
+            .team-section {
+                margin-bottom: 2.8rem;
+                scroll-margin-top: 88px;
             }
 
-            .team-grid,
-            .collaboration-cards {
-                grid-template-columns: minmax(0, 1fr) !important;
+            .team-section-header {
+                margin-bottom: 1.15rem;
+                padding-bottom: 0.8rem;
+            }
+
+            .team-section-header h2 {
+                font-size: 1.35rem;
+                line-height: 1.22;
+                letter-spacing: 0.04em;
+                overflow-wrap: anywhere;
+            }
+
+            .team-section-header p {
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+
+            .team-grid {
                 gap: 1.15rem;
             }
 
             .author-box {
-                margin: 0;
-                padding: 1.25rem 1rem;
-                overflow: hidden;
+                padding: 1.2rem 0.95rem;
+                gap: 0.9rem;
             }
 
             .author-box img,
             .author-initials {
-                display: block;
-                width: 104px;
-                height: 104px;
-                max-width: 104px;
-                margin-left: auto;
-                margin-right: auto;
+                width: 96px;
+                height: 96px;
             }
 
-            .profile-name,
-            .profile-role,
-            .strategic-theme,
-            .strategic-theme strong,
-            .bio-content p,
-            .team-section-header h2,
-            .team-section-header p,
-            .collaboration-intro,
-            .collaboration-highlight,
-            .profile-text,
-            .participation-note {
+            .profile-name {
+                font-size: 1.08rem;
+                line-height: 1.28;
+            }
+
+            .profile-role {
                 max-width: 100%;
+                margin-top: 0.45rem;
+                font-size: 0.67rem;
+                line-height: 1.4;
+                letter-spacing: 0.025em;
+                text-transform: none;
                 overflow-wrap: anywhere;
-                word-break: normal;
             }
 
             .strategic-theme {
-                display: flex;
-                width: fit-content;
                 max-width: 100%;
-                margin-left: auto;
-                margin-right: auto;
-                border-radius: 18px;
+                margin-top: 0.5rem;
+                padding: 0.55rem 0.7rem;
+                border-radius: 14px;
             }
 
-            .team-jump-nav {
-                width: 100%;
-                max-width: 100vw;
-                margin: 0;
-                padding: 0.8rem 1rem 0;
-                overflow-x: auto;
-                overflow-y: hidden;
-                overscroll-behavior-inline: contain;
-                scrollbar-width: none;
-            }
-
-            .team-jump-nav a {
-                flex: 0 0 auto;
-                white-space: nowrap;
-            }
-
-            .bio-static .bio-content {
-                min-width: 0;
-            }
-
-            .bio-static .bio-content p {
-                min-width: 0;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .page-header {
-                padding: 2.6rem 0;
-            }
-
-            .page-header h1 {
-                font-size: clamp(1.8rem, 9vw, 2.15rem);
+            .strategic-theme span {
+                font-size: 0.61rem;
                 letter-spacing: 0.08em;
             }
 
-            .page-header p {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-                font-size: 0.95rem;
+            .strategic-theme strong {
+                font-size: 0.7rem;
+                line-height: 1.35;
+                overflow-wrap: anywhere;
             }
 
-            .page-content {
-                padding-left: 0.9rem !important;
-                padding-right: 0.9rem !important;
+            .bio-static .bio-content {
+                gap: 0.4rem;
+                padding-top: 0.68rem;
+            }
+
+            .bio-static .bio-content p,
+            .author-info .bio-content p {
+                font-size: 0.9rem;
+                line-height: 1.56;
+            }
+
+            /* Su mobile mostra due righe di anteprima invece di una sola */
+            .js .bio-static:not(.is-expanded) .bio-content p {
+                display: -webkit-box;
+                white-space: normal;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .bio-static .bio-content .bio-expand-btn {
+                width: 1.85rem;
+                height: 1.85rem;
+                min-width: 1.85rem;
+            }
+
+            .team-jump-nav {
+                padding: 0.7rem 0.85rem 0;
+                gap: 0.5rem;
+            }
+
+            .team-jump-nav a {
+                padding: 0.52rem 0.68rem;
+                font-size: 0.66rem;
+                letter-spacing: 0.035em;
+            }
+
+            p, ul, ol {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .page-header {
+                padding: 2.5rem 0;
+            }
+
+            .page-header h1 {
+                font-size: 1.85rem;
+                line-height: 1.15;
+            }
+
+            .page-header p {
+                font-size: 0.94rem;
             }
 
             .team-section-header h2 {
-                font-size: 1.45rem;
-                line-height: 1.2;
-            }
-
-            .team-section-header p {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
+                font-size: 1.24rem;
             }
 
             .author-box {
-                padding: 1.15rem 0.9rem;
+                padding: 1.1rem 0.85rem;
             }
 
-            .author-info .bio-content p,
-            .bio-static .bio-content p {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
+            .profile-name {
+                font-size: 1.03rem;
+            }
+
+            .bio-static .bio-content p,
+            .author-info .bio-content p {
+                font-size: 0.88rem;
             }
         }
 
@@ -1305,7 +1319,7 @@
 <a href="#direzione">Direzione</a>
 <a href="#senior-mentor">Senior Mentor</a>
 <a href="#junior-fellows">Junior Fellows</a>
-<a href="#subject-matter-expert-contributors">SME &amp; Contributors</a>
+<a href="#subject-matter-expert-wargaming">SME Wargaming</a><a href="#subject-matter-expert-contributors">SME &amp; Contributors</a>
 <a href="#collaborare-con-dynames">Collaborare</a>
 </nav>
 <section class="page-content container">
@@ -1453,7 +1467,11 @@
 <div class="author-info">
 <div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Gen.D. CC (ris.) Ciro Niglio</span><span class="profile-role">Senior Mentor</span></span><div class="bio-content" id="bio-ciro-niglio"><p>Dirigente esperto in sicurezza con oltre 35 anni di esperienza, maturata sia nel settore aziendale che in quello governativo. Ex allievo della Scuola Militare Nunziatella e Generale dí Divisione (ris) dell’Arma dei Carabinieri, il suo percorso include incarichi manageriali, anche in contesti internazionali caratterizzati da condizioni operative complesse o difficili. In possesso di una vasta esperienza nella direzione di articolati dipartimenti di sicurezza e nella gestione di programmi impegnativi all'interno di contesti dinamici e in rapida evoluzione. Ha condotto operazioni di sicurezza in tutta Europa e ha avuto l'opportunità di risiedere e lavorare all'estero — in Bosnia-Erzegovina, Kosovo e Albania — ricoprendo ruoli che comportavano responsabilità sia a livello regionale che globale.</p><button aria-controls="bio-ciro-niglio" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
 </div>
-</div>
+<div class="author-box" id="caterina-pino">
+<img alt="Caterina Pino" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/caterina-pino.jpg"/>
+<div class="author-info">
+<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Caterina Pino</span><span class="profile-role">Senior Mentor per Women in International Security (WIIS)</span></span><div class="bio-content" id="bio-caterina-pino"><p>Esperta di crisis governance, opera lungo l’intero spettro di peace &amp; security, dell’assistenza umanitaria e della cooperazione allo sviluppo. Supporta governi, organizzazioni internazionali, istituzioni finanziarie internazionali e attori della cooperazione bilaterale in aree di conflitto e post-conflitto, collegando il livello strategico e di policy alla programmazione, con particolare attenzione all’allineamento delle risorse finanziarie alle priorità strategiche. Ha maturato esperienza di policy e consulenza strategica su numerosi contesti di crisi, tra cui Siria, Ucraina, Territori Palestinesi Occupati, Somalia e Liberia.<br/><br/>Già Senior Research Fellow presso la NATO School di Oberammergau, ha proseguito il proprio percorso nell’ambiente addestrativo internazionale attraverso attività di docenza per l’Alleanza, le Nazioni Unite e istituzioni governative. Ha conseguito un Master in Peacekeeping and Security Studies e affianca alla propria attività professionale un impegno nello sviluppo del capitale umano, anche come mentore per Women in International Security (WIIS).</p><button aria-controls="bio-caterina-pino" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
+</div></div>
 </section>
 <section class="team-section" id="junior-fellows">
 <div class="team-section-header">
@@ -1595,7 +1613,25 @@
 </div>
 </div>
 </section>
-<section class="team-section" id="subject-matter-expert-contributors">
+<section class="team-section" id="subject-matter-expert-wargaming">
+<div class="team-section-header">
+<h2>Subject Matter Expert per Wargaming</h2>
+<p>Esperti che contribuiscono allo sviluppo di wargame e serious game come strumenti di analisi, formazione e supporto ai processi decisionali complessi.</p>
+</div>
+<div class="team-grid"><div class="author-box" id="fabio-camillotti">
+<img alt="Fabio Camillotti" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/fabio%20camillotti.jpg"/>
+<div class="author-info">
+<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Fabio Camillotti</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Lawfare · Cooperazione Civile-Militare · Wargaming</strong></span></span><div class="bio-content" id="bio-fabio-camillotti"><p>Avvocato penalista, con formazione post-universitaria in studi strategici e sicurezza internazionale e un percorso formativo nella cooperazione civile-militare. Affianca all’attività professionale lo studio del lawfare e delle relazioni tra istituzioni civili e componente militare. Approfondisce l’interazione tra strumenti giuridici, coercizione e negoziazione nei contesti di crisi, con focus sugli effetti delle scelte strategiche sulla popolazione, sulla legittimità istituzionale e sui processi di stabilizzazione. Contribuisce all’implementazione di wargame per esplorare processi decisionali in scenari complessi, interazioni tra attori e conseguenze delle scelte operative.</p><button aria-controls="bio-fabio-camillotti" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
+</div><div class="author-box" id="noe-sturaro">
+<img alt="Noé Sturaro" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/noe-sturaro.jpg"/>
+<div class="author-info">
+<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Noé Sturaro</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>WarGaming</strong></span></span><div class="bio-content" id="bio-noe-sturaro"><p>Consigliere DYNAMES per il War Game. Ex allievo della Scuola Navale Militare "Francesco Morosini" e laureato in Giurisprudenza, porta un approccio creativo all'innovazione della comunicazione e del marketing della Pubblica Amministrazione, alla digitalizzazione istituzionale e alla progettazione di wargame e serious game come strumenti di formazione e resilienza organizzativa.</p><button aria-controls="bio-noe-sturaro" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
+</div><div class="author-box" id="francesca-ferro">
+<img alt="Francesca Ferro" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/francesca-ferro.jpg"/>
+<div class="author-info">
+<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Francesca Ferro</span><span class="profile-role">Subject Matter Expert per Wargaming</span></span><div class="bio-content" id="bio-francesca-ferro"><p>Consulente presso il Centro di Eccellenza NATO per la cooperazione civile-militare, dove si occupa dello sviluppo e della realizzazione di un progetto formativo sul CIMIC in collaborazione con l’Unione Europea. Ha conseguito una doppia laurea magistrale in Governance &amp; Global Affairs presso la LUISS Guido Carli di Roma e la MGIMO University di Mosca. Il suo percorso include esperienze presso il Ministero degli Affari Esteri, la Rappresentanza Permanente d’Italia presso le Nazioni Unite e diversi think tank, oltre alla partecipazione a due esercitazioni militari, Mare Aperto e Joint Stars.</p><button aria-controls="bio-francesca-ferro" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
+</div></div>
+</section><section class="team-section" id="subject-matter-expert-contributors">
 <div class="team-section-header">
 <h2>Subject Matter Expert &amp; Contributors</h2>
 <p>Esperti, autori e professionisti che collaborano con DYNAMES su specifici ambiti tematici e progettuali.</p>
@@ -1656,17 +1692,9 @@
 <div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Silvia Volpe</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Governance Pubblica · Economia e Industria</strong></span></span><div class="bio-content" id="bio-silvia-volpe"><p><strong>Silvia Volpe</strong> ricopre la carica di <em>Chief Audit Officer</em> presso <strong>Polo Strategico Nazionale S.p.A.</strong><br/><br/>Vanta, tra le altre, una consolidata esperienza nei settori di <em>internal auditing</em>, <em>risk management</em> e <em>compliance</em> aziendale, con competenze specialistiche in materia di <em>whistleblowing</em>, prevenzione delle frodi (<em>fraud audit</em>), anticorruzione, antiriciclaggio e gestione della <em>governance</em> degli organismi societari. Il suo percorso professionale include una significativa carriera come ufficiale della <strong>Guardia di Finanza</strong>, durante la quale ha guidato importanti articolazioni operative, tra cui la Sezione Verifiche Complesse del Nucleo di Polizia Economico-Finanziaria di Roma e Forlì, conducendo verifiche in materia di fiscalità internazionale e indagini su frodi economico-finanziarie.<br/><br/>Sul piano accademico, oltre alla Laurea Magistrale in Scienze Giuridiche e alla Laurea Specialistica in Scienze della Sicurezza Economico-Finanziaria, possiede un Master di II livello in <em>Risk Management, Internal Auditing e Cybersecurity</em> presso l’Università Ca’ Foscari di Venezia, nonché specializzazioni executive ottenute con la LUISS Business School e l’AIIA. Attiva anche sul piano formativo e scientifico, opera come docente in corsi di qualificazione specialistici ed è relatrice a eventi nazionali dedicati al <em>whistleblowing</em> e al <em>fraud auditing</em>. Ha, inoltre, all’attivo numerose pubblicazioni dedicate agli impatti fiscali e di governance della <em>digital economy</em>, all’uso dei <em>big data</em> e alla disciplina del <em>Golden Power</em>.</p><button aria-controls="bio-silvia-volpe" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
 </div>
 <!-- Fabio Camillotti -->
-<div class="author-box" id="fabio-camillotti">
-<img alt="Fabio Camillotti" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/fabio%20camillotti.jpg"/>
-<div class="author-info">
-<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Fabio Camillotti</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>Lawfare · Cooperazione Civile-Militare · Wargaming</strong></span></span><div class="bio-content" id="bio-fabio-camillotti"><p>Avvocato penalista, con formazione post-universitaria in studi strategici e sicurezza internazionale e un percorso formativo nella cooperazione civile-militare. Affianca all’attività professionale lo studio del lawfare e delle relazioni tra istituzioni civili e componente militare. Approfondisce l’interazione tra strumenti giuridici, coercizione e negoziazione nei contesti di crisi, con focus sugli effetti delle scelte strategiche sulla popolazione, sulla legittimità istituzionale e sui processi di stabilizzazione. Contribuisce all’implementazione di wargame per esplorare processi decisionali in scenari complessi, interazioni tra attori e conseguenze delle scelte operative.</p><button aria-controls="bio-fabio-camillotti" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
-</div>
+
 <!-- Noé Sturaro -->
-<div class="author-box" id="noe-sturaro">
-<img alt="Noé Sturaro" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/noe-sturaro.jpg"/>
-<div class="author-info">
-<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Noé Sturaro</span><span class="strategic-theme"><span>Ambiti di competenza</span><strong>WarGaming</strong></span></span><div class="bio-content" id="bio-noe-sturaro"><p>Consigliere DYNAMES per il War Game. Ex allievo della Scuola Navale Militare "Francesco Morosini" e laureato in Giurisprudenza, porta un approccio creativo all'innovazione della comunicazione e del marketing della Pubblica Amministrazione, alla digitalizzazione istituzionale e alla progettazione di wargame e serious game come strumenti di formazione e resilienza organizzativa.</p><button aria-controls="bio-noe-sturaro" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
-</div>
+
 </div>
 </section>
 </section>
