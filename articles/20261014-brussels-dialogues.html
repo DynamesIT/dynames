@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="it" prefix="og: https://ogp.me/ns#">
+<head>
+    <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+    <script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+                deleteAnalyticsCookies();
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYNAMES | Brussels Dialogues - 14 ottobre 2026</title>
+    <link rel="canonical" href="https://www.dynames.it/events/20261014-brussels-dialogues.html">
+    <meta name="description" content="Brussels Dialogues: il nuovo paradigma della difesa e sicurezza. Tavola rotonda al Parlamento Europeo su capacità industriale, capitale umano e fiducia per la resilienza europea.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta property="og:locale" content="it_IT">
+    <meta property="og:site_name" content="DYNAMES">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.dynames.it/events/20261014-brussels-dialogues.html">
+    <meta property="og:title" content="Brussels Dialogues | Il nuovo paradigma della difesa e sicurezza">
+    <meta property="og:description" content="Capacità industriale, capitale umano e fiducia per la resilienza europea. Parlamento Europeo, Bruxelles, 14 ottobre 2026.">
+    <meta property="og:image" content="https://www.dynames.it/events/20261014/20261014-SAVE%20THE%20DATE.png">
+    <meta property="og:image:url" content="https://www.dynames.it/events/20261014/20261014-SAVE%20THE%20DATE.png">
+    <meta property="og:image:secure_url" content="https://www.dynames.it/events/20261014/20261014-SAVE%20THE%20DATE.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Brussels Dialogues - Il nuovo paradigma della difesa e sicurezza, Parlamento Europeo, 14 ottobre 2026">
+    <link rel="image_src" href="https://www.dynames.it/events/20261014/20261014-SAVE%20THE%20DATE.png">
+    <meta name="thumbnail" content="https://www.dynames.it/events/20261014/20261014-SAVE%20THE%20DATE.png">
+    <meta itemprop="image" content="https://www.dynames.it/events/20261014/20261014-SAVE%20THE%20DATE.png">
+    <meta property="og:updated_time" content="2026-09-24T09:00:00+02:00">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Brussels Dialogues | 14 ottobre 2026">
+    <meta name="twitter:description" content="Il nuovo paradigma della difesa e sicurezza: capacità industriale, capitale umano e fiducia per la resilienza europea.">
+    <meta name="twitter:image" content="https://www.dynames.it/events/20261014/20261014-SAVE%20THE%20DATE.png">
+    <meta name="twitter:image:alt" content="Brussels Dialogues - Save the Date, 14 ottobre 2026">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --night-blue:#0b1120; --hero-overlay:#0b1c2d; --slate-grey:#334155; --light-grey:#f8fafc; --optical-white:#fff;
+            --text-primary:#1e293b; --text-secondary:#475569; --text-light:#cbd5e1; --paper-bg:#fdfbf7;
+            --gold-accent:#b8935a; --border-soft:#e2e8f0; --shadow-soft:0 20px 25px -5px rgba(0,0,0,.08);
+            --dynames-blue:#005aa7; --accent-red:#a7343f;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Roboto',sans-serif;background:var(--paper-bg);color:var(--text-primary);line-height:1.8;font-size:1.08rem}
+        h1,h2,h3,h4,h5,h6,.brand{font-family:'Montserrat',sans-serif}
+        .serif-heading{font-family:'Playfair Display',serif}
+        .container{max-width:1200px;margin:0 auto;padding:0 2rem}
+        .content-container{max-width:980px;margin:0 auto;padding:0 2rem}
+        header{background:var(--optical-white);border-bottom:2px solid var(--night-blue);padding:1rem 0;position:sticky;top:0;z-index:1000}
+        .header-inner{display:flex;justify-content:space-between;align-items:center}
+        .brand h1{font-size:1.8rem;color:var(--night-blue);font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:10px}
+        .brand-logo{height:40px;width:auto}.brand p{font-size:.65rem;color:var(--slate-grey);text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-top:2px}
+        .desktop-nav{display:flex;gap:2rem;align-items:center}
+        .desktop-nav a{text-decoration:none;color:var(--night-blue);font-weight:600;font-family:'Montserrat',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;transition:color .3s}
+        .desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)}
+        .back-nav{padding:2rem 0 1rem}.back-nav a{text-decoration:none;color:var(--slate-grey);font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1px}.back-nav a:hover{color:var(--gold-accent)}
+
+        .event-header{position:relative;margin-bottom:3.5rem;background:var(--optical-white);box-shadow:var(--shadow-soft);overflow:hidden}
+        .event-hero-image{display:block;width:100%;height:auto;max-height:none;object-fit:contain;background:#fff}
+        .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+        .event-meta-wrapper{background:var(--paper-bg);margin-top:-2.2rem;position:relative;z-index:2}
+        .event-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);padding:1.15rem 0}
+        .meta-item{text-align:center;padding:.5rem}.meta-label{display:block;font-family:'Montserrat',sans-serif;text-transform:uppercase;font-size:.78rem;letter-spacing:1px;color:var(--text-secondary);margin-bottom:.2rem}.meta-value{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--night-blue);font-size:1rem}
+
+        .event-body{padding-top:1rem}
+        .event-body h2{font-size:2rem;color:var(--night-blue);margin:3rem 0 1rem;font-family:'Playfair Display',serif}
+        .event-body h3{font-size:1.25rem;color:var(--night-blue);margin:2rem 0 .7rem}
+        .event-body p{margin-bottom:1.35rem;text-align:justify}
+        .event-body ul{padding-left:1.4rem;margin-bottom:1.6rem}.event-body li{margin-bottom:.65rem}
+        .lead-paragraph{font-size:1.18rem;color:var(--text-primary);font-family:'Playfair Display',serif;line-height:1.8}
+        .highlight-box{background:var(--optical-white);border:1px solid var(--border-soft);border-left:4px solid var(--gold-accent);padding:1.5rem;margin:2rem 0 2.5rem}
+        .highlight-box p:last-child{margin-bottom:0}
+        .keypoints{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+        .keypoint-card{background:var(--optical-white);border:1px solid var(--border-soft);padding:1.3rem}
+        .keypoint-card h4{color:var(--night-blue);font-size:1rem;margin-bottom:.45rem}
+        .keypoint-card p{margin:0;text-align:left;color:var(--text-secondary);font-size:.98rem}
+        .speaker-groups{display:grid;grid-template-columns:1fr;gap:1.25rem;margin-top:1rem}
+        .speaker-group{background:var(--optical-white);border:1px solid var(--border-soft);padding:1.35rem}
+        .speaker-group h4{font-size:1.05rem;color:var(--night-blue);margin-bottom:.25rem}
+        .speaker-group .group-meta{display:block;font-family:'Montserrat',sans-serif;font-size:.82rem;text-transform:uppercase;letter-spacing:.8px;color:var(--gold-accent);margin-bottom:.8rem}
+        .speaker-list{list-style:none;padding-left:0;margin:0}
+        .speaker-list li{padding:.45rem 0;border-bottom:1px solid #edf2f7;margin-bottom:0}
+        .speaker-list li:last-child{border-bottom:none}
+        .programme{width:100%;border-collapse:collapse;margin:1rem 0 2.5rem;background:var(--optical-white);font-size:.98rem}
+        .programme th,.programme td{border:1px solid var(--border-soft);padding:.9rem 1rem;vertical-align:top;text-align:left}
+        .programme th{background:var(--night-blue);color:white;font-family:'Montserrat',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.6px}
+        .programme td:first-child{white-space:nowrap;font-weight:700;color:var(--night-blue)}
+        .question-box{margin:2rem 0 2.5rem;padding:1.6rem;background:#eef4fa;border-left:4px solid var(--accent-red)}
+        .question-box h3{margin-top:0;color:var(--accent-red)}
+        .question-box p{font-weight:600;text-align:left}
+        .org-box{margin-top:3rem;padding:1.6rem;background:var(--optical-white);border:1px solid var(--border-soft);border-left:4px solid var(--night-blue)}
+        .org-box p:last-child{margin-bottom:0}
+        footer{background:var(--night-blue);color:var(--text-light);text-align:center;padding:3rem 0;font-size:.9rem;margin-top:5rem}
+
+        @media (max-width:960px){
+            .desktop-nav{display:none}
+            .event-header{padding:4.5rem 1.5rem;min-height:420px}
+            .event-title{font-size:2.6rem}
+            .keypoints{grid-template-columns:1fr}
+        }
+        @media (max-width:700px){.event-meta{grid-template-columns:1fr} .programme{font-size:.9rem} .programme th,.programme td{padding:.7rem}}
+        @media (max-width:640px){
+            .container,.content-container{padding:0 1.2rem}
+            .event-header{padding:3.8rem 1.2rem;min-height:360px}
+            .event-title{font-size:2rem}
+            .event-kicker{font-size:1rem}
+            .event-subtitle{max-width:100%;font-size:1.05rem}
+            .programme{display:block;overflow-x:auto;white-space:normal}
+        }
+    </style>
+    <link rel="icon" href="/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" type="image/png">
+</head>
+<body>
+    <header>
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="/index.html" style="text-decoration:none;">
+                    <h1><img src="/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'">DYNAMES</h1>
+                    <p>Governance di Forze e Sistemi</p>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <a href="/index.html">HOME</a>
+                <a href="/hub.html">ANALISI &amp; ARTICOLI</a>
+                <a href="/pubblicazioni.html">PUBBLICAZIONI</a>
+                <a href="/eventi.html" class="active">EVENTI</a>
+                <a href="/chi-siamo.html">CHI SIAMO</a>
+                <a href="/temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container back-nav"><a href="/eventi.html">← Torna agli Eventi</a></div>
+
+    <main>
+        <section class="event-header" aria-labelledby="event-page-title">
+            <h1 id="event-page-title" class="visually-hidden">Brussels Dialogues – Il nuovo paradigma della difesa e sicurezza</h1>
+            <img class="event-hero-image" src="20261014/20261014-SAVE%20THE%20DATE.png" alt="Brussels Dialogues – Il nuovo paradigma della difesa e sicurezza. Strategic Roundtable al Parlamento Europeo, 14 ottobre 2026, Sala Spinelli ASP 1H1." fetchpriority="high">
+        </section>
+
+        <div class="event-meta-wrapper">
+            <section class="content-container">
+                <div class="event-meta">
+                    <div class="meta-item"><span class="meta-label">Data e orario</span><span class="meta-value">14 ottobre 2026 · 17:00–19:00</span></div>
+                    <div class="meta-item"><span class="meta-label">Luogo</span><span class="meta-value">Parlamento Europeo · Sala Spinelli ASP 1H1 · Bruxelles</span></div>
+                    <div class="meta-item"><span class="meta-label">Formato</span><span class="meta-value">Round table · Regola di Chatham House</span></div>
+                </div>
+            </section>
+        </div>
+
+        <section class="content-container event-body">
+            <h2>Brussels Dialogues</h2>
+            <p class="lead-paragraph">Brussels Dialogues porta in una prospettiva europea il percorso “Cultura della Difesa e Sicurezza”. Il confronto non considera la difesa soltanto come capacità produttiva, ma esplora il rapporto tra base industriale, capitale umano, resilienza delle società, finalità pubblica e comprensione nello spazio informativo.</p>
+            <p>Il punto di partenza è la crescente esigenza di rafforzare la prontezza europea e la base industriale che la sostiene. Al centro del confronto vi è il rapporto di fiducia con le società europee: capacità, investimenti e scelte di difesa possono essere sostenibili nel tempo solo se finalità, responsabilità e valore pubblico risultano comprensibili e credibili.</p>
+            <p>La Tavola Rotonda esplorerà quindi quale ecosistema tra istituzioni, Difesa, industria, ricerca, informazione e società possa sviluppare e sostenere stabilmente questo rapporto, senza ricercare una posizione unitaria o un documento di consenso.</p>
+
+            <div class="highlight-box">
+                <p><strong>Obiettivo del confronto:</strong> collegare prontezza operativa, capacità industriale, capitale umano e fiducia pubblica, mettendo in relazione prospettive differenti lungo l’intero ecosistema europeo della difesa e della resilienza.</p>
+            </div>
+
+            <h2>Quadro di riferimento</h2>
+            <p>La riflessione si colloca in un quadro politico e professionale già in evoluzione. I riferimenti costituiscono il contesto entro cui formulare le domande del tavolo, senza definire una linea di comunicazione preordinata.</p>
+            <div class="speaker-groups">
+                <div class="speaker-group">
+                    <h4>Atto di Indirizzo del Ministro della Difesa 2026</h4>
+                    <span class="group-meta">Base industriale, comunicazione strategica e Sistema Paese</span>
+                    <ul class="speaker-list">
+                        <li><strong>PP8 (8.1–8.2):</strong> la base industriale nazionale ed europea è parte integrante della capacità operativa; viene inoltre richiamato il rischio reputazionale che incide sul comparto.</li>
+                        <li><strong>PP3 (3.1):</strong> collega comunicazione strategica, fiducia pubblica e resilienza cognitiva.</li>
+                        <li><strong>PP4 (4.2):</strong> richiama l’integrazione del Sistema Paese tra componenti militari, civili, istituzionali, tecnologiche e industriali.</li>
+                    </ul>
+                </div>
+                <div class="speaker-group">
+                    <h4>Report “Cultura della Difesa” (2026)</h4>
+                    <span class="group-meta">Riferimento progettuale</span>
+                    <p>Il Report, esito del percorso avviato alla LUISS nel settembre 2025 e presentato alla Camera dei deputati il 21 maggio 2026, propone una lettura interdisciplinare della sicurezza come dimensione sistemica, collegando comunicazione, geopolitica, formazione, governance e resilienza nel confronto tra istituzioni, Difesa, industria, accademia e informazione. Brussels Dialogues ne porta la riflessione in una prospettiva europea.</p>
+                </div>
+            </div>
+
+            <h2>Struttura della tavola rotonda</h2>
+            <p>La partecipazione è ristretta, su invito, con circa 30 partecipanti. Tutti gli interventi saranno moderati e non attribuibili nella restituzione successiva, in coerenza con la Regola di Chatham House. La lingua di lavoro sarà l’italiano.</p>
+            <table class="programme" aria-label="Programma Brussels Dialogues 14 ottobre 2026">
+                <thead><tr><th>Orario</th><th>Fase</th><th>Contenuto</th></tr></thead>
+                <tbody>
+                    <tr><td>17:00–17:10</td><td>Apertura</td><td>On. Elena Donazzan 5’ · Vincenzo D’Anna e Giovanna Cozzolino 5’</td></tr>
+                    <tr><td>17:10–17:13</td><td>Introduzione del moderatore</td><td>Giuseppe Dello Stritto 3’: metodo, regole e direttrici del confronto</td></tr>
+                    <tr><td>17:13–18:00</td><td>Tavola Rotonda Strategica</td><td>Inquadramento della discussione attraverso i settori coinvolti</td></tr>
+                    <tr><td>18:00–18:45</td><td>Discussione aperta</td><td>Interventi massimo 3’, orientati a reazioni, domande e integrazioni</td></tr>
+                    <tr><td>18:45–19:00</td><td>Chiusura e seguito</td><td>Richiamo agli output successivi e conclusioni dell’On. Elena Donazzan; a seguire, sobrio rinfresco (TBC)</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Metodo e composizione del confronto</h2>
+            <p>La Tavola Rotonda Strategica apre il confronto con contributi brevi e selezionati. La discussione aperta serve a reagire, integrare e collegare i punti emersi. Il moderatore può sollecitare prospettive specifiche per favorire un confronto reale tra categorie.</p>
+            <div class="keypoints">
+                <div class="keypoint-card"><h4>Istituzioni e politiche</h4><p>Prospettive UE, NATO e nazionali.</p></div>
+                <div class="keypoint-card"><h4>Difesa</h4><p>Componente militare e capacità operative.</p></div>
+                <div class="keypoint-card"><h4>Industria e tecnologia</h4><p>Base industriale, filiere, innovazione e autonomia tecnologica.</p></div>
+                <div class="keypoint-card"><h4>Ricerca e accademia</h4><p>Centri studi, università e produzione di conoscenza.</p></div>
+                <div class="keypoint-card"><h4>Informazione e comunicazione</h4><p>Qualità dell’informazione, comunicazione istituzionale, aziendale e giornalistica.</p></div>
+                <div class="keypoint-card"><h4>Società e nuove generazioni</h4><p>Corpi intermedi e sociali, giovani professionisti e capitale umano.</p></div>
+            </div>
+
+            <h2>Le tre direttrici del confronto</h2>
+            <div class="keypoints">
+                <div class="keypoint-card">
+                    <h4>Prontezza operativa</h4>
+                    <p>Quali capacità l’Europa deve sviluppare con maggiore urgenza e quali risultano più difficili da costruire e sostenere? Capacità industriale, resilienza delle filiere, requisiti comuni, autonomia tecnologica, capitale umano e competenze critiche.</p>
+                </div>
+                <div class="keypoint-card">
+                    <h4>Fiducia</h4>
+                    <p>Quali capacità e scelte di difesa incontrano maggiori difficoltà di comprensione, fiducia e sostegno? Il punto di contatto è la credibilità del valore pubblico: finalità, trasparenza, responsabilità e qualità dell’informazione.</p>
+                </div>
+                <div class="keypoint-card">
+                    <h4>Ecosistema</h4>
+                    <p>Quale struttura di relazioni può trasformare ambizione, competenze e innovazione in capacità reale? Ruoli distinti ma coordinati in una logica integrata di Total Defence, Whole-of-Government e Whole-of-Society.</p>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <h3>Domanda per i relatori della Tavola Rotonda</h3>
+                <p>Dal punto di vista dell’area o del settore di appartenenza, e alla luce dell’esperienza nel quadro UE e NATO, quali capacità – individuali e collettive – l’Europa deve sviluppare con maggiore urgenza per rafforzare la propria prontezza e quali incontrano maggiori difficoltà di comprensione, fiducia e sostegno da parte delle società europee?</p>
+                <p>Che cosa può renderne credibile e trasparente il valore e quale ecosistema tra istituzioni, Difesa, industria, ricerca, informazione e società può costruire e sostenere nel tempo questo rapporto, in una logica integrata di Total Defence / Whole-of-Government e Whole-of-Society?</p>
+            </div>
+
+            <h2>Iniziativa, moderazione e organizzazione</h2>
+            <div class="speaker-groups">
+                <div class="speaker-group">
+                    <h4>Iniziativa</h4>
+                    <span class="group-meta">Parlamento Europeo</span>
+                    <ul class="speaker-list"><li><strong>On. Elena Donazzan</strong> — Vicepresidente ITRE e membro della Commissione Sicurezza e Difesa.</li></ul>
+                </div>
+                <div class="speaker-group">
+                    <h4>Moderatore e facilitatore</h4>
+                    <span class="group-meta">European Defence Agency</span>
+                    <ul class="speaker-list"><li><strong>Giuseppe Dello Stritto</strong> — Head of Unit Land and Logistics presso l’European Defence Agency (EDA).</li></ul>
+                </div>
+                <div class="speaker-group">
+                    <h4>Organizzatori</h4>
+                    <span class="group-meta">Cultura della Difesa e Sicurezza</span>
+                    <ul class="speaker-list">
+                        <li><strong>Vincenzo D’Anna</strong> — DYNAMES.</li>
+                        <li><strong>Giovanna Cozzolino</strong> — FORM&amp;ATP.</li>
+                        <li><strong>LUISS – Scuola di Giornalismo</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>Risultati e seguito</h2>
+            <div class="speaker-groups">
+                <div class="speaker-group">
+                    <h4>Riflessioni da Bruxelles</h4>
+                    <span class="group-meta">Entro una settimana</span>
+                    <p>Restituzione sintetica, non attribuita e non consensuale dei principali temi, tensioni e interrogativi emersi.</p>
+                </div>
+                <div class="speaker-group">
+                    <h4>Rapporto / Volume</h4>
+                    <span class="group-meta">Gennaio 2027</span>
+                    <p>Contributi firmati e prospettive differenti, destinati anche a percorsi di formazione e aggiornamento per giornalisti, comunicatori, relatori pubblici e professionisti dei settori pubblici e privati.</p>
+                </div>
+            </div>
+
+            <div class="org-box">
+                <h3>Dati essenziali</h3>
+                <p><strong>Accesso:</strong> dalle 16:30 · <strong>Lavori:</strong> 17:00–19:00.</p>
+                <p><strong>Sede:</strong> Sala Spinelli ASP 1H1 · Parlamento Europeo · Bruxelles.</p>
+                <p><strong>Modalità:</strong> Round table con regola di Chatham House · partecipazione ristretta su invito.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size:1.5rem; margin-bottom:1rem; letter-spacing:1px;">DYNAMES</h3>
+            <p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+            <p style="margin-top:1rem; color:var(--slate-grey);">&copy; 2026 DYNAMES. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+</body>
+</html>
