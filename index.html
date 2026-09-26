@@ -2,6 +2,19 @@
 
 <html lang="it">
 <head>
+<!-- DYNAMES: canonicalizzazione client-side della homepage.
+     GitHub Pages serve fisicamente index.html anche per /; se l'utente apre
+     esplicitamente /index.html, normalizziamo l'URL a / senza ricaricare la pagina.
+     In questo modo anche GA4 registra la homepage con un unico page path. -->
+<script>
+    if (window.location.pathname === '/index.html') {
+        window.history.replaceState(
+            null,
+            '',
+            '/' + window.location.search + window.location.hash
+        );
+    }
+</script>
 <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
 <script>
     (function () {
@@ -318,6 +331,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DYNAMES | Governance di Forze e Sistemi</title>
+<link rel="canonical" href="https://www.dynames.it/"/>
+<meta property="og:url" content="https://www.dynames.it/"/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
 <style>
         :root {
