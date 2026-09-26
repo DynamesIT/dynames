@@ -1265,12 +1265,12 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(11, 17, 32, 0.78) 0%, rgba(11, 17, 32, 0.32) 48%, rgba(11, 17, 32, 0.04) 100%);
+            background: linear-gradient(to top, rgba(11, 17, 32, 0.90) 0%, rgba(11, 17, 32, 0.38) 48%, rgba(11, 17, 32, 0.05) 100%);
             z-index: 1;
         }
 
         .dynames-card--publication::before {
-            background: linear-gradient(to top, rgba(11, 17, 32, 0.7) 0%, rgba(11, 17, 32, 0.22) 48%, rgba(11, 17, 32, 0.02) 100%);
+            background: linear-gradient(to top, rgba(11, 17, 32, 0.81) 0%, rgba(11, 17, 32, 0.27) 48%, rgba(11, 17, 32, 0.03) 100%);
         }
 
         .dynames-card--publication {
@@ -1583,7 +1583,89 @@
                 max-width: 100%;
             }
         }
-</style>
+
+        /* Roadmap: prossimo evento, gerarchia visiva aggiornata */
+        .next-event-label{
+            display:block;
+            margin-bottom:.45rem;
+            color:#1e3a8a;
+            font-family:'Montserrat',sans-serif;
+            font-size:.78rem;
+            font-weight:800;
+            letter-spacing:.08em;
+            text-transform:uppercase;
+        }
+        .next-event-meta{
+            margin-bottom:.7rem;
+            color:#1e3a8a;
+            font-family:'Montserrat',sans-serif;
+            font-weight:700;
+        }
+        .next-event-title{
+            margin:.15rem 0 .75rem;
+            color:var(--night-blue);
+            font-family:'Montserrat',sans-serif;
+            font-size:1.55rem;
+            line-height:1.22;
+            font-weight:800;
+        }
+        .next-event-summary{
+            margin:0;
+            color:var(--text-secondary);
+            font-size:.92rem;
+            line-height:1.55;
+        }
+        @media (max-width:900px){
+            .next-event-title{font-size:1.32rem;}
+            .next-event-meta{font-size:.9rem;line-height:1.45;}
+        }
+    
+        /* Primo elemento novità: prossimo evento */
+        #homeLatestGrid .dynames-card--event{
+            grid-column: 1 / -1;
+            min-height: 330px;
+        }
+        #homeLatestGrid .dynames-card--event img{
+            object-position:center;
+        }
+        #homeLatestGrid .dynames-card--event .dynames-card-label{
+            background:rgba(184,147,90,.96);
+            color:#0b1120;
+        }
+        #homeLatestGrid .dynames-card--event h3{
+            max-width:850px;
+            font-size:clamp(1.55rem,2.6vw,2.35rem);
+            line-height:1.18;
+        }
+        @media (max-width:900px){
+            #homeLatestGrid .dynames-card--event{
+                grid-column:auto;
+                min-height:300px;
+            }
+            #homeLatestGrid .dynames-card--event h3{
+                font-size:1.45rem;
+            }
+        }
+        
+        /* Solo l'evento come card grande nelle ultime novità */
+        #homeLatestGrid .dynames-card--event{
+            grid-column: 1 / -1;
+            min-height: 340px;
+        }
+        #homeLatestGrid .dynames-card--event img{
+            object-fit: cover;
+            object-position: center;
+        }
+        #homeLatestGrid .dynames-card:not(.dynames-card--event){
+            min-height: 250px;
+        }
+        @media (max-width: 900px){
+            #homeLatestGrid .dynames-card--event{
+                grid-column: auto;
+                min-height: 300px;
+            }
+        }
+        </style>
 <style id="dynames-mobile-ux-home">
 .mobile-priority-nav, .mobile-feed-actions { display: none; }
 @media (max-width: 900px) {
@@ -1608,7 +1690,7 @@
     #hub { padding-top: 2.6rem !important; padding-bottom: 3rem !important; }
     #hub .section-title { font-size: 1.65rem; line-height: 1.2; margin-bottom: 0; }
     #hub .dynames-grid { margin-top: 1.6rem; }
-    #homeLatestGrid:not(.mobile-expanded) .dynames-card:nth-child(n+5) { display: none; }
+    #homeLatestGrid .dynames-card { display: flex; }
     .mobile-feed-actions { display: grid; gap: 0.65rem; margin-top: 1.2rem; }
     .mobile-feed-actions button, .mobile-feed-actions a {
         width: 100%; padding: 0.82rem 1rem; border-radius: 8px; font-family: 'Montserrat', sans-serif;
@@ -1628,24 +1710,8 @@
 <section id="hub" style="background: var(--optical-white); padding-bottom: 5rem;">
 <div class="container">
 <h2 class="section-title">Le ultime novità del mondo DYNAMES</h2>
-<div class="dynames-grid" id="homeLatestGrid"><a aria-label="Brussels Dialogues – Il nuovo paradigma della Difesa e Sicurezza" class="dynames-card dynames-card--latest" href="events/20261014-brussels-dialogues.html">
-<img alt="Brussels Dialogues – Il nuovo paradigma della Difesa e Sicurezza" loading="lazy" src="events/20261014/label.png"/>
-<span class="dynames-card-label">Evento</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">14 ottobre 2026 · Parlamento Europeo, Bruxelles</span>
-<h3>Brussels Dialogues – Il nuovo paradigma della Difesa e Sicurezza</h3>
-<span class="dynames-card-author">Strategic Roundtable su capacità industriale, capitale umano e fiducia per la resilienza europea.</span>
-</div>
-</a>
-<a class="dynames-card" href="articles/2026.09.21-oltre-007.html">
-<img alt="Spionaggio contemporaneo tra proxy, operatori occasionali, sorveglianza e reti transnazionali" loading="lazy" src="articles/Immagini/2026.09.21-oltre-007-light.jpg"/>
-<span class="dynames-card-label">IN EVIDENZA · Articolo · Governance Pubblica</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">21 Settembre 2026</span>
-<h3>Oltre 007: lo spionaggio nell’era dei proxy e degli operatori occasionali</h3>
-<span class="dynames-card-author">di Michele Punzi</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.09.24-burocrazia-europea.html">
+<div class="dynames-grid" id="homeLatestGrid">
+<a class="dynames-card dynames-card--event" href="events/20261014-brussels-dialogues.html"><img alt="Brussels Dialogues – Il nuovo paradigma della Sicurezza e Difesa" loading="lazy" src="events/20261014/brussels-dialogues-news.png"/><span class="dynames-card-label">PROSSIMO EVENTO</span><div class="dynames-card-content"><span class="dynames-card-date">14 Ottobre 2026 · accesso dalle 16:30</span><h3>Bruxelles Dialogues - Il nuovo paradigma della Sicurezza e Difesa</h3><span class="dynames-card-author">Parlamento Europeo · Bruxelles</span></div></a><a class="dynames-card" href="articles/2026.09.24-burocrazia-europea.html">
 <img alt="Pesca dell’Alaska e barriera digitale della tracciabilità europea" loading="lazy" src="articles/Immagini/2026.09.24-burocrazia-europea-light.jpg"/>
 <span class="dynames-card-label">Articolo</span>
 <div class="dynames-card-content">
@@ -1653,13 +1719,13 @@
 <h3>La burocrazia dell’Unione europea minaccia la pesca dell’Alaska</h3>
 <span class="dynames-card-author">di Domenico Letizia</span>
 </div>
-</a><a class="dynames-card" href="pubblicazioni/2026.09.12-riserva-patrimonio-strategico.html">
-<img alt="Copertina del white paper La Riserva, patrimonio strategico della resilienza" loading="lazy" src="pubblicazioni/Archivio/2026.09.12-riserva-patrimonio-strategico-share-v3-20260912.jpg"/>
-<span class="dynames-card-label">IN EVIDENZA · Paper</span>
+</a><a class="dynames-card" href="articles/2026.09.21-oltre-007.html">
+<img alt="Spionaggio contemporaneo tra proxy, operatori occasionali, sorveglianza e reti transnazionali" loading="lazy" src="articles/Immagini/2026.09.21-oltre-007-light.jpg"/>
+<span class="dynames-card-label">Articolo · Governance Pubblica</span>
 <div class="dynames-card-content">
-<span class="dynames-card-date">12 Settembre 2026</span>
-<h3>La Riserva, patrimonio strategico della resilienza</h3>
-<span class="dynames-card-author">Autore · Vincenzo D’Anna</span>
+<span class="dynames-card-date">21 Settembre 2026</span>
+<h3>Oltre 007: lo spionaggio nell’era dei proxy e degli operatori occasionali</h3>
+<span class="dynames-card-author">di Michele Punzi</span>
 </div>
 </a><a class="dynames-card" href="articles/2026.09.19-terry-reintke.html"><img alt="Terry Reintke con la maglia del Team Canada durante la visita del primo ministro canadese al Parlamento europeo" loading="lazy" src="articles/Immagini/2026.09.19-terry-reintke-light.jpg"/><span class="dynames-card-label">Articolo</span><div class="dynames-card-content"><span class="dynames-card-date">19 Settembre 2026</span><h3>Terry Reintke e la diplomazia della maglia: la spinta europea e tedesca per l'asse strategico tra Bruxelles e Ottawa</h3><span class="dynames-card-author">di Domenico Letizia</span></div></a><a class="dynames-card" href="articles/2026.09.18-fattore-umano-minaccia-algoritmica.html">
 <img alt="Interazione tra fattore umano, intelligenza artificiale e minaccia cyber" loading="lazy" src="articles/Immagini/2026.09.18-fattore-umano-minaccia-algoritmica-light.jpg"/>
@@ -1669,65 +1735,8 @@
 <h3>Il fattore umano e la minaccia algoritmica: cosa genera davvero il rischio cyber?</h3>
 <span class="dynames-card-author">di Silvia Volpe</span>
 </div>
-</a><a class="dynames-card" href="articles/2026.09.18-corte-rimosso-procuratore.html">
-<img alt="La sedia vuota del Procuratore davanti al simbolo della Corte Penale Internazionale" loading="lazy" src="articles/Immagini/2026.09.18-corte-rimosso-procuratore-light.jpg"/>
-<span class="dynames-card-label">Articolo · Diritto e Legittimità</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">18 Settembre 2026</span>
-<h3>La Corte che ha rimosso il proprio Procuratore</h3>
-<span class="dynames-card-author">di Miriam Foti</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.09.11-strategie-prebunking-nord-europa.html">
-<img alt="Un cippo di confine fisico si trasforma nella sua proiezione digitale, metafora del fronte cognitivo" loading="lazy" src="articles/Immagini/2026.09.11-strategie-prebunking-nord-europa-light.jpg"/>
-<span class="dynames-card-label">IN EVIDENZA · Articolo · Informazione e Dominio Cognitivo</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">11 Settembre 2026</span>
-<h3>Il fronte che non si vede</h3>
-<span class="dynames-card-author">di Francesco Trevisan</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.09.14-progettazione-europea-pubblica-amministrazione.html">
-<img alt="Progetto SITE, ASSOEURO e il ministro Tommaso Foti" loading="lazy" src="articles/Immagini/2026.09.14-progettazione-europea-pubblica-amministrazione-light.jpg"/>
-<span class="dynames-card-label">Articolo · Governance Pubblica</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">14 Settembre 2026</span>
-<h3>Progettazione europea e Pubblica Amministrazione: Assoeuro chiede una sinergia virtuosa tra Stato e professionisti</h3>
-<span class="dynames-card-author">di Domenico Letizia</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.09.11-eredita-11-settembre.html">
-<img alt="Un passeggero ai controlli aeroportuali davanti a una fotografia di New York con il Tribute in Light" loading="lazy" src="articles/Immagini/2026.09.11-eredita-11-settembre-light.jpg"/>
-<span class="dynames-card-label">Articolo</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">11 Settembre 2026</span>
-<h3>L’eredità dell’11 settembre</h3>
-<span class="dynames-card-author">di Michele Punzi</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.09-11-contrabbando-produzione-sigarette-italia.html">
-<img alt="Guardia di Finanza in uno stabilimento clandestino per la produzione di sigarette, con reti logistiche e criminali sullo sfondo" loading="lazy" src="articles/Immagini/2026.09-11-contrabbando-produzione-sigarette-italia-light.jpg"/>
-<span class="dynames-card-label">Articolo</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">11 Settembre 2026</span>
-<h3>Il contrabbando cambia pelle: le sigarette illegali ora si producono in Italia</h3>
-<span class="dynames-card-author">di Fabio Boscacci</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.09.10-riarmo-sanitario.html">
-<img alt="Scorte farmaceutiche strategiche europee, capacità produttiva riservata e logistica di crisi" loading="lazy" src="articles/Immagini/2026.09.10-riarmo-sanitario-light.jpg"/>
-<span class="dynames-card-label">Articolo · Salute e Welfare</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">10 Settembre 2026</span>
-<h3>Scorte, non solo fabbriche: il riarmo sanitario invisibile dell’Europa</h3>
-<span class="dynames-card-author">di Francesco Bianchi</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.09.09-lewis-canada.html">
-<img alt="Avi Lewis, leader del New Democratic Party canadese" loading="lazy" src="articles/Immagini/2026.09.09-lewis-canada-share.jpg"/>
-<span class="dynames-card-label">Articolo</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">9 Settembre 2026</span>
-<h3>La sfida radicale di Avi Lewis: la ricetta del New Democratic Party per salvare il Canada dal trumpismo e dalle guerre</h3>
-<span class="dynames-card-author">di Domenico Letizia</span>
-</div>
-</a><a class="dynames-card" href="articles/2026.09.08-guerra-droni-era-jet.html"><img alt="Drone d’attacco a propulsione jet, produzione industriale, intercettazione e supply chain della difesa aerea" loading="lazy" src="articles/Immagini/2026.09.08-guerra-droni-era-jet-light.jpg"/><span class="dynames-card-label">Articolo · Difesa e Sicurezza</span><div class="dynames-card-content"><span class="dynames-card-date">8 Settembre 2026</span><h3>La guerra dei droni entra nell’era del jet</h3><span class="dynames-card-author">di Rodolfo Belcastro</span></div></a><a class="dynames-card" href="articles/2026.09.06-sovranismo-energetico.html"><img alt="Immagine simbolica dello scontro energetico tra Messico, Stati Uniti e Canada" loading="lazy" src="articles/Immagini/2026.09.06-sovranismo-energetico-light.png"/><span class="dynames-card-label">Articolo · Energia e Risorse</span><div class="dynames-card-content"><span class="dynames-card-date">6 Settembre 2026</span><h3>Il sovranismo energetico di Città del Messico contro il rigore giuridico e di mercato di Washington e Ottawa</h3><span class="dynames-card-author">di Domenico Letizia</span></div></a><a class="dynames-card" href="articles/2026.09.03-bio-estrazione-oro.html"><img alt="Ricercatrice osserva un processo di bio-estrazione dell’oro mediante filamenti fungini, con lingotti sullo sfondo" loading="lazy" src="articles/Immagini/2026.09.03-bio-estrazione-oro-light.jpg"/><span class="dynames-card-label">Articolo</span><div class="dynames-card-content"><span class="dynames-card-date">3 Settembre 2026</span><h3>La Bio-estrazione dell’oro e la svolta per la sostenibilità mineraria</h3><span class="dynames-card-author">di Domenico Letizia</span></div></a></div>
+</a></div>
 <div class="mobile-feed-actions">
-<button aria-controls="homeLatestGrid" aria-expanded="false" id="mobileShowMore" type="button">Mostra altre analisi</button>
 <a href="hub.html">Tutte le analisi →</a>
 <a href="pubblicazioni.html">Vai alle pubblicazioni →</a>
 </div>
@@ -1753,13 +1762,7 @@
 </div>
 </a>
 <a aria-label="Vai ai dettagli dell’evento Brussels Dialogues del 14 ottobre 2026 al Parlamento Europeo di Bruxelles" class="timeline-item-link" href="events/20261014-brussels-dialogues.html">
-<div class="timeline-item" style="background: rgba(30,58,138,0.04); padding: 1rem 1.5rem; border-radius: 6px; border-left: 4px solid #1e3a8a;">
-<div class="timeline-date">14 Ottobre 2026 · lavori 17:00–19:00 · accesso dalle 16:30</div>
-<span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #1e3a8a; letter-spacing: 1px;">Prossimo evento</span>
-<h3 style="margin: 0.5rem 0; color: var(--night-blue);">Brussels Dialogues – Parlamento Europeo, Bruxelles</h3>
-<p style="margin-bottom: 0.5rem;"><strong>Il nuovo paradigma della Difesa e Sicurezza</strong></p>
-<p style="font-size: 0.9rem; color: var(--text-secondary);">Strategic Roundtable su capacità industriale, capitale umano e fiducia per la resilienza europea. Sala Spinelli ASP 1H1.</p>
-</div>
+<div class="timeline-item" style="background: rgba(30,58,138,0.04); padding: 1rem 1.5rem; border-radius: 6px; border-left: 4px solid #1e3a8a;"><span class="next-event-label">Prossimo evento</span><div class="timeline-date next-event-meta">14 Ottobre 2026 · dalle 16:30 presso Parlamento Europeo, Bruxelles</div><h3 class="next-event-title">Bruxelles Dialogues - Il nuovo paradigma della Sicurezza e Difesa</h3><p class="next-event-summary">Strategic Roundtable su capacità industriale, capitale umano e fiducia per la resilienza europea. Sala Spinelli ASP 1H1 · lavori 17:00–19:00.</p></div>
 </a><div class="timeline-item"><div class="timeline-date">30 Novembre 2026 · TBC</div><h3 style="margin: 0.5rem 0; color: var(--night-blue);">Torino</h3></div><div class="timeline-item"><div class="timeline-date">Data TBC</div><h3 style="margin: 0.5rem 0; color: var(--night-blue);">Milano</h3></div><div class="timeline-item"><div class="timeline-date">Data TBC</div><h3 style="margin: 0.5rem 0; color: var(--night-blue);">Napoli</h3></div>
 <div class="timeline-item">
 <div class="timeline-date">20 o 21 Gennaio 2027 · data indicativa</div>
@@ -1771,8 +1774,8 @@
 <div class="roadmap-image-panel">
 <div class="roadmap-image-frame">
 <div>
-<button aria-label="Apri la locandina Brussels Dialogues del 14 ottobre 2026 in formato grande" class="roadmap-poster-trigger open-lightbox" data-alt="Brussels Dialogues – Il nuovo paradigma della Difesa e Sicurezza, Parlamento Europeo, Bruxelles, 14 ottobre 2026" data-img="events/20261014/20261014-SAVE%20THE%20DATE.png" type="button">
-<img alt="Brussels Dialogues – Il nuovo paradigma della Difesa e Sicurezza, Parlamento Europeo, Bruxelles, 14 ottobre 2026" class="roadmap-poster" src="events/20261014/20261014-SAVE%20THE%20DATE.png"/>
+<button aria-label="Apri la locandina Brussels Dialogues del 14 ottobre 2026 in formato grande" class="roadmap-poster-trigger open-lightbox" data-alt="Brussels Dialogues – Il nuovo paradigma della Sicurezza e Difesa, Parlamento Europeo, Bruxelles, 14 ottobre 2026" data-img="events/20261014/20261014-SAVE%20THE%20DATE.png" type="button">
+<img alt="Brussels Dialogues – Il nuovo paradigma della Sicurezza e Difesa, Parlamento Europeo, Bruxelles, 14 ottobre 2026" class="roadmap-poster" src="events/20261014/20261014-SAVE%20THE%20DATE.png"/>
 </button>
 <span class="roadmap-poster-caption">Clicca per ingrandire</span>
 </div>
