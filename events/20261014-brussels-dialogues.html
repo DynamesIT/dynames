@@ -366,11 +366,11 @@
         .desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)}
         .back-nav{padding:2rem 0 1rem}.back-nav a{text-decoration:none;color:var(--slate-grey);font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1px}.back-nav a:hover{color:var(--gold-accent)}
 
-        .event-header{position:relative;margin-bottom:3.5rem;background:var(--optical-white);box-shadow:var(--shadow-soft);overflow:hidden}
-        .event-hero-image{display:block;width:100%;height:auto;max-height:none;object-fit:contain;background:#fff}
+        .event-header{position:relative;max-width:960px;margin:0 auto 1.25rem;background:var(--optical-white);box-shadow:var(--shadow-soft);overflow:hidden;border:1px solid var(--border-soft);border-radius:6px}
+        .event-hero-image{display:block;width:100%;max-width:960px;height:auto;max-height:none;object-fit:contain;background:#fff;margin:0 auto}
         .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 
-        .event-meta-wrapper{background:var(--paper-bg);margin-top:-2.2rem;position:relative;z-index:2}
+        .event-meta-wrapper{background:var(--paper-bg);margin-top:0;position:relative;z-index:2}
         .event-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);padding:1.15rem 0}
         .meta-item{text-align:center;padding:.5rem}.meta-label{display:block;font-family:'Montserrat',sans-serif;text-transform:uppercase;font-size:.78rem;letter-spacing:1px;color:var(--text-secondary);margin-bottom:.2rem}.meta-value{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--night-blue);font-size:1rem}
 
@@ -406,14 +406,14 @@
 
         @media (max-width:960px){
             .desktop-nav{display:none}
-            .event-header{padding:4.5rem 1.5rem;min-height:420px}
+            .event-header{max-width:100%;margin:0 auto 1rem}
             .event-title{font-size:2.6rem}
             .keypoints{grid-template-columns:1fr}
         }
         @media (max-width:700px){.event-meta{grid-template-columns:1fr} .programme{font-size:.9rem} .programme th,.programme td{padding:.7rem}}
         @media (max-width:640px){
             .container,.content-container{padding:0 1.2rem}
-            .event-header{padding:3.8rem 1.2rem;min-height:360px}
+            .event-header{max-width:100%;margin:0 auto .9rem;border-radius:4px}
             .event-title{font-size:2rem}
             .event-kicker{font-size:1rem}
             .event-subtitle{max-width:100%;font-size:1.05rem}
@@ -457,6 +457,12 @@
             .event-access-note{font-size:.88rem;padding:.3rem .3rem 1rem}
             .directives-grid .keypoint-card h4{font-size:1.22rem}
         }
+    
+    .event-meta{padding-top:.9rem;padding-bottom:.9rem}
+    @media (min-width:1200px){
+        .event-header{max-width:920px}
+        .event-hero-image{max-width:920px}
+    }
     </style>
 <link href="/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" rel="icon" type="image/png"/>
 </head>
