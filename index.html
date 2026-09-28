@@ -2,19 +2,6 @@
 
 <html lang="it">
 <head>
-<!-- DYNAMES: canonicalizzazione client-side della homepage.
-     GitHub Pages serve fisicamente index.html anche per /; se l'utente apre
-     esplicitamente /index.html, normalizziamo l'URL a / senza ricaricare la pagina.
-     In questo modo anche GA4 registra la homepage con un unico page path. -->
-<script>
-    if (window.location.pathname === '/index.html') {
-        window.history.replaceState(
-            null,
-            '',
-            '/' + window.location.search + window.location.hash
-        );
-    }
-</script>
 <!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
 <script>
     (function () {
@@ -331,8 +318,6 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DYNAMES | Governance di Forze e Sistemi</title>
-<link rel="canonical" href="https://www.dynames.it/"/>
-<meta property="og:url" content="https://www.dynames.it/"/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
 <style>
         :root {
@@ -1726,7 +1711,26 @@
 <div class="container">
 <h2 class="section-title">Le ultime novità del mondo DYNAMES</h2>
 <div class="dynames-grid" id="homeLatestGrid">
-<a class="dynames-card dynames-card--event" href="events/20261014-brussels-dialogues.html"><img alt="Brussels Dialogues – Il nuovo paradigma della Sicurezza e Difesa" loading="lazy" src="events/20261014/label.png"/><span class="dynames-card-label">PROSSIMO EVENTO</span><div class="dynames-card-content"><span class="dynames-card-date">14 Ottobre 2026 · accesso dalle 16:30</span><h3>Bruxelles Dialogues - Il nuovo paradigma della Sicurezza e Difesa</h3><span class="dynames-card-author">Parlamento Europeo · Bruxelles</span></div></a><a class="dynames-card" href="articles/2026.09.24-burocrazia-europea.html">
+<a class="dynames-card dynames-card--event" href="events/20261014-brussels-dialogues.html"><img alt="Brussels Dialogues – Il nuovo paradigma della Sicurezza e Difesa" loading="lazy" src="events/20261014/label.png"/><span class="dynames-card-label">PROSSIMO EVENTO</span><div class="dynames-card-content"><span class="dynames-card-date">14 Ottobre 2026 · accesso dalle 16:30</span><h3>Bruxelles Dialogues - Il nuovo paradigma della Sicurezza e Difesa</h3><span class="dynames-card-author">Parlamento Europeo · Bruxelles</span></div></a>
+<a class="dynames-card" href="articles/2026.09.29-fact-finding-diritto-umanitario.html">
+<img alt="Zona Demilitarizzata coreana (DMZ), filo spinato, torre di guardia e militare sudcoreano" loading="lazy" src="articles/Immagini/2026.09.29-fact-finding-diritto-umanitario-light.jpg"/>
+<span class="dynames-card-label">Articolo · Diritto e Legittimità / Difesa e Sicurezza</span>
+<div class="dynames-card-content">
+<span class="dynames-card-date">29 Settembre 2026</span>
+<h3>Fact-finding, responsabilità internazionale e tensione tra necessità militare e diritto umanitario</h3>
+<span class="dynames-card-author">di Miriam Foti</span>
+</div>
+</a>
+<a class="dynames-card" href="articles/2026.09.29-european-economic-security-strategy.html">
+<img alt="Container europeo dedicato alla sicurezza economica, con i principali documenti strategici dell’Unione e una rete digitale sullo sfondo" loading="lazy" src="articles/Immagini/2026.09.29-european-economic-security-strategy-light.png"/>
+<span class="dynames-card-label">Articolo · Economia e Industria</span>
+<div class="dynames-card-content">
+<span class="dynames-card-date">29 Settembre 2026</span>
+<h3>La Strategia Europea per la Sicurezza Economica: origini, struttura ed evoluzione dal 2023 ad oggi</h3>
+<span class="dynames-card-author">di Guido Dello Ioio</span>
+</div>
+</a>
+<a class="dynames-card" href="articles/2026.09.24-burocrazia-europea.html">
 <img alt="Pesca dell’Alaska e barriera digitale della tracciabilità europea" loading="lazy" src="articles/Immagini/2026.09.24-burocrazia-europea-light.jpg"/>
 <span class="dynames-card-label">Articolo</span>
 <div class="dynames-card-content">
@@ -1734,7 +1738,8 @@
 <h3>La burocrazia dell’Unione europea minaccia la pesca dell’Alaska</h3>
 <span class="dynames-card-author">di Domenico Letizia</span>
 </div>
-</a><a class="dynames-card" href="articles/2026.09.21-oltre-007.html">
+</a>
+<a class="dynames-card" href="articles/2026.09.21-oltre-007.html">
 <img alt="Spionaggio contemporaneo tra proxy, operatori occasionali, sorveglianza e reti transnazionali" loading="lazy" src="articles/Immagini/2026.09.21-oltre-007-light.jpg"/>
 <span class="dynames-card-label">Articolo · Governance Pubblica</span>
 <div class="dynames-card-content">
@@ -1742,15 +1747,8 @@
 <h3>Oltre 007: lo spionaggio nell’era dei proxy e degli operatori occasionali</h3>
 <span class="dynames-card-author">di Michele Punzi</span>
 </div>
-</a><a class="dynames-card" href="articles/2026.09.19-terry-reintke.html"><img alt="Terry Reintke con la maglia del Team Canada durante la visita del primo ministro canadese al Parlamento europeo" loading="lazy" src="articles/Immagini/2026.09.19-terry-reintke-light.jpg"/><span class="dynames-card-label">Articolo</span><div class="dynames-card-content"><span class="dynames-card-date">19 Settembre 2026</span><h3>Terry Reintke e la diplomazia della maglia: la spinta europea e tedesca per l'asse strategico tra Bruxelles e Ottawa</h3><span class="dynames-card-author">di Domenico Letizia</span></div></a><a class="dynames-card" href="articles/2026.09.18-fattore-umano-minaccia-algoritmica.html">
-<img alt="Interazione tra fattore umano, intelligenza artificiale e minaccia cyber" loading="lazy" src="articles/Immagini/2026.09.18-fattore-umano-minaccia-algoritmica-light.jpg"/>
-<span class="dynames-card-label">Articolo · Tecnologie e Sistemi Complessi</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">18 Settembre 2026</span>
-<h3>Il fattore umano e la minaccia algoritmica: cosa genera davvero il rischio cyber?</h3>
-<span class="dynames-card-author">di Silvia Volpe</span>
+</a>
 </div>
-</a></div>
 <div class="mobile-feed-actions">
 <a href="hub.html">Tutte le analisi →</a>
 <a href="pubblicazioni.html">Vai alle pubblicazioni →</a>
