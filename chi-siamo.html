@@ -1270,6 +1270,52 @@
             }
         }
 
+
+        .profile-full-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            margin-top: 1rem;
+            padding: 0.68rem 1rem;
+            border: 1px solid var(--night-blue);
+            border-radius: 4px;
+            background: var(--night-blue);
+            color: var(--optical-white);
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: 0.035em;
+            text-transform: uppercase;
+            transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .profile-full-link:hover,
+        .profile-full-link:focus-visible {
+            background: var(--gold-accent);
+            border-color: var(--gold-accent);
+        }
+
+        .profile-full-link:focus-visible {
+            outline: 2px solid rgba(184, 147, 90, 0.55);
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 900px) {
+            .profile-full-link {
+                width: 100%;
+                max-width: 100%;
+                min-height: 44px;
+                margin-top: 0.9rem;
+                padding: 0.72rem 0.8rem;
+                font-size: 0.7rem;
+                white-space: normal;
+                text-align: center;
+            }
+        }
+
 </style>
 <!-- Favicon and SEO -->
 <link href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" rel="icon" type="image/png"/>
@@ -1339,7 +1385,7 @@
 <div class="author-box" id="d-anna">
 <img alt="Vincenzo D'Anna" decoding="async" loading="lazy" onerror="this.style.display='none';" src="assets/immagini-chi-siamo/Vinenzo%20D'ANNA.png"/>
 <div class="author-info">
-<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Vincenzo D’Anna</span><span class="profile-role">Cofondatore · Consigliere editoriale e scientifico</span></span><div class="bio-content" id="bio-d-anna"><p>Cofondatore, Consigliere editoriale e scientifico di DYNAMES, ex allievo della Scuola Militare Nunziatella. Si occupa di analisi geopolitica, comunicazione strategica, cultura della difesa e rapporto tra sicurezza, istituzioni e società civile, contribuendo all’indirizzo scientifico della piattaforma.</p><button aria-controls="bio-d-anna" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div></div></div>
+<div class="bio-static"><span class="bio-summary-copy"><span aria-level="4" class="profile-name" role="heading">Vincenzo D’Anna</span><span class="profile-role">Cofondatore · Consigliere editoriale e scientifico</span></span><div class="bio-content" id="bio-d-anna"><p>Cofondatore, Consigliere editoriale e scientifico di DYNAMES, ex allievo della Scuola Militare Nunziatella. Si occupa di analisi geopolitica, comunicazione strategica, cultura della difesa e rapporto tra sicurezza, istituzioni e società civile, contribuendo all’indirizzo scientifico della piattaforma.</p><button aria-controls="bio-d-anna" aria-expanded="false" aria-label="Espandi la biografia" class="bio-expand-btn" type="button"></button></div><a class="profile-full-link" href="chi-siamo/vincenzo-danna.html" aria-label="Leggi la scheda completa di Vincenzo D’Anna">Leggi scheda completa</a></div></div>
 </div>
 <!-- Alessio Postiglione -->
 <div class="author-box" id="postiglione">

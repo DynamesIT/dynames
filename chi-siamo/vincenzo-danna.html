@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="robots" content="index,follow,max-image-preview:large"/>
 <title>DYNAMES | Vincenzo D’Anna</title>
-<meta name="description" content="Profilo di Vincenzo D’Anna, Cofondatore e Consigliere editoriale e scientifico di DYNAMES. Esperienza professionale, formazione, pubblicazioni e contatti."/>
-<link rel="canonical" href="https://www.dynames.it/persone/vincenzo-danna.html"/>
+<meta name="description" content="Profilo di Vincenzo D’Anna, Cofondatore e Consigliere editoriale e scientifico di DYNAMES. Esperienza in NATO, UE, ONU, coordinamento strategico-istituzionale, comunicazione e sicurezza."/>
+<link rel="canonical" href="https://www.dynames.it/chi-siamo/vincenzo-danna.html"/>
 
 <meta property="og:locale" content="it_IT"/>
 <meta property="og:type" content="profile"/>
 <meta property="og:site_name" content="DYNAMES"/>
 <meta property="og:title" content="Vincenzo D’Anna | DYNAMES"/>
-<meta property="og:description" content="Cofondatore e Consigliere editoriale e scientifico di DYNAMES. Profilo professionale, formazione, pubblicazioni e contatti."/>
-<meta property="og:url" content="https://www.dynames.it/persone/vincenzo-danna.html"/>
+<meta property="og:description" content="Profilo professionale di Vincenzo D’Anna: NATO, UE, ONU, coordinamento strategico-istituzionale, comunicazione e sicurezza."/>
+<meta property="og:url" content="https://www.dynames.it/chi-siamo/vincenzo-danna.html"/>
 <meta property="og:image" content="https://www.dynames.it/assets/immagini-chi-siamo/Vinenzo%20D%27ANNA.png"/>
 <meta property="og:image:secure_url" content="https://www.dynames.it/assets/immagini-chi-siamo/Vinenzo%20D%27ANNA.png"/>
 <meta property="og:image:type" content="image/png"/>
@@ -25,7 +25,7 @@
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Vincenzo D’Anna | DYNAMES"/>
-<meta name="twitter:description" content="Cofondatore e Consigliere editoriale e scientifico di DYNAMES. Profilo professionale, formazione, pubblicazioni e contatti."/>
+<meta name="twitter:description" content="Profilo professionale di Vincenzo D’Anna: NATO, UE, ONU, coordinamento strategico-istituzionale, comunicazione e sicurezza."/>
 <meta name="twitter:image" content="https://www.dynames.it/assets/immagini-chi-siamo/Vinenzo%20D%27ANNA.png"/>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"/>
@@ -159,7 +159,7 @@ header{
 .profile-summary{
     color:#475569;
     font-size:1.08rem;
-    max-width:690px;
+    max-width:760px;
 }
 .contact-row{
     display:flex;
@@ -183,11 +183,49 @@ header{
 .button.primary{background:var(--night-blue);color:#fff}
 .button.secondary{background:#fff;color:var(--night-blue)}
 .button:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,23,42,.12)}
+.icon-button{
+    width:44px;
+    height:44px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--night-blue);
+    background:#fff;
+    color:var(--night-blue);
+    text-decoration:none;
+    transition:.2s ease;
+}
+.icon-button svg{
+    width:21px;
+    height:21px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.icon-button:hover{
+    transform:translateY(-1px);
+    background:var(--night-blue);
+    color:#fff;
+    box-shadow:0 7px 18px rgba(15,23,42,.12);
+}
+.sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+}
+
 .content-grid{
-    display:grid;
-    grid-template-columns:270px minmax(0,1fr);
-    gap:3rem;
-    align-items:start;
+    display:block;
+    max-width:980px;
+    margin:0 auto;
     padding-bottom:5rem;
 }
 .side-nav{
@@ -355,10 +393,7 @@ footer p{font-size:.87rem;max-width:720px}
     .profile-photo-wrap,.profile-photo{min-height:0}
     .profile-photo{max-height:560px}
     .profile-photo-wrap{border-right:0;border-bottom:1px solid var(--line)}
-    .content-grid{grid-template-columns:1fr}
-    .side-nav{position:static;display:flex;gap:.4rem;flex-wrap:wrap}
-    .side-nav strong{width:100%}
-    .side-nav a{border:1px solid var(--line);padding:.45rem .6rem}
+    .content-grid{display:block}
 }
 @media (max-width:640px){
     .container{padding:0 1rem}
@@ -371,12 +406,94 @@ footer p{font-size:.87rem;max-width:720px}
     .profile-summary{font-size:1rem}
     .contact-row{flex-direction:column}
     .button{width:100%}
+    .icon-button{width:44px;min-width:44px;flex:0 0 44px}
     .cv-section{padding:1.55rem 1.2rem}
     .cv-section h2{font-size:1.7rem}
     .timeline-item{grid-template-columns:1fr;gap:.35rem}
     .skill-groups,.language-grid{grid-template-columns:1fr}
+    .publication-card{grid-template-columns:84px minmax(0,1fr);gap:.85rem;padding:.85rem}
+    .publication-cover-link{width:84px;height:112px}
     .footer-inner{flex-direction:column}
 }
+
+.publication-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:1rem;
+}
+.publication-card{
+    display:grid;
+    grid-template-columns:112px minmax(0,1fr);
+    gap:1.2rem;
+    align-items:center;
+    padding:1rem;
+    border:1px solid var(--line);
+    background:#f8fafc;
+}
+.publication-cover-link{
+    width:112px;
+    height:142px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    background:#eef2f7;
+    border:1px solid #d8e0e9;
+    text-decoration:none;
+}
+.publication-cover{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:#fff;
+}
+.publication-cover-web{
+    object-fit:cover;
+    object-position:top center;
+}
+.cover-fallback-label{
+    display:none;
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    color:var(--night-blue);
+    text-align:center;
+    line-height:1.1;
+    padding:.5rem;
+}
+.publication-cover-link.cover-fallback .cover-fallback-label{
+    display:block;
+}
+.publication-copy h3{
+    font-family:'Montserrat',sans-serif;
+    color:var(--night-blue);
+    font-size:1.02rem;
+    line-height:1.35;
+    margin-bottom:.25rem;
+}
+.publication-subtitle{
+    color:var(--accent);
+    font-weight:500;
+    margin-bottom:.35rem;
+}
+.publication-copy p{
+    margin:0 0 .45rem;
+    color:#475569;
+    font-size:.96rem;
+}
+.publication-link{
+    display:inline-block;
+    margin-top:.2rem;
+    font-family:'Montserrat',sans-serif;
+    font-size:.78rem;
+    font-weight:700;
+    color:var(--accent);
+    text-decoration:none;
+}
+.publication-link:hover{
+    text-decoration:underline;
+}
+
 @media print{
     header,.breadcrumb,.side-nav,.contact-row,footer{display:none!important}
     body{background:#fff}
@@ -397,9 +514,9 @@ footer p{font-size:.87rem;max-width:720px}
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Vincenzo D’Anna",
-  "url": "https://www.dynames.it/persone/vincenzo-danna.html",
+  "url": "https://www.dynames.it/chi-siamo/vincenzo-danna.html",
   "image": "https://www.dynames.it/assets/immagini-chi-siamo/Vinenzo%20D%27ANNA.png",
-  "email": "mailto:vincenzo.danna@nato.int",
+  "email": "mailto:segreteria@dynames.it",
   "sameAs": [
     "https://www.linkedin.com/in/vincenzodanna/"
   ],
@@ -447,7 +564,7 @@ footer p{font-size:.87rem;max-width:720px}
         <div class="profile-photo-wrap">
             <img
                 class="profile-photo"
-                src="https://www.dynames.it/assets/immagini-chi-siamo/Vinenzo%20D%27ANNA.png"
+                src="../assets/immagini-chi-siamo/Vinenzo%20D%27ANNA.png"
                 alt="Vincenzo D’Anna"
                 width="1000"
                 height="1000"
@@ -459,16 +576,48 @@ footer p{font-size:.87rem;max-width:720px}
             <h1>Vincenzo D’Anna</h1>
             <div class="profile-role">Cofondatore · Consigliere editoriale e scientifico</div>
             <p class="profile-summary">
-                Ufficiale dell’Esercito Italiano con esperienza in contesti NATO, Unione Europea e Nazioni Unite.
-                Il percorso professionale integra coordinamento strategico, supporto alla leadership, comunicazione
-                istituzionale e militare, relazioni con stakeholder e organizzazione di attività ad alta visibilità.
-                In DYNAMES contribuisce all’indirizzo editoriale e scientifico e allo sviluppo delle relazioni
-                istituzionali e delle iniziative dedicate a difesa, sicurezza, geopolitica e comunicazione.
+                Tenente Colonnello dell’Esercito Italiano con esperienza maturata in contesti nazionali e multinazionali,
+                presso la NATO, l’Unione Europea e le Nazioni Unite. Attualmente presta servizio presso lo Supreme
+                Headquarters Allied Powers Europe (SHAPE), nella J9 Division della Partnership Directorate, con funzioni
+                di coordinamento a supporto della senior military leadership, dei processi divisionali e delle relazioni
+                con strutture alleate e stakeholder esterni.
+                <br/><br/>
+                Nel corso della carriera ha ricoperto incarichi di comando, staff, coordinamento operativo, executive
+                support e comunicazione istituzionale, partecipando alle missioni KFOR, ISAF e UNIFIL e all’operazione
+                EUNAVFOR MED IRINI. Ha diretto attività di Public Information ed è stato portavoce del contingente italiano
+                in Libano; successivamente ha svolto funzioni di Public Information Officer e Media Analyst in un
+                quartier generale operativo multinazionale.
+                <br/><br/>
+                Tra il 2022 e il 2025 ha operato presso l’Italian Army Training and Doctrine Command in supporto diretto
+                alla senior military leadership, occupandosi di coordinamento di attività ad alta visibilità, programmi,
+                visite ufficiali, conferenze, protocollo, briefing, relazioni istituzionali e gestione di interlocutori
+                militari, politici, diplomatici e civili.
+                <br/><br/>
+                La sua formazione integra studi strategici, scienze politiche, sicurezza internazionale e comunicazione
+                pubblica e istituzionale. Svolge attività di analisi e interviene come speaker e moderatore in contesti
+                accademici, militari e istituzionali sui temi della difesa, della sicurezza e della comunicazione strategica.
+                <br/><br/>
+                È Cofondatore e Consigliere editoriale e scientifico di DYNAMES, contribuendo all’indirizzo editoriale e
+                scientifico della piattaforma, allo sviluppo delle relazioni istituzionali e alla progettazione e condotta
+                di conferenze, tavole rotonde e seminari dedicati a difesa, sicurezza, geopolitica e comunicazione.
             </p>
             <div class="contact-row">
-                <a class="button primary" href="mailto:vincenzo.danna@nato.int">vincenzo.danna@nato.int</a>
+                <a class="button primary" href="mailto:segreteria@dynames.it">segreteria@dynames.it</a>
                 <a class="button secondary" href="https://www.linkedin.com/in/vincenzodanna/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a class="button secondary" href="../hub.html?author=vincenzo+d%27anna">Articoli su DYNAMES</a>
+                <a class="icon-button" href="../pubblicazioni.html" aria-label="Pubblicazioni DYNAMES" title="Pubblicazioni">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11a3 3 0 0 1 3 3v13a3 3 0 0 0-3-3H6.5A2.5 2.5 0 0 0 4 18.5v-13Z"/>
+                        <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H14v16a3 3 0 0 1 3-3h.5a2.5 2.5 0 0 1 2.5 2.5v-13Z"/>
+                    </svg>
+                    <span class="sr-only">Pubblicazioni</span>
+                </a>
+                <a class="icon-button" href="../hub.html" aria-label="Articoli DYNAMES" title="Articoli">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M6 3h9l4 4v14H6z"/>
+                        <path d="M15 3v5h5M9 12h7M9 16h7M9 8h2"/>
+                    </svg>
+                    <span class="sr-only">Articoli</span>
+                </a>
             </div>
         </div>
     </div>
@@ -476,253 +625,116 @@ footer p{font-size:.87rem;max-width:720px}
 </section>
 
 <div class="container content-grid">
-    <aside class="side-nav" aria-label="Indice del profilo">
-        <strong>Curriculum</strong>
-        <a href="#profilo">Profilo professionale</a>
-        <a href="#esperienza">Esperienza</a>
-        <a href="#formazione">Formazione</a>
-        <a href="#competenze">Competenze</a>
-        <a href="#lingue">Lingue</a>
-        <a href="#pubblicazioni">Pubblicazioni</a>
-        <a href="#attivita">Attività e membership</a>
-        <a href="#corsi">Corsi e certificazioni</a>
-    </aside>
+<div>
 
-    <div>
-        <section class="cv-section" id="profilo">
-            <h2>Profilo professionale</h2>
-            <p>
-                Professionista del coordinamento e del supporto alla leadership con esperienza maturata in ambienti
-                NATO, nazionali e multinazionali. Ha operato nella pianificazione e nel coordinamento di engagement
-                di alto livello, visite ufficiali, cerimonie, conferenze ed eventi istituzionali con interlocutori
-                politici, militari, diplomatici e civili.
-            </p>
-            <p>
-                Le principali aree di competenza comprendono protocollo e rappresentanza istituzionale, executive
-                support, gestione di workflow e priorità concorrenti, coordinamento di risorse, comunicazione pubblica
-                e strategica, relazioni con stakeholder e produzione di briefing e documentazione a supporto dei
-                processi decisionali.
-            </p>
-        </section>
+        
 
-        <section class="cv-section" id="esperienza">
-            <h2>Esperienza professionale</h2>
-
-            <div class="timeline-item">
-                <div class="timeline-date">02/2026 – presente</div>
-                <div class="timeline-content">
-                    <h3>Co-Founder and General Coordinator – DYNAMES</h3>
-                    <div class="org">Strategic Analysis and Institutional Engagement Platform</div>
-                    <ul>
-                        <li>Cofondazione e coordinamento di una piattaforma di analisi strategica dedicata a sicurezza, difesa, geopolitica e comunicazione istituzionale.</li>
-                        <li>Pianificazione e coordinamento di conferenze, round table ed eventi di alto livello presso sedi istituzionali e militari.</li>
-                        <li>Coordinamento di programmi, relatori e ospiti, relazioni istituzionali, briefing, comunicazione e realizzazione degli eventi.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-date">08/2025 – presente</div>
-                <div class="timeline-content">
-                    <h3>Coordination Officer – J9 Division, Partnership Directorate</h3>
-                    <div class="org">Supreme Headquarters Allied Powers Europe (SHAPE), Mons</div>
-                    <ul>
-                        <li>Supporto all’ACOS J9 nella pianificazione, nel coordinamento e nella supervisione delle attività divisionali presso il quartier generale militare strategico della NATO.</li>
-                        <li>Coordinamento di tasking, riunioni, scadenze, contributi degli stakeholder e workflow inter-divisionali.</li>
-                        <li>Preparazione di briefing, report, corrispondenza e materiale a supporto delle decisioni della leadership.</li>
-                        <li>Gestione della pianificazione di budget, monitoraggio della spesa e allocazione delle risorse per le attività assegnate.</li>
-                        <li>Relazioni con divisioni SHAPE, Allied Commands e stakeholder esterni, con supporto a incontri e engagement di alto livello.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-date">04/2022 – 08/2025</div>
-                <div class="timeline-content">
-                    <h3>Aide-de-Camp and Executive Support to Senior Military Leadership</h3>
-                    <div class="org">Italian Army Training and Doctrine Command, Roma</div>
-                    <ul>
-                        <li>Coordinamento di visite ufficiali, cerimonie, conferenze e attività istituzionali con vertici della Difesa e dell’Esercito, autorità politiche e ospiti di rilievo.</li>
-                        <li>Consulenza alla leadership su protocollo militare e istituzionale, precedenze, cerimoniale e rappresentanza ufficiale.</li>
-                        <li>Gestione di programmi complessi, agende, briefing package, corrispondenza, protocollo e coordinamento degli stakeholder.</li>
-                        <li>Coordinamento degli aspetti logistici e di budget connessi a visite ufficiali ed eventi di livello senior.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-date">2020</div>
-                <div class="timeline-content">
-                    <h3>Public Information Officer and Media Analyst</h3>
-                    <div class="org">European Union Naval Force – Operation IRINI, Roma</div>
-                    <ul>
-                        <li>Gestione dei workflow d’ufficio, degli output di comunicazione e dei requisiti di reporting in un quartier generale operativo multinazionale.</li>
-                        <li>Funzioni di Acting Head of Office durante periodi di vacanza dell’incarico, con coordinamento delle attività del personale e degli output istituzionali.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-date">2017</div>
-                <div class="timeline-content">
-                    <h3>Head of Public Information Office and Italian Contingent Spokesperson</h3>
-                    <div class="org">United Nations Interim Force in Lebanon (UNIFIL), Libano</div>
-                    <ul>
-                        <li>Direzione della sezione Public Information e incarico di portavoce del contingente italiano.</li>
-                        <li>Coordinamento di media relations, comunicazione istituzionale ed engagement con stakeholder militari e civili.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-date">2014</div>
-                <div class="timeline-content">
-                    <h3>Chief, Tactical Operations Centre</h3>
-                    <div class="org">United Nations Interim Force in Lebanon (UNIFIL), Libano</div>
-                    <p>Supervisione delle attività di sala operativa, monitoraggio in tempo reale, reporting, analisi situazionale e coordinamento con il quartier generale multinazionale.</p>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-date">2009 – 2022</div>
-                <div class="timeline-content">
-                    <h3>Infantry Unit Commander and Staff Officer</h3>
-                    <div class="org">Italian Army – contesti operativi nazionali e multinazionali</div>
-                    <ul>
-                        <li>Comando di unità di fanteria in operazioni di sicurezza nazionale e missioni NATO, incluse KFOR e ISAF.</li>
-                        <li>Comando di unità di rappresentanza e guardia d’onore in eventi istituzionali presso vertici militari, Parlamento, istituzioni di Governo e Presidenza della Repubblica.</li>
-                        <li>Incarichi di staff in gestione del personale, public affairs e coordinamento istituzionale.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section class="cv-section" id="formazione">
-            <h2>Formazione</h2>
-
-            <div class="education-item">
-                <span class="edu-date">2021</span>
-                <h3>Master di II livello in Comunicazione e Marketing Politico e Istituzionale</h3>
-                <div class="org">LUISS School of Government, Roma</div>
-                <p>Comunicazione politica e istituzionale, strategic public affairs, public relations, stakeholder engagement, media relations e communication planning.</p>
-            </div>
-
-            <div class="education-item">
-                <span class="edu-date">2019 – 2021</span>
-                <h3>Laurea Magistrale in Scienze della Politica, Sicurezza Internazionale e Comunicazione Pubblica (LM-62)</h3>
-                <div class="org">Università degli Studi della Tuscia, Viterbo</div>
-                <p>Sicurezza internazionale, analisi politica, governance, comunicazione istituzionale e relazioni internazionali.</p>
-            </div>
-
-            <div class="education-item">
-                <span class="edu-date">2019</span>
-                <h3>Master di II livello in Geopolitica della Sicurezza</h3>
-                <div class="org">Università Niccolò Cusano, Roma</div>
-                <p>Geopolitica, studi sul terrorismo, security policy e analisi dell’ambiente strategico.</p>
-            </div>
-
-            <div class="education-item">
-                <span class="edu-date">2018 – 2019</span>
-                <h3>Master di I livello in Comunicazione nella Pubblica Amministrazione</h3>
-                <div class="org">Università Niccolò Cusano, Roma</div>
-                <p>Comunicazione pubblica, processi istituzionali, media e citizen engagement.</p>
-            </div>
-
-            <div class="education-item">
-                <span class="edu-date">2004 – 2009</span>
-                <h3>Laurea in Scienze Strategiche e Politico-Organizzative</h3>
-                <div class="org">Università degli Studi di Torino</div>
-                <p>Studi strategici, governance organizzativa, istituzioni della difesa e sicurezza, processi decisionali.</p>
-            </div>
-
-            <div class="education-item">
-                <span class="edu-date">2001 – 2004</span>
-                <h3>Diploma di maturità scientifica</h3>
-                <div class="org">Scuola Militare “Nunziatella”, Napoli</div>
-            </div>
-        </section>
-
-        <section class="cv-section" id="competenze">
-            <h2>Competenze</h2>
-            <div class="skill-groups">
-                <div class="skill-card">
-                    <h3>Coordinamento e leadership</h3>
-                    <ul class="skills-list">
-                        <li>Executive support alla senior leadership</li>
-                        <li>Workflow, tasking e schedule management</li>
-                        <li>Supervisione di team e allocazione del carico di lavoro</li>
-                        <li>Contingency planning e problem solving</li>
-                    </ul>
-                </div>
-                <div class="skill-card">
-                    <h3>Protocollo e relazioni istituzionali</h3>
-                    <ul class="skills-list">
-                        <li>Protocollo militare e istituzionale</li>
-                        <li>Precedenze, cerimoniale e visite ufficiali</li>
-                        <li>Stakeholder e VIP engagement</li>
-                        <li>Relazioni con autorità, comandi e rappresentanze diplomatiche</li>
-                    </ul>
-                </div>
-                <div class="skill-card">
-                    <h3>Comunicazione</h3>
-                    <ul class="skills-list">
-                        <li>Public affairs e comunicazione istituzionale</li>
-                        <li>Briefing, corrispondenza e documentazione ufficiale</li>
-                        <li>Public speaking e moderazione</li>
-                        <li>Comunicazione interculturale in ambienti multinazionali</li>
-                    </ul>
-                </div>
-                <div class="skill-card">
-                    <h3>Digitale e gestione dell’informazione</h3>
-                    <ul class="skills-list">
-                        <li>Microsoft Office Suite – livello avanzato</li>
-                        <li>Adobe Photoshop, Illustrator, Premiere e Final Cut – livello intermedio</li>
-                        <li>Organizzazione strutturata di informazioni e dati a supporto dei processi decisionali</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section class="cv-section" id="lingue">
-            <h2>Lingue</h2>
-            <div class="language-grid">
-                <div class="language"><strong>Italiano</strong><span>Madrelingua</span></div>
-                <div class="language"><strong>Inglese</strong><span>C1 · NATO JFLT</span></div>
-                <div class="language"><strong>Francese</strong><span>B1 · NATO JFLT</span></div>
-            </div>
-            <p class="note">Nel CV professionale è inoltre indicato lo spagnolo a livello A2.</p>
+        
+        <section class="cv-section" id="attivita">
+            <h2>Attività, conferenze e membership</h2>
+            <ul class="course-list">
+                <li>Pianificazione e condotta di conferenze, tavole rotonde e seminari presso sedi istituzionali e accademiche.</li>
+                <li>Speaker e moderatore in conferenze accademiche, militari e istituzionali sui temi della difesa, sicurezza e comunicazione strategica.</li>
+                <li>Coordinatore area/commissione Sicurezza, Difesa e Resilienza in FERPI – Federazione Relazioni Pubbliche Italiana.</li>
+            </ul>
         </section>
 
         <section class="cv-section" id="pubblicazioni">
             <h2>Pubblicazioni</h2>
-            <ul class="publication-list">
-                <li><strong>Cultura della Difesa. Comunicazione, Geopolitica, Formazione per l’Interesse Nazionale</strong>, LUISS University Press, 2026 — curatore.</li>
-                <li><strong>Immaterial Borders and Conflicts: Hybrid Violence, Propaganda, and the Government of Chaos</strong>, in <em>Cognitive Warfare and Hybrid Threats: Legal, Institutional, and Operational Tools for National Security</em>, CSA e Università della Tuscia, 2026.</li>
-                <li><strong>The Boundaries of Immaterial Conflict and the Security of Liberal Democracies</strong>, in <em>Attacking Democracy: Hybrid Warfare and Cognitive Conflict</em>, Editoriale Scientifica, 2026.</li>
-                <li><strong>War Movies: Strategic Communication through Cinema</strong>, <em>Rivista Militare</em>, 2023.</li>
-                <li>Articoli e contributi su comunicazione strategica, difesa e sicurezza pubblicati su riviste specialistiche e piattaforme istituzionali.</li>
-            </ul>
-        </section>
+            <div class="publication-grid">
+                <article class="publication-card">
+                    <a class="publication-cover-link" href="../pubblicazioni/2026.09.12-riserva-patrimonio-strategico.html" aria-label="Apri La Riserva, patrimonio strategico della resilienza">
+                        <img
+                            class="publication-cover"
+                            src="../pubblicazioni/Archivio/2026.09.12-riserva-patrimonio-strategico-copertina.png"
+                            alt="Copertina del white paper La Riserva, patrimonio strategico della resilienza"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                    </a>
+                    <div class="publication-copy">
+                        <h3>La Riserva, patrimonio strategico della resilienza</h3>
+                        <p class="publication-subtitle">L’Italia alla guida del NATO Committee on Reserves</p>
+                        <p>White paper di Vincenzo D’Anna sul ruolo della Riserva nella resilienza nazionale e alleata e sulla sua funzione nella capacità di difesa della NATO, DYNAMES, 2026.</p>
+                        <a class="publication-link" href="../pubblicazioni/2026.09.12-riserva-patrimonio-strategico.html">Apri la pubblicazione</a>
+                    </div>
+                </article>
 
-        <section class="cv-section" id="attivita">
-            <h2>Attività, conferenze e membership</h2>
-            <ul class="course-list">
-                <li>Pianificazione e realizzazione, attraverso DYNAMES, di conferenze ed eventi istituzionali presso sedi governative e militari.</li>
-                <li>Speaker e moderatore in conferenze accademiche, militari e istituzionali sui temi della difesa, sicurezza e comunicazione strategica.</li>
-                <li>Coordinatore area/commissione Difesa in FERPI – Federazione Relazioni Pubbliche Italiana.</li>
-                <li>Membro Rotary Club per iniziative civiche e professionali.</li>
-            </ul>
-        </section>
 
-        <section class="cv-section" id="corsi">
-            <h2>Corsi e certificazioni</h2>
-            <ul class="course-list">
-                <li>Military Protocol and Ceremonial Course – Stato Maggiore dell’Esercito.</li>
-                <li>Senior Staff Course – Forze Armate Italiane.</li>
-                <li>NATO SFA COE – SFA Operators Course.</li>
-                <li>International Humanitarian Law Adviser – Croce Rossa Italiana.</li>
-                <li>Advanced HUMINT Techniques Course – Istituto Germani.</li>
-            </ul>
+                <article class="publication-card">
+                    <a class="publication-cover-link" href="../pubblicazioni/2026-report.html" aria-label="Apri Cultura della Difesa">
+                        <img
+                            class="publication-cover"
+                            src="../pubblicazioni/Archivio/report.png"
+                            alt="Copertina di Cultura della Difesa"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                    </a>
+                    <div class="publication-copy">
+                        <h3>Cultura della Difesa</h3>
+                        <p class="publication-subtitle">Comunicazione, geopolitica e formazione per l’interesse nazionale</p>
+                        <p>A cura di Vincenzo D’Anna. LUISS University Press, 2026.</p>
+                        <a class="publication-link" href="../pubblicazioni/2026-report.html">Apri la pubblicazione</a>
+                    </div>
+                </article>
+
+                <article class="publication-card">
+                    <a class="publication-cover-link" href="../pubblicazioni/2026.07.18-conflitti-e-confini-immateriali.html" aria-label="Apri Conflitti e confini immateriali">
+                        <img
+                            class="publication-cover"
+                            src="../pubblicazioni/Archivio/danna-sterpa-guerra-cognitiva.jpg"
+                            alt="Copertina del volume Guerra cognitiva e sicurezza nazionale"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                    </a>
+                    <div class="publication-copy">
+                        <h3>Conflitti e confini immateriali</h3>
+                        <p class="publication-subtitle">Violenza ibrida, propaganda e governo del caos</p>
+                        <p>Contributo nel volume <em>Guerra cognitiva e sicurezza nazionale. Profili giuridici e istituzionali</em>, Editoriale Scientifica, 2026.</p>
+                        <a class="publication-link" href="../pubblicazioni/2026.07.18-conflitti-e-confini-immateriali.html">Apri la pubblicazione</a>
+                    </div>
+                </article>
+
+                <article class="publication-card">
+                    <a class="publication-cover-link" href="https://editorialescientifica.it/prodotto/potere-cognitivo/" target="_blank" rel="noopener noreferrer" aria-label="Apri la scheda editoriale">
+                        <img
+                            class="publication-cover"
+                            src="https://editorialescientifica.it/wp-content/uploads/2026/05/Copertina-Caramilello-per-sito.jpg"
+                            alt="Anteprima della pubblicazione su Editoriale Scientifica"
+                            loading="lazy"
+                            decoding="async"
+                            referrerpolicy="no-referrer"
+                            onerror="this.closest('.publication-cover-link').classList.add('cover-fallback'); this.style.display='none';"
+                        />
+                        <span class="cover-fallback-label" aria-hidden="true">Potere<br/>cognitivo</span>
+                    </a>
+                    <div class="publication-copy">
+                        <h3>I confini del conflitto immateriale e la sicurezza delle democrazie liberali</h3>
+                        <p>Contributo nel volume <em>Attaccare la democrazia: guerra ibrida e conflitto cognitivo</em>, Editoriale Scientifica, 2026.</p>
+                        <a class="publication-link" href="https://editorialescientifica.it/prodotto/potere-cognitivo/" target="_blank" rel="noopener noreferrer">Scheda dell’editore</a>
+                    </div>
+                </article>
+
+                <article class="publication-card">
+                    <a class="publication-cover-link" href="https://media.licdn.com/dms/image/v2/D4D22AQH6M9Y4AF5lzQ/feedshare-shrink_1280/feedshare-shrink_1280/0/1682268183475?e=1792627200&amp;v=beta&amp;t=9IiIZ6SqAHBg6eIZDzfJC530XV_MLN_CB1uciL2ducw" target="_blank" rel="noopener noreferrer" aria-label="Apri l'immagine della pubblicazione Film di guerra">
+                        <img
+                            class="publication-cover"
+                            src="https://media.licdn.com/dms/image/v2/D4D22AQH6M9Y4AF5lzQ/feedshare-shrink_1280/feedshare-shrink_1280/0/1682268183475?e=1792627200&amp;v=beta&amp;t=9IiIZ6SqAHBg6eIZDzfJC530XV_MLN_CB1uciL2ducw"
+                            alt="Anteprima della pubblicazione Film di guerra"
+                            loading="lazy"
+                            decoding="async"
+                            referrerpolicy="no-referrer"
+                        />
+                    </a>
+                    <div class="publication-copy">
+                        <h3>Film di guerra: la comunicazione strategica attraverso il cinema</h3>
+                        <p><em>Rivista Militare</em>, 2023.</p>
+                    </div>
+                </article>
+
+            </div>
         </section>
     </div>
 </div>
