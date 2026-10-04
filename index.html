@@ -1193,7 +1193,13 @@
 </header>
 <section aria-label="In evidenza DYNAMES" class="hero hero-carousel">
 <div class="hero-track">
-<a aria-hidden="false" class="hero-slide active" href="chi-siamo.html" style="background-image: linear-gradient(rgba(11, 17, 32, 0.45), rgba(11, 17, 32, 0.45)), url('assets/chess.png');">
+<a aria-hidden="false" class="hero-slide active" href="events/20261014-brussels-dialogues.html" style="background-image: linear-gradient(rgba(11, 17, 32, 0.48), rgba(11, 17, 32, 0.48)), url('events/20261014/label.png');">
+<div class="container">
+<h2>BRUXELLES DIALOGUES</h2>
+<p>Il nuovo paradigma della Sicurezza e Difesa. Il 14 ottobre 2026 al Parlamento Europeo di Bruxelles: una tavola di confronto su sicurezza, difesa e resilienza.</p>
+</div>
+</a>
+<a aria-hidden="true" class="hero-slide" href="chi-siamo.html" style="background-image: linear-gradient(rgba(11, 17, 32, 0.45), rgba(11, 17, 32, 0.45)), url('assets/chess.png');">
 <div class="container">
 <h2>OSSERVARE, COMPRENDERE, GOVERNARE FORZE E SISTEMI</h2>
 <p>DYNAMES studia le “dynámeis” — le forze, le relazioni, le risorse e le capacità che, in una prospettiva strategica, incidono sulle comunità politiche e sull’evoluzione degli equilibri internazionali.</p>
@@ -1225,6 +1231,7 @@
 <button aria-label="Vai alla slide 2" class="hero-dot" type="button"></button>
 <button aria-label="Vai alla slide 3" class="hero-dot" type="button"></button>
 <button aria-label="Vai alla slide 4" class="hero-dot" type="button"></button>
+<button aria-label="Vai alla slide 5" class="hero-dot" type="button"></button>
 </div>
 </section>
 <!-- Mobile-first accesso rapido ai contenuti principali -->
@@ -1665,6 +1672,26 @@
                 min-height: 300px;
             }
         }
+
+        /* Articolo più recente in evidenza */
+        #homeLatestGrid .dynames-card--lead{
+            grid-column: 1 / -1;
+            min-height: 340px;
+        }
+        #homeLatestGrid .dynames-card--lead h3{
+            max-width: 900px;
+            font-size: clamp(1.55rem,2.6vw,2.35rem);
+            line-height: 1.18;
+        }
+        @media (max-width: 900px){
+            #homeLatestGrid .dynames-card--lead{
+                grid-column: auto;
+                min-height: 300px;
+            }
+            #homeLatestGrid .dynames-card--lead h3{
+                font-size: 1.45rem;
+            }
+        }
         </style>
 <style id="dynames-mobile-ux-home">
 .mobile-priority-nav, .mobile-feed-actions { display: none; }
@@ -1711,7 +1738,33 @@
 <div class="container">
 <h2 class="section-title">Le ultime novità del mondo DYNAMES</h2>
 <div class="dynames-grid" id="homeLatestGrid">
-<a class="dynames-card dynames-card--event" href="events/20261014-brussels-dialogues.html"><img alt="Brussels Dialogues – Il nuovo paradigma della Sicurezza e Difesa" loading="lazy" src="events/20261014/label.png"/><span class="dynames-card-label">PROSSIMO EVENTO</span><div class="dynames-card-content"><span class="dynames-card-date">14 Ottobre 2026 · accesso dalle 16:30</span><h3>Bruxelles Dialogues - Il nuovo paradigma della Sicurezza e Difesa</h3><span class="dynames-card-author">Parlamento Europeo · Bruxelles</span></div></a>
+<a class="dynames-card dynames-card--lead" href="articles/2026.10.05-illusione-autowarcom.html">
+<img alt="Autonomous Warfare Command e bandiera degli Stati Uniti, immagine editoriale sull’AutoWarCom" loading="lazy" src="articles/Immagini/2026.10.05-illusione-autowarcom-share.jpg"/>
+<span class="dynames-card-label">Articolo · Difesa e Sicurezza</span>
+<div class="dynames-card-content">
+<span class="dynames-card-date">5 Ottobre 2026</span>
+<h3>L’illusione dell’AutoWarCom: la centralizzazione della guerra autonoma e i suoi limiti</h3>
+<span class="dynames-card-author">di Chiara Caterina Gatti</span>
+</div>
+</a>
+<a class="dynames-card" href="articles/2026.10.05-ecosistema-aerospaziale-italiano.html">
+<img alt="Due ingegneri lavorano su un satellite in un distretto aerospaziale, con antenne di terra e infrastrutture spaziali sullo sfondo" loading="lazy" src="articles/Immagini/2026.10.05-ecosistema-aerospaziale-italiano-light.jpg"/>
+<span class="dynames-card-label">Articolo · Economia e Industria</span>
+<div class="dynames-card-content">
+<span class="dynames-card-date">5 Ottobre 2026</span>
+<h3>L'ecosistema aerospaziale italiano: territori, filiere e sicurezza</h3>
+<span class="dynames-card-author">di Antonino Brigandì</span>
+</div>
+</a>
+<a class="dynames-card" href="articles/2026.10.05-cibo-armo-scontro-potenze.html">
+<img alt="Carrello della spesa, derrate alimentari, rotte commerciali e scacchiere geopolitico: il cibo come leva strategica globale" loading="lazy" src="articles/Immagini/2026.10.05-cibo-armo-scontro-potenze-light.jpg"/>
+<span class="dynames-card-label">Articolo · Risorse ed Energia</span>
+<div class="dynames-card-content">
+<span class="dynames-card-date">5 Ottobre 2026</span>
+<h3>Il cibo come nuova arma nello scontro tra le potenze globali</h3>
+<span class="dynames-card-author">di Domenico Letizia</span>
+</div>
+</a>
 <a class="dynames-card" href="articles/202610.02-turchia-difesa-europea.html">
 <img alt="Cooperazione industriale tra Turchia e Unione Europea nella produzione di sistemi unmanned per la difesa" loading="lazy" src="articles/Immagini/202610.02-turchia-difesa-europea-light.jpg"/>
 <span class="dynames-card-label">Articolo · Difesa e Sicurezza</span>
@@ -1728,24 +1781,6 @@
 <span class="dynames-card-date">29 Settembre 2026</span>
 <h3>Fact-finding, responsabilità internazionale e tensione tra necessità militare e diritto umanitario</h3>
 <span class="dynames-card-author">di Miriam Foti</span>
-</div>
-</a>
-<a class="dynames-card" href="articles/2026.09.29-european-economic-security-strategy.html">
-<img alt="Container europeo dedicato alla sicurezza economica, con i principali documenti strategici dell’Unione e una rete digitale sullo sfondo" loading="lazy" src="articles/Immagini/2026.09.29-european-economic-security-strategy-light.png"/>
-<span class="dynames-card-label">Articolo · Economia e Industria</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">29 Settembre 2026</span>
-<h3>La Strategia Europea per la Sicurezza Economica: origini, struttura ed evoluzione dal 2023 ad oggi</h3>
-<span class="dynames-card-author">di Guido Dello Ioio</span>
-</div>
-</a>
-<a class="dynames-card" href="articles/2026.09.24-burocrazia-europea.html">
-<img alt="Pesca dell’Alaska e barriera digitale della tracciabilità europea" loading="lazy" src="articles/Immagini/2026.09.24-burocrazia-europea-light.jpg"/>
-<span class="dynames-card-label">Articolo</span>
-<div class="dynames-card-content">
-<span class="dynames-card-date">24 Settembre 2026</span>
-<h3>La burocrazia dell’Unione europea minaccia la pesca dell’Alaska</h3>
-<span class="dynames-card-author">di Domenico Letizia</span>
 </div>
 </a>
 </div>
