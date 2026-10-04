@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<!-- DYNAMES: Google Analytics 4 con consenso preventivo -->
+<script>
+    (function () {
+        'use strict';
+
+        const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+        const CONSENT_KEY = 'dynames_cookie_consent_v1';
+        const CONSENT_DURATION_DAYS = 180;
+        let analyticsLoaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        // Consent Mode: valori negati per impostazione predefinita.
+        // Il file esterno di Google Analytics non viene caricato prima dell'accettazione.
+        window.gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        function readConsent() {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (!saved || !['accepted', 'rejected'].includes(saved.value) || !saved.timestamp) return null;
+                const age = Date.now() - Number(saved.timestamp);
+                const maxAge = CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                if (age > maxAge) {
+                    localStorage.removeItem(CONSENT_KEY);
+                    return null;
+                }
+                return saved.value;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveConsent(value) {
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify({
+                    value: value,
+                    timestamp: Date.now()
+                }));
+            } catch (error) {
+                // La scelta resta valida per la sessione anche se localStorage non è disponibile.
+            }
+        }
+
+        function deleteAnalyticsCookies() {
+            const cookieNames = document.cookie
+                .split(';')
+                .map(function (cookie) { return cookie.split('=')[0].trim(); })
+                .filter(function (name) {
+                    return name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+                });
+
+            const host = window.location.hostname;
+            const domains = ['', host, '.' + host];
+
+            cookieNames.forEach(function (name) {
+                domains.forEach(function (domain) {
+                    const domainPart = domain ? '; domain=' + domain : '';
+                    document.cookie = name + '=; Max-Age=0; path=/' + domainPart + '; SameSite=Lax';
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+            analyticsLoaded = true;
+
+            window.gtag('consent', 'update', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src='https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+            script.dataset.dynamesGa = 'true';
+            document.head.appendChild(script);
+        }
+
+        function setConsent(value, reloadAfterRejection) {
+            saveConsent(value);
+
+            if (value === 'accepted') {
+                loadAnalytics();
+            } else {
+                window.gtag('consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                });
+
+                deleteAnalyticsCookies();
+
+                if (reloadAfterRejection && analyticsLoaded) {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            updateConsentInterface(value);
+        }
+
+        function injectConsentStyles() {
+            if (document.getElementById('dynames-consent-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'dynames-consent-styles';
+            style.textContent = `
+                #dynames-consent-banner,
+                #dynames-cookie-settings {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                #dynames-consent-banner {
+                    position: fixed;
+                    left: 1rem;
+                    right: 1rem;
+                    bottom: 1rem;
+                    z-index: 2147483646;
+                    max-width: 760px;
+                    margin: 0 auto;
+                    padding: 1.15rem 1.25rem;
+                    color: #f8fafc;
+                    background: rgba(11, 17, 32, 0.98);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-top: 4px solid #b8935a;
+                    border-radius: 8px;
+                    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+                }
+
+                #dynames-consent-banner[hidden],
+                #dynames-cookie-settings[hidden] {
+                    display: none !important;
+                }
+
+                .dynames-consent-title {
+                    margin: 0 0 0.45rem;
+                    color: #ffffff;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                }
+
+                .dynames-consent-text {
+                    margin: 0;
+                    color: #dbe4ef;
+                    font-size: 0.92rem;
+                    line-height: 1.55;
+                }
+
+                .dynames-consent-text a {
+                    color: #f0d6ad;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                }
+
+                .dynames-consent-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 0.7rem;
+                    margin-top: 1rem;
+                }
+
+                .dynames-consent-btn {
+                    min-width: 118px;
+                    padding: 0.72rem 1rem;
+                    border: 1px solid #ffffff;
+                    border-radius: 5px;
+                    font: inherit;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .dynames-consent-btn:focus-visible,
+                #dynames-cookie-settings:focus-visible {
+                    outline: 3px solid #f0d6ad;
+                    outline-offset: 3px;
+                }
+
+                .dynames-consent-reject {
+                    color: #ffffff;
+                    background: transparent;
+                }
+
+                .dynames-consent-accept {
+                    color: #0b1120;
+                    background: #ffffff;
+                }
+
+                #dynames-cookie-settings {
+                    position: fixed;
+                    left: 0.75rem;
+                    bottom: 0.75rem;
+                    z-index: 2147483645;
+                    padding: 0.55rem 0.75rem;
+                    color: #ffffff;
+                    background: #0b1120;
+                    border: 1px solid rgba(255, 255, 255, 0.35);
+                    border-radius: 999px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+                    font-size: 0.76rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                @media (max-width: 600px) {
+                    #dynames-consent-banner {
+                        left: 0.6rem;
+                        right: 0.6rem;
+                        bottom: 0.6rem;
+                        padding: 1rem;
+                    }
+
+                    .dynames-consent-actions {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .dynames-consent-btn {
+                        width: 100%;
+                        min-width: 0;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        function buildConsentInterface() {
+            if (document.getElementById('dynames-consent-banner')) return;
+
+            injectConsentStyles();
+
+            const banner = document.createElement('section');
+            banner.id = 'dynames-consent-banner';
+            banner.setAttribute('role', 'dialog');
+            banner.setAttribute('aria-labelledby', 'dynames-consent-title');
+            banner.setAttribute('aria-describedby', 'dynames-consent-description');
+
+            banner.innerHTML = `
+                <h2 class="dynames-consent-title" id="dynames-consent-title">Preferenze per i dati statistici</h2>
+                <p class="dynames-consent-text" id="dynames-consent-description">
+                    Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.
+                </p>
+                <div class="dynames-consent-actions">
+                    <button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button>
+                    <button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button>
+                </div>
+            `;
+
+            const settings = document.createElement('button');
+            settings.id = 'dynames-cookie-settings';
+            settings.type = 'button';
+            settings.textContent = 'Preferenze cookie';
+            settings.setAttribute('aria-label', 'Modifica le preferenze relative ai cookie e ai dati statistici');
+            settings.hidden = true;
+
+            document.body.appendChild(banner);
+            document.body.appendChild(settings);
+
+            document.getElementById('dynames-consent-accept').addEventListener('click', function () {
+                setConsent('accepted', false);
+            });
+
+            document.getElementById('dynames-consent-reject').addEventListener('click', function () {
+                setConsent('rejected', true);
+            });
+
+            settings.addEventListener('click', function () {
+                banner.hidden = false;
+                settings.hidden = true;
+
+                const rejectButton = document.getElementById('dynames-consent-reject');
+                if (rejectButton) rejectButton.focus();
+            });
+        }
+
+        function updateConsentInterface(value) {
+            const banner = document.getElementById('dynames-consent-banner');
+            const settings = document.getElementById('dynames-cookie-settings');
+
+            if (!banner || !settings) return;
+
+            if (value === 'accepted' || value === 'rejected') {
+                banner.hidden = true;
+                settings.hidden = false;
+            } else {
+                banner.hidden = false;
+                settings.hidden = true;
+            }
+        }
+
+        const savedConsent = readConsent();
+
+        if (savedConsent === 'accepted') {
+            loadAnalytics();
+        }
+
+        function initialiseConsentInterface() {
+            buildConsentInterface();
+            updateConsentInterface(savedConsent);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialiseConsentInterface, { once: true });
+        } else {
+            initialiseConsentInterface();
+        }
+
+        window.DynamesConsent = {
+            accept: function () { setConsent('accepted', false); },
+            reject: function () { setConsent('rejected', true); },
+            open: function () {
+                buildConsentInterface();
+                updateConsentInterface(null);
+            },
+            current: readConsent
+        };
+    }());
+    </script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="max-image-preview:large" name="robots"/>
+<title>DYNAMES | L’illusione dell’AutoWarCom: la centralizzazione della guerra autonoma e i suoi limiti</title>
+<meta content="La creazione dell’Autonomous Warfare Command promette di unificare robotica e intelligenza artificiale nella Joint Force statunitense, ma rischia di trasformare una rivoluzione fondata su decentralizzazione e adattamento rapido nell’ennesima architettura burocratica centralizzata." name="description"/>
+<meta content="Chiara Caterina Gatti" name="author"/>
+<link href="https://www.dynames.it/articles/2026.10.05-illusione-autowarcom.html" rel="canonical"/>
+<link href="https://www.dynames.it/articles/Immagini/2026.10.05-illusione-autowarcom-share.jpg" rel="image_src"/>
+
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="L’illusione dell’AutoWarCom: la centralizzazione della guerra autonoma e i suoi limiti" property="og:title"/>
+<meta content="La creazione dell’Autonomous Warfare Command promette di unificare robotica e intelligenza artificiale nella Joint Force statunitense, ma rischia di trasformare una rivoluzione fondata su decentralizzazione e adattamento rapido nell’ennesima architettura burocratica centralizzata." property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.10.05-illusione-autowarcom.html" property="og:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.10.05-illusione-autowarcom-share.jpg" property="og:image"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.10.05-illusione-autowarcom-share.jpg" property="og:image:url"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.10.05-illusione-autowarcom-share.jpg" property="og:image:secure_url"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="Autonomous Warfare Command e bandiera degli Stati Uniti: immagine editoriale per l’analisi DYNAMES sull’AutoWarCom" property="og:image:alt"/>
+<meta content="2026-10-05T00:00:00+02:00" property="article:published_time"/>
+<meta content="2026-10-05T00:00:00+02:00" property="article:modified_time"/>
+<meta content="Difesa e Sicurezza" property="article:section"/>
+
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="L’illusione dell’AutoWarCom: la centralizzazione della guerra autonoma e i suoi limiti" name="twitter:title"/>
+<meta content="La creazione dell’Autonomous Warfare Command promette di unificare robotica e intelligenza artificiale nella Joint Force statunitense, ma rischia di trasformare una rivoluzione fondata su decentralizzazione e adattamento rapido nell’ennesima architettura burocratica centralizzata." name="twitter:description"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.10.05-illusione-autowarcom-share.jpg" name="twitter:image"/>
+<meta content="Autonomous Warfare Command e bandiera degli Stati Uniti" name="twitter:image:alt"/>
+<meta content="https://www.dynames.it/articles/Immagini/2026.10.05-illusione-autowarcom-share.jpg" itemprop="image"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --night-blue: #0b1120;
+            --slate-grey: #334155;
+            --light-grey: #f8fafc;
+            --optical-white: #ffffff;
+            --accent: #1e3a8a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #cbd5e1;
+            --paper-bg: #fdfbf7;
+            --gold-accent: #b8935a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--optical-white);
+            border-bottom: 2px solid var(--night-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.8rem;
+            color: var(--night-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--night-blue);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            color: var(--gold-accent);
+        }
+
+        .back-nav {
+            padding: 2rem 0;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--slate-grey);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .article-category {
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 3.5rem;
+            color: var(--night-blue);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .article-abstract {
+            font-size: 1.5rem;
+            color: var(--slate-grey);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            max-width: 90%;
+            margin: 0 auto 3rem auto;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--slate-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .hero-figure {
+            max-width: 1400px;
+            margin: 0 auto 4rem;
+        }
+
+        .article-hero {
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            margin-bottom: 0;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #dbe4ef, #8ca0bb);
+        }
+
+        .hero-caption {
+            max-width: 1200px;
+            margin: 0.8rem auto 0;
+            padding: 0 1.5rem;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        .hero-caption a {
+            color: inherit;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .article-body {
+            color: var(--text-primary);
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            color: var(--night-blue);
+            margin: 3.5rem 0 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            color: var(--night-blue);
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .article-body ul {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.8rem;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(30, 58, 138, 0.25);
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .article-body a:hover {
+            color: var(--gold-accent);
+            border-color: rgba(184, 147, 90, 0.5);
+        }
+
+        .article-body p.source-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: -1.4rem;
+            margin-bottom: 1.8rem;
+            line-height: 1.5;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            line-height: 1.3;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .pull-quote::before {
+            content: "«";
+            font-size: 4rem;
+            color: rgba(184, 147, 90, 0.2);
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            font-style: normal;
+        }
+
+        .author-box {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: var(--optical-white);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--gold-accent);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .author-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            color: var(--night-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            margin-top: 6rem;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container,
+            section {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                box-sizing: border-box;
+            }
+
+            p,
+            ul,
+            ol {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .article-abstract {
+                font-size: 1.2rem;
+            }
+
+            .article-hero {
+                height: auto;
+                min-height: 0;
+            }
+
+            .article-container {
+                padding: 0 1.5rem;
+            }
+
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-info p {
+                text-align: center;
+            }
+
+            .pull-quote {
+                font-size: 1.5rem;
+            }
+        }
+    
+        .article-header.no-category { margin-top: 1rem; }
+        .article-header.no-category .article-title { margin-top: 0.5rem; }
+    </style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "L’illusione dell’AutoWarCom: la centralizzazione della guerra autonoma e i suoi limiti",
+  "description": "La creazione dell’Autonomous Warfare Command promette di unificare robotica e intelligenza artificiale nella Joint Force statunitense, ma rischia di trasformare una rivoluzione fondata su decentralizzazione e adattamento rapido nell’ennesima architettura burocratica centralizzata.",
+  "image": [
+    "https://www.dynames.it/articles/Immagini/2026.10.05-illusione-autowarcom-share.jpg",
+    "https://www.dynames.it/articles/Immagini/2026.10.05-illusione-autowarcom.png"
+  ],
+  "datePublished": "2026-10-05",
+  "dateModified": "2026-10-05",
+  "inLanguage": "it-IT",
+  "author": {
+    "@type": "Person",
+    "name": "Chiara Caterina Gatti",
+    "url": "https://www.dynames.it/chi-siamo.html#chiara-caterina-gatti"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DYNAMES"
+  },
+  "mainEntityOfPage": "https://www.dynames.it/articles/2026.10.05-illusione-autowarcom.html"
+}</script>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand">
+<a href="../index.html" style="text-decoration: none;">
+<h1>
+<img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>
+                        DYNAMES
+                    </h1>
+<p>Governance di Forze e Sistemi</p>
+</a>
+</div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a>
+<a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a>
+<a href="../pubblicazioni.html">PUBBLICAZIONI</a>
+<a href="../eventi.html">EVENTI</a>
+<a href="../chi-siamo.html">CHI SIAMO</a>
+<a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav">
+<a href="../hub.html">← Torna all'Hub</a>
+</div>
+<article>
+<div class="article-container article-header"><span class="article-category">Difesa e Sicurezza</span><h1 class="serif-heading article-title">L’illusione dell’AutoWarCom: la centralizzazione della guerra autonoma e i suoi limiti</h1><p class="article-abstract">La creazione dell’Autonomous Warfare Command promette di unificare robotica e intelligenza artificiale nella Joint Force statunitense, ma rischia di trasformare una rivoluzione fondata su decentralizzazione e adattamento rapido nell’ennesima architettura burocratica centralizzata.</p><div class="article-meta"><span class="meta-author"><a href="../chi-siamo.html#chiara-caterina-gatti" style="color: inherit; text-decoration: none;">Chiara Caterina Gatti</a></span><span><time datetime="2026-10-05">5 Ottobre 2026</time></span><span>Tempo di lettura: 8 min</span></div></div><!-- Hero: Immagini/2026.10.05-illusione-autowarcom.png | Light: Immagini/2026.10.05-illusione-autowarcom-light.jpg | Share/WhatsApp: Immagini/2026.10.05-illusione-autowarcom-share.jpg -->
+<figure class="hero-figure">
+<img
+    alt="Autonomous Warfare Command e bandiera degli Stati Uniti, immagine editoriale sull’AutoWarCom"
+    class="article-hero"
+    decoding="async"
+    fetchpriority="high"
+    height="941"
+    onerror="this.style.display='none'"
+    sizes="100vw"
+    src="Immagini/2026.10.05-illusione-autowarcom.png"
+    srcset="Immagini/2026.10.05-illusione-autowarcom-light.jpg 1200w, Immagini/2026.10.05-illusione-autowarcom.png 1672w"
+    width="1672"
+/>
+<figcaption class="hero-caption">Elaborazione grafica DYNAMES su immagine <a href="https://www.usnews.com/object/image/000001a0-f469-db97-a3ee-f46b27de0000/tag%3Areuters.com%2C2026%3Anewsml_LYNXMPEM8T1YE%3A12026-09-30T222027Z_1_LYNXMPEM8T1YE_RTROPTP_3_USA-DEFENSE.JPG?update-time=1790807003000&amp;size=responsive970" target="_blank" rel="noopener noreferrer">U.S. News / Reuters</a>.</figcaption>
+</figure><div class="article-container article-body"><p>La storia delle istituzioni militari è segnata da un paradosso ricorrente: la tendenza degli apparati difensivi a rispondere alle rivoluzioni tecnologiche e concettuali edificando nuove sovrastrutture burocratiche, anziché modificare la propria struttura cognitiva. Ogniqualvolta la natura dello scontro esige flessibilità, decentralizzazione e velocità di adattamento, la burocrazia di Stato reagisce nell’unico modo che conosce: centralizzando il comando, codificando la dottrina e moltiplicando le posizioni verticistiche.</p><p>È all’interno di questa patologia strutturale che va letta la recente decisione del Segretario alla Guerra statunitense Pete Hegseth di istituire l’Autonomous Warfare Command (AutoWarCom). Un nuovo Combatant Command a quattro stelle concepito per scalare e unificare le capacità robotiche e l’intelligenza artificiale attraverso la Joint Force, in quella che la retorica di Washington ha definito la “più veloce transizione in tempo di pace della storia militare moderna”. Una formula, quest’ultima, che tradisce una singolare cecità strategica: scambiare la fase attuale per “tempo di pace” significa ignorare l’attrito sistemico e l’impegno latente o diretto degli Stati Uniti nei teatri ad alta intensità, dal quadrante mediorientale a quello del Pacifico.</p><p>Derubricare questa mossa a un audace salto di paradigma o a una modernizzazione gestionale strategica sarebbe un errore di prospettiva capitale. Interpretare l’AutoWarCom come una risposta efficace alla guerra contemporanea significa non comprendere l’inganno concettuale alla base del progetto: la pretesa di curare la sclerosi procedurale del Pentagono creando l’ennesima struttura rigida di fronte a una sfida eminentemente cognitiva.</p><p>Siamo giunti alla consapevolezza che il paradigma bellico contemporaneo polverizza i cicli di sviluppo pluriennali e le architetture fossilizzate dell’era industriale. Oggi, l’autonomia tattica, la miniaturizzazione dei sistemi d’arma e l’ibridazione algoritmica configurano uno spazio d’azione in cui l’innovazione avviene per iterazioni fluide, decentralizzate e quotidiane. In questo contesto, tentare di imbrigliare la rivoluzione della robotica dentro una struttura piramidale con un generale a quattro stelle al vertice rappresenta un errore concettuale esiziale: la pretesa di governare il caos e la dispersione della tecnologia applicandovi la logica dell’accentramento.</p><h2>L’ipersoluzionismo tecnologico e l’oligopolio dell’innovazione</h2><p>Il progetto dell’AutoWarCom non rappresenta soltanto un errore organizzativo, ma il trionfo dell’ipersoluzionismo tecnologico. Si tratta di quella presunzione dogmatica che pretende di risolvere patologie di natura strategica, concettuale e procedurale sommando ulteriori strati di complessità tecnica. Di fronte all’incapacità strutturale di riformare la propria architettura dottrinale e la propria lentezza decisionale, la burocrazia del Pentagono applica il medesimo riflesso condizionato di sempre: delega alla macchina la soluzione del proprio fallimento cognitivo. Si scambia così la superiorità computazionale per chiarezza strategica, trattando il campo di battaglia non come uno spazio adattivo dominato dall’attrito e dall’imprevedibilità, ma come un mero problema di ottimizzazione ingegneristica.</p><p>In questo abbaglio epistemologico si colloca la saldatura tra l’architettura formale dell’AutoWarCom e la struttura informale e politicizzata del “Project Meridian”, la task force guidata dall’ex dirigente di Uber Emil Michael che arruola come consiglieri chiave Elon Musk e Palmer Luckey. Tale connubio pretende di innestare il dinamismo del tech-nationalism della Silicon Valley all’interno della catena di comando del Pentagono, muovendo dalla falsa premessa che la Silicon Valley possieda la chiave algoritmica per “dissipare” la nebbia della guerra clausewitziana.</p><p>Tuttavia, la saldatura tra la burocrazia militare e la tecnocrazia industriale produce un insanabile cortocircuito metodologico. Il modello di innovazione del venture capital poggia per sua natura sul paradigma della sperimentazione rapida, sulla tolleranza del fallimento (<em>fail</em><em> fast</em>) e sulla frammentazione decentralizzata dei tentativi. Al contrario, la catena di comando e il procurement del Pentagono rispondono a requisiti di stabilità, protocolli di sicurezza omologati e responsabilità amministrativa. Pretendere di “normalizzare” la spinta eversiva della tecnologia privata perimetrandola dentro la logica dell’ipersoluzionismo burocratico finisce unicamente per nutrire l’apparato. Più la burocrazia adotta sistemi tecnologici complessi e centralizzati, più aumenta l’ipertrofia procedurale necessaria per validarli, gestirli e integrarli.</p><p>I sostenitori dell’AutoWarCom obietteranno che l’iniziativa è indispensabile per porre fine all’anarchia procedurale con cui Army, Navy e Air Force acquistano sistemi autonomi incompatibili tra loro. Il problema dell’interoperabilità tra i Services è reale, ma la risposta istituzionale è concettualmente errata. Armonizzare l’impiego della robotica non richiede l’erezione di un Combatant Command verticistico dotato di poteri diretti di acquisizione; richiederebbe, invece, l’imposizione di standard informatici aperti e architetture di rete condivise, lasciando la libertà di acquisto e la sperimentazione tattica sul campo alle singole unità operative.</p><p>Attribuire all’AutoWarCom poteri analoghi a quelli di un servizio militare (acquisizione, test e fielding) costituisce pertanto un’illusione istituzionale. A differenza dello USSOCOM (United States Special Operations Command), che opera in un ambito circoscritto dedicato a nicchie tattiche e forze speciali ad alta specializzazione, l’autonomia non rappresenta una componente marginale o settoriale. Essa costituisce la fibra trasversale e mutevole del combattimento ad alta intensità e su vasta scala del XXI secolo. Tentare di accentrare e standardizzare l’acquisto e la validazione dei sistemi autonomi sotto un’unica regia a quattro stelle genererà l’effetto opposto a quello sperato. </p><p>Scontrandosi con le dinamiche di bilancio del Congresso e con la strenua resistenza dei tre Services tradizionali (storicamente riluttanti a declassare i propri programmi miliardari per navi, caccia e mezzi corazzati al fine di finanziare la produzione di massa di sciami di droni economici), l’AutoWarCom finirà per gravitare attorno agli abituali colossi dell’industria della difesa. L’influenza di figure come Musk e Luckey, lungi dal liberalizzare il settore, produrrà una saldatura tra i Prime Contractor tradizionali e la nuova élite della Silicon Valley. Questa alleanza istituzionalizzerà requisiti “su misura”, dando vita a un oligopolio della difesa-tech che produrrà piattaforme iper-complesse e ad altissimo costo, concettualmente già obsolete al momento del deployment.</p><p>La standardizzazione che un comando centralizzato inevitabilmente imporrà al software, alle architetture di Data Link e ai protocolli di sicurezza per la Joint Force rappresenta una fatale vulnerabilità strategica. In un teatro ad alta intensità, dove il ciclo di adattamento delle frequenze di guida e delle contromisure di Electronic Warfare (EW) misura la propria vita in settimane, un unico stack tecnologico offre all’avversario un bersaglio unificato. Se un competitor paritetico sviluppa un’efficace contromisura di jamming o spoofing mirata sul protocollo condiviso di trasmissione dati o sul codice sorgente della navigazione guidata, non neutralizzerà il singolo lotto di droni tattici, ma accecherà simultaneamente l’intera flotta di sistemi autonomi operativi di terra, mare e cielo della Joint Force.</p><h2>L’illusione della centralizzazione e la lezione della storia</h2><p>La data del 1° ottobre 2027 come piena operatività dell’AutoWarCom svela il profondo equivoco temporale e cognitivo del Pentagono. Nello sviluppo dei sistemi autonomi regolati dall’intelligenza artificiale, i dodici mesi che separano la decisione dall’operatività non costituiscono una semplice finestra organizzativa, ma un intervallo entro cui l’architettura tecnologica sottostante si rinnova radicalmente. Mentre le commissioni burocratiche definiscono protocolli e requisiti, la frontiera dell’innovazione ha già ridefinito lo spettro operativo. Definire questo processo come una transizione “in tempo di pace” tradisce una cecità strategica profonda: la competizione per la supremazia algoritmica non è un’opera di preparazione teorica per un conflitto futuro, ma uno scontro d’attrito invisibile e spietato già ampiamente in corso.</p><p>Credere che una sovrastruttura burocratica possa imbrigliare la fluidità del campo di battaglia è un paradosso che la storia militare punisce con costante puntualità. Ogniqualvolta le istituzioni tentano di rispondere a una rivoluzione tattica e tecnologica accentrando il comando o standardizzando la dottrina dall’alto, il confronto reale infrange l’illusione.</p><ul><li>L’esempio della Francia fra le due guerre è in questo senso emblematico. L’edificazione della Linea Maginot e la dottrina dell’esercito francese non difettavano di risorse quantitative o di qualità dei mezzi corazzati, bensì di elasticità cognitiva: la pretesa di congelare la minaccia dietro un monumento alla difesa statica si accompagnava alla subordinazione dei carri a protocolli di comando rigidi e centralizzati. L’apparato francese fu così paralizzato in poche settimane dalla Wehrmacht, la quale aveva demandato agli ufficiali sul campo la facoltà di sviluppare tattiche d’arma combinata decentralizzate e integrate via radio.</li><li>Decenni più tardi, la medesima illusione riemerse con la trappola quantitativa del Segretario alla Difesa Robert McNamara. La pretesa di gestire il conflitto vietnamita tramite la quantificazione sistemica e la ricerca del caccia “universale” (il programma TFX/F-111) produsse enormi ritardi, costi lievitati e la cancellazione definitiva della variante navale, infrangendo la certezza di poter ridurre la complessità della guerra a un problema di ottimizzazione industriale centralizzata.</li><li>Il precedente più calzante per l’AutoWarCom resta tuttavia il programma Future Combat Systems (FCS) dell’US Army. Nel tentativo di unificare la forza di terra attorno a un unico stack software e a una “rete di reti” standardizzata, il Pentagono assorbì e vanificò oltre 18 miliardi di dollari in requisiti architetturali, per poi cancellare integralmente il programma senza aver schierato una singola unità operativa. E quando la realtà del campo di battaglia iracheno e afghano impose la minaccia degli IED, la risposta istituzionale fu la creazione del JIEDDO (Joint IED Defeat Organization): un’ulteriore sovrastruttura burocratica che dissipò oltre 20 miliardi di dollari in contromisure tecnologiche iper-complesse, costantemente vanificate da adattamenti artigianali degli insorti dal costo di poche decine di dollari.</li></ul><p>L’AutoWarCom rischia di ripercorrere esattamente la medesima parabola: edificare un gigante architetturale perfetto sulla carta, ma irrimediabilmente statico di fronte a un avversario che innova in cicli d’adattamento continui e quotidiani.</p><h2>L’emancipazione del decisore e il paradosso del comando</h2><p>Il vero banco di prova per il Pentagono non risiede nella capacità di erigere nuovi quartieri generali o di espandere la propria struttura verticistica, ma nell’inversione della propria postura strategica. L’autonomia non è una capacità bellica a sé stante da perimetrare all’interno di un comando dedicato. Essa costituisce un moltiplicatore contestuale la cui efficacia risiede nella frammentazione, nell’imprevedibilità e nella decentralizzazione del processo decisionale.</p><p>Se l’AutoWarCom si limiterà a distribuire risorse alla nuova base industriale della difesa mantenendo inalterata la logica dei requisiti iper-standardizzati, l’intera iniziativa si tradurrà nell’ennesimo monumento alla rigidità americana. La Difesa statunitense si rafforzerà soltanto se saprà comprendere che, nella guerra degli algoritmi e della robotica di massa, la velocità di adattamento e la disponibilità ad accettare il fallimento contano più della perfezione procedurale.</p><p>L’AutoWarCom e l’ombra del Project Meridian pretendono di inaugurare una stagione di profonda modernizzazione, ma il rischio reale è che la sovrastruttura burocratica soffochi definitivamente la sostanza operativa. Senza un superamento strutturale della cultura della centralizzazione, il Pentagono continuerà a rispondere alle minacce del presente con le categorie dogmatiche del passato, scambiando la retorica dell’ennesimo comando per la conquista della superiorità strategica.</p><p>Anziché erigere comandi centralizzati, la vera riforma richiederebbe un paradigma d’acquisto e di comando distribuito, sulla scorta di quanto dimostrato dall’esperienza tattica in Ucraina: fissare standard minimi di interoperabilità software, decentralizzare il budget direttamente a livello di brigata e battaglione, ed emancipare i comandanti di linea nell’acquistare, modificare e testare droni e algoritmi commerciali direttamente sul campo in cicli di sviluppo settimanali. La vera superiorità nell’era dell’autonomia non appartiene a chi costruisce l’architettura burocratica più imponente, ma a chi possiede il coraggio istituzionale di rinunciare al controllo per liberare l’adattamento.</p><div class="author-box"><a href="../chi-siamo.html#chiara-caterina-gatti"><img alt="Chiara Caterina Gatti" onerror="this.style.display='none';" src="../assets/immagini-chi-siamo/chiara-caterina-gatti.jpg"/></a><div class="author-info"><h4><a href="../chi-siamo.html#chiara-caterina-gatti" style="color: inherit; text-decoration: none;">Chiara Caterina Gatti</a></h4><p>Analista strategico e studioso di sicurezza globale. Con una formazione consolidata in dinamiche di conflitto e relazioni internazionali, concentra la propria indagine su Grand Strategy, guerra asimmetrica e strategie di sicurezza statale, con un focus mirato sui fallimenti strategici e cognitivi degli apparati decisionali. Indaga il nesso causale tra rigidità istituzionale e inefficacia strategica nei teatri asimmetrici. Per DYNAMES, cura analisi volte a smantellare i dogmi della grande strategia occidentale, coniugando un rigoroso realismo politico allo studio delle dinamiche di potere nel sistema internazionale e nei principali teatri di crisi.</p></div></div></div>
+</article>
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: 1px;">DYNAMES</h3>
+<p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p>
+<p style="margin-top: 1rem; color: var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p>
+</div>
+</footer>
+</body>
+</html>
