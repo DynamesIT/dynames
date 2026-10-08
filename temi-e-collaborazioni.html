@@ -1253,7 +1253,36 @@
 @media (max-width:900px) { .framework-flow { grid-template-columns:repeat(2,minmax(0,1fr)); } .framework-flow-step:nth-child(2)::after { display:none; } .forces-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:640px) { .framework-overview-card { padding:26px 20px; } .framework-flow { grid-template-columns:1fr; } .framework-flow-step::after { display:none !important; } .forces-grid { grid-template-columns:1fr; } }
 @media (max-width:420px) { .forces-grid { grid-template-columns:1fr; } }
-</style></head>
+</style><style id="dynames-editorial-guidelines-styles">
+.editorial-guidelines { margin-top: 56px; }
+.editorial-heading { text-align:center; max-width:900px; margin:0 auto 30px; }
+.editorial-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; align-items:stretch; }
+.editorial-card { background:#fff; border:1px solid rgba(51,65,85,.13); border-top:4px solid var(--gold); border-radius:var(--radius-md); padding:30px; box-shadow:var(--shadow-sm); }
+.editorial-card h3,.editorial-principles h3 { font-family:'Montserrat',sans-serif; font-size:1.22rem; line-height:1.35; color:var(--night-blue); margin-bottom:14px; }
+.editorial-card h4 { font-family:'Montserrat',sans-serif; font-size:.95rem; color:var(--night-blue); margin:22px 0 8px; }
+.editorial-card p,.editorial-card li,.editorial-principles p,.editorial-principles li { color:var(--slate-grey); font-size:.96rem; line-height:1.7; }
+.editorial-purpose { margin-bottom:15px; }
+.editorial-card ul,.editorial-principles ul { padding-left:1.35rem; }
+.editorial-card li + li,.editorial-principles li + li { margin-top:7px; }
+.editorial-principles { margin-top:22px; padding:28px 30px; background:rgba(184,147,90,.055); border:1px solid rgba(184,147,90,.26); border-radius:var(--radius-md); }
+.editorial-principles ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px 24px; margin-bottom:24px; }
+@media(max-width:780px) { .editorial-grid { grid-template-columns:1fr; } .editorial-principles ul { grid-template-columns:1fr; } }
+@media(max-width:640px) { .editorial-card,.editorial-principles { padding:22px 20px; } .editorial-guidelines { margin-top:38px; } }
+</style>
+<style id="dynames-page-index-styles">
+.page-index{margin-bottom:46px;padding:24px 28px;background:#fff;border:1px solid rgba(51,65,85,.12);border-top:4px solid var(--gold);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)}
+.page-index-heading{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 18px;margin-bottom:17px}
+.page-index-kicker{font-family:'Montserrat',sans-serif;font-size:.68rem;letter-spacing:.13em;font-weight:700;text-transform:uppercase;color:var(--gold)}
+.page-index-heading h2{font-family:'Montserrat',sans-serif;font-size:1.14rem;line-height:1.4;color:var(--night-blue)}
+.page-index-links{display:flex;flex-wrap:wrap;gap:10px}
+.page-index-links a{display:inline-flex;align-items:center;min-height:42px;padding:9px 14px;border-radius:8px;border:1px solid rgba(51,65,85,.16);background:#f8fafc;color:var(--night-blue);font-family:'Montserrat',sans-serif;font-size:.79rem;font-weight:700;text-decoration:none;line-height:1.4;transition:background .2s,border-color .2s,color .2s}
+.page-index-links a:hover{background:rgba(184,147,90,.12);border-color:var(--gold)}
+.page-index-links a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+#framework-overview-title,#forces-title,#systems-title,#resilience-framework-title,#collaborazioni-aperte-title,#editorial-guidelines-title{scroll-margin-top:120px}
+@media(max-width:640px){.page-index{padding:20px 16px;margin-bottom:32px}.page-index-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.page-index-links a{justify-content:center;text-align:center;padding:10px 8px;font-size:.72rem}}
+@media(max-width:360px){.page-index-links{grid-template-columns:1fr}}
+</style>
+</head>
 <body>
 <header>
 <div class="container header-inner">
@@ -1283,6 +1312,18 @@
 </div>
 </section>
 <main>
+<nav class="container page-index" aria-label="Indice delle sezioni della pagina">
+  <div class="page-index-heading"><span class="page-index-kicker">Navigazione rapida</span><h2>Esplora le sezioni</h2></div>
+  <div class="page-index-links">
+    <a href="#framework-overview-title">Framework analitico</a>
+    <a href="#forces-title">Le Forze</a>
+    <a href="#systems-title">I Sistemi</a>
+    <a href="#resilience-framework-title">La Resilienza</a>
+    <a href="#editorial-guidelines-title">Linee guida redazionali</a>
+    <a href="#collaborazioni-aperte-title">Collaborazioni aperte</a>
+  </div>
+</nav>
+
 <section aria-labelledby="framework-overview-title" class="content-section container framework-overview">
 <div class="framework-overview-card">
 <div class="section-heading">
@@ -1323,7 +1364,7 @@
 </details>
 </section><section class="content-section systems-section container">
 <div class="section-heading">
-<div class="systems-kicker">2 · I Sistemi</div><h2 class="section-title">Dove si producono gli effetti</h2>
+<div class="systems-kicker">2 · I Sistemi</div><h2 class="section-title" id="systems-title">Dove si producono gli effetti</h2>
 <p class="section-intro">Le dieci aree DYNAMES rappresentano i principali sistemi e domini nei quali le forze interagiscono, generando opportunità, dipendenze, vulnerabilità e trasformazioni. Restano la porta d’ingresso editoriale per articoli, studi e collaborazioni.</p>
 <p class="theory-reference"><strong>Joseph S. Nye Jr. · <cite>Public Diplomacy and Soft Power</cite> (2008), p. 94</strong><br/><q lang="en">Power is the ability to affect others to obtain the outcomes you want.</q> <a href="https://journals.sagepub.com/doi/10.1177/0002716207311699" rel="noopener noreferrer" target="_blank">Riferimento</a></p>
 </div>
@@ -1516,7 +1557,63 @@
                 <a href="https://www.nato.int/content/dam/nato/webready/documents/deep/DEEP-resilience-reference-curriculum-en.pdf" rel="noopener noreferrer" target="_blank">NATO Resilience Reference Curriculum</a> ·
                 <a href="https://www.act.nato.int/article/what-resilience-means-for-nato/" rel="noopener noreferrer" target="_blank">ACT – Military and Societal Resilience</a>.
             </div>
-</section><section aria-labelledby="collaborazioni-aperte-title" class="content-section container">
+</section><section class="content-section container editorial-guidelines" aria-labelledby="editorial-guidelines-title">
+  <div class="editorial-heading">
+    <div class="systems-kicker">Per gli autori</div>
+    <h2 class="section-title" id="editorial-guidelines-title">Linee guida redazionali</h2>
+    <p class="section-intro">Indicazioni essenziali per proporre articoli di analisi e paper di approfondimento a DYNAMES.</p>
+  </div>
+  <div class="editorial-grid">
+    <article class="editorial-card">
+      <h3>Articolo di analisi</h3>
+      <p class="editorial-purpose"><strong>Finalità.</strong> Interpretare un fenomeno rilevante, sostenendo una tesi e indicando implicazioni e prospettive.</p>
+      <ul>
+        <li><strong>Lunghezza:</strong> 9.000–12.000 battute, spazi inclusi.</li>
+        <li><strong>Titolo:</strong> chiaro, preciso e non sensazionalistico; preferibilmente entro 90 caratteri.</li>
+        <li><strong>Sottotitolo:</strong> esplicita il problema e il taglio interpretativo; 150–220 caratteri.</li>
+        <li><strong>Struttura:</strong> apertura (tema e tesi), sviluppo argomentativo, conclusione; preferibilmente 2–3 intertitoli.</li>
+        <li><strong>Fonti:</strong> essenziali, attendibili e verificabili; indicare dati, documenti e citazioni.</li>
+        <li><strong>Stile:</strong> analitico, argomentato, sobrio e comprensibile anche a lettori non specialisti.</li>
+      </ul>
+      <h4>Materiali da consegnare</h4>
+      <p>File Word (.docx); nome e cognome, qualifica/affiliazione e foto dell’autore (se non membro DYNAMES); immagine principale orizzontale 16:9 (consigliati 1600 × 900 px, JPG/WEBP). Grafici, tabelle e altre immagini solo se pertinenti.</p>
+    </article>
+    <article class="editorial-card">
+      <h3>Paper di approfondimento</h3>
+      <p class="editorial-purpose"><strong>Finalità.</strong> Sviluppare un contributo originale, sostenuto da letteratura, documenti, evidenze e un metodo riconoscibile.</p>
+      <ul>
+        <li><strong>Lunghezza:</strong> 20.000–35.000 battute, spazi inclusi, esclusa la bibliografia (parametro proposto).</li>
+        <li><strong>Titolo:</strong> preciso e rappresentativo del contenuto.</li>
+        <li><strong>Abstract:</strong> 800–1.200 battute; 4–6 parole chiave (parametri proposti).</li>
+        <li><strong>Struttura:</strong> introduzione e obiettivi; quadro teorico e metodo; analisi; discussione; conclusioni.</li>
+        <li><strong>Fonti:</strong> note e bibliografia finale obbligatorie, con uno stile citazionale coerente.</li>
+        <li><strong>Stile:</strong> rigoroso, chiaro e proporzionato alla complessità dell’argomento.</li>
+      </ul>
+      <h4>Materiali da consegnare</h4>
+      <p>File Word (.docx); nome e cognome, affiliazione e breve profilo dell’autore; abstract, parole chiave, bibliografia ed eventuali figure o tabelle con relativa fonte.</p>
+    </article>
+  </div>
+  <div class="editorial-principles">
+    <h3>Principi editoriali comuni</h3>
+    <ul>
+      <li><strong>Originalità:</strong> contributo interpretativo o conoscitivo riconoscibile.</li>
+      <li><strong>Rigore:</strong> distinguere fatti, dati, analisi e opinioni.</li>
+      <li><strong>Tracciabilità:</strong> attribuire correttamente fonti e contributi altrui.</li>
+      <li><strong>Chiarezza:</strong> argomentazione logica, senza ridondanze o retorica.</li>
+      <li><strong>Rilevanza:</strong> esplicitare le implicazioni per potere, sicurezza, difesa e governance.</li>
+    </ul>
+    <h3>Valutazione editoriale</h3>
+    <p>La redazione DYNAMES valuta i contributi e può richiedere revisioni e adattamenti editoriali. Gli autori rispondono dell’originalità dei testi e dell’attendibilità delle fonti. La Direzione può autorizzare deroghe motivate ai parametri dei paper.</p>
+  </div>
+</section>
+<section class="content-section container final-collaboration-cta"><div class="themes-cta">
+<p class="cta-copy">
+                    Vuoi candidarti o collaborare con noi?<br/>
+                    Contatta la <a class="cta-link" href="mailto:redazione@dynames.it">Redazione</a>
+                    per proporre il tuo profilo o un tuo contributo.
+                </p>
+</div></section>
+<section aria-labelledby="collaborazioni-aperte-title" class="content-section container">
 <div class="open-collaborations">
 <div class="section-heading">
 <h2 class="section-title" id="collaborazioni-aperte-title">Collaborazioni aperte</h2>
@@ -1538,13 +1635,9 @@
 </article>
 </div>
 </section>
-<section class="content-section container final-collaboration-cta"><div class="themes-cta">
-<p class="cta-copy">
-                    Vuoi candidarti o collaborare con noi?<br/>
-                    Contatta la <a class="cta-link" href="mailto:redazione@dynames.it">Redazione</a>
-                    per proporre il tuo profilo o un tuo contributo.
-                </p>
-</div></section></main>
+
+
+</main>
 <footer>
 <div class="container">
 <h3 class="footer-title">DYNAMES</h3>
