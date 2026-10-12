@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<script>
+(function () {
+    'use strict';
+    const GA_MEASUREMENT_ID = 'G-CRR71TH6YJ';
+    const CONSENT_KEY = 'dynames_cookie_consent_v1';
+    const CONSENT_DURATION_DAYS = 180;
+    let analyticsLoaded = false;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+    window.gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+        wait_for_update: 500
+    });
+    function readConsent() {
+        try {
+            const raw = localStorage.getItem(CONSENT_KEY);
+            if (!raw) return null;
+            const saved = JSON.parse(raw);
+            if (!saved || !['accepted','rejected'].includes(saved.value) || !saved.timestamp) return null;
+            const age = Date.now() - Number(saved.timestamp);
+            if (age > CONSENT_DURATION_DAYS * 24 * 60 * 60 * 1000) {
+                localStorage.removeItem(CONSENT_KEY); return null;
+            }
+            return saved.value;
+        } catch(e) { return null; }
+    }
+    function saveConsent(value) {
+        try { localStorage.setItem(CONSENT_KEY, JSON.stringify({value:value,timestamp:Date.now()})); } catch(e) {}
+    }
+    function deleteAnalyticsCookies() {
+        const names = document.cookie.split(';').map(c => c.split('=')[0].trim())
+            .filter(n => n === '_ga' || n === '_gid' || n === '_gat' || n.indexOf('_ga_') === 0);
+        const host = window.location.hostname;
+        ['',host,'.'+host].forEach(domain => names.forEach(name => {
+            document.cookie = name + '=; Max-Age=0; path=/' + (domain ? '; domain=' + domain : '') + '; SameSite=Lax';
+        }));
+    }
+    function loadAnalytics() {
+        if (analyticsLoaded || document.querySelector('script[data-dynames-ga="true"]')) return;
+        analyticsLoaded = true;
+        window.gtag('consent','update',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
+        window.gtag('js',new Date());
+        window.gtag('config',GA_MEASUREMENT_ID,{allow_google_signals:false,allow_ad_personalization_signals:false});
+        const script=document.createElement('script');
+        script.async=true; script.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(GA_MEASUREMENT_ID);
+        script.dataset.dynamesGa='true'; document.head.appendChild(script);
+    }
+    function setConsent(value,reloadAfterRejection) {
+        saveConsent(value);
+        if(value==='accepted') loadAnalytics();
+        else {
+            window.gtag('consent','update',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
+            deleteAnalyticsCookies();
+            if(reloadAfterRejection && analyticsLoaded) { window.location.reload(); return; }
+        }
+        updateConsentInterface(value);
+    }
+    function injectConsentStyles() {
+        if(document.getElementById('dynames-consent-styles')) return;
+        const style=document.createElement('style'); style.id='dynames-consent-styles';
+        style.textContent=`#dynames-consent-banner,#dynames-cookie-settings{font-family:Arial,Helvetica,sans-serif}
+        #dynames-consent-banner{position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:2147483646;max-width:760px;margin:0 auto;padding:1.15rem 1.25rem;color:#f8fafc;background:rgba(11,17,32,.98);border:1px solid rgba(255,255,255,.18);border-top:4px solid #b8935a;border-radius:8px;box-shadow:0 18px 45px rgba(0,0,0,.34)}
+        #dynames-consent-banner[hidden],#dynames-cookie-settings[hidden]{display:none!important}
+        .dynames-consent-title{margin:0 0 .45rem;color:#fff;font-size:1.05rem;font-weight:700;line-height:1.3}
+        .dynames-consent-text{margin:0;color:#dbe4ef;font-size:.92rem;line-height:1.55}
+        .dynames-consent-text a{color:#f0d6ad;text-decoration:underline}
+        .dynames-consent-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.7rem;margin-top:1rem}
+        .dynames-consent-btn{min-width:118px;padding:.72rem 1rem;border:1px solid #fff;border-radius:5px;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
+        .dynames-consent-reject{color:#fff;background:transparent} .dynames-consent-accept{color:#0b1120;background:#fff}
+        #dynames-cookie-settings{position:fixed;left:.75rem;bottom:.75rem;z-index:2147483645;padding:.55rem .75rem;color:#fff;background:#0b1120;border:1px solid rgba(255,255,255,.35);border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.22);font-size:.76rem;font-weight:700;cursor:pointer}
+        @media(max-width:600px){#dynames-consent-banner{left:.6rem;right:.6rem;bottom:.6rem;padding:1rem}.dynames-consent-actions{display:grid;grid-template-columns:1fr 1fr}.dynames-consent-btn{width:100%;min-width:0}}`;
+        document.head.appendChild(style);
+    }
+    function buildConsentInterface() {
+        if(document.getElementById('dynames-consent-banner')) return;
+        injectConsentStyles();
+        const banner=document.createElement('section'); banner.id='dynames-consent-banner'; banner.setAttribute('role','dialog');
+        banner.innerHTML=`<h2 class="dynames-consent-title">Preferenze per i dati statistici</h2><p class="dynames-consent-text">Utilizziamo Google Analytics 4 solo con il tuo consenso, per conoscere in forma aggregata le pagine visitate e migliorare DYNAMES. Se rifiuti, il tag Analytics non viene caricato. Puoi cambiare scelta in qualsiasi momento. <a href="/Privacy-Policy.html#cookie-analytics">Informativa privacy e cookie</a>.</p><div class="dynames-consent-actions"><button type="button" class="dynames-consent-btn dynames-consent-reject" id="dynames-consent-reject">Rifiuta</button><button type="button" class="dynames-consent-btn dynames-consent-accept" id="dynames-consent-accept">Accetta</button></div>`;
+        const settings=document.createElement('button'); settings.id='dynames-cookie-settings'; settings.type='button'; settings.textContent='Preferenze cookie'; settings.hidden=true;
+        document.body.appendChild(banner); document.body.appendChild(settings);
+        document.getElementById('dynames-consent-accept').addEventListener('click',()=>setConsent('accepted',false));
+        document.getElementById('dynames-consent-reject').addEventListener('click',()=>setConsent('rejected',true));
+        settings.addEventListener('click',()=>{banner.hidden=false;settings.hidden=true;});
+    }
+    function updateConsentInterface(value) {
+        const banner=document.getElementById('dynames-consent-banner'),settings=document.getElementById('dynames-cookie-settings');
+        if(!banner||!settings)return;
+        if(value==='accepted'||value==='rejected'){banner.hidden=true;settings.hidden=false;}else{banner.hidden=false;settings.hidden=true;}
+    }
+    const savedConsent=readConsent(); if(savedConsent==='accepted')loadAnalytics();
+    function init(){buildConsentInterface();updateConsentInterface(savedConsent);}
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+}());
+</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DYNAMES | Il dialogo strategico tra Roma e Astana su Middle Corridor, commercio e cooperazione industriale</title>
+<meta content="Roma e Astana rafforzano il dialogo economico e industriale, con il Middle Corridor al centro delle prospettive di connettività tra Europa, Asia Centrale e Mediterraneo." name="description"/>
+<link href="https://www.dynames.it/articles/2026.10.12-roma-astana.html" rel="canonical"/>
+<meta content="it_IT" property="og:locale"/>
+<meta content="article" property="og:type"/>
+<meta content="DYNAMES" property="og:site_name"/>
+<meta content="Il dialogo strategico tra Roma e Astana su Middle Corridor, commercio e cooperazione industriale" property="og:title"/>
+<meta content="Roma e Astana rafforzano il dialogo economico e industriale, con il Middle Corridor al centro delle prospettive di connettività tra Europa, Asia Centrale e Mediterraneo." property="og:description"/>
+<meta content="https://www.dynames.it/articles/2026.10.12-roma-astana.html" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/><meta content="https://www.dynames.it/articles/Immagini/2026.10.12-roma-astana-light.jpg" property="og:image"/><meta content="https://www.dynames.it/articles/Immagini/2026.10.12-roma-astana-light.jpg" property="og:image:secure_url"/><meta content="image/jpeg" property="og:image:type"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Composizione illustrativa delle relazioni tra Roma e Astana e del Middle Corridor: treno merci, nave cargo e le architetture delle due capitali" property="og:image:alt"/><meta content="https://www.dynames.it/articles/Immagini/2026.10.12-roma-astana-light.jpg" name="twitter:image"/><meta content="Composizione illustrativa delle relazioni tra Roma e Astana e del Middle Corridor: treno merci, nave cargo e le architetture delle due capitali" name="twitter:image:alt"/>
+<meta content="Il dialogo strategico tra Roma e Astana su Middle Corridor, commercio e cooperazione industriale" name="twitter:title"/>
+<meta content="Roma e Astana rafforzano il dialogo economico e industriale, con il Middle Corridor al centro delle prospettive di connettività tra Europa, Asia Centrale e Mediterraneo." name="twitter:description"/>
+<meta content="2026-10-12" property="article:published_time"/>
+<meta content="Domenico Letizia" name="author"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{--night-blue:#0b1120;--slate-grey:#334155;--light-grey:#f8fafc;--optical-white:#fff;--accent:#1e3a8a;--text-primary:#1e293b;--text-secondary:#475569;--text-light:#cbd5e1;--paper-bg:#fdfbf7;--gold-accent:#b8935a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Roboto',sans-serif;background:var(--paper-bg);color:var(--text-primary);line-height:1.8;font-size:1.15rem}
+h1,h2,h3,h4,h5,h6,.brand{font-family:'Montserrat',sans-serif} .serif-heading{font-family:'Playfair Display',serif}
+.container{max-width:1200px;margin:0 auto;padding:0 2rem} .article-container{max-width:800px;margin:0 auto;padding:0 2rem}
+header{background:var(--optical-white);border-bottom:2px solid var(--night-blue);padding:1rem 0;position:sticky;top:0;z-index:1000}
+.header-inner{display:flex;justify-content:space-between;align-items:center} .brand h1{font-size:1.8rem;color:var(--night-blue);font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:10px}
+.brand-logo{height:40px;width:auto} .brand p{font-size:.65rem;color:var(--slate-grey);text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-top:2px}
+.desktop-nav{display:flex;gap:2rem;align-items:center} .desktop-nav a{text-decoration:none;color:var(--night-blue);font-weight:600;font-family:'Montserrat',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;transition:color .3s}
+.desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)} .back-nav{padding:2rem 0} .back-nav a{text-decoration:none;color:var(--slate-grey);font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;display:inline-flex;align-items:center}
+.back-nav a:hover{color:var(--gold-accent)} .article-header{text-align:center;margin-bottom:4rem} .article-header.no-category{margin-top:1rem}
+.article-title{font-size:3.5rem;color:var(--night-blue);line-height:1.1;margin:.5rem 0 2rem} .article-abstract{font-size:1.5rem;color:var(--slate-grey);font-family:'Playfair Display',serif;font-style:italic;max-width:90%;margin:0 auto 3rem;line-height:1.5}
+.article-meta{display:flex;justify-content:center;align-items:center;gap:2rem;flex-wrap:wrap;font-family:'Montserrat',sans-serif;font-size:.9rem;color:var(--slate-grey);text-transform:uppercase;letter-spacing:1px;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding:1rem 0}
+.meta-author{font-weight:700;color:var(--night-blue)} .article-body p{margin-bottom:2rem;text-align:justify} .article-body a{color:var(--accent);text-decoration:none}
+.author-box{margin-top:6rem;padding:3rem;background:var(--optical-white);border:1px solid #e2e8f0;border-left:4px solid var(--gold-accent);display:flex;gap:2rem;align-items:center}
+.author-box img{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#e2e8f0} .author-info h4{font-size:1.2rem;color:var(--night-blue);margin-bottom:.5rem} .author-info p{font-size:.95rem;color:var(--text-secondary);margin:0;line-height:1.5;text-align:left}
+footer{background:var(--night-blue);color:var(--text-light);text-align:center;padding:3rem 0;font-size:.9rem;margin-top:6rem}
+@media(max-width:900px){body{overflow-x:hidden}.container,section{padding-left:1.5rem!important;padding-right:1.5rem!important}p,ul,ol{padding-left:.5rem;padding-right:.5rem;word-wrap:break-word}.desktop-nav{display:none}.article-title{font-size:2.5rem}.article-abstract{font-size:1.2rem}.article-container{padding:0 1.5rem}.author-box{flex-direction:column;text-align:center}.author-info p{text-align:center}}
+
+.hero-figure {max-width:1400px;margin:0 auto 4rem;}
+.article-hero {width:100%;height:auto;display:block;box-shadow:0 20px 25px -5px rgba(0,0,0,.1);background:#dbe4ef;}
+.hero-caption {max-width:1200px;margin:.8rem auto 0;padding:0 1.5rem;font-size:.82rem;line-height:1.45;color:var(--text-secondary);text-align:right;}
+@media(max-width:900px){.hero-figure{margin-bottom:2.5rem;}.hero-caption{font-size:.74rem;padding:0 1rem;}}
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Il dialogo strategico tra Roma e Astana su Middle Corridor, commercio e cooperazione industriale",
+  "description": "Roma e Astana rafforzano il dialogo economico e industriale, con il Middle Corridor al centro delle prospettive di connettività tra Europa, Asia Centrale e Mediterraneo.",
+  "datePublished": "2026-10-12",
+  "dateModified": "2026-10-12",
+  "inLanguage": "it-IT",
+  "author": {
+    "@type": "Person",
+    "name": "Domenico Letizia"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DYNAMES"
+  },
+  "mainEntityOfPage": "https://www.dynames.it/articles/2026.10.12-roma-astana.html",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://www.dynames.it/articles/Immagini/2026.10.12-roma-astana-light.jpg",
+    "width": 1200,
+    "height": 630
+  }
+}</script>
+</head>
+<body>
+<header>
+<div class="container header-inner">
+<div class="brand"><a href="../index.html" style="text-decoration:none;"><h1><img alt="DYNAMES Logo" class="brand-logo" onerror="this.style.display='none'" src="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png"/>DYNAMES</h1><p>Governance di Forze e Sistemi</p></a></div>
+<nav class="desktop-nav">
+<a href="../index.html">HOME</a><a class="active" href="../hub.html">ANALISI &amp; ARTICOLI</a><a href="../pubblicazioni.html">PUBBLICAZIONI</a><a href="../eventi.html">EVENTI</a><a href="../chi-siamo.html">CHI SIAMO</a><a href="../temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+</nav>
+</div>
+</header>
+<div class="container back-nav"><a href="../hub.html">← Torna all'Hub</a></div>
+<article>
+<div class="article-container article-header no-category">
+<h1 class="serif-heading article-title">Il dialogo strategico tra Roma e Astana su Middle Corridor, commercio e cooperazione industriale</h1>
+<p class="article-abstract">Roma e Astana rafforzano il dialogo economico e industriale, con il Middle Corridor al centro delle prospettive di connettività tra Europa, Asia Centrale e Mediterraneo.</p>
+<div class="article-meta">
+<span class="meta-author">Domenico Letizia</span>
+<span><time datetime="2026-10-12">12 Ottobre 2026</time></span>
+<span>Tempo di lettura: 3 min</span>
+</div>
+</div><figure class="hero-figure"><img alt="Composizione illustrativa delle relazioni tra Roma e Astana e del Middle Corridor: treno merci, nave cargo e le architetture delle due capitali" class="article-hero" decoding="async" fetchpriority="high" height="941" src="Immagini/2026.10.12-roma-astana.png" width="1672"/><figcaption class="hero-caption">Elaborazione grafica DYNAMES. Composizione illustrativa del dialogo Roma–Astana e della connettività del Middle Corridor.</figcaption></figure>
+<div class="article-container article-body">
+<p>Il Senato della Repubblica, nella solenne e prestigiosa cornice di Palazzo Carpegna, ha ospitato un rilevante incontro istituzionale promosso e guidato dal Senatore Giulio Terzi di Sant’Agata, già Ministro degli Affari Esteri e Presidente della Sezione Bilaterale di Amicizia Italia-Kazakistan nell’ambito dell’Unione Interparlamentare, focalizzato sul consolidamento delle relazioni bilaterali e della cooperazione economica e geopolitica tra Italia e Kazakistan.</p><p>L’iniziativa ha visto la presenza straordinaria del Ministro del Commercio e dell’Integrazione della Repubblica del Kazakistan, Arman Shakkaliyev, in missione ufficiale a Roma, accompagnato da un’articolata e qualificata delegazione di rappresentanti istituzionali, diplomatici ed esponenti del mondo produttivo ed economico delle due nazioni. Al centro delle analisi e degli interventi, il rafforzamento dell’asse strategico tra l’Europa e l’Asia Centrale, un’area geopolitica in forte accelerazione destinata a giocare un ruolo cruciale negli equilibri commerciali mondiali.</p><p>L’incontro al Senato si inserisce in un fitto programma di lavoro ad alto livello che ha visto il Ministro Shakkaliyev co-presiedere presso la Farnesina, insieme al Vice Ministro degli Affari Esteri e della Cooperazione Internazionale Edmondo Cirielli, la decima sessione del Gruppo di Lavoro Intergovernativo italo-kazako sulla cooperazione industriale ed economica, a conferma della straordinaria vivacità delle relazioni diplomatiche. Un contributo operativo fondamentale al successo delle discussioni parlamentari è stato fornito dall’Associazione per il Commercio Italo-Kazako (ACIK), rappresentata dal Presidente Marco Beretta e dalla Vicepresidente Elisabetta Lanfranchi, realtà da anni in prima linea nel facilitare l’integrazione tra le comunità d'affari dei due Paesi.</p><p>Il dibattito, impreziosito dai contributi diretti dell’Ambasciatore del Kazakistan a Roma, Yerbolat Sembayev, e dell’Ambasciatore d’Italia ad Astana, Antonello De Riu, collegato da remoto, ha consentito di fare il punto sugli interscambi commerciali e sulle nuove opportunità di crescita. Come evidenziato anche dalle analisi e dai report diffusi dalla stampa istituzionale di Astana e dai dati del Ministero del Commercio kazako, l’interscambio bilaterale ha raggiunto cifre di assoluto rilievo, superando i 16,9 miliardi di dollari nel 2025 e confermando un trend in fortissima espansione anche nel 2026, con oltre 9,7 miliardi di dollari registrati nella sola prima metà dell’anno.</p><p>L’Italia si consolida così come primo partner commerciale del Kazakistan nell'Unione europea e terzo a livello globale, mentre Astana segnala un potenziale di export aggiuntivo non ancora espresso verso il mercato italiano stimato in oltre 300 milioni di dollari in settori ad alto valore aggiunto.</p><p>Le riflessioni emerse a Palazzo Carpegna hanno delineato i settori chiave su cui concentrare i prossimi investimenti congiunti: dall’industria meccanica e manifatturiera alla transizione energetica, dall’agroalimentare alle infrastrutture, fino alle tecnologie digitali e alla logistica integrata.</p><p>Il filo conduttore dell’incontro è stato rappresentato dalla profonda fiducia nella stabilità dei rapporti politici e dalla volontà condivisa di tradurre la convergenza diplomatica in progetti industriali concreti e sostenibili. In questo scenario, un risalto prioritario è stato assegnato al Trans-Caspian International Transport Route (TITR), meglio noto come Middle Corridor, la rotta multimodale destinata a ridisegnare la connettività globale collegando la Cina e l’Asia Centrale all’Europa attraverso il Mar Caspio e il Caucaso. La velocizzazione, la digitalizzazione e la messa in sicurezza di questo corridoio logistico rappresentano un obiettivo cruciale sia per Astana, impegnata nell’ammodernamento delle proprie infrastrutture portuali e ferroviarie, sia per l’Italia, che punta a riaffermare la propria centralità geopolitica ed economica quale hub logistico naturale e snodo privilegiato per i traffici commerciali tra il bacino del Mediterraneo e il cuore del continente eurasiatico.</p>
+<div class="author-box">
+<img alt="Domenico Letizia" onerror="this.style.display='none';" src="../assets/immagini-chi-siamo/domenico-letizia.jfif"/>
+<div class="author-info">
+<h4>Domenico Letizia</h4>
+<p>Giornalista pubblicista, saggista e analista che collabora attivamente con prestigiose testate nazionali, tra cui La Ragione, L’Opinione delle Libertà e Il Riformista, distinguendosi per un’attività di reportage e analisi che intreccia geopolitica, diritti umani e innovazione ambientale.</p>
+</div>
+</div>
+</div>
+</article>
+<footer><div class="container"><h3 style="font-size:1.5rem;margin-bottom:1rem;letter-spacing:1px;">DYNAMES</h3><p>Iscrizione Registro degli Operatori di Comunicazione e Postali n° 44335 a favore di FONDAZIONE BOSCACCI ETS</p><p style="margin-top:1rem;color:var(--slate-grey);">© 2026 DYNAMES. Tutti i diritti riservati.</p></div></footer>
+</body>
+</html>
