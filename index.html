@@ -848,6 +848,31 @@
             background: transparent;
         }
 
+
+        /* Video Brussels Dialogues: conserva le dimensioni originali
+           del riquadro della roadmap (1:1 desktop, 4:5 mobile). */
+        .roadmap-video-holder {
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #0b1120;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+        .roadmap-video-holder iframe {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            aspect-ratio: 16 / 9;
+            border: 0;
+            background: #000;
+        }
+
         .roadmap-poster-caption {
             display: block;
             font-size: 0.8rem;
@@ -1147,6 +1172,55 @@
             display: block;
         }
 
+
+        /* Carosello: slide collaborazione DYNAMES – Tor Vergata (immagine completa, senza crop) */
+        .hero-slide--dissp {
+            background: #ffffff;
+            color: #0b1120;
+        }
+        .hero-slide--dissp .dissp-slide-content {
+            width: 100%;
+            height: 100%;
+            padding: 20px 64px 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .hero-slide--dissp .dissp-slide-image {
+            display: block;
+            width: min(100%, 950px);
+            height: auto;
+            max-height: calc(100% - 48px);
+            object-fit: contain;
+        }
+        .hero-slide--dissp .dissp-slide-cta {
+            display: inline-block;
+            color: #0b1120;
+            font: 700 0.88rem/1.4 'Montserrat', sans-serif;
+            text-align: center;
+            border-bottom: 2px solid #b8935a;
+            padding-bottom: 4px;
+        }
+        .hero-slide--dissp:hover .dissp-slide-cta { color: #1e3a8a; }
+        .hero-carousel.dissp-carousel-active .hero-dot {
+            border-color: #0b1120;
+            background: rgba(11, 17, 32, 0.12);
+        }
+        .hero-carousel.dissp-carousel-active .hero-dot.active {
+            background: #0b1120;
+        }
+        .hero-slide--dissp:focus-visible { outline: 4px solid #b8935a; outline-offset: -4px; }
+        .hero-slide--dissp + .hero-arrow { color: #ffffff; }
+        @media (max-width: 900px) {
+            .hero-slide--dissp .dissp-slide-content { padding: 14px 44px 36px; gap: 16px; }
+            .hero-slide--dissp .dissp-slide-cta { font-size: 0.76rem; max-width: 330px; }
+        }
+        @media (max-width: 520px) {
+            .hero-slide--dissp .dissp-slide-content { padding: 10px 30px 50px; }
+            .hero-slide--dissp .dissp-slide-cta { font-size: 0.72rem; }
+        }
     </style>
 <!-- Favicon and SEO -->
 <link href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" rel="icon" type="image/png"/>
@@ -1199,6 +1273,12 @@
 <p>Il nuovo paradigma della Sicurezza e Difesa. Il 14 ottobre 2026 al Parlamento Europeo di Bruxelles: una tavola di confronto su sicurezza, difesa e resilienza.</p>
 </div>
 </a>
+<a aria-hidden="true" aria-label="Scopri la collaborazione DYNAMES e Università di Roma Tor Vergata per il Master DISSP" class="hero-slide hero-slide--dissp" href="temi-e-collaborazioni.html#master-dissp">
+<div class="dissp-slide-content">
+<img alt="DYNAMES e Università degli Studi di Roma Tor Vergata – Una collaborazione per il futuro: modulo del Master di II livello DISSP" class="dissp-slide-image" decoding="async" height="720" loading="eager" src="temi-e-collaborazioni/tor-vergata.jpg" width="1280"/>
+<span class="dissp-slide-cta">Scopri il Master DISSP e il contributo di DYNAMES <span aria-hidden="true">→</span></span>
+</div>
+</a>
 <a aria-hidden="true" class="hero-slide" href="chi-siamo.html" style="background-image: linear-gradient(rgba(11, 17, 32, 0.45), rgba(11, 17, 32, 0.45)), url('assets/chess.png');">
 <div class="container">
 <h2>OSSERVARE, COMPRENDERE, GOVERNARE FORZE E SISTEMI</h2>
@@ -1232,6 +1312,7 @@
 <button aria-label="Vai alla slide 3" class="hero-dot" type="button"></button>
 <button aria-label="Vai alla slide 4" class="hero-dot" type="button"></button>
 <button aria-label="Vai alla slide 5" class="hero-dot" type="button"></button>
+<button aria-label="Vai alla slide 6" class="hero-dot" type="button"></button>
 </div>
 </section>
 <!-- Mobile-first accesso rapido ai contenuti principali -->
@@ -1858,11 +1939,16 @@
 </div>
 <div class="roadmap-image-panel">
 <div class="roadmap-image-frame">
-<div>
-<button aria-label="Apri la locandina Brussels Dialogues del 14 ottobre 2026 in formato grande" class="roadmap-poster-trigger open-lightbox" data-alt="Brussels Dialogues – Il nuovo paradigma della Sicurezza e Difesa, Parlamento Europeo, Bruxelles, 14 ottobre 2026" data-img="events/20261014/20261014-SAVE%20THE%20DATE.png" type="button">
-<img alt="Brussels Dialogues – Il nuovo paradigma della Sicurezza e Difesa, Parlamento Europeo, Bruxelles, 14 ottobre 2026" class="roadmap-poster" src="events/20261014/20261014-SAVE%20THE%20DATE.png"/>
-</button>
-<span class="roadmap-poster-caption">Clicca per ingrandire</span>
+<div class="roadmap-video-holder">
+<iframe
+    src="https://www.youtube-nocookie.com/embed/---rRZ8VhCI"
+    title="Brussels Dialogues – Il video dell'incontro al Parlamento europeo"
+    width="1280"
+    height="720"
+    loading="lazy"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen></iframe>
 </div>
 </div>
 </div>
@@ -2231,6 +2317,7 @@
 
             function showSlide(index) {
                 currentIndex = (index + slides.length) % slides.length;
+                carousel.classList.toggle('dissp-carousel-active', slides[currentIndex].classList.contains('hero-slide--dissp'));
 
                 slides.forEach((slide, slideIndex) => {
                     const isActive = slideIndex === currentIndex;
