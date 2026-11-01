@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>DYNAMES | Accesso al Workspace</title>
+  <meta name="description" content="Area riservata DYNAMES Workspace per membri e collaboratori autorizzati.">
+  <link rel="icon" type="image/png" href="https://www.dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>:root{--navy:#0b1120;--blue:#1e3a8a;--gold:#b8935a;--ink:#1e293b;--muted:#637289;--line:#dee5ee;--bg:#f6f8fb;--green:#166948;--red:#9f3131}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Roboto,Arial,sans-serif}h1,h2,h3,b,button,.eyebrow{font-family:Montserrat,Arial,sans-serif}h1{font-size:clamp(27px,4vw,38px);margin:8px 0}h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.wide{width:min(1100px,calc(100% - 36px));margin:auto}.top{background:#fff;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:13px;min-height:77px}.brand b{display:block;font-size:20px;letter-spacing:2px}.brand span{display:block;font-size:10px;letter-spacing:1.8px;color:var(--muted);font-weight:bold}.logo{font:29px Georgia,serif;background:var(--navy);color:var(--gold);padding:3px 13px;border-radius:7px}.top-right{margin-left:auto;color:var(--muted);font-weight:700;font-size:10px;letter-spacing:1px}.hero{background:var(--navy);border-top:4px solid var(--gold);color:#fff;border-radius:11px;padding:29px 32px;margin:28px 0 22px;display:flex;justify-content:space-between}.hero p{color:#d2dbea;max-width:700px;margin:6px 0}.eyebrow{color:var(--gold);font-size:10px;letter-spacing:1.6px;font-weight:700}.shield{font-size:72px;opacity:.3;line-height:1}.panel{background:#fff;border:1px solid var(--line);border-radius:11px;padding:25px;margin:20px 0;box-shadow:0 4px 15px #17243b05}.notice{background:#eaf0fb;color:#183a71;padding:13px 16px;border-radius:8px;border-left:4px solid #365aa0}.notice.warn{background:#fff3e7;color:#79490f;border-left-color:#bf8a3b}.notice.ok{background:#e8f5ed;color:#135d43;border-left-color:var(--green)}#alert:not(:empty){margin:14px 0;padding:12px;border-radius:8px;background:#f7e5e3;color:#8d2727}#alert.success{background:#e7f5e9;color:#145b3c}.tabs{display:flex;gap:7px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap}.tabs button{background:transparent;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:12px 15px;font-size:12px;font-weight:700}.tabs button.active{color:var(--blue);border-bottom-color:var(--blue)}button{cursor:pointer;border-radius:6px;padding:11px 15px;border:1px solid transparent;font-weight:700;font-size:12px}button:disabled{opacity:.5;cursor:not-allowed}.primary{background:var(--blue);color:#fff}.secondary{background:#fff;color:var(--blue);border-color:#b9c6db}.danger{background:#fff;color:var(--red);border-color:#e6bbbb}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #86a6ec;outline-offset:2px}.form{display:grid;gap:20px}.form label{font-weight:700;font-size:12px;display:flex;flex-direction:column;gap:7px}.form input,.form textarea{width:100%;padding:11px 12px;font:14px Roboto,Arial,sans-serif;border:1px solid #bfccdc;border-radius:6px;background:#fff}.form fieldset{border:1px solid var(--line);border-radius:9px;padding:15px}.form legend{font-family:Montserrat;font-weight:700;font-size:13px;padding:0 7px}.two{display:grid;grid-template-columns:1fr 1fr;gap:15px}.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px}.checks label{display:flex;flex-direction:row;align-items:center;gap:8px;font-weight:400;font-size:13px}.checks input{width:auto}.helper{color:var(--muted);font-size:13px}.userstrip{display:flex;justify-content:space-between;align-items:center;gap:16px}.userstrip h2{word-break:break-all;margin:4px 0}.userstrip p{color:var(--muted);margin:0}.filecards{display:grid;grid-template-columns:1fr 1fr;gap:15px}.filecard{border:1px solid var(--line);padding:17px;border-radius:9px}.filecard input{width:100%;margin:8px 0}.filecard p{color:var(--muted);font-size:12px}.file-display{min-height:58px;margin:12px 0;word-break:break-all;font-size:12px;color:var(--muted)}.file-display img{width:80px;height:80px;object-fit:cover;border-radius:50%;display:block}.actions{display:flex;flex-wrap:wrap;gap:8px}.agree{display:flex;align-items:flex-start;gap:10px;margin:20px 0;font-size:13px}.agree input{margin-top:4px}a{color:var(--blue)}.record{padding:12px;border:1px solid var(--line);margin:9px 0;border-radius:8px;display:flex;justify-content:space-between;gap:13px;align-items:center}.record small{display:block;color:var(--muted)}.pill{display:inline-block;padding:4px 8px;background:#e9f2fd;color:#174d87;border-radius:30px;font-weight:700;font-size:10px}.subhead{margin-top:30px}.error{color:var(--red)}footer{padding:22px 0 38px;font-size:12px;color:var(--muted)}[hidden]{display:none!important}@media(max-width:690px){.two,.filecards{grid-template-columns:1fr}.hero{padding:22px}.shield{display:none}.panel{padding:18px}.record{align-items:flex-start;flex-direction:column}}
+
+.userstrip a.primary{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}a.primary[hidden]{display:none!important}
+
+
+/* DYNAMES visual system: allineato alla homepage index 2026-11-01 */
+:root { --night-blue:#0b1120; --slate-grey:#334155; --light-grey:#f8fafc; --optical-white:#ffffff; --accent:#1e3a8a; --text-primary:#1e293b; --text-secondary:#475569; --text-light:#cbd5e1; }
+html { scroll-behavior:smooth; }
+body { background:var(--light-grey); font-family:'Roboto',Arial,sans-serif; color:var(--text-primary); font-size:15px; line-height:1.6; }
+h1,h2,h3,.site-brand,.site-nav,.desktop-nav,.section-kicker,button {font-family:'Montserrat',Arial,sans-serif;}
+a {color:var(--accent);}
+.container {max-width:1200px; margin:0 auto; padding:0 2rem;}
+.site-header { background:var(--optical-white);border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:1000;}
+.site-header .header-inner { min-height:91px;display:flex;justify-content:space-between;align-items:center;gap:26px; }
+.site-brand {display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--night-blue);min-width:max-content;}
+.site-brand .brand-logo {width:43px;height:43px;object-fit:contain;flex:none;}
+.site-brand .brand-copy {display:flex;flex-direction:column;gap:0;line-height:1.12;}
+.site-brand strong {color:var(--night-blue);font-size:1.78rem;line-height:1.15;font-weight:800;letter-spacing:1px;}
+.site-brand small {font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--slate-grey);font-weight:600;white-space:nowrap;}
+.site-header .desktop-nav {display:flex;align-items:center;justify-content:flex-end;flex-wrap:nowrap;gap:clamp(12px,1.6vw,28px);}
+.site-header .desktop-nav a {font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.75px;white-space:nowrap;text-decoration:none;color:var(--night-blue);transition:color .2s;}
+.site-header .desktop-nav a:hover,.site-header .desktop-nav a:focus-visible {color:var(--accent);}
+.menu-toggle {display:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:9px;border:1px solid #dbe3ed;background:#fff;min-width:43px;min-height:43px;}
+.menu-toggle span {display:block;width:23px;height:2px;border-radius:2px;background:var(--night-blue);}
+.site-hero {position:relative;isolation:isolate;display:flex;align-items:center;min-height:350px;padding:68px 0 77px;background:var(--night-blue);color:var(--optical-white);overflow:hidden;}
+.site-hero::before {content:"";position:absolute;inset:0;z-index:-2;background-image:linear-gradient(105deg,rgba(11,17,32,.96) 0%,rgba(11,17,32,.89) 47%,rgba(11,17,32,.60) 100%),url('https://www.dynames.it/assets/chess.png');background-size:cover;background-position:center 48%;}
+.site-hero::after {content:"";position:absolute;inset:auto 0 0;height:4px;background:linear-gradient(90deg,var(--accent),#b8935a 56%,rgba(184,147,90,.08));}
+.hero-content {width:100%;text-align:left;}
+.hero-kicker {display:block;font:700 .72rem/1.4 'Montserrat',Arial,sans-serif;color:#e8d7b3;letter-spacing:.22em;margin-bottom:17px;}
+.hero-kicker-divider {color:#7b8ba5;margin:0 8px;}
+.site-hero h1 {font-size:clamp(2.05rem,4.3vw,3.45rem);line-height:1.18;letter-spacing:-.02em;margin:0 0 16px;font-weight:800;color:#fff;}
+.site-hero p {max-width:740px;color:#e0e7f0;font-size:clamp(.99rem,1.42vw,1.15rem);line-height:1.65;margin:0;}
+.hero-signature {width:68px;height:3px;margin-top:23px;background:#b8935a;}
+.workspace-main {position:relative;padding-top:42px;padding-bottom:90px;min-height:470px;}
+.workspace-main #system-banner {max-width:100%;margin:0 0 18px;border-radius:5px;border-left-color:var(--accent);background:#eef3f9;padding:10px 16px;font-size:.79rem;color:#334155;}
+.workspace-main #system-banner.ok {background:#edf6ef;color:#185c42;border-left-color:#29754b;}
+.workspace-main #system-banner.warn {background:#fff5e8;color:#7c571b;border-left-color:#b8935a;}
+#alert:not(:empty) {margin:0 0 18px;background:#fbeeee;border:1px solid #edd4d4;padding:13px 18px;color:#8d2727;border-radius:6px;}
+#alert.success {background:#eaf5ee;border-color:#d6e9dd;color:#145b3c;}
+.access-grid {display:grid;grid-template-columns:minmax(280px,1fr) minmax(400px,1.03fr);align-items:start;gap:clamp(34px,5vw,78px);padding:20px 0 32px;}
+.access-aside {padding:23px 0 20px;}
+.section-kicker {display:block;color:var(--accent);font-size:.73rem;font-weight:800;letter-spacing:.14em;margin-bottom:16px;}
+.access-aside h2 {font-size:clamp(1.65rem,2.5vw,2.3rem);line-height:1.22;margin:0 0 19px;color:var(--night-blue);font-weight:800;letter-spacing:-.02em;}
+.access-aside>p {font-size:1.04rem;color:var(--text-secondary);max-width:460px;line-height:1.75;margin:0 0 23px;}
+.feature-links {margin:29px 0;display:grid;gap:0;border-top:1px solid #dbe3ec;max-width:460px;}
+.feature-links div {display:flex;align-items:center;gap:17px;padding:16px 0;border-bottom:1px solid #dbe3ec;font-family:'Montserrat',Arial,sans-serif;font-size:.85rem;font-weight:700;color:var(--night-blue);}
+.feature-index {font-size:.78rem;color:var(--accent);font-weight:800;min-width:23px;}
+.access-aside .aside-footnote {font-size:.82rem;line-height:1.65;color:#62728a;max-width:460px;}
+.back-link {display:inline-block;margin-top:3px;font-family:'Montserrat',Arial,sans-serif;font-size:.78rem;text-decoration:none;font-weight:700;color:var(--accent);}
+.back-link:hover {text-decoration:underline;text-underline-offset:4px;}
+.access-form-column {min-width:0;}
+.panel {border:1px solid #e2e8f0;border-radius:8px;padding:29px 30px;margin:0 0 22px;background:#fff;box-shadow:0 6px 22px rgba(11,17,32,.055);}
+#auth-panel {border-top:4px solid var(--night-blue);box-shadow:0 16px 38px rgba(11,17,32,.08);padding:28px 34px 32px;}
+#auth-panel:before {content:'ACCESSO PERSONALE';display:block;color:var(--accent);font:800 .71rem/1.4 'Montserrat',Arial,sans-serif;letter-spacing:.14em;margin:2px 0 10px;}
+#auth-panel .tabs {margin:0 0 25px;border-bottom:1px solid #e2e8f0;}
+#auth-panel .tabs button {font-size:.99rem;text-align:left;padding:12px 15px 12px 0;color:var(--night-blue);font-weight:800;}
+#auth-panel .tabs button.active {border-bottom:3px solid var(--accent);}
+#auth-panel .form {gap:17px;}
+#auth-panel .form .two {grid-template-columns:1fr;gap:19px;}
+.form label {color:#263650;font-size:.79rem;font-weight:700;gap:8px;}
+.form input,.form textarea {border:1px solid #cdd8e5;border-radius:5px;min-height:46px;font-family:'Roboto',Arial,sans-serif;font-size:.92rem;color:var(--night-blue);background:#fff;transition:border-color .2s,box-shadow .2s;}
+.form input:focus,.form textarea:focus {border-color:var(--accent);box-shadow:0 0 0 3px rgba(30,58,138,.1);outline:0;}
+.form fieldset {border-color:#e2e8f0;}
+#auth-panel .actions {margin-top:6px;display:flex;align-items:center;gap:16px;}
+#auth-panel #auth-submit {min-width:155px;}
+#auth-panel .secondary {padding:11px 0;color:var(--accent);border:0;background:transparent;font-size:.76rem;}
+#auth-panel>.helper {font-size:.77rem;line-height:1.55;margin:24px 0 0;padding-top:19px;border-top:1px solid #e8edf3;color:#68788c;}
+button.primary,.actions a.primary {background:var(--night-blue);color:#fff;border-color:var(--night-blue);border-radius:4px;padding:12px 18px;font-family:'Montserrat',Arial,sans-serif;font-size:.78rem;letter-spacing:.02em;transition:background .2s,transform .2s;}
+button.primary:hover:not(:disabled),.actions a.primary:hover {background:var(--accent);border-color:var(--accent);}
+button.secondary,button.danger {border-radius:4px;}
+button:focus-visible,a:focus-visible {outline:3px solid #7395e9;outline-offset:3px;}
+#account-panel {animation:fade-in .3s ease;}
+#account-panel>.userstrip {border-top:4px solid var(--night-blue);margin-top:14px;}
+#account-panel>.userstrip .eyebrow {color:var(--accent);letter-spacing:.14em;}
+#account-panel>.userstrip h2 {font-size:1.35rem;}
+#account-panel>.workspace-tabs {display:flex;flex-wrap:wrap;gap:5px;}
+#account-panel>.workspace-tabs button {border-bottom-color:transparent;}
+#account-panel>.workspace-tabs button.active {border-bottom-color:var(--accent);}
+#account-panel .tab-pane {margin-top:22px;border-top:4px solid var(--night-blue);}
+#connect-panel {border-top:4px solid #b8935a;}
+body:has(#account-panel:not([hidden])) .access-grid {display:none;}
+body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
+.site-footer {background:var(--night-blue);color:var(--text-light);padding:47px 0 26px;font-size:.82rem;}
+.footer-grid {display:grid;grid-template-columns:1.5fr .75fr 1fr;gap:48px;padding-bottom:40px;}
+.footer-brand strong {display:block;font:800 1.55rem/1.2 'Montserrat',Arial,sans-serif;color:#fff;letter-spacing:.08em;margin-bottom:8px;}
+.footer-brand p {margin:6px 0;line-height:1.6;max-width:340px;}
+.footer-brand b {color:#fff;font-weight:600;}
+.site-footer h2 {font:700 .94rem/1.4 'Montserrat',Arial,sans-serif;color:#fff;margin:3px 0 15px;}
+.site-footer a {display:block;color:var(--text-light);text-decoration:none;margin:0 0 10px;overflow-wrap:anywhere;}
+.site-footer a:hover {color:#fff;text-decoration:underline;}
+.footer-bottom {border-top:1px solid rgba(255,255,255,.12);padding-top:19px;display:flex;justify-content:space-between;align-items:center;gap:15px;color:#92a0b5;font-size:.74rem;}
+@keyframes fade-in {from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+[hidden] {display:none!important;}
+@media(max-width:1130px){.site-header .desktop-nav {gap:12px;} .site-header .desktop-nav a {font-size:.69rem;} .site-brand strong {font-size:1.5rem;} .site-brand small{font-size:.62rem;}}
+@media(max-width:1020px){
+ .site-header .header-inner {position:relative;min-height:78px;}
+ .menu-toggle {display:flex;}
+ .site-header .desktop-nav {display:none;position:absolute;top:100%;left:0;right:0;background:#fff;padding:16px 2rem 20px;box-shadow:0 12px 20px rgba(11,17,32,.12);border-top:1px solid #e2e8f0;flex-direction:column;align-items:stretch;gap:0;}
+ .site-header .desktop-nav.is-open {display:flex;}
+ .site-header .desktop-nav a {padding:11px 4px;font-size:.78rem;border-bottom:1px solid #f0f2f5;}
+}
+@media(max-width:900px){.access-grid {grid-template-columns:1fr;gap:18px;padding:0 0 25px;}.access-form-column{order:-1;}.access-aside {padding:6px 0 10px;}.access-aside h2{max-width:650px}.access-aside>p{max-width:680px}.feature-links {max-width:100%;grid-template-columns:repeat(3,minmax(0,1fr));border-top:0;gap:12px;margin:17px 0 22px;}.feature-links div {border:1px solid #e2e8f0;background:#fff;padding:14px;display:block;border-radius:6px;font-size:.7rem;}.feature-index {display:block;margin-bottom:8px;}.footer-grid {grid-template-columns:1fr 1fr;gap:30px;}.footer-grid>.footer-brand{grid-column:1/-1;}}
+@media(max-width:600px){.container {padding-left:1.25rem;padding-right:1.25rem;}.site-header .header-inner{min-height:74px;}.site-brand strong{font-size:1.42rem;}.site-brand small{font-size:.59rem;letter-spacing:1px;}.site-brand .brand-logo{width:38px;height:38px;}.site-hero {min-height:295px;padding:49px 0 57px;}.site-hero h1 {font-size:2.1rem;}.site-hero p {font-size:.94rem;}.hero-kicker {font-size:.64rem;letter-spacing:.16em;}.workspace-main{padding-top:24px;padding-bottom:55px;}#auth-panel {padding:24px 20px 27px;}.panel {padding:22px 20px;}.feature-links{grid-template-columns:1fr;gap:7px;}.feature-links div {display:flex;align-items:center;gap:13px;padding:10px 13px;}.feature-index {margin:0;}.access-aside h2 {font-size:1.66rem;}.access-aside>p {font-size:.95rem;margin-bottom:16px;}.access-aside .aside-footnote {font-size:.78rem;}#auth-panel .actions {flex-wrap:wrap;}.footer-grid{grid-template-columns:1fr;gap:23px;}.footer-grid>.footer-brand{grid-column:auto;}.footer-bottom{flex-direction:column;align-items:flex-start;}.site-footer{padding:40px 0 24px;}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+
+</style>
+</head>
+<body>
+  <header class="site-header">
+  <div class="container header-inner">
+    <a class="site-brand" href="/" aria-label="DYNAMES · Torna alla homepage">
+      <img class="brand-logo" src="https://www.dynames.it/assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" alt="Logo DYNAMES" width="43" height="43" onerror="this.style.display='none'">
+      <span class="brand-copy"><strong>DYNAMES</strong><small>Governance di Forze e Sistemi</small></span>
+    </a>
+    <button type="button" class="menu-toggle" id="mobile-nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Apri il menu di navigazione"><span></span><span></span><span></span></button>
+    <nav class="desktop-nav" id="site-nav" aria-label="Navigazione principale">
+      <a href="/">HOME</a><a href="/hub.html">ANALISI &amp; ARTICOLI</a><a href="/pubblicazioni.html">PUBBLICAZIONI</a>
+      <a href="/eventi.html">EVENTI</a><a href="/chi-siamo.html">CHI SIAMO</a><a href="/temi-e-collaborazioni.html">TEMI E COLLABORAZIONI</a>
+    </nav>
+  </div>
+</header>
+  <section class="site-hero" aria-label="DYNAMES Workspace · Area riservata">
+  <div class="container hero-content">
+    <span class="hero-kicker">DYNAMES <span class="hero-kicker-divider">/</span> WORKSPACE 2027</span>
+    <h1>Area riservata DYNAMES</h1>
+    <p>Uno spazio di lavoro condiviso per il coordinamento delle attività editoriali, scientifiche, dei progetti e delle iniziative di DYNAMES.</p>
+    <div class="hero-signature" aria-hidden="true"></div>
+  </div>
+</section>
+<main class="container workspace-main">
+    <div class="notice" id="system-banner" role="status">Verifica della configurazione…</div>
+    <div id="alert" role="alert" aria-live="polite"></div>
+    <div class="access-grid">
+<aside class="access-aside">
+  <span class="section-kicker">PIATTAFORMA ORGANIZZATIVA</span>
+  <h2>Accedi al tuo spazio di lavoro.</h2>
+  <p>La piattaforma riunisce le funzioni organizzative, i gruppi di progetto e il programma di lavoro DYNAMES.</p>
+  <div class="feature-links" aria-label="Aree principali del Workspace">
+    <div><span class="feature-index">01</span><span>Governance e incarichi</span></div>
+    <div><span class="feature-index">02</span><span>Linee di Effort e attività</span></div>
+    <div><span class="feature-index">03</span><span>Progetti e formazione</span></div>
+  </div>
+  <p class="aside-footnote">L'accesso è riservato ai profili autorizzati. Le funzionalità di candidatura e caricamento documenti sono in fase di collaudo.</p>
+  <a class="back-link" href="/">← Torna al sito DYNAMES</a>
+</aside>
+<div class="access-form-column">
+    <section class="panel" id="connect-panel" hidden><h2>Applicazione non collegata</h2><p>Il portale di accesso non è disponibile in questo momento. Riprova più tardi.</p><p>In caso di errore, contatta l’amministrazione DYNAMES.</p></section>
+    <section class="panel" id="auth-panel" hidden>
+      <div class="tabs"><button type="button" id="tab-login" class="active">Accedi</button><button type="button" id="tab-signup" hidden>Crea account</button></div>
+      <form id="auth-form" class="form"><div class="two"><label>Email<input id="auth-email" type="email" autocomplete="email" required maxlength="254"></label><label>Password<input id="auth-password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></label></div><label id="auth-confirm-label" hidden>Conferma password<input id="auth-password-confirm" type="password" autocomplete="new-password" minlength="12" maxlength="128"></label><p class="helper" id="auth-help">Accedi con il tuo account personale verificato.</p><div class="actions"><button class="primary" type="submit" id="auth-submit">Accedi</button><button class="secondary" type="button" id="forgot-password" hidden>Password dimenticata?</button></div></form>
+      <p class="helper">L'accesso è riservato agli account autorizzati. Le nuove registrazioni saranno abilitate dopo il collaudo.</p>
+    </section>
+    <section class="panel" id="recovery-panel" hidden><h2>Imposta una nuova password</h2><p class="helper">Usa il collegamento di recupero ricevuto nella tua casella email. La nuova password deve avere almeno 12 caratteri.</p><form class="form" id="recovery-form"><label>Nuova password<input id="new-password" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><label>Conferma nuova password<input id="new-password-confirm" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><button class="primary" type="submit">Aggiorna password</button></form></section>
+    </div></div>
+    <section id="account-panel" hidden>
+      <div class="panel userstrip"><div><span class="eyebrow">ACCOUNT AUTENTICATO</span><h2 id="user-email"></h2><p id="membership-text">Profilo in caricamento…</p></div><div class="actions"><a href="/workspace/" id="workspace-launch" class="primary" hidden>Apri Workspace</a><button type="button" class="secondary" id="logout">Esci</button></div></div>
+      <nav class="tabs workspace-tabs"><button type="button" class="active" data-pane="profile">La mia scheda</button><button type="button" data-pane="documents">Fotografia e CV</button><button type="button" data-pane="status">La mia candidatura</button><button type="button" data-pane="admin" id="admin-tab" hidden>Amministrazione</button></nav>
+      <section class="panel tab-pane" id="pane-profile"><h2>Scheda personale</h2><p class="helper">Le aree di interesse sono a selezione multipla. È necessario indicarne almeno una.</p>
+        <form class="form" id="profile-form">
+          <div class="two"><label>Nome *<input name="first_name" autocomplete="given-name" required maxlength="120"></label><label>Cognome *<input name="last_name" autocomplete="family-name" required maxlength="120"></label></div>
+          <div class="two"><label>Email di contatto<input name="contact_email" type="email" maxlength="254"></label><label>Telefono (facoltativo)<input name="phone" type="tel" maxlength="50"></label></div>
+          <div class="two"><label>Organizzazione<input name="organization" maxlength="200"></label><label>Posizione professionale<input name="professional_position" maxlength="200"></label></div>
+          <label>Biografia / competenze<textarea name="biography" rows="4" maxlength="5000"></textarea></label>
+          <fieldset><legend>Aree di interesse *</legend><div class="checks" id="topics-box"></div></fieldset>
+          <fieldset><legend>Attività a cui desideri contribuire</legend><div class="checks" id="contributions-box"></div></fieldset>
+          <button class="primary" type="submit">Salva la mia scheda</button>
+        </form>
+      </section>
+      <section class="panel tab-pane" id="pane-documents" hidden><h2>Fotografia e curriculum</h2><p class="helper">Allegati privati: la fotografia non viene pubblicata sul sito e il CV resta riservato. Prima salva la scheda personale.</p>
+        <div class="filecards"><div class="filecard"><h3>Fotografia</h3><p>JPG, PNG o WebP · max 5 MB</p><input id="photo-input" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"><div id="photo-display" class="file-display"></div><div class="actions"><button class="secondary" id="photo-upload" type="button">Carica / sostituisci</button><button class="danger" id="photo-remove" type="button">Rimuovi</button></div></div>
+        <div class="filecard"><h3>Curriculum vitae</h3><p>PDF · max 10 MB</p><input id="cv-input" type="file" accept=".pdf,application/pdf"><div id="cv-display" class="file-display"></div><div class="actions"><button class="secondary" id="cv-upload" type="button">Carica / sostituisci</button><button class="danger" id="cv-remove" type="button">Rimuovi</button></div></div></div>
+        <p class="helper">Il sistema conserva file e metadati separatamente. La verifica antivirus e le regole di conservazione devono essere approvate prima dell'uso con dati reali.</p>
+      </section>
+      <section class="panel tab-pane" id="pane-status" hidden><h2>Candidatura DYNAMES</h2><div id="application-status"></div><div id="apply-box"><p>Invia la richiesta dopo aver completato la scheda e selezionato almeno un'area.</p><label class="agree"><input type="checkbox" id="privacy-accept"> Ho letto l'<a id="privacy-link" target="_blank" rel="noopener noreferrer">informativa privacy</a> relativa alla candidatura.</label><button type="button" class="primary" id="apply-btn">Invia richiesta di iscrizione</button></div></section>
+      <section class="panel tab-pane" id="pane-admin" hidden><h2>Gestione delle candidature</h2><p class="helper">Pannello riservato al Super Admin. Solo gli account con grant valido e membership attiva possono approvare le domande.</p><div id="admin-applications"></div><h2 class="subhead">Membri approvati</h2><div id="admin-members"></div></section>
+    </section>
+    
+  </main>
+<footer class="site-footer">
+ <div class="container footer-grid">
+   <div class="footer-brand"><strong>DYNAMES</strong><p>Governance di Forze e Sistemi</p><p>Un'iniziativa editoriale della <b>Fondazione Boscacci ETS</b>.</p></div>
+   <div><h2>Link utili</h2><a href="/chi-siamo.html">Chi siamo</a><a href="/pubblicazioni.html">Pubblicazioni</a><a href="/eventi.html">Eventi</a></div>
+   <div><h2>Contatti</h2><a href="mailto:segreteria@dynames.it">segreteria@dynames.it</a><a href="mailto:redazione@dynames.it">redazione@dynames.it</a><a href="/Privacy-Policy.html">Informativa privacy</a></div>
+ </div>
+ <div class="container footer-bottom"><span>© 2026 DYNAMES · Fondazione Boscacci ETS</span><span>Registro Trib. Busto Arsizio 01/2026 · ROC 44335</span></div>
+</footer>
+  <script>
+  (function(){
+    const button=document.getElementById('mobile-nav-toggle');
+    const menu=document.getElementById('site-nav');
+    if(!button||!menu)return;
+    const close=()=>{menu.classList.remove('is-open');button.setAttribute('aria-expanded','false');};
+    button.addEventListener('click',()=>{const on=menu.classList.toggle('is-open');button.setAttribute('aria-expanded',String(on));});
+    menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+    document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!button.contains(e.target))close();});
+  })();
+</script>
+  <script>window.DYNAMES_SUPABASE=Object.freeze({"url":"https://qcbvujamcpstvxdrfahm.supabase.co","publishableKey":"sb_publishable_Zq7Z-hVgwxzrKwgITkVIHQ_MNsr31nD","storageBucket":"dynames-member-files","privacyNoticeUrl":"https://www.dynames.it/privacy-policy.html","privacyVersion":"COLLAUDO","enablePortal":true,"enableRegistration":false,"enableApplications":false,"enableDocuments":false,"enableProfileEditing":false,"enablePasswordRecovery":false});</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+  <script>/* DYNAMES Workspace · Registro membri v0.3 · Frontend statico con Supabase Auth/RLS.
+   Nessun secret/service-role key; prima dell'attivazione è obbligatorio il collaudo RLS. */
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const config = window.DYNAMES_SUPABASE || {};
+  const isReady = Boolean(
+    config.enablePortal === true &&
+    (location.protocol === 'https:' || location.hostname === 'localhost') &&
+    /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(config.url || '') &&
+    typeof config.publishableKey === 'string' && config.publishableKey.length > 20 &&
+    /^https:\/\//.test(config.privacyNoticeUrl || '') &&
+    typeof config.privacyVersion === 'string' && config.privacyVersion.trim().length >= 3
+  );
+  let client = null, user = null, profile = null, application = null, member = null, admin = false;
+  let documents = {};
+  let authMode = 'login';
+  let recoveryMode = false;
+  let busy = false;
+  const esc = val => String(val ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const show = (id, visible) => { $(id).hidden = !visible; };
+  function message(text, isSuccess = false) { const el = $('alert'); el.textContent = text || ''; el.className = isSuccess ? 'success' : ''; }
+  function setBusy(active) { busy = active; document.querySelectorAll('button').forEach(b => { if (!b.dataset.persistent) b.disabled = active; }); }
+  function fail(error, fallback = 'Operazione non riuscita.') { console.error('DYNAMES Portal:', error); message(fallback + ' Controlla i dati inseriti o rivolgiti all’amministrazione.'); }
+  const demand = (res) => { if (res?.error) throw res.error; return res.data; };
+  function setPane(pane) {
+    for (const el of document.querySelectorAll('.tab-pane')) el.hidden = el.id !== 'pane-' + pane;
+    for (const el of document.querySelectorAll('.workspace-tabs [data-pane]')) el.classList.toggle('active', el.dataset.pane === pane);
+    if (pane === 'admin' && admin) refreshAdmin().catch(e => fail(e));
+    if (pane === 'documents') refreshDocuments().catch(e => fail(e));
+  }
+  function renderAuthMode() {
+    if (!config.enableRegistration) { authMode='login'; $('tab-signup').hidden=true; }
+    $('tab-login').classList.toggle('active', authMode === 'login');
+    $('tab-signup').classList.toggle('active', authMode === 'signup');
+    $('auth-submit').textContent = authMode === 'login' ? 'Accedi' : 'Crea account e verifica email';
+    $('auth-help').textContent = authMode === 'login' ?
+      'Accedi con il tuo account personale verificato.' :
+      'Password di almeno 12 caratteri; dopo la registrazione verifica il link ricevuto via email.';
+    $('auth-password').autocomplete = authMode === 'login' ? 'current-password' : 'new-password';
+    $('auth-confirm-label').hidden = authMode !== 'signup';
+    $('auth-password-confirm').required = authMode === 'signup';
+    $('forgot-password').hidden = authMode !== 'login';
+  }
+  async function loadCatalog() {
+    const [topics, contributions] = await Promise.all([
+      client.from('topics').select('slug,title').order('display_order'),
+      client.from('contribution_areas').select('code,title').order('display_order')
+    ]);
+    const tt = demand(topics), cc = demand(contributions);
+    $('topics-box').replaceChildren(...tt.map(t => choice('topic', t.slug, t.title)));
+    $('contributions-box').replaceChildren(...cc.map(c => choice('contrib', c.code, c.title)));
+  }
+  function choice(name, value, label) {
+    const el = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'checkbox'; input.name = name; input.value = value;
+    el.append(input, document.createTextNode(label));
+    return el;
+  }
+  function fillProfile() {
+    const form = $('profile-form');
+    for (const field of ['first_name','last_name','contact_email','phone','organization','professional_position','biography']) {
+      form.elements.namedItem(field).value = profile?.[field] || '';
+    }
+  }
+  async function refreshState() {
+    if (!user) return;
+    const id = user.id;
+    const [p, a, m, g] = await Promise.all([
+      client.from('member_profiles').select('*').eq('user_id', id).maybeSingle(),
+      client.from('member_applications').select('*').eq('user_id', id).maybeSingle(),
+      client.from('members').select('*').eq('user_id', id).maybeSingle(),
+      client.from('access_grants').select('id,role_code,scope_type,revoked_at').eq('user_id', id).eq('role_code','super_admin').eq('scope_type','global').is('revoked_at',null)
+    ]);
+    profile = demand(p); application = demand(a); member = demand(m);
+    const grants = demand(g) || [];
+    admin = member?.status === 'active' && grants.length > 0;
+    $('admin-tab').hidden = !admin;
+    show('workspace-launch', admin);
+    $('user-email').textContent = user.email || 'Account';
+    $('membership-text').textContent = member?.status === 'active' ? 'Membro DYNAMES attivo' :
+      application?.status === 'pending' ? 'Candidatura in valutazione' :
+      application?.status === 'rejected' ? 'Candidatura non approvata' : 'Account registrato · nessun incarico assegnato';
+    fillProfile();
+    const themes = demand(await client.from('member_topics').select('topic_slug').eq('user_id',id)) || [];
+    const cs = demand(await client.from('member_contributions').select('area_code').eq('user_id',id)) || [];
+    const chosenTopics = new Set(themes.map(t=>t.topic_slug));
+    const chosenContribs = new Set(cs.map(c=>c.area_code));
+    for (const input of document.querySelectorAll('input[name=topic]')) input.checked = chosenTopics.has(input.value);
+    for (const input of document.querySelectorAll('input[name=contrib]')) input.checked = chosenContribs.has(input.value);
+    renderApplication();
+  }
+  function renderApplication() {
+    const box = $('application-status');
+    if (!application) box.innerHTML = '<p>Nessuna domanda presentata.</p>';
+    else if (application.status === 'pending') box.innerHTML = '<p><span class="pill">In valutazione</span> La domanda è stata ricevuta.</p>';
+    else if (application.status === 'approved') box.innerHTML = '<p><span class="pill">Approvata</span> La candidatura è stata approvata.</p>';
+    else box.innerHTML = '<p><span class="pill">Non approvata</span> Contatta la segreteria DYNAMES per chiarimenti.</p>';
+    show('apply-box', !application && config.enableApplications === true);
+  }
+  async function onProfileSave(event) {
+    event.preventDefault(); if (busy) return;
+    if(!config.enableProfileEditing)return message('Scheda dimostrativa: modifiche disabilitate in questa fase.');
+    const form = event.currentTarget;
+    const fd = new FormData(form);
+    const val = k => String(fd.get(k) || '').trim();
+    const themes = fd.getAll('topic').map(String);
+    if (!themes.length) return message('Seleziona almeno un’area di interesse.');
+    if (!val('first_name') || !val('last_name')) return message('Nome e cognome obbligatori.');
+    setBusy(true);
+    try {
+      demand(await client.rpc('save_my_profile', {
+        p_first_name: val('first_name'), p_last_name: val('last_name'),
+        p_contact_email: val('contact_email'), p_phone: val('phone'),
+        p_organization: val('organization'), p_professional_position: val('professional_position'),
+        p_biography: val('biography'), p_topics: themes,
+        p_contributions: fd.getAll('contrib').map(String)
+      }));
+      await refreshState(); message('Scheda personale salvata.', true);
+    } catch (e) { fail(e,'Impossibile salvare la scheda.'); }
+    finally { setBusy(false); }
+  }
+  async function onApply() {
+    if(!config.enableApplications)return message('Candidature temporaneamente chiuse.');
+    if (!profile) return message('Salva prima la tua scheda personale.');
+    if (!$('privacy-accept').checked) return message('È necessario confermare la lettura dell’informativa privacy.');
+    setBusy(true);
+    try {
+      demand(await client.from('member_applications').insert({
+        user_id:user.id,privacy_notice_version:config.privacyVersion
+      }));
+      await refreshState(); message('Richiesta inviata. Nessun permesso è stato assegnato automaticamente.',true);
+    } catch(e) { fail(e,'Invio della domanda non riuscito.'); }
+    finally { setBusy(false); }
+  }
+  function allowedFile(file,kind) {
+    if (!file) throw new Error('Seleziona un file.');
+    const photo = kind==='photo';
+    const mime = photo?['image/jpeg','image/png','image/webp']:['application/pdf'];
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!mime.includes(file.type) || !(photo ? ['jpg','jpeg','png','webp'].includes(ext) : ext==='pdf'))
+      throw new Error('Formato file non consentito.');
+    if (!file.size || file.size > (photo ? 5 : 10)*1024*1024) throw new Error('Dimensione file non valida.');
+    return ext;
+  }
+  async function refreshDocuments() {
+    if (!user) return;
+    documents = {};
+    const rows = demand(await client.from('member_documents').select('id,document_kind,storage_path,original_filename').eq('user_id',user.id));
+    for (const r of rows || []) documents[r.document_kind] = r;
+    for (const kind of ['photo','cv']) {
+      const el = $(kind+'-display'); el.replaceChildren();
+      const d = documents[kind];
+      if (!d) {el.textContent='Nessun file presente.'; continue;}
+      const name = document.createElement('p'); name.textContent='File: '+d.original_filename; el.appendChild(name);
+      const signed = await client.storage.from(config.storageBucket).createSignedUrl(d.storage_path,60);
+      if (signed.error) { const t=document.createElement('p'); t.textContent='Anteprima non disponibile.';el.appendChild(t);continue;}
+      if (kind==='photo') { const im=document.createElement('img');im.alt='Fotografia del profilo';im.src=signed.data.signedUrl;el.appendChild(im); }
+      else { const a=document.createElement('a');a.href=signed.data.signedUrl;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Apri CV (link temporaneo)';el.appendChild(a); }
+    }
+  }
+  async function upload(kind) {
+    if(!config.enableDocuments)return message('Caricamento documenti non ancora aperto.');
+    if (!profile) return message('Salva prima la tua scheda personale.');
+    const input = $(kind+'-input'), file=input.files?.[0];
+    let ext; try{ext=allowedFile(file,kind)}catch(e){return message(e.message)}
+    setBusy(true);
+    const path = `${user.id}/${kind}/${crypto.randomUUID()}.${ext}`;
+    let uploaded=false;
+    try {
+      const old = documents[kind] || null;
+      const saved = await client.storage.from(config.storageBucket).upload(path,file,{cacheControl:'60',upsert:false,contentType:file.type});
+      demand(saved); uploaded=true;
+      const data={user_id:user.id,document_kind:kind,storage_path:path,
+        original_filename:file.name,mime_type:file.type,size_bytes:file.size};
+      if (old) demand(await client.from('member_documents').update(data).eq('id',old.id).eq('user_id',user.id));
+      else demand(await client.from('member_documents').insert(data));
+      if (old) {
+        const cleanup=await client.storage.from(config.storageBucket).remove([old.storage_path]);
+        if(cleanup.error) console.warn('Vecchio file da ripulire:',cleanup.error.message);
+      }
+      input.value='';await refreshDocuments();message('Documento aggiornato nell’archivio privato.',true);
+    } catch(e){
+      if(uploaded) await client.storage.from(config.storageBucket).remove([path]).catch(()=>{});
+      fail(e,'Caricamento non riuscito.');
+    } finally {setBusy(false)}
+  }
+  async function removeDoc(kind) {
+    if(!config.enableDocuments)return message('Gestione documenti non ancora attiva.');
+    const d = documents[kind]; if(!d) return;
+    if(!confirm('Rimuovere il documento '+d.original_filename+'?')) return;
+    setBusy(true);
+    try {
+      // Rimuovere prima i metadati impedisce di mostrare file già cancellati;
+      // un errore nella cancellazione Storage richiede una pulizia amministrativa.
+      demand(await client.from('member_documents').delete().eq('id',d.id).eq('user_id',user.id));
+      const result=await client.storage.from(config.storageBucket).remove([d.storage_path]);
+      if(result.error) throw result.error;
+      await refreshDocuments();message('Documento rimosso.',true);
+    }catch(e){fail(e,'Rimozione incompleta: verificare lo storage.');}
+    finally{setBusy(false)}
+  }
+  async function refreshAdmin() {
+    if(!admin) return;
+    const apps = demand(await client.from('member_applications')
+      .select('user_id,status,submitted_at').eq('status','pending').order('submitted_at',{ascending:true}));
+    const profiles = demand(await client.from('member_profiles')
+      .select('user_id,first_name,last_name,organization').order('last_name'));
+    const byId = new Map(profiles.map(p=>[p.user_id,p]));
+    const out=$('admin-applications');out.replaceChildren();
+    if(!apps.length) out.textContent='Nessuna candidatura in attesa.';
+    for (const a of apps) {
+      const p=byId.get(a.user_id);if(!p)continue;
+      const row=document.createElement('div');row.className='record';
+      const content=document.createElement('div');
+      const bold=document.createElement('b');bold.textContent=[p.first_name,p.last_name].join(' ');
+      const small=document.createElement('small');small.textContent=(p.organization||'Nessuna organizzazione')+' · In valutazione';
+      content.append(bold,small);row.append(content);
+      const actions=document.createElement('div');actions.className='actions';
+      for(const [decision,label,klass] of [[true,'Approva','primary'],[false,'Rifiuta','danger']]){
+        const b=document.createElement('button');b.type='button';b.className=klass;b.textContent=label;
+        b.addEventListener('click',()=>review(a.user_id,decision,p.first_name+' '+p.last_name));actions.append(b);
+      }
+      const cvButton=document.createElement('button');cvButton.type='button';cvButton.className='secondary';cvButton.textContent='CV (se presente)';
+      cvButton.addEventListener('click',()=>openApplicantCV(a.user_id));actions.append(cvButton);
+      row.append(actions);out.append(row);
+    }
+    const members = demand(await client.from('members').select('user_id,status,joined_at').order('joined_at',{ascending:false}).limit(200));
+    const memBox=$('admin-members');memBox.replaceChildren();
+    if(!members.length)memBox.textContent='Nessun membro approvato.';
+    for(const m of members){const p=byId.get(m.user_id);const line=document.createElement('div');line.className='record';
+      const label=document.createElement('span');label.textContent=(p?`${p.first_name} ${p.last_name}`:'Account')+' · '+m.status;
+      line.append(label);memBox.append(line);}
+  }
+  async function openApplicantCV(id) {
+    if(!admin) return;
+    try {
+      const file = demand(await client.from('member_documents').select('storage_path').eq('user_id',id).eq('document_kind','cv').maybeSingle());
+      if(!file) return message('Nessun CV presente nella candidatura.');
+      const r=await client.storage.from(config.storageBucket).createSignedUrl(file.storage_path,60);
+      demand(r);
+      const w=window.open(r.data.signedUrl,'_blank','noopener,noreferrer');
+      if(!w) message('Consenti l’apertura del documento nel browser.');
+    }catch(e){fail(e,'Impossibile aprire il CV.');}
+  }
+  async function review(id,decision,fullname){
+    if(!admin || !confirm((decision?'Approvare':'Rifiutare')+' la candidatura di '+fullname+'?'))return;
+    setBusy(true);
+    try{demand(await client.rpc('review_application',{p_user_id:id,p_approve:decision}));
+      await refreshAdmin();message('Decisione registrata. Non sono stati assegnati ruoli avanzati.',true);
+    }catch(e){fail(e,'Impossibile completare la decisione.');}
+    finally{setBusy(false)}
+  }
+  async function applySession() {
+    const result=await client.auth.getUser();
+    user = result.error?null:result.data.user;
+    show('auth-panel',!user && !recoveryMode);show('account-panel',Boolean(user) && !recoveryMode);
+    show('recovery-panel',Boolean(user) && recoveryMode);
+    if(!user){profile=null;application=null;admin=false;return;}
+    await refreshState();setPane('profile');
+  }
+  async function submitAuth(event){
+    event.preventDefault();if(busy)return;
+    if(authMode==='signup' && !config.enableRegistration)return message('Nuove iscrizioni temporaneamente chiuse.');
+    const email=$('auth-email').value.trim(),password=$('auth-password').value;
+    if(!email||!password||(authMode==='signup' && password.length<12))return message('Email e password richieste; per creare un account servono almeno 12 caratteri.');
+    if(authMode==='signup' && password!==$('auth-password-confirm').value)return message('Le due password non coincidono.');
+    setBusy(true);
+    try{
+      if(authMode==='signup'){
+        demand(await client.auth.signUp({email,password,
+          options:{emailRedirectTo:new URL('member-portal.html',location.href).href}}));
+        message('Se la richiesta è accettata, riceverai un’email con il link per verificare l’account.',true);
+      }else{
+        demand(await client.auth.signInWithPassword({email,password}));
+        await applySession();message('Accesso riuscito.',true);
+      }
+      $('auth-password').value=''; $('auth-password-confirm').value='';
+    }catch(e){fail(e,authMode==='signup'?'Registrazione non riuscita.':'Accesso non riuscito.');}
+    finally{setBusy(false)}
+  }
+
+  async function requestPasswordReset(){
+    if(!config.enablePasswordRecovery)return message('Recupero password: contattare la segreteria per configurazione del servizio email.');
+    if(!client || busy) return;
+    const email=$('auth-email').value.trim();
+    if(!/^\S+@\S+\.\S+$/.test(email)) return message('Inserisci prima la tua email nel campo di accesso.');
+    setBusy(true);
+    try {
+      demand(await client.auth.resetPasswordForEmail(email,{redirectTo:new URL('member-portal.html',location.href).href}));
+      message('Se l’indirizzo è registrato, riceverai le istruzioni per recuperare l’accesso.',true);
+    } catch(e) {fail(e,'Richiesta di recupero non riuscita.');}
+    finally {setBusy(false);}
+  }
+  async function setNewPassword(event){
+    event.preventDefault();if(!client||busy)return;
+    const password=$('new-password').value,confirmPassword=$('new-password-confirm').value;
+    if(password.length<12 || password!==confirmPassword) return message('Le password devono coincidere e avere almeno 12 caratteri.');
+    setBusy(true);
+    try {
+      demand(await client.auth.updateUser({password}));
+      recoveryMode=false;
+      $('new-password').value='';$('new-password-confirm').value='';
+      await applySession();message('Password aggiornata correttamente.',true);
+    } catch(e){fail(e,'Aggiornamento password non riuscito.');}
+    finally{setBusy(false);}
+  }
+  async function start(){
+    if(!isReady || !window.supabase?.createClient){
+      $('system-banner').textContent='Modalità preparazione: collegamento al database e iscrizioni reali non attivi.';
+      $('system-banner').classList.add('warn');show('connect-panel',true);
+      if(isReady && !window.supabase?.createClient)message('Libreria Supabase non disponibile.');
+      return;
+    }
+    client=window.supabase.createClient(config.url,config.publishableKey,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}});
+    if(!config.enableDocuments)for(const id of ['photo-upload','cv-upload','photo-remove','cv-remove','photo-input','cv-input'])$(id).disabled=true;
+    if(!config.enableProfileEditing)$('profile-form').querySelector('button[type=submit]').disabled=true;
+    if(!config.enableApplications)$('apply-btn').disabled=true;
+    if(!config.enablePasswordRecovery)$('forgot-password').hidden=true;
+    $('system-banner').textContent='Collegato al database DYNAMES · Accesso disponibile · Iscrizioni e caricamenti temporaneamente chiusi.';
+    $('system-banner').classList.add('ok');
+    $('privacy-link').href=config.privacyNoticeUrl;
+    show('auth-panel',true);
+    client.auth.onAuthStateChange((event)=>{
+      if(event==='PASSWORD_RECOVERY'){
+        recoveryMode=true;
+        // Il callback Auth non deve eseguire query sincrone con Supabase.
+        Promise.resolve().then(()=>{show('auth-panel',false);show('account-panel',false);show('recovery-panel',true);});
+      }
+      if(event==='SIGNED_OUT'){
+        user=null;profile=null;recoveryMode=false;
+        Promise.resolve().then(()=>{show('recovery-panel',false);show('account-panel',false);show('auth-panel',true);});
+      }
+    });
+    try{await loadCatalog();await applySession();}catch(e){fail(e,'Errore di connessione o migrazione non installata.');}
+  }
+  $('tab-login').addEventListener('click',()=>{authMode='login';renderAuthMode();message('');});
+  $('tab-signup').addEventListener('click',()=>{authMode='signup';renderAuthMode();message('');});
+  $('auth-form').addEventListener('submit',submitAuth);
+  $('forgot-password').addEventListener('click',requestPasswordReset);
+  $('recovery-form').addEventListener('submit',setNewPassword);
+  $('profile-form').addEventListener('submit',onProfileSave);
+  $('apply-btn').addEventListener('click',onApply);
+  $('photo-upload').addEventListener('click',()=>upload('photo'));
+  $('cv-upload').addEventListener('click',()=>upload('cv'));
+  $('photo-remove').addEventListener('click',()=>removeDoc('photo'));
+  $('cv-remove').addEventListener('click',()=>removeDoc('cv'));
+  $('logout').addEventListener('click',async()=>{
+    if(!client||busy)return;
+    try{demand(await client.auth.signOut());message('Sessione conclusa.',true);}catch(e){fail(e,'Impossibile terminare la sessione.');}
+  });
+  for(const tab of document.querySelectorAll('[data-pane]'))tab.addEventListener('click',()=>setPane(tab.dataset.pane));
+  renderAuthMode();start().catch(e=>fail(e,'Avvio del portale non riuscito.'));
+})();
+</script>
+</body>
+</html>
