@@ -150,7 +150,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     <div><span class="feature-index">02</span><span>Linee di Effort e attività</span></div>
     <div><span class="feature-index">03</span><span>Progetti e formazione</span></div>
   </div>
-  <p class="aside-footnote">L'accesso è riservato ai profili autorizzati. Le funzionalità di candidatura e caricamento documenti sono in fase di collaudo.</p>
+  <p class="aside-footnote">Accesso su invito: gli account creati dall’amministrazione possono compilare la propria scheda e presentare la candidatura. Foto e CV restano disabilitati durante il pilota.</p>
   <a class="back-link" href="/">← Torna al sito DYNAMES</a>
 </aside>
 <div class="access-form-column">
@@ -158,12 +158,19 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     <section class="panel" id="auth-panel" hidden>
       <div class="tabs"><button type="button" id="tab-login" class="active">Accedi</button><button type="button" id="tab-signup" hidden>Crea account</button></div>
       <form id="auth-form" class="form"><div class="two"><label>Email<input id="auth-email" type="email" autocomplete="email" required maxlength="254"></label><label>Password<input id="auth-password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></label></div><label id="auth-confirm-label" hidden>Conferma password<input id="auth-password-confirm" type="password" autocomplete="new-password" minlength="12" maxlength="128"></label><p class="helper" id="auth-help">Accedi con il tuo account personale verificato.</p><div class="actions"><button class="primary" type="submit" id="auth-submit">Accedi</button><button class="secondary" type="button" id="forgot-password" hidden>Password dimenticata?</button></div></form>
-      <p class="helper">L'accesso è riservato agli account autorizzati. Le nuove registrazioni saranno abilitate dopo il collaudo.</p>
+      <p class="helper">L'accesso è riservato agli account autorizzati. Le nuove registrazioni autonome sono chiuse: gli account pilota vengono creati su invito.</p>
     </section>
     <section class="panel" id="recovery-panel" hidden><h2>Imposta una nuova password</h2><p class="helper">Usa il collegamento di recupero ricevuto nella tua casella email. La nuova password deve avere almeno 12 caratteri.</p><form class="form" id="recovery-form"><label>Nuova password<input id="new-password" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><label>Conferma nuova password<input id="new-password-confirm" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><button class="primary" type="submit">Aggiorna password</button></form></section>
     </div></div>
     <section id="account-panel" hidden>
       <div class="panel userstrip"><div><span class="eyebrow">ACCOUNT AUTENTICATO</span><h2 id="user-email"></h2><p id="membership-text">Profilo in caricamento…</p></div><div class="actions"><a href="workpage.html" id="workspace-launch" class="primary" hidden>Apri Workspace</a><button type="button" class="secondary" id="logout">Esci</button></div></div>
+      <section class="panel" id="pilot-password-panel" style="margin-top:14px;border-left:4px solid #b8935a">
+        <h2>Cambio password</h2><p class="helper">Se l'amministrazione ha creato il tuo account con una password temporanea, sostituiscila subito con una password personale. Non comunicarla ad altri.</p>
+        <form class="form" id="pilot-password-form"><div class="two">
+          <label>Nuova password (almeno 12 caratteri)<input type="password" id="pilot-password-new" autocomplete="new-password" minlength="12" required></label>
+          <label>Conferma nuova password<input type="password" id="pilot-password-confirm" autocomplete="new-password" minlength="12" required></label>
+        </div><div class="actions"><button type="submit" class="primary">Aggiorna la password</button></div></form>
+      </section>
       <nav class="tabs workspace-tabs"><button type="button" class="active" data-pane="profile">La mia scheda</button><button type="button" data-pane="documents">Fotografia e CV</button><button type="button" data-pane="status">La mia candidatura</button><button type="button" data-pane="admin" id="admin-tab" hidden>Amministrazione</button></nav>
       <section class="panel tab-pane" id="pane-profile"><h2>Scheda personale</h2><p class="helper">Le aree di interesse sono a selezione multipla. È necessario indicarne almeno una.</p>
         <form class="form" id="profile-form">
@@ -182,7 +189,9 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
         <p class="helper">Il sistema conserva file e metadati separatamente. La verifica antivirus e le regole di conservazione devono essere approvate prima dell'uso con dati reali.</p>
       </section>
       <section class="panel tab-pane" id="pane-status" hidden><h2>Candidatura DYNAMES</h2><div id="application-status"></div><div id="apply-box"><p>Invia la richiesta dopo aver completato la scheda e selezionato almeno un'area.</p><label class="agree"><input type="checkbox" id="privacy-accept"> Ho letto l'<a id="privacy-link" target="_blank" rel="noopener noreferrer">informativa privacy</a> relativa alla candidatura.</label><button type="button" class="primary" id="apply-btn">Invia richiesta di iscrizione</button></div></section>
-      <section class="panel tab-pane" id="pane-admin" hidden><h2>Gestione delle candidature</h2><p class="helper">Pannello riservato al Super Admin. Solo gli account con grant valido e membership attiva possono approvare le domande.</p><div id="admin-applications"></div><h2 class="subhead">Membri approvati</h2><div id="admin-members"></div></section>
+      <section class="panel tab-pane" id="pane-admin" hidden><h2>Gestione delle candidature</h2><p class="helper">Pannello riservato al Super Admin. Solo gli account con grant valido e membership attiva possono approvare le domande.</p><div id="admin-applications"></div><h2 class="subhead">Membri approvati e livelli di accesso</h2>
+        <p class="helper">Pilota: puoi assegnare Governance, Membro oppure Osservatore. La modifica è registrata nel database. Il Super Admin non è modificabile da questa schermata. La Workpage completa resta riservata al Super Admin fino alla definizione dei permessi per funzione.</p>
+        <div id="admin-members"></div></section>
     </section>
     
   </main>
@@ -206,7 +215,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!button.contains(e.target))close();});
   })();
 </script>
-  <script>window.DYNAMES_SUPABASE=Object.freeze({"url":"https://qcbvujamcpstvxdrfahm.supabase.co","publishableKey":"sb_publishable_Zq7Z-hVgwxzrKwgITkVIHQ_MNsr31nD","storageBucket":"dynames-member-files","privacyNoticeUrl":"https://www.dynames.it/Privacy-Policy.html","privacyVersion":"COLLAUDO","enablePortal":true,"enableRegistration":false,"enableApplications":false,"enableDocuments":false,"enableProfileEditing":false,"enablePasswordRecovery":false});</script>
+  <script>window.DYNAMES_SUPABASE=Object.freeze({"url":"https://qcbvujamcpstvxdrfahm.supabase.co","publishableKey":"sb_publishable_Zq7Z-hVgwxzrKwgITkVIHQ_MNsr31nD","storageBucket":"dynames-member-files","privacyNoticeUrl":"https://www.dynames.it/Privacy-Policy.html","privacyVersion":"PILOTA-2026-11-01","enablePortal":true,"enableRegistration":false,"enableApplications":true,"enableDocuments":false,"enableProfileEditing":true,"enablePasswordRecovery":false});</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
   <script>/* DYNAMES Workspace · Registro membri v0.3 · Frontend statico con Supabase Auth/RLS.
    Nessun secret/service-role key; prima dell'attivazione è obbligatorio il collaudo RLS. */
@@ -436,12 +445,58 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
       cvButton.addEventListener('click',()=>openApplicantCV(a.user_id));actions.append(cvButton);
       row.append(actions);out.append(row);
     }
-    const members = demand(await client.from('members').select('user_id,status,joined_at').order('joined_at',{ascending:false}).limit(200));
+    const [mRes,gRes] = await Promise.all([
+      client.from('members').select('user_id,status,joined_at').order('joined_at',{ascending:false}).limit(200),
+      client.from('access_grants').select('user_id,role_code,scope_type,revoked_at').eq('scope_type','global').is('revoked_at',null)
+    ]);
+    const members = demand(mRes);
+    const activeGrants = demand(gRes) || [];
+    const roleById = new Map();
+    for(const g of activeGrants){
+      if(['super_admin','governance','member','observer'].includes(g.role_code))roleById.set(g.user_id,g.role_code);
+    }
     const memBox=$('admin-members');memBox.replaceChildren();
     if(!members.length)memBox.textContent='Nessun membro approvato.';
-    for(const m of members){const p=byId.get(m.user_id);const line=document.createElement('div');line.className='record';
-      const label=document.createElement('span');label.textContent=(p?`${p.first_name} ${p.last_name}`:'Account')+' · '+m.status;
-      line.append(label);memBox.append(line);}
+    for(const m of members){
+      const p=byId.get(m.user_id),role=roleById.get(m.user_id)||'member';
+      const line=document.createElement('div');line.className='record';
+      const label=document.createElement('span');
+      const fullName=p?`${p.first_name} ${p.last_name}`:'Account';
+      label.textContent=fullName+' · '+m.status+' · '+({super_admin:'Super Admin',governance:'Governance',member:'Membro',observer:'Osservatore'}[role]||role);
+      line.append(label);
+      if(m.user_id!==user.id && m.status==='active' && role!=='super_admin'){
+        const controls=document.createElement('div');controls.className='actions';
+        const select=document.createElement('select');select.className='select';select.setAttribute('aria-label','Ruolo di '+fullName);
+        for(const [value,name] of [['member','Membro'],['governance','Governance'],['observer','Osservatore']]){
+          const opt=document.createElement('option');opt.value=value;opt.textContent=name;opt.selected=value===role;select.appendChild(opt);
+        }
+        const save=document.createElement('button');save.type='button';save.className='primary';save.textContent='Salva ruolo';
+        save.addEventListener('click',()=>savePilotRole(m.user_id,select.value,fullName));
+        controls.append(select,save);line.append(controls);
+      }
+      memBox.append(line);
+    }
+  }
+  async function savePilotRole(id,role,name){
+    if(!admin||!['member','governance','observer'].includes(role))return;
+    if(!confirm('Assegnare il livello “'+({governance:'Governance',member:'Membro',observer:'Osservatore'}[role])+'” a '+name+'?'))return;
+    setBusy(true);
+    try{
+      demand(await client.rpc('admin_set_pilot_role',{p_user_id:id,p_role:role}));
+      await refreshAdmin();message('Ruolo aggiornato e registrato. Le funzioni reali restano soggette ai permessi del database.',true);
+    }catch(e){fail(e,'Non è stato possibile aggiornare il livello di accesso.');}
+    finally{setBusy(false);}
+  }
+  async function changePilotPassword(event){
+    event.preventDefault();if(!client||!user||busy)return;
+    const pwd=$('pilot-password-new').value,confirmation=$('pilot-password-confirm').value;
+    if(pwd.length<12 || pwd!==confirmation)return message('La nuova password deve avere almeno 12 caratteri e coincidere con la conferma.');
+    setBusy(true);
+    try{
+      demand(await client.auth.updateUser({password:pwd}));
+      $('pilot-password-form').reset();message('Password personale aggiornata correttamente.',true);
+    }catch(e){fail(e,'Cambio password non riuscito.');}
+    finally{setBusy(false);}
   }
   async function openApplicantCV(id) {
     if(!admin) return;
@@ -528,7 +583,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     if(!config.enableProfileEditing)$('profile-form').querySelector('button[type=submit]').disabled=true;
     if(!config.enableApplications)$('apply-btn').disabled=true;
     if(!config.enablePasswordRecovery)$('forgot-password').hidden=true;
-    $('system-banner').textContent='Collegato al database DYNAMES · Accesso disponibile · Iscrizioni e caricamenti temporaneamente chiusi.';
+    $('system-banner').textContent='Collegato a DYNAMES · Accesso su invito · Scheda e candidature abilitate · Allegati disabilitati.';
     $('system-banner').classList.add('ok');
     $('privacy-link').href=config.privacyNoticeUrl;
     show('auth-panel',true);
@@ -550,6 +605,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
   $('auth-form').addEventListener('submit',submitAuth);
   $('forgot-password').addEventListener('click',requestPasswordReset);
   $('recovery-form').addEventListener('submit',setNewPassword);
+  $('pilot-password-form').addEventListener('submit',changePilotPassword);
   $('profile-form').addEventListener('submit',onProfileSave);
   $('apply-btn').addEventListener('click',onApply);
   $('photo-upload').addEventListener('click',()=>upload('photo'));
