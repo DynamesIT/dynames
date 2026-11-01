@@ -163,7 +163,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     <section class="panel" id="recovery-panel" hidden><h2>Imposta una nuova password</h2><p class="helper">Usa il collegamento di recupero ricevuto nella tua casella email. La nuova password deve avere almeno 12 caratteri.</p><form class="form" id="recovery-form"><label>Nuova password<input id="new-password" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><label>Conferma nuova password<input id="new-password-confirm" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><button class="primary" type="submit">Aggiorna password</button></form></section>
     </div></div>
     <section id="account-panel" hidden>
-      <div class="panel userstrip"><div><span class="eyebrow">ACCOUNT AUTENTICATO</span><h2 id="user-email"></h2><p id="membership-text">Profilo in caricamento…</p></div><div class="actions"><a href="/workspace/" id="workspace-launch" class="primary" hidden>Apri Workspace</a><button type="button" class="secondary" id="logout">Esci</button></div></div>
+      <div class="panel userstrip"><div><span class="eyebrow">ACCOUNT AUTENTICATO</span><h2 id="user-email"></h2><p id="membership-text">Profilo in caricamento…</p></div><div class="actions"><a href="workpage.html" id="workspace-launch" class="primary" hidden>Apri Workspace</a><button type="button" class="secondary" id="logout">Esci</button></div></div>
       <nav class="tabs workspace-tabs"><button type="button" class="active" data-pane="profile">La mia scheda</button><button type="button" data-pane="documents">Fotografia e CV</button><button type="button" data-pane="status">La mia candidatura</button><button type="button" data-pane="admin" id="admin-tab" hidden>Amministrazione</button></nav>
       <section class="panel tab-pane" id="pane-profile"><h2>Scheda personale</h2><p class="helper">Le aree di interesse sono a selezione multipla. È necessario indicarne almeno una.</p>
         <form class="form" id="profile-form">
@@ -206,7 +206,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!button.contains(e.target))close();});
   })();
 </script>
-  <script>window.DYNAMES_SUPABASE=Object.freeze({"url":"https://qcbvujamcpstvxdrfahm.supabase.co","publishableKey":"sb_publishable_Zq7Z-hVgwxzrKwgITkVIHQ_MNsr31nD","storageBucket":"dynames-member-files","privacyNoticeUrl":"https://www.dynames.it/privacy-policy.html","privacyVersion":"COLLAUDO","enablePortal":true,"enableRegistration":false,"enableApplications":false,"enableDocuments":false,"enableProfileEditing":false,"enablePasswordRecovery":false});</script>
+  <script>window.DYNAMES_SUPABASE=Object.freeze({"url":"https://qcbvujamcpstvxdrfahm.supabase.co","publishableKey":"sb_publishable_Zq7Z-hVgwxzrKwgITkVIHQ_MNsr31nD","storageBucket":"dynames-member-files","privacyNoticeUrl":"https://www.dynames.it/Privacy-Policy.html","privacyVersion":"COLLAUDO","enablePortal":true,"enableRegistration":false,"enableApplications":false,"enableDocuments":false,"enableProfileEditing":false,"enablePasswordRecovery":false});</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
   <script>/* DYNAMES Workspace · Registro membri v0.3 · Frontend statico con Supabase Auth/RLS.
    Nessun secret/service-role key; prima dell'attivazione è obbligatorio il collaudo RLS. */
@@ -480,7 +480,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     try{
       if(authMode==='signup'){
         demand(await client.auth.signUp({email,password,
-          options:{emailRedirectTo:new URL('member-portal.html',location.href).href}}));
+          options:{emailRedirectTo:new URL('verifica-accesso.html',location.href).href}}));
         message('Se la richiesta è accettata, riceverai un’email con il link per verificare l’account.',true);
       }else{
         demand(await client.auth.signInWithPassword({email,password}));
@@ -498,7 +498,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     if(!/^\S+@\S+\.\S+$/.test(email)) return message('Inserisci prima la tua email nel campo di accesso.');
     setBusy(true);
     try {
-      demand(await client.auth.resetPasswordForEmail(email,{redirectTo:new URL('member-portal.html',location.href).href}));
+      demand(await client.auth.resetPasswordForEmail(email,{redirectTo:new URL('verifica-accesso.html',location.href).href}));
       message('Se l’indirizzo è registrato, riceverai le istruzioni per recuperare l’accesso.',true);
     } catch(e) {fail(e,'Richiesta di recupero non riuscita.');}
     finally {setBusy(false);}
