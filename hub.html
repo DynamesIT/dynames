@@ -738,14 +738,14 @@
 </div>
 <section class="magazine-content container">
 <!-- ARTICOLO IN EVIDENZA -->
-  <article class="featured-article">
-<div><img alt="L’ecosistema industriale europeo della difesa: infrastrutture, AGILE, European Defence Fund, NATO DIANA e NATO Innovation Fund" class="featured-image" fetchpriority="high" loading="eager" src="articles/Immagini/2026.11.05-difesa-diventa-infrastruttura-hero-light.jpg"/></div>
+  <article class="featured-article" data-category="Tecnologia e Sistemi Complessi">
+<div><img alt="Illustrazione editoriale di un sistema di refrigerazione industriale in allarme per interferenze digitali" class="featured-image" fetchpriority="high" loading="eager" src="articles/Immagini/2026.11.09-guerra-ibrida-catena-del-freddo-hero-light.jpg"/></div>
 <div style="display:flex;flex-direction:column;justify-content:center;">
-<span class="article-category">Economia e Industria</span>
-<h2 class="serif-heading">Quando la difesa diventa infrastruttura: startup, dual use e il nuovo confine industriale europeo</h2>
-<p>Dalla defense tech al dual use, dai capitali alle nuove regole europee: startup, PMI e infrastrutture al centro della trasformazione industriale della difesa.</p>
-<a class="btn-read" href="articles/2026.11.05-difesa-diventa-infrastruttura.html" style="font-size:1rem;margin-bottom:2rem;">Leggi l’articolo</a>
-<div class="article-meta"><span>Di Antonino Brigandì</span><span>5 Novembre 2026</span></div>
+<span class="article-category">Tecnologia e Sistemi Complessi</span>
+<h2 class="serif-heading">La guerra ibrida colpisce la catena del freddo</h2>
+<p>Dai supermercati europei alle infrastrutture sanitarie, gli attacchi ai sistemi di refrigerazione mettono in luce le fragilità digitali e organizzative della catena del freddo.</p>
+<a class="btn-read" href="articles/2026.11.09-guerra-ibrida-catena-del-freddo.html" style="font-size:1rem;margin-bottom:2rem;">Leggi l’articolo</a>
+<div class="article-meta"><span>Di Ivan De Vita</span><span>9 Novembre 2026</span></div>
 </div>
 </article>
 <!-- STANDARD ARTICLES GRID -->
@@ -754,6 +754,18 @@
 <div class="hub-layout">
 <!-- Colonna Articoli -->
 <div class="grid-2" id="articlesGrid">
+<article class="standard-article" data-category="Difesa e Sicurezza">
+<img alt="Manifestanti e agenti di Polizia durante una manifestazione cittadina" loading="lazy" src="articles/Immagini/2026.11.09-governare-il-dissenso-light.jpg"/>
+<span class="article-category">Difesa e Sicurezza</span>
+<h3 class="serif-heading">Governare il dissenso: dalle piazze degli anni di piombo alla protesta frammentata di oggi</h3>
+<p>Dagli anni Settanta alle mobilitazioni contemporanee: come proteggere il diritto al dissenso e prevenire la violenza politica, tra ordine pubblico e libertà di manifestare.</p>
+<div style="margin-top:auto;">
+<a class="btn-read" href="articles/2026.11.09-governare-il-dissenso.html">Leggi di più</a>
+<div class="article-meta" style="margin-top:1.5rem;font-size:0.8rem;">
+<span class="author-name">Redazione DYNAMES</span><span>9 Novembre 2026</span>
+</div>
+</div>
+</article>
 <article class="standard-article" data-category="Diritto e Legittimità">
 <img alt="Illustrazione generata con intelligenza artificiale: una manifestante mostra la Costituzione italiana davanti a Palazzo Montecitorio." loading="lazy" src="articles/Immagini/2026.11.16-sovranita-popolare-hero-light.jpg"/>
 <span class="article-category">Diritto e Legittimità</span>
@@ -763,6 +775,18 @@
 <a class="btn-read" href="articles/2026.11.06-sovranita-popolare.html">Leggi di più</a>
 <div class="article-meta" style="margin-top:1.5rem;font-size:0.8rem;">
 <span class="author-name">Alessandro Averna Chinnici</span><span>6 Novembre 2026</span>
+</div>
+</div>
+</article>
+<article class="standard-article" data-category="Economia e Industria">
+<img alt="L’ecosistema industriale europeo della difesa: infrastrutture, AGILE, European Defence Fund, NATO DIANA e NATO Innovation Fund" loading="lazy" src="articles/Immagini/2026.11.05-difesa-diventa-infrastruttura-hero-light.jpg"/>
+<span class="article-category">Economia e Industria</span>
+<h3 class="serif-heading">Quando la difesa diventa infrastruttura: startup, dual use e il nuovo confine industriale europeo</h3>
+<p>Dalla defense tech al dual use, dai capitali alle nuove regole europee: startup, PMI e infrastrutture al centro della trasformazione industriale della difesa.</p>
+<div style="margin-top:auto;">
+<a class="btn-read" href="articles/2026.11.05-difesa-diventa-infrastruttura.html">Leggi di più</a>
+<div class="article-meta" style="margin-top:1.5rem;font-size:0.8rem;">
+<span class="author-name">Antonino Brigandì</span><span>5 Novembre 2026</span>
 </div>
 </div>
 </article>
@@ -1605,6 +1629,7 @@
             const searchInput = document.getElementById("searchInput");
             const categoryButtons = document.querySelectorAll("#categoryFilter button");
             const articles = document.querySelectorAll(".standard-article");
+            const featuredArticle = document.querySelector(".featured-article");
 
             let currentCategory = "all";
 
@@ -1617,6 +1642,17 @@
 
             function filterArticles() {
                 const query = searchInput.value.toLowerCase();
+
+                // Anche l’articolo in evidenza segue ricerca e filtro rubrica.
+                if (featuredArticle) {
+                    const featuredTitle = featuredArticle.querySelector('h2')?.textContent.toLowerCase() || '';
+                    const featuredAbstract = featuredArticle.querySelector('p')?.textContent.toLowerCase() || '';
+                    const featuredAuthor = featuredArticle.querySelector('.article-meta')?.textContent.toLowerCase() || '';
+                    const featuredCategory = featuredArticle.getAttribute('data-category') || '';
+                    const showFeatured = (currentCategory === 'all' || featuredCategory === currentCategory) &&
+                        (featuredTitle.includes(query) || featuredAbstract.includes(query) || featuredAuthor.includes(query));
+                    featuredArticle.style.display = showFeatured ? 'grid' : 'none';
+                }
 
                 articles.forEach(article => {
                     const title = article.querySelector("h3").textContent.toLowerCase();
