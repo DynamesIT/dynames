@@ -1232,7 +1232,76 @@
             .hero-slide--dissp .dissp-slide-content { padding: 10px 30px 50px; }
             .hero-slide--dissp .dissp-slide-cta { font-size: 0.72rem; }
         }
-    </style>
+    
+/* DYNAMES – Roadmap gerarchica: prossimo evento evidenziato, altri eventi 50% del titolo principale */
+#eventi .roadmap-scrollbox .timeline-item{
+  padding:.65rem .8rem .7rem .95rem;
+  margin:0 0 .85rem;
+  background:#f4f6fa;
+  border-left:2px solid #cbd5e1;
+  border-radius:4px;
+}
+#eventi .roadmap-scrollbox .timeline-item h3{
+  font:800 .90rem/1.32 'Montserrat',sans-serif;
+  letter-spacing:.012em;
+  text-transform:uppercase;
+  color:var(--night-blue);
+  margin:.32rem 0 .4rem !important;
+}
+#eventi .roadmap-scrollbox .timeline-item .timeline-date{
+  font:700 .76rem/1.45 'Montserrat',sans-serif;
+  color:#52647d;
+}
+#eventi .roadmap-scrollbox .timeline-item p{
+  margin:.22rem 0;
+  font-size:.81rem;
+  line-height:1.46;
+  color:var(--text-secondary);
+}
+#eventi .roadmap-scrollbox .timeline-item--next{
+  margin:1.2rem 0 1.35rem;
+  padding:1.5rem 1.55rem 1.6rem;
+  background:#fff;
+  border-left:5px solid #c62828;
+  border-radius:6px;
+  box-shadow:0 8px 22px rgba(11,17,32,.10);
+}
+#eventi .roadmap-scrollbox .timeline-item--next h3{
+  font:800 1.8rem/1.2 'Montserrat',sans-serif;
+  letter-spacing:.015em;
+  margin:.42rem 0 .8rem !important;
+}
+#eventi .roadmap-scrollbox .timeline-item--next .timeline-date{
+  font-size:1.02rem;
+  color:var(--accent);
+}
+#eventi .roadmap-scrollbox .timeline-item--next p{
+  font-size:1rem;
+  line-height:1.6;
+  color:var(--text-primary);
+}
+#eventi .roadmap-scrollbox .timeline-item--next .next-event-label{
+  color:#bf1e2e;
+  font:800 .90rem/1.4 'Montserrat',sans-serif;
+  letter-spacing:.095em;
+  text-transform:uppercase;
+  margin-bottom:.75rem;
+}
+#eventi .roadmap-scrollbox .timeline-item--next::before{
+  border-color:#bf1e2e;
+  background:#bf1e2e;
+}
+#governance .governance-grid{row-gap:3rem}
+#governance .governance-card h4 a{color:inherit;text-decoration:none}
+#governance .governance-card h4 a:hover{text-decoration:underline;text-underline-offset:3px;color:var(--accent)}
+#governance .governance-photo a{display:block;width:100%;height:100%}
+@media(max-width:900px){
+ #eventi .roadmap-scrollbox .timeline-item--next h3{font-size:1.6rem}
+ #eventi .roadmap-scrollbox .timeline-item:not(.timeline-item--next) h3{font-size:.8rem}
+ #eventi .roadmap-scrollbox .timeline-item--next{padding:1.2rem 1rem}
+ #eventi .roadmap-scrollbox .timeline-item--next .next-event-label{font-size:.82rem}
+}
+</style>
 <!-- Favicon and SEO -->
 <link href="assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" rel="icon" type="image/png"/>
 <link href="https://www.dynames.it/" rel="canonical"/>
@@ -1880,29 +1949,29 @@
 <h2 class="section-title">Eventi &amp; Roadmap</h2>
 <div class="roadmap-layout">
 <div class="roadmap-text-panel">
-<h3 style="font-size: 1.8rem; color: var(--night-blue); margin-bottom: 2rem;">Agenda istituzionale e roadmap</h3>
+
 <div class="timeline roadmap-scrollbox"><a aria-label="Vai ai dettagli dell’evento Presentazione Report Cultura della Difesa del 21 maggio 2026" class="timeline-item-link" href="events/20260521-presentazione-report.html">
 <div class="timeline-item">
 <div class="timeline-date">21 Maggio 2026 · ore 17:00</div>
-<h3 style="margin: 0.5rem 0; color: var(--night-blue);">Biblioteca della Camera dei deputati "Nilde Iotti"</h3>
-<p>Presentazione Report <strong>"Cultura della Difesa"</strong></p>
+<h3 style="margin: 0.5rem 0; color: var(--night-blue);">PRESENTAZIONE REPORT CULTURA DELLA DIFESA</h3>
+<p>Biblioteca della Camera dei deputati “Nilde Iotti”</p>
 </div>
 </a><a aria-label="Vai al resoconto dell’evento Difesa, Sicurezza e Resilienza del 9 luglio 2026 ad Acerra" class="timeline-item-link" href="events/20260709-difesa-sicurezza-acerra.html">
 <div class="timeline-item">
 <div class="timeline-date">9 Luglio 2026 · ore 18:00</div>
-<h3 style="margin: 0.5rem 0; color: var(--night-blue);">Castello Baronale di Acerra (NA)</h3>
-<p style="margin-bottom: 0.5rem;"><strong>Difesa, Sicurezza e Resilienza</strong></p>
+<h3 style="margin: 0.5rem 0; color: var(--night-blue);">DIFESA, SICUREZZA E RESILIENZA</h3>
+<p style="margin-bottom: 0.5rem;">Castello Baronale di Acerra (NA)</p>
 <p style="font-size: 0.9rem; color: var(--text-secondary);">Sala piena al Castello Baronale per la tappa territoriale del progetto “Cultura della Difesa e Sicurezza”.</p>
 </div>
 </a>
 <a aria-label="Vai ai dettagli dell’evento Brussels Dialogues del 14 ottobre 2026 al Parlamento Europeo di Bruxelles" class="timeline-item-link" href="events/20261014-brussels-dialogues.html">
-<div class="timeline-item"><div class="timeline-date">14 Ottobre 2026 · dalle 16:30 presso Parlamento Europeo, Bruxelles</div><h3 class="next-event-title">Bruxelles Dialogues - Il nuovo paradigma della Sicurezza e Difesa</h3><p class="next-event-summary">Strategic Roundtable su capacità industriale, capitale umano e fiducia per la resilienza europea. Sala Spinelli ASP 1H1 · lavori 17:00–19:00.</p></div>
+<div class="timeline-item"><div class="timeline-date">14 Ottobre 2026 · dalle 16:30 presso Parlamento Europeo, Bruxelles</div><h3 class="next-event-title">BRUXELLES DIALOGUES - IL NUOVO PARADIGMA DELLA SICUREZZA E DIFESA</h3><p class="next-event-summary">Strategic Roundtable su capacità industriale, capitale umano e fiducia per la resilienza europea. Sala Spinelli ASP 1H1 · lavori 17:00–19:00.</p></div>
 </a>
 <a aria-label="Vai ai dettagli dell’evento Il commercio illecito di tabacco del 2 dicembre 2026" class="timeline-item-link" href="events/2026.12.02-illicit-tabacco-trade.html">
-<div class="timeline-item">
+<div class="timeline-item timeline-item--next">
 <span class="next-event-label">Prossimo appuntamento</span>
 <div class="timeline-date">2 Dicembre 2026 · ore 13:00–14:00 (CET)</div>
-<h3 class="next-event-title">Il commercio illecito di tabacco</h3>
+<h3 class="next-event-title">IL COMMERCIO ILLECITO DI TABACCO</h3>
 <p class="next-event-summary">Fattori economici, criminalità organizzata e sicurezza europea. Parlamento europeo, Bruxelles · Sala A3F383. Iniziativa dell’eurodeputato Flavio Tosi, organizzata da DYNAMES – Fondazione Boscacci ETS.</p>
 </div>
 </a><div class="timeline-item">
@@ -1910,10 +1979,10 @@
 <h3 style="margin: 0.5rem 0; color: var(--night-blue);">TORINO DIALOGUES – COMPETENZE PER LA SICUREZZA, LA STABILITÀ E LA RESILIENZA</h3>
 <p style="margin:0.4rem 0 0.65rem;"><strong>Il ruolo della formazione e specializzazione del capitale umano nelle sfide strategiche dell’Europa</strong></p>
 <p style="margin:0;"><strong>Sala Trasparenza</strong><br/>Grattacielo della Regione Piemonte<br/>Piazza Piemonte, 1, Torino</p>
-</div><div class="timeline-item"><div class="timeline-date">Data TBD</div><h3 style="margin: 0.5rem 0; color: var(--night-blue);">Milano</h3></div><div class="timeline-item"><div class="timeline-date">Data TBD</div><h3 style="margin: 0.5rem 0; color: var(--night-blue);">Napoli</h3></div>
+</div><div class="timeline-item"><div class="timeline-date">Data TBD</div><h3 style="margin: 0.5rem 0; color: var(--night-blue);">MILANO</h3></div><div class="timeline-item"><div class="timeline-date">Data TBD</div><h3 style="margin: 0.5rem 0; color: var(--night-blue);">NAPOLI</h3></div>
 <div class="timeline-item">
 <div class="timeline-date">17 Marzo 2027 · dalle 15:00 alle 18:00</div>
-<h3 style="margin: 0.5rem 0; color: var(--night-blue);">Cerimonia di conferimento dei premi “Cultura della Difesa e Sicurezza”</h3>
+<h3 style="margin: 0.5rem 0; color: var(--night-blue);">CERIMONIA DI CONFERIMENTO DEI PREMI “CULTURA DELLA DIFESA E SICUREZZA”</h3>
 <p style="margin:0;"><strong>Sala della Regina, Palazzo Montecitorio</strong><br/>Camera dei Deputati · Roma</p>
 </div>
 </div>
@@ -1924,7 +1993,7 @@
 <button aria-label="Ingrandisci la locandina dell’evento Il commercio illecito di tabacco del 2 dicembre 2026" class="roadmap-poster-trigger open-lightbox" data-alt="Save the Date DYNAMES – Illicit Tobacco Trade, Parlamento europeo, Bruxelles, 2 dicembre 2026, ore 13:00–14:00, Sala A3F383" data-img="events/20261202/2026.12.02-SAVE%20THE%20DATE%20-%20Illicit%20Tobacco%20Trade.png" type="button">
 <picture>
 <source srcset="events/20261202/2026.12.02-illicit-tabacco-trade.webp" type="image/webp"/>
-<img alt="Locandina dell'evento Illicit Tobacco Trade: 2 dicembre 2026, Parlamento europeo a Bruxelles, Sala A3F383" class="roadmap-poster" src="events/20261202/2026.12.02-SAVE%20THE%20DATE%20-%20Illicit%20Tobacco%20Trade.png" loading="lazy" width="1086" height="1448"/>
+<img alt="Locandina dell'evento Illicit Tobacco Trade: 2 dicembre 2026, Parlamento europeo a Bruxelles, Sala A3F383" class="roadmap-poster" height="1448" loading="lazy" src="events/20261202/2026.12.02-SAVE%20THE%20DATE%20-%20Illicit%20Tobacco%20Trade.png" width="1086"/>
 </picture>
 </button>
 <a class="roadmap-poster-caption" href="events/2026.12.02-illicit-tabacco-trade.html" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">Scopri l'evento del 2 dicembre</a>
@@ -2075,81 +2144,57 @@
 </section>
 <section class="container" id="governance" style="padding-top: 10rem; padding-bottom: 8rem;">
 <h2 class="section-title">Chi Siamo: Governance</h2>
-<div class="grid-4">
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Fabio Boscacci" onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Boscacci]'" src="assets/immagini-chi-siamo/Fabio%20Boscacci.jfif"/>
-</div>
-<h4>Fabio Boscacci</h4>
-<p>Cofondatore &amp; Direttore Responsabile</p>
-</div>
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Vincenzo D'Anna" onerror="this.style.display='none'; this.nextSibling.textContent='[Foto D Anna]'" src="assets/immagini-chi-siamo/Vinenzo%20D'ANNA.png"/>
-</div>
-<h4>Vincenzo D’Anna</h4>
-<p>Cofondatore &amp; Consigliere Editoriale e Scientifico</p>
-</div>
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Alessio Postiglione" onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Postiglione]'" src="assets/immagini-chi-siamo/Alessiopostiglione.jpeg"/>
-</div>
-<h4>Alessio Postiglione</h4>
+
+
+<div class="grid-4 governance-grid"><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Fabio Boscacci" href="chi-siamo.html#boscacci"><img alt="Fabio Boscacci" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/Fabio%20Boscacci.jfif"/></a></div>
+<h4><a href="chi-siamo.html#boscacci">Fabio Boscacci</a></h4>
+<p>Cofondatore · Direttore Responsabile</p>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Vincenzo D’Anna" href="chi-siamo.html#d-anna"><img alt="Vincenzo D’Anna" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/Vinenzo%20D'ANNA.png"/></a></div>
+<h4><a href="chi-siamo.html#d-anna">Vincenzo D’Anna</a></h4>
+<p>Cofondatore · Consigliere editoriale e scientifico</p>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Alessio Postiglione" href="chi-siamo.html#postiglione"><img alt="Alessio Postiglione" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/Alessiopostiglione.jpeg"/></a></div>
+<h4><a href="chi-siamo.html#postiglione">Alessio Postiglione</a></h4>
 <p>Direttore Scientifico</p>
-</div>
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Massimo Panizzi" onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Panizzi]'" src="assets/immagini-chi-siamo/massimo%20panizzi.jpeg"/>
-</div>
-<h4>Massimo Panizzi</h4>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Massimo Panizzi" href="chi-siamo.html#panizzi"><img alt="Massimo Panizzi" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/massimo%20panizzi.jpeg"/></a></div>
+<h4><a href="chi-siamo.html#panizzi">Massimo Panizzi</a></h4>
 <p>Direttore Editoriale</p>
-</div>
-</div>
-<div class="grid-4" style="margin-top: 4rem;">
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Michele Punzi" onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Punzi]'" src="assets/immagini-chi-siamo/michele-punzi.jpg"/>
-</div>
-<h4>Michele Punzi</h4>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Michele Punzi" href="chi-siamo.html#punzi"><img alt="Michele Punzi" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/michele-punzi.jpg"/></a></div>
+<h4><a href="chi-siamo.html#punzi">Michele Punzi</a></h4>
 <p>Consulente editoriale</p>
-</div>
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Elisabetta Panico" onerror="this.style.display='none'; this.parentElement.textContent='[Foto Panico]'" src="assets/immagini-chi-siamo/Elisabetta%20Panico.jpg"/>
-</div>
-<h4>Elisabetta Panico</h4>
-<p>Consulente &amp; Ufficio Stampa</p>
-</div>
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Guglielmo Brancato" onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Brancato]'" src="assets/immagini-chi-siamo/io%20giacca%20blu.png"/>
-</div>
-<h4>Guglielmo Brancato</h4>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Elisabetta Panico" href="chi-siamo.html#panico"><img alt="Elisabetta Panico" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/Elisabetta%20Panico.jpg"/></a></div>
+<h4><a href="chi-siamo.html#panico">Elisabetta Panico</a></h4>
+<p>Consulente · Ufficio Stampa</p>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Guglielmo Brancato" href="chi-siamo.html#brancato"><img alt="Guglielmo Brancato" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/io%20giacca%20blu.png"/></a></div>
+<h4><a href="chi-siamo.html#brancato">Guglielmo Brancato</a></h4>
 <p>Technology Advisor</p>
-</div>
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Simone Pallotta" onerror="this.style.display='none'; this.nextSibling.textContent='[Foto Pallotta]'" src="assets/immagini-chi-siamo/Pallotta%20simone.jpeg"/>
-</div>
-<h4>Simone Pallotta</h4>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Simone Pallotta" href="chi-siamo.html#pallotta"><img alt="Simone Pallotta" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/Pallotta%20simone.jpeg"/></a></div>
+<h4><a href="chi-siamo.html#pallotta">Simone Pallotta</a></h4>
 <p>Coordinatore eventi</p>
-</div>
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Serena Conticelli" onerror="this.style.display='none'; this.parentElement.textContent='[Foto Conticelli]'" src="assets/immagini-chi-siamo/Serena%20Conticelli.jpg"/>
-</div>
-<h4>Serena Conticelli</h4>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Serena Conticelli" href="chi-siamo.html#conticelli"><img alt="Serena Conticelli" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/Serena%20Conticelli.jpg"/></a></div>
+<h4><a href="chi-siamo.html#conticelli">Serena Conticelli</a></h4>
 <p>Consulente grafica e fotografia</p>
-</div>
-<div class="governance-card">
-<div class="governance-photo">
-<img alt="Veronica Comple" onerror="this.style.display='none'; this.parentElement.textContent='[Foto Comple]'" src="assets/immagini-chi-siamo/veronica-comple.jpg"/>
-</div>
-<h4>Veronica Comple</h4>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Veronica Comple" href="chi-siamo.html#veronica-comple"><img alt="Veronica Comple" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/veronica-comple.jpg"/></a></div>
+<h4><a href="chi-siamo.html#veronica-comple">Veronica Comple</a></h4>
 <p>Digital Media &amp; Website Coordinator</p>
-</div>
-</div>
-</section>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Mădălina Condrea" href="chi-siamo.html#madalina-condrea"><img alt="Mădălina Condrea" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/madalina-condrea.jpg"/></a></div>
+<h4><a href="chi-siamo.html#madalina-condrea">Mădălina Condrea</a></h4>
+<p>Institutional Relations &amp; European Project Management Intern</p>
+</div><div class="governance-card">
+<div class="governance-photo"><a aria-label="Leggi il profilo di Francesco Perdichizzi" href="chi-siamo.html#francesco-perdichizzi"><img alt="Francesco Perdichizzi" decoding="async" loading="lazy" onerror="this.style.display='none'" src="assets/immagini-chi-siamo/perdichizzi.jpg"/></a></div>
+<h4><a href="chi-siamo.html#francesco-perdichizzi">Francesco Perdichizzi</a></h4>
+<p>Institutional Relations &amp; European Project Management Intern</p>
+</div></div></section>
 <div aria-hidden="true" class="lightbox-modal" id="posterModal">
 <div aria-label="Immagine evento ingrandita" aria-modal="true" class="lightbox-content" role="dialog">
 <button aria-label="Chiudi immagine ingrandita" class="lightbox-close" id="closePosterModal" type="button">×</button>
