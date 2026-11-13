@@ -192,8 +192,8 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
         <p class="helper">Il sistema conserva file e metadati separatamente. La verifica antivirus e le regole di conservazione devono essere approvate prima dell'uso con dati reali.</p>
       </section>
       <section class="panel tab-pane" id="pane-status" hidden><h2>Candidatura DYNAMES</h2><div id="application-status"></div><div id="apply-box"><p>Invia la richiesta dopo aver completato la scheda e selezionato almeno un'area.</p><label class="agree"><input type="checkbox" id="privacy-accept"> Ho letto l'<a id="privacy-link" target="_blank" rel="noopener noreferrer">informativa privacy</a> relativa alla candidatura.</label><button type="button" class="primary" id="apply-btn">Invia richiesta di iscrizione</button></div></section>
-      <section class="panel tab-pane" id="pane-admin" hidden><h2>Gestione delle candidature</h2><p class="helper">Pannello riservato al Super Admin. Solo gli account con grant valido e membership attiva possono approvare le domande.</p><div id="admin-applications"></div><h2 class="subhead">Membri approvati e livelli di accesso</h2>
-        <p class="helper">Pilota: puoi assegnare Governance, Membro oppure Osservatore. La modifica è registrata nel database. Il Super Admin non è modificabile da questa schermata. La Workpage completa resta riservata al Super Admin fino alla definizione dei permessi per funzione.</p>
+      <section class="panel tab-pane" id="pane-admin" hidden><h2>Gestione delle candidature</h2><p class="helper">Pannello riservato al Super Admin e al Workspace Manager. Solo gli account con permessi validi e membership attiva possono approvare le domande.</p><div id="admin-applications"></div><h2 class="subhead">Membri approvati e livelli di accesso</h2>
+        <p class="helper">Pilota: puoi assegnare Governance, Membro oppure Osservatore. La modifica è registrata nel database. Il Super Admin e il Workspace Manager non sono modificabili da questa schermata. L'accesso alla Workpage è riservato a questi due ruoli.</p>
         <div id="admin-members"></div></section>
     </section>
     
@@ -298,7 +298,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
       client.from('member_profiles').select('*').eq('user_id', id).maybeSingle(),
       client.from('member_applications').select('*').eq('user_id', id).maybeSingle(),
       client.from('members').select('*').eq('user_id', id).maybeSingle(),
-      client.from('access_grants').select('id,role_code,scope_type,revoked_at').eq('user_id', id).eq('role_code','super_admin').eq('scope_type','global').is('revoked_at',null)
+      client.from('access_grants').select('id,role_code,scope_type,revoked_at').eq('user_id', id).in('role_code',['super_admin','workspace_manager']).eq('scope_type','global').is('revoked_at',null)
     ]);
     profile = demand(p); application = demand(a); member = demand(m);
     const grants = demand(g) || [];
@@ -461,7 +461,7 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
     const activeGrants = demand(gRes) || [];
     const roleById = new Map();
     for(const g of activeGrants){
-      if(['super_admin','governance','member','observer'].includes(g.role_code))roleById.set(g.user_id,g.role_code);
+      if(['super_admin','workspace_manager','governance','member','observer'].includes(g.role_code))roleById.set(g.user_id,g.role_code);
     }
     const memBox=$('admin-members');memBox.replaceChildren();
     if(!members.length)memBox.textContent='Nessun membro approvato.';
@@ -470,9 +470,9 @@ body:has(#recovery-panel:not([hidden])) .access-aside {opacity:.75;}
       const line=document.createElement('div');line.className='record';
       const label=document.createElement('span');
       const fullName=p?`${p.first_name} ${p.last_name}`:'Account';
-      label.textContent=fullName+' · '+m.status+' · '+({super_admin:'Super Admin',governance:'Governance',member:'Membro',observer:'Osservatore'}[role]||role);
+      label.textContent=fullName+' · '+m.status+' · '+({super_admin:'Super Admin',workspace_manager:'Workspace Manager',governance:'Governance',member:'Membro',observer:'Osservatore'}[role]||role);
       line.append(label);
-      if(m.user_id!==user.id && m.status==='active' && role!=='super_admin'){
+      if(m.user_id!==user.id && m.status==='active' && !['super_admin','workspace_manager'].includes(role)){
         const controls=document.createElement('div');controls.className='actions';
         const select=document.createElement('select');select.className='select';select.setAttribute('aria-label','Ruolo di '+fullName);
         for(const [value,name] of [['member','Membro'],['governance','Governance'],['observer','Osservatore']]){
