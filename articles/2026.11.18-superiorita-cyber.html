@@ -33,6 +33,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/logo%20DYNAMES%20positivo%20-%20quadrato.png" type="image/png">
 <style>
 :root{--night-blue:#0b1120;--slate-grey:#334155;--optical-white:#fff;--accent:#1e3a8a;--text-primary:#1e293b;--text-secondary:#475569;--paper-bg:#fdfbf7;--gold-accent:#b8935a;--line:#dbe2ea}
 *{box-sizing:border-box}
@@ -41,31 +42,32 @@ body{margin:0;font-family:'Roboto',Arial,sans-serif;background:var(--paper-bg);c
 a{color:var(--accent);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--gold-accent);outline-offset:3px}
 h1,h2,h3,h4,.brand{font-family:'Montserrat',Arial,sans-serif}
 .serif-heading{font-family:'Playfair Display',Georgia,serif}
-.container{max-width:1260px;margin:auto;padding:0 2rem}
-.article-container{max-width:860px;margin:auto;padding:0 2rem}
+.container{max-width:1200px;margin:auto;padding:0 2rem}
+.article-container{max-width:880px;margin:auto;padding:0 2rem}
 .skip-link{position:absolute;left:-9999px}.skip-link:focus{left:1rem;top:1rem;background:white;z-index:50;padding:.5rem 1rem}
-header{background:var(--night-blue);color:white;border-bottom:3px solid var(--gold-accent)}
-.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:99px}
-.brand a{text-decoration:none;color:white;display:flex;flex-direction:column}
-.brand h1{font-size:1.45rem;letter-spacing:.12em;margin:0;display:flex;align-items:center;gap:.65rem;line-height:1.2}
-.brand p{font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;margin:.2rem 0 0;color:#cdd5e4}
-.brand-logo{height:43px;width:43px;object-fit:contain}
-.desktop-nav{display:flex;align-items:center;gap:1.35rem;flex-wrap:wrap}
-.desktop-nav a{font:700 .7rem/1.4 'Montserrat',Arial,sans-serif;color:#e5e9f2;text-decoration:none;letter-spacing:.07em;white-space:nowrap}
-.desktop-nav a:hover,.desktop-nav a.active{color:#e4bd7e}
-.back-nav{padding-top:2rem;padding-bottom:2.1rem}
-.back-nav a{text-decoration:none;color:var(--slate-grey);font:600 .82rem 'Montserrat',Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase}
-.article-header{text-align:center;margin-bottom:2.8rem}
-.article-category{display:flex;justify-content:center;gap:.5rem 1.2rem;flex-wrap:wrap;color:var(--gold-accent);font:700 .84rem/1.6 'Montserrat',Arial,sans-serif;letter-spacing:.09em;text-transform:uppercase;margin-bottom:1.35rem}
+/* Navigazione coerente con gli articoli DYNAMES del 16-17 novembre 2026. */
+header{background:#fff;color:var(--night-blue);border-bottom:2px solid var(--night-blue);position:sticky;top:0;z-index:100;padding:1rem 0}
+.header-inner{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;min-height:0}
+.brand a{color:var(--night-blue);text-decoration:none;display:block}
+.brand h1{display:flex;align-items:center;gap:10px;margin:0;font-weight:800;font-size:1.8rem;letter-spacing:1px}
+.brand-logo{height:40px;width:auto;object-fit:contain}
+.brand p{font:600 .65rem 'Montserrat',Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;margin:.2rem 0 0;color:var(--slate-grey)}
+.desktop-nav{display:flex;gap:1.1rem;flex-wrap:wrap;align-items:center}
+.desktop-nav a{color:var(--night-blue);text-decoration:none;font:600 .74rem 'Montserrat',Arial,sans-serif;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.desktop-nav a:hover,.desktop-nav a.active{color:var(--gold-accent)}
+.back-nav{padding:1.75rem 0}
+.back-nav a{font:600 .82rem 'Montserrat',Arial,sans-serif;text-decoration:none;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.article-header{text-align:center;margin:0 auto 2.5rem}
+.article-category{display:flex;justify-content:center;flex-wrap:wrap;gap:.5rem 1.1rem;color:var(--gold-accent);font:700 .84rem/1.5 'Montserrat',Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem}
 .article-category a{color:var(--gold-accent);text-decoration:none}
-.article-category span+span::before{content:'•';font-weight:400;margin-right:1.2rem;color:#9aa5b5}
-.article-title{font:700 clamp(2rem,4.2vw,3.45rem)/1.16 'Playfair Display',Georgia,serif;color:var(--night-blue);margin:0 0 1.45rem}
-.article-abstract{font:italic 1.26rem/1.6 'Playfair Display',Georgia,serif;color:var(--slate-grey);max-width:740px;margin:0 auto 2.05rem}
-.article-meta{display:flex;justify-content:center;gap:.75rem 1.8rem;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.95rem 0;font:500 .78rem/1.6 'Montserrat',Arial,sans-serif;color:var(--slate-grey);text-transform:uppercase;letter-spacing:.06em}
-.article-meta a{text-decoration:none;color:var(--night-blue);font-weight:700}
+.article-category span+span::before{content:'•';font-weight:400;margin-right:1.1rem;color:#9aa5b5}
+.article-title{font:700 clamp(2rem,4vw,3.15rem)/1.17 'Playfair Display',Georgia,serif;color:var(--night-blue);margin:0 0 1.25rem}
+.article-abstract{font:italic 1.32rem/1.57 'Playfair Display',Georgia,serif;color:var(--slate-grey);margin:0 auto 1.9rem;max-width:none}
+.article-meta{display:flex;justify-content:center;gap:.75rem 1.5rem;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1rem 0;font:600 .8rem 'Montserrat',Arial,sans-serif;text-transform:uppercase;color:var(--text-secondary);letter-spacing:.04em}
+.article-meta a{text-decoration:none;font-weight:800;color:var(--night-blue)}
 
 /* Hero approvata: la sorgente WebP leggera e la sua fallback JPEG mostrano la stessa resa cromatica. */
-.hero-figure{max-width:1360px;margin:0 auto 3.45rem;padding:0 1.5rem}
+.hero-figure{max-width:1320px;margin:0 auto 3rem;padding:0 1.5rem}
 .hero-figure picture{display:block}
 .article-hero{display:block;width:100%;height:auto;aspect-ratio:2 / 1;object-fit:cover;box-shadow:0 18px 38px rgba(11,17,32,.15);background:#e6f0f6}
 .hero-caption{margin:.9rem auto 0;font:400 .8rem/1.55 'Montserrat',Arial,sans-serif;color:var(--text-secondary);text-align:right}
@@ -100,8 +102,8 @@ header{background:var(--night-blue);color:white;border-bottom:3px solid var(--go
 footer{background:var(--night-blue);color:#d9e1ec;padding:2.5rem 0 3rem;margin-top:3rem;text-align:center}
 footer h3{color:white;font:700 1.25rem 'Montserrat',Arial,sans-serif;letter-spacing:.1em;margin:.2rem 0 .85rem}
 footer p{font-size:.77rem;margin:.3rem 0;color:#becbdc}
-@media(max-width:920px){.header-inner{flex-direction:column;align-items:flex-start;padding-top:1rem;padding-bottom:1.1rem}.desktop-nav{gap:.9rem}}
-@media(max-width:650px){body{font-size:1.01rem}.container,.article-container{padding-left:1.25rem;padding-right:1.25rem}.back-nav{padding-top:1.5rem;padding-bottom:2rem}.article-header{margin-bottom:2rem}.article-abstract{font-size:1.15rem}.article-meta{font-size:.7rem;gap:.5rem 1rem}.article-category{font-size:.72rem}.article-category span+span::before{content:none}.article-body p{text-align:left}.article-body .article-lead{font-size:1.14rem}.lessons li{padding-left:3rem}.author-card{flex-direction:column}.author-card img{height:90px;width:90px}}
+@media(max-width:950px){.desktop-nav{display:none}.article-container,.container{padding-left:1.3rem;padding-right:1.3rem}.article-abstract{font-size:1.17rem}.article-title{font-size:2.25rem}.article-body h2{font-size:1.6rem}}
+@media(max-width:540px){body{font-size:1.03rem}.brand h1{font-size:1.48rem}.brand-logo{height:34px}.container,.article-container{padding-left:1.25rem;padding-right:1.25rem}.back-nav{padding-top:1.5rem;padding-bottom:1.75rem}.article-header{margin-bottom:2rem}.article-title{font-size:1.96rem}.article-meta{font-size:.72rem;gap:.5rem 1rem}.article-category{font-size:.72rem;line-height:1.55;letter-spacing:1.3px}.article-category span{display:block;width:100%}.article-category span+span::before{content:none}.article-body p{text-align:left}.article-body .article-lead{font-size:1.15rem}.lessons li{padding-left:3rem}.author-card{flex-direction:column}.author-card img{height:90px;width:90px}}
 @media print{header,.back-nav,footer{display:none}body{background:#fff}.article-body{padding-bottom:0}.references li{break-inside:avoid}}
 </style>
 </head>
